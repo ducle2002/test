@@ -1,0 +1,436 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "Protos/Business/item_attribute.proto";
+import "Protos/Business/item_model.proto";
+import "Protos/Business/item_cart.proto";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Items";
+
+package Items;
+
+service ItemProtoGrpc {
+  // Item
+  // rpc GetItemsByAdmin(GetItemsByAdminRequest) returns (GetItemsByAdminResponse);
+  rpc GetItemsByPartner(GetItemsByPartnerRequest) returns (GetItemsByPartnerResponse);
+  rpc GetItemsByUser(GetItemsByUserRequest) returns (GetItemsByUserResponse);
+  rpc GetItemsByUserMainPage(GetItemsByUserMainPageRequest) returns (GetItemsByUserMainPageResponse);
+  rpc GetAllItemsRandom(GetAllItemsRandomRequest) returns (GetAllItemsRandomResponse);
+  rpc GetItemDetail(GetItemDetailRequest) returns (GetItemDetailResponse);  
+  rpc GetAllCvByOwner(GetAllCvByOwnerRequest) returns (GetAllCvByOwnerResponse);
+  rpc GetAllItemFavourite(GetAllItemFavouriteRequest) returns (GetAllItemFavouriteResponse);
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse);
+  rpc UpdateCvByOwner(UpdateCvByOwnerRequest) returns (UpdateCvByOwnerResponse);
+  rpc UpdateItem(UpdateItemRequest) returns (UpdateItemResponse);
+  rpc UpdateItemByPartner(UpdateItemByPartnerRequest) returns (UpdateItemByPartnerResponse);
+  rpc UpdateItemBookingByPartner(UpdateItemBookingByPartnerRequest) returns (UpdateItemBookingByPartnerResponse);
+  rpc UpdateRateOfItem (UpdateRateOfItemRequest) returns (UpdateRateOfItemResponse);
+  rpc UpdateStatusOfItem (UpdateStatusOfItemRequest) returns (UpdateStatusOfItemResponse);
+  rpc UpdateListStatusOfItem (UpdateListStatusOfItemRequest) returns (UpdateListStatusOfItemResponse);
+  rpc BlockAllItemOfProvider (BlockAllItemOfProviderRequest) returns (BlockAllItemOfProviderResponse);
+  rpc ActiveAllItemOfProvider (ActiveAllItemOfProviderRequest) returns (ActiveAllItemOfProviderResponse);
+  rpc UpdateViewCount (UpdateViewCountRequest) returns (UpdateViewCountResponse);
+  rpc DeleteItem(DeleteItemRequest) returns (DeleteItemResponse);
+  rpc DeleteItemByPartner(DeleteItemByPartnerRequest) returns (DeleteItemByPartnerResponse);
+  rpc DeleteAllItems(DeleteAllItemsRequest) returns (DeleteAllItemsResponse);
+  rpc AddItemFavourite(AddItemFavouriteRequest) returns (AddItemFavouriteResponse);
+  rpc RemoveItemFavourite(RemoveItemFavouriteRequest) returns (RemoveItemFavouriteResponse);
+  // Cart
+  rpc UpdateCart(UpdateCartRequest) returns (UpdateCartResponse);
+  rpc GetCart(GetCartRequest) returns (GetCartResponse);
+  rpc UpdateCartAfterOrdering(UpdateCartAfterOrderingRequest) returns (UpdateCartAfterOrderingResponse);
+  rpc AddItemModelToCart(AddItemModelToCartRequest)  returns (AddItemModelToCartResponse);
+  rpc Checkout(CheckoutRequest) returns (CheckoutResponse);
+
+  // ItemModel
+  rpc GetListItemModelByIds (GetListItemModelByIdsRequest) returns (GetListItemModelByIdsResponse);
+  rpc UpdateListStockItemModel(UpdateListStockItemModelRequest) returns (UpdateListStockItemModelResponse);
+  rpc UpdateListPriceItemModel(UpdateListPriceItemModelRequest) returns (UpdateListPriceItemModelResponse);
+  rpc UpdateListSalesItemModel(UpdateListSalesItemModelRequest) returns (UpdateListSalesItemModelResponse);
+
+  // WeightCateogry
+  rpc IncreaseWeightCategory(IncreaseWeightCategoryRequest) returns (IncreaseWeightCategoryResponse);
+}
+
+message PItem {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  string Name = 3;
+  int64 ProviderId = 4;
+  int64 CategoryId = 5;
+  string Sku = 6;
+  repeated string ImageUrlList = 7;
+  repeated string VideoUrlList = 8;
+  string Description = 9;
+  double MinPrice = 10;
+  double MaxPrice = 11;
+  string SizeInfo = 12;
+  string LogisticInfo = 13;
+  int32 Status = 14;
+  int32 Condition = 15;
+  string ComplaintPolicy = 16;
+  int32 Stock = 17;
+  repeated PAttributeOfItem AttributeList = 18;
+  repeated PItemTierVariation TierVariationList = 19;
+  repeated PItemModel ModelList = 20;
+  string CreationTime = 21;
+  int32 CountRate = 22;
+  double RatePoint = 23;
+  int32 Sales = 24;
+  int64 CreatorUserId = 25;
+  string Properties = 26;
+  int32 Type = 27;
+  int64 ViewCount = 28;
+  bool IsLike = 29;
+  string Address = 30;
+}
+
+message GetItemsByPartnerRequest {
+  string Keyword = 1;
+  int64 CategoryId = 2;
+  int64 ProviderId = 3;
+  double MinPrice = 4;
+  double MaxPrice = 5;
+  int32 MinStock = 6;
+  int32 MaxStock = 7;
+  int32 MinSales = 8;
+  int32 MaxSales = 9;
+  int32 TenantId = 10;
+  int32 OrderBy = 11;
+  int32 FormId = 12;
+  int32 Rating = 13;
+  int32 Condition = 14;
+  int64 UserId = 15;
+  int32 SkipCount = 16;
+  int32 MaxResultCount = 17;
+  int32 Type = 18;
+  bool IsItemBooking = 19;
+}
+
+message GetItemsByPartnerResponse {
+  int32 TotalCount = 1;
+  repeated PItem Items = 2;
+}
+
+message GetItemsByUserRequest {
+  string Keyword = 1;
+  int64 CategoryId = 2;
+  int64 ProviderId = 3;
+  double MinPrice = 4;
+  double MaxPrice = 5;
+  int32 MinStock = 6;
+  int32 MaxStock = 7;
+  int32 MinSales = 8;
+  int32 MaxSales = 9;
+  int32 TenantId = 10;
+  int32 OrderBy = 11;
+  int32 FormId = 12;
+  int32 Rating = 13;
+  int32 Condition = 14;
+  int64 UserId = 15;
+  int32 SkipCount = 16;
+  int32 MaxResultCount = 17;
+  int32 Type = 18;
+  bool IsItemBooking = 19;
+  int32 BusinessType = 20;
+}
+
+message GetItemsByUserResponse {
+  int32 TotalCount = 1;
+  repeated PItem Items = 2;
+}
+
+message GetAllCvByOwnerRequest {
+  int32 FormId = 1;
+  int32 Type = 2;
+}
+
+message GetAllCvByOwnerResponse {
+  int32 TotalCount = 1;
+  repeated PItem Items = 2;
+}
+
+message GetItemDetailRequest {
+  int64 Id = 1;
+}
+
+message GetItemDetailResponse {
+  PItem Data = 1;
+  PProviderOfItem ProviderInfo = 2;
+  repeated PItem ListItemRelated = 3;
+}
+
+message GetItemsByUserMainPageRequest {
+  int32 ItemServiceType = 1;
+  int32 SkipCount = 2;
+  int32 MaxResultCount = 3;
+}
+
+message GetItemsByUserMainPageResponse {
+  int32 TotalCount = 1;
+  repeated PItem Items = 2;
+}
+
+
+message GetAllItemsRandomRequest {
+  int32 ItemServiceType = 1;
+  int32 SkipCount = 2;
+  int32 MaxResultCount = 3;
+}
+
+message GetAllItemsRandomResponse {
+  int32 TotalCount = 1;
+  repeated PItem Items = 2;
+}
+
+message GetAllItemFavouriteRequest {
+  int32 SkipCount = 1;
+  int32 MaxResultCount = 2;
+}
+
+message GetAllItemFavouriteResponse {
+  repeated PItem Items = 1;
+  int32 TotalCount = 2;
+}
+
+message PProviderOfItem {
+  int64 Id = 1;
+  string Name = 2;
+  string Email = 3;
+  string Contact = 4;
+  string Description = 5;
+  string PhoneNumber = 6;
+  repeated string ImageUrls = 7;
+  string OwnerInfo = 8;
+  string BusinessInfo = 9;
+  string WorkTime = 10;
+  int32 TenantId = 11;
+  int32 SocialTenantId = 12;
+  int32 Type = 13;
+  int32 GroupType = 14;
+  double Latitude = 15;
+  double Longitude = 16;
+  string PropertyHistories = 17;
+  string Properties = 18;
+  int32 State = 19;
+  string StateProperties = 20;
+  int32 CountRate = 21;
+  double RatePoint = 22;
+  bool IsDataStatic = 23;
+  bool IsAdminCreate = 24;
+  string DistrictId = 25;
+  string ProvinceId = 26;
+  string WardId = 27;
+  string Address = 28;
+  google.protobuf.Timestamp CreationTime = 29;
+  double RatePointDynamic = 30;
+  int32 CountRateDynamic = 31;
+}
+
+message CreateItemRequest {
+  int32 TenantId = 1;
+  string Name = 2;
+  int64 ProviderId = 3;
+  int64 CategoryId = 4;
+  string Sku = 5;
+  repeated string ImageUrlList = 6;
+  repeated string VideoUrlList = 7;
+  string Description = 8;
+  string SizeInfo = 9;
+  string LogisticInfo = 10;
+  int32 Status = 11;
+  int32 Condition = 12;
+  string ComplaintPolicy = 13;
+  repeated PAttributeOfItem AttributeList = 14;
+  repeated PItemTierVariation TierVariationList = 15;
+  repeated PAddModelToItem ModelList = 16;
+  string Properties = 17;
+  int32 Type = 18;
+  bool IsItemBooking = 19; 
+}
+
+message CreateItemResponse {
+  bool Data = 1;
+}
+
+message UpdateCvByOwnerRequest {
+  int64 Id = 1;
+  string Name = 2;
+  repeated string ImageUrlList = 3;
+  string Description = 4;
+  int32 Condition = 5;
+  string Properties = 6;
+}
+
+message UpdateCvByOwnerResponse {
+  bool Data = 1;
+}
+
+message UpdateItemRequest {
+  int64 Id = 1;
+  string Name = 2;
+  string Sku = 3;
+  repeated string ImageUrlList = 4;
+  repeated string VideoUrlList = 5;
+  string Description = 6;
+  string SizeInfo = 7;
+  string LogisticInfo = 8;
+  int32 Status = 9;
+  int32 Condition = 10;
+  string ComplaintPolicy = 11;
+  repeated PAttributeOfItem AttributeList = 12;
+  repeated PItemTierVariation TierVariationList = 13;
+  repeated PItemModel ModelList = 14;
+  string Properties = 15;
+}
+
+message UpdateItemResponse {
+	bool Data = 1;
+}
+
+message UpdateItemByPartnerRequest {
+  int64 Id = 1;
+  string Name = 2;
+  string Sku = 3;
+  repeated string ImageUrlList = 4;
+  repeated string VideoUrlList = 5;
+  string Description = 6;
+  string SizeInfo = 7;
+  string LogisticInfo = 8;
+  int32 Status = 9;
+  int32 Condition = 10;
+  string ComplaintPolicy = 11;
+  repeated PAttributeOfItem AttributeList = 12;
+  repeated PItemTierVariation TierVariationList = 13;
+  repeated PItemModel ModelList = 14;
+  string Properties = 15;
+}
+
+message UpdateItemByPartnerResponse {
+	bool Data = 1;
+}
+
+message UpdateItemBookingByPartnerRequest {
+  int64 Id = 1;
+  string Name = 2;
+  repeated string ImageUrlList = 3;
+  repeated string VideoUrlList = 4;
+  string Description = 5;
+  string SizeInfo = 6;
+  string LogisticInfo = 7;
+  int32 Condition = 8;
+  repeated PAttributeOfItem AttributeList = 9;
+  string Properties = 10;
+}
+
+message UpdateItemBookingByPartnerResponse {
+	bool Data = 1;
+}
+
+
+message UpdateRateOfItemRequest {
+  int64 Id = 1; // ItemId
+  double RatePoint = 2;
+  int32 CountRate = 3;
+}
+
+message UpdateRateOfItemResponse {
+  bool Data = 1;
+}
+
+message UpdateStatusOfItemRequest {
+  int64 Id = 1; // ItemId
+  int32 CurrentStatus = 2;
+  int32 UpdateStatus = 3;
+}
+
+message UpdateStatusOfItemResponse {
+  bool Data = 1;
+}
+
+message UpdateListStatusOfItemRequest {
+  repeated UpdateStatusOfItemRequest Items = 1;
+}
+
+message UpdateListStatusOfItemResponse {
+  bool Data = 1;
+}
+
+message AddItemFavouriteRequest {
+  int64 Id = 1; // itemId
+}
+
+message AddItemFavouriteResponse {
+  bool Data = 1;
+}
+
+message BlockAllItemOfProviderRequest {
+  int64 ProviderId = 1;
+}
+
+message BlockAllItemOfProviderResponse {
+  bool Data = 1;
+}
+
+message ActiveAllItemOfProviderRequest {
+  int64 ProviderId = 1;
+}
+
+message ActiveAllItemOfProviderResponse {
+  bool Data = 1;
+}
+
+message RemoveItemFavouriteRequest {
+  int64 Id = 1; // itemId
+}
+
+message RemoveItemFavouriteResponse {
+  bool Data = 1;
+}
+
+message UpdateViewCountRequest {
+  int64 Id = 1;
+}
+
+message UpdateViewCountResponse {
+  bool Data = 1;
+}
+
+message DeleteItemRequest {
+  int64 Id = 1;
+}
+
+message DeleteItemResponse {
+  bool Data = 1;
+}
+
+message DeleteItemByPartnerRequest {
+  int64 Id = 1;
+}
+
+message DeleteItemByPartnerResponse {
+  bool Data = 1;
+}
+
+message DeleteAllItemsRequest {
+  int64 ProviderId = 1;
+}
+
+message DeleteAllItemsResponse {
+  bool Data = 1;
+}
+
+message PAttributeOfItem {
+  int64 Id = 1;
+  repeated string UnitList = 2;
+  repeated string ValueList = 3;
+}
+
+message IncreaseWeightCategoryRequest {
+  int64 UserId = 1;
+  int64 ItemId = 2;
+}
+
+message IncreaseWeightCategoryResponse {
+  bool Data = 1;
+}

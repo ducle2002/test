@@ -1,0 +1,111 @@
+syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.ItemAttributes";
+
+package ItemAttributes;
+
+service ItemAttributeProtoGrpc {
+  rpc GetItemAttributes (GetItemAttributesRequest) returns (GetItemAttributesResponse) {}
+  rpc GetItemAttributeDetail (GetItemAttributeDetailRequest) returns (GetItemAttributeDetailResponse) {}
+  rpc CreateItemAttribute (CreateItemAttributeRequest) returns (CreateItemAttributeResponse) {}
+  rpc CreateListItemAttributes (CreateListItemAttributesRequest) returns (CreateListItemAttributesResponse) {}
+  rpc UpdateItemAttribute (UpdateItemAttributeRequest) returns (UpdateItemAttributeResponse) {}
+  rpc UpdateListItemAttributes (UpdateListItemAttributesRequest) returns (UpdateListItemAttributesResponse) {}
+  rpc DeleteItemAttribute (DeleteItemAttributeRequest) returns (DeleteItemAttributeResponse) {}
+}
+
+message PItemAttribute {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  int64 CategoryId = 3;
+  string Name = 4;
+  string DisplayName = 5;
+  string Description = 6;
+  int32 DataType = 7;
+  int32 InputType = 8;
+  bool IsRequired = 9;
+  repeated string UnitList = 10;
+  repeated string ValueList = 11;
+}
+
+message CreateItemAttributeRequest {
+  int32 TenantId = 1;
+  int64 CategoryId = 2;
+  string Name = 3;
+  string DisplayName = 4;
+  string Description = 5;
+  int32 DataType = 6;
+  int32 InputType = 7;
+  bool IsRequired = 8;
+  repeated string UnitList = 9;
+  repeated string ValueList = 10;
+}
+
+message CreateItemAttributeResponse {
+  bool Data = 1;
+}
+
+message GetItemAttributesRequest {
+  int32 TenantId = 1;
+  int64 CategoryId = 2;
+  string Search = 3;
+  int32 MaxResultCount = 4;
+  int32 SkipCount = 5;
+}
+
+message GetItemAttributesResponse {
+  int32 TotalCount = 1;
+  repeated PItemAttribute Items = 2;
+}
+
+message GetItemAttributeDetailRequest {
+	int64 Id = 1;
+}
+
+message GetItemAttributeDetailResponse {
+	PItemAttribute Data = 1;
+}
+
+message CreateListItemAttributesRequest {
+  repeated CreateItemAttributeRequest Items = 1;
+}
+
+message CreateListItemAttributesResponse {
+  bool Data = 1;
+}
+
+message UpdateItemAttributeRequest {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  int64 CategoryId = 3;
+  string Name = 4;
+  string DisplayName = 5;
+  string Description = 6;
+  int32 DataType = 7;
+  int32 InputType = 8;
+  bool IsRequired = 9;
+  bool IsChooseToDelete = 10;
+  repeated string UnitList = 11;
+  repeated string ValueList = 12;
+}
+
+message UpdateItemAttributeResponse {
+  bool Data = 1;
+}
+
+message UpdateListItemAttributesRequest {
+  repeated UpdateItemAttributeRequest Items = 1;
+}
+
+message UpdateListItemAttributesResponse {
+  bool Data = 1;
+}
+
+message DeleteItemAttributeRequest {
+  int64 Id = 1;
+  int32 TenantId = 2;
+}
+
+message DeleteItemAttributeResponse {
+  bool Data = 1;
+}

@@ -1,0 +1,317 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Orders";
+
+import "Protos/Business/item_model.proto";
+import "google/protobuf/timestamp.proto";
+
+package Orders;
+
+service OrderProtoGrpc {
+  rpc GetAllOrdersByPartner (GetAllOrdersByPartnerRequest) returns (GetAllOrdersByPartnerResponse);
+  rpc GetAllOrdersByUser (GetAllOrdersByUserRequest) returns (GetAllOrdersByUserResponse);
+  rpc GetOrderById (GetOrderByIdRequest) returns (GetOrderByIdResponse);
+  rpc GetRevenue (GetRevenueRequest) returns (GetRevenueResponse);
+  rpc GetCountOrders (GetCountOrdersRequest) returns (GetCountOrdersResponse);
+  rpc GetStatistic (GetStatisticRequest) returns (GetStatisticResponse);
+  rpc GetStatisticSomeProviders (GetStatisticSomeProvidersRequest) returns (GetStatisticSomeProvidersResponse);
+  rpc GetItemRanking (GetItemRankingRequest) returns (GetItemRankingResponse);
+  rpc CreateOrder (CreateOrderRequest) returns (CreateOrderResponse);
+  rpc UpdateOrder (UpdateOrderRequest) returns (UpdateOrderResponse);
+  rpc DeleteOrder (DeleteOrderRequest) returns (DeleteOrderResponse);
+  rpc UpdateStateOrder (UpdateStateOrderRequest) returns (UpdateStateOrderResponse);
+  rpc CancelOrder (CancelOrderRequest) returns (CancelOrderResponse);
+  rpc RatingOrder (RatingOrderRequest) returns (RatingOrderResponse);
+}
+
+message POrder {
+  int64 Id = 1;
+  int64 ProviderId = 2;
+  string OrderCode = 3;
+  int32 TenantId = 4;
+  int32 Type = 5;
+  int64 OrdererId = 6;
+  double TotalPrice = 7;
+  int32 State = 8;
+  int32 Quantity = 9;
+  bool IsDeleted = 10;
+  string CreationTime = 11;
+  repeated POrderItemModel OrderItemList = 12;
+  PRecipientAddressDto RecipientAddress = 13;
+  repeated PTrackingInfoItem TrackingInfo = 14;
+  int32 PaymentMethod = 15;
+  string ProviderName = 16;
+  int64 PartnerId = 17;
+  int64 CreatorUserId = 18;
+  string Description = 19;
+  string DetailCancel = 20;
+  string Transaction = 21;
+}
+
+message PCountOrder {
+  int32 ToPay = 1;
+  int32 ToShip = 2;
+  int32 Shipping = 3;
+  int32 Completed = 4;
+  int32 Cancelled = 5;
+  int32 ReturnRefund = 6;
+}
+
+message GetAllOrdersByPartnerRequest {
+  int64 OrdererId = 1;
+  int64 ProviderId = 2;
+  int32 FormId = 3;
+  string Search = 4;
+  double MinPrice = 5;
+  double MaxPrice = 6;
+  google.protobuf.Timestamp DateFrom = 7;
+  google.protobuf.Timestamp DateTo = 8;
+  int32 OrderBy = 9;
+  int32 TenantId = 10;
+  int64 PartnerId = 11;
+  int32 SkipCount = 12;
+  int32 MaxResultCount = 13;
+}
+
+
+message GetAllOrdersByPartnerResponse {   
+  int32 TotalCount = 1;
+  repeated POrder Items = 2;
+}
+
+message GetAllOrdersByUserRequest {
+  int64 OrdererId = 1;
+  int64 ProviderId = 2;
+  int32 FormId = 3;
+  string Search = 4;
+  double MinPrice = 5;
+  double MaxPrice = 6;
+  google.protobuf.Timestamp DateFrom = 7;
+  google.protobuf.Timestamp DateTo = 8;
+  int32 OrderBy = 9;
+  int32 TenantId = 10;
+  int64 PartnerId = 11;
+  int32 SkipCount = 12;
+  int32 MaxResultCount = 13;
+}
+
+message GetAllOrdersByUserResponse {   
+  int32 TotalCount = 1;
+  repeated POrder Items = 2;
+}
+
+message GetRevenueRequest {
+  int64 ProviderId = 1;
+  int64 PartnerId = 2;
+  int32 Year = 3;
+  int32 Month = 4;
+  int32 Type = 5;
+}
+
+message GetRevenueResponse {
+  repeated double Data = 1;
+}
+
+message GetCountOrdersRequest {
+  int64 ProviderId = 1;
+  int64 PartnerId = 2;
+  google.protobuf.Timestamp DateFrom = 3;
+  google.protobuf.Timestamp DateTo = 4;
+}
+
+message GetCountOrdersResponse {
+  PCountOrder Data = 1; 
+}
+
+message GetOrderByIdRequest {
+  int64 Id = 1;
+}
+
+message GetOrderByIdResponse {
+  POrder Data = 1;
+}
+
+message GetStatisticRequest {
+  int64 ProviderId = 1;
+  int32 FormId = 2;
+  google.protobuf.Timestamp DateFrom = 3;
+  google.protobuf.Timestamp DateTo = 4;
+  int32 Type = 5;
+  int32 Year = 6;
+  int32 Month = 7;
+  int32 Day = 8;
+}
+
+message GetStatisticResponse {
+  PStatistic Data = 1;
+}
+
+message GetStatisticSomeProvidersRequest {
+  repeated int64 ListProviderId = 1;
+  int32 FormId = 2;
+  google.protobuf.Timestamp DateFrom = 3;
+  google.protobuf.Timestamp DateTo = 4;
+  int32 Type = 5;
+  int32 Year = 6;
+  int32 Month = 7;
+  int32 Day = 8;
+}
+
+message GetStatisticSomeProvidersResponse {
+  repeated PStatisticSomeProvider Data = 1;
+}
+
+message PStatisticSomeProvider {
+  int64 ProviderId = 1;
+  int64 Count = 2;
+  int64 Revenue = 3;
+}
+
+message PStatistic {
+  repeated int64 ListCount = 1;
+  repeated int64 ListRevenue = 2;
+}
+
+message GetItemRankingRequest {
+  google.protobuf.Timestamp DateFrom = 1;
+  google.protobuf.Timestamp DateTo = 2;
+  int32 FormId = 3;
+  int32 SortBy = 4;
+  int64 ProviderId = 5;
+  int32 TenantId = 6;
+}
+
+message GetItemRankingResponse {
+  repeated PItemRanking Items = 1;
+}
+
+message PItemRanking {
+  int32 Count = 1;
+  int64 Sales = 2;
+  string ItemDto = 3;
+  int64 ItemId = 4;
+}
+
+message CreateOrderRequest {
+  int32 TenantId = 1;
+  int64 ProviderId = 2;
+  int32 Type = 3;
+  int64 OrdererId = 4;
+  double TotalPrice = 5;
+  repeated POrderItemModelDto OrderItemList = 6;
+  PRecipientAddress RecipientAddress = 7;
+  int32 PaymentMethod = 8;
+  int64 PartnerId = 9;
+  string Description = 10;
+  string Transaction = 11;
+  repeated int64 ListVouchers = 12;
+}
+
+message CreateOrderResponse {
+  int64 Data = 1;
+}
+
+message UpdateOrderRequest {
+  int64 Id = 1;
+  PRecipientAddress RecipientAddress = 2;
+  int32 PaymentMethod = 3;
+}
+
+message UpdateOrderResponse {
+  bool Data = 1;
+}
+
+message DeleteOrderRequest {
+  int64 Id = 1;
+}
+
+message DeleteOrderResponse {
+  bool Data = 1;
+}
+
+message UpdateStateOrderRequest{
+  int64 Id = 1;
+  int32 CurrentState = 2;
+  int32 UpdateState = 3;
+}
+
+message UpdateStateOrderResponse {
+  bool Data = 1;
+}
+
+message CancelOrderRequest {
+  int64 Id = 1;
+  string Reason = 2;
+  int32 UpdateState = 3;
+}
+
+message CancelOrderResponse {
+  bool Data = 1;
+}
+
+message PRecipientAddress {
+  string Name = 1;
+  string Phone = 2;
+  string ProvinceId = 3;
+  string DistrictId = 4;
+  string WardId = 5;
+  string FullAddress = 6;
+}
+
+message PRecipientAddressDto {
+  string Name = 1;
+  string Phone = 2;
+  string ProvinceName = 3;
+  string DistrictName = 4;
+  string WardName = 5;
+  string FullAddress = 6;
+}
+
+message PTrackingInfoItem {
+  string TrackingItemTime = 1;
+  int32 TrackingItemState = 2;
+  string TrackingItemDetail = 3;
+}
+
+message POrderItemModelDto {   
+  int64 Id = 1;
+  int32 Quantity = 2;
+}
+
+message POrderItemModel {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  string Name = 3;
+  int64 ItemId = 4;
+  string Sku = 5;
+  double OriginalPrice = 6;
+  double CurrentPrice = 7;
+  string ImageUrl = 8;
+  int32 Quantity = 9;
+  string ItemName = 10;
+}
+
+message RatingOrderRequest {
+  int64 Id = 1;
+  repeated PRateCreate Items = 2;
+}
+
+message PRateCreate {
+  int32 TenantId = 1;
+  int64 ItemId = 2; 
+  int64 ProviderId = 3;
+  int32 RatePoint = 4;
+  string FileUrl = 5;
+  string Comment = 6;
+  string UserName = 7;
+  string Email = 8;
+  int64 AnswerRateId = 9;
+  int32 Type = 10;
+  string Avatar = 11;
+  int64 OrderId = 12;
+  int64 BookingId = 13;
+}
+
+message RatingOrderResponse {
+  bool Data = 1;
+}

@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Items";
+
+package Items;
+
+message PItemModel {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  bool IsDefault = 3;
+  string Name = 4;
+  int64 ItemId = 5;
+  string Sku = 6;
+  int32 Stock = 7;
+  int32 Sales = 8;
+  double OriginalPrice = 9;
+  double CurrentPrice = 10;
+  repeated int32 TierIndex = 11;
+  string ImageUrl = 12;
+  string ItemName = 13;
+}
+
+message PModelOfItem {
+  int64 Id = 1;
+}
+
+message PAddModelToItem {
+  string Sku = 1;
+  int32 Stock = 2;
+  string ImageUrl = 3;
+  double OriginalPrice = 4;
+  double CurrentPrice = 5;
+  repeated int32 TierIndex = 6;
+  bool IsDefault = 7;
+  string Name = 8;
+}
+
+message PItemTierVariation {
+  string Name = 1;
+  repeated string OptionList = 2;
+}
+
+message PPriceItemModel  {
+	int64 Id = 1; 
+	double OriginalPrice = 2;
+	double CurrentPrice = 3;
+}
+
+message UpdateListPriceItemModelRequest {
+	repeated PPriceItemModel Items = 1;
+}
+
+message UpdateListPriceItemModelResponse {
+	bool Data = 1;
+}
+
+message PStockItemModel {
+	int64 Id = 1;
+	int32 Stock = 2;
+	int32 Quantity = 3;
+	int32 Type = 4;
+}
+
+message GetListItemModelByIdsRequest {
+  repeated int64 ListItemModelId = 1;
+}
+
+message GetListItemModelByIdsResponse {
+  repeated PItemModel Data = 1;
+}
+
+message UpdateListStockItemModelRequest {
+	repeated PStockItemModel Items = 1;
+}
+
+message UpdateListStockItemModelResponse{
+    bool Data = 1;
+}
+
+message PSalesItemModel {
+	int64 Id = 1;
+	int32 Quantity = 2;
+}
+
+message UpdateListSalesItemModelRequest {
+	repeated PSalesItemModel Items = 1;
+}
+
+message UpdateListSalesItemModelResponse{
+    bool Data = 1;
+}

@@ -1,0 +1,190 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Bookings";
+import "google/protobuf/timestamp.proto";
+
+package Bookings;
+
+service BookingProtoGrpc {
+  rpc GetAllBookingsByPartner (GetAllBookingsByPartnerRequest) returns (GetAllBookingsByPartnerResponse);
+  rpc GetAllBookingsByUser (GetAllBookingsByUserRequest) returns (GetAllBookingsByUserResponse);
+  rpc GetBookingById (GetBookingByIdRequest) returns (GetBookingByIdResponse);
+  rpc CreateBooking (CreateBookingRequest) returns (CreateBookingResponse);
+  rpc UpdateBooking (UpdateBookingRequest) returns (UpdateBookingResponse);
+  rpc DeleteBooking (DeleteBookingRequest) returns (DeleteBookingResponse);
+  rpc UpdateStateBooking (UpdateStateBookingRequest) returns (UpdateStateBookingResponse);
+  rpc CancelBooking (CancelBookingRequest) returns (CancelBookingResponse);
+}
+ 
+message PBooking {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  string BookingCode = 3;
+  string Name = 4;
+  string PhoneNumber = 5;
+  string Email = 6;
+  int64 ProviderId = 7;
+  int32 Type = 8;
+  int64 BookerId = 9;
+  double TotalPrice = 10;
+  int32 State = 11;
+  repeated PBookingItemModel BookingItemList = 12;
+  PRecipientAddressDto RecipientAddress = 13;
+  int32 PaymentMethod = 14;
+  string CheckIn = 15;
+  string CheckOut = 16;
+  string Description = 17;
+  string CreationTime = 18;
+  string ProviderName = 19;
+  int32 Quantity = 20;
+  int64 CreatorUserId = 21;
+  int64 PartnerId = 22;
+  string DetailCancelRefund = 23;
+}
+
+message GetAllBookingsByPartnerRequest {
+  int64 BookerId = 1;
+  int64 ProviderId = 2;
+  int32 FormId = 3;
+  string Search = 4;
+  int32 Type = 5;
+  double MinPrice = 6;
+  double MaxPrice = 7;
+  google.protobuf.Timestamp DateFrom = 8;
+  google.protobuf.Timestamp DateTo = 9;
+  int32 OrderBy = 10;
+  int64 PartnerId = 11;
+  int32 SkipCount = 12;
+  int32 MaxResultCount = 13;
+}
+
+message GetAllBookingsByPartnerResponse {   
+  int32 TotalCount = 1;
+  repeated PBooking Items = 2;
+}
+
+message GetAllBookingsByUserRequest {
+  int64 BookerId = 1;
+  int64 ProviderId = 2;
+  int32 FormId = 3;
+  string Search = 4;
+  int32 Type = 5;
+  double MinPrice = 6;
+  double MaxPrice = 7;
+  google.protobuf.Timestamp DateFrom = 8;
+  google.protobuf.Timestamp DateTo = 9;
+  int32 OrderBy = 10;
+  int64 PartnerId = 11;
+  int32 SkipCount = 12;
+  int32 MaxResultCount = 13;
+}
+
+message GetAllBookingsByUserResponse {   
+  int32 TotalCount = 1;
+  repeated PBooking Items = 2;
+}
+
+message GetBookingByIdRequest {
+  int64 Id = 1;
+}
+
+message GetBookingByIdResponse {
+  PBooking Data = 1;
+}
+
+message CreateBookingRequest {
+  int32 TenantId = 1;
+  int64 ProviderId = 2;
+  string Name = 3;
+  string PhoneNumber = 4;
+  string Email = 5;
+  string Description = 6;
+  google.protobuf.Timestamp CheckIn = 7;
+  google.protobuf.Timestamp CheckOut = 8;
+  int32 Type = 9;
+  int64 BookerId = 10;
+  double TotalPrice = 11;
+  repeated PBookingItemModel BookingItemList = 12;
+  PRecipientAddress RecipientAddress = 13;
+  int32 PaymentMethod = 14;
+  int64 PartnerId = 15;
+}
+
+message CreateBookingResponse{
+  bool Data = 1;
+}
+
+message UpdateBookingRequest {
+  int64 Id = 1;
+  string Name = 2;
+  string PhoneNumber = 3;
+  string Email = 4;
+  string Description = 5;
+  google.protobuf.Timestamp CheckIn = 6;
+  google.protobuf.Timestamp CheckOut = 7;
+  PRecipientAddress RecipientAddress = 8;
+  int32 PaymentMethod = 9;
+}
+
+message UpdateBookingResponse {
+  bool Data = 1;
+}
+
+message CancelBookingRequest {
+  int64 Id = 1;
+  string Reason = 2;
+  int32 UpdateState = 3;
+}
+
+message CancelBookingResponse {
+  bool Data = 1;
+}
+
+message DeleteBookingRequest {
+  int64 Id = 1;
+}
+
+message DeleteBookingResponse {
+  bool Data = 1;
+}
+
+message UpdateStateBookingRequest{
+  int64 Id = 1;
+  int32 CurrentState = 2;
+  int32 UpdateState = 3;
+}
+
+message UpdateStateBookingResponse {
+  bool Data = 1;
+}
+
+message PRecipientAddress {
+  string Name = 1;
+  string Phone = 2;
+  string ProvinceId = 3;
+  string DistrictId = 4;
+  string WardId = 5;
+  string FullAddress = 6;
+}
+
+message PRecipientAddressDto {
+  string Name = 1;
+  string Phone = 2;
+  string ProvinceName = 3;
+  string DistrictName = 4;
+  string WardName = 5;
+  string FullAddress = 6;
+}
+
+message PBookingItemModel {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  bool IsDefault = 3;
+  string Name = 4;
+  int64 ItemId = 5;
+  double OriginalPrice = 6;
+  double CurrentPrice = 7;
+  string ImageUrl = 8;
+  int32 Quantity = 9;
+  string ItemName = 10;
+}

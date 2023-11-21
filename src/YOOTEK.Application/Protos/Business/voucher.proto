@@ -1,0 +1,246 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Vouchers";
+
+package Vouchers;
+
+service VoucherProtoGrpc {
+  rpc GetAllVouchersByAdmin (GetAllVouchersByAdminRequest) returns (GetAllVouchersByAdminResponse);
+  rpc GetAllVouchersByPartner (GetAllVouchersByPartnerRequest) returns (GetAllVouchersByPartnerResponse);
+  rpc GetAllVouchersByUser (GetAllVouchersByUserRequest) returns (GetAllVouchersByUserResponse);
+  rpc GetAllVouchersByIds (GetAllVouchersByIdsRequest) returns (GetAllVouchersByIdsResponse);
+  rpc GetVoucherDetail (GetVoucherDetailRequest) returns (GetVoucherDetailResponse);
+  rpc CreateVoucher (CreateVoucherRequest) returns (CreateVoucherResponse);
+  rpc CheckVoucherAvailable (CheckVoucherAvailableRequest) returns (CheckVoucherAvailableResponse);
+  rpc UpdateVoucher (UpdateVoucherRequest) returns (UpdateVoucherResponse);
+  rpc UpdateVoucherByPartner (UpdateVoucherByPartnerRequest) returns (UpdateVoucherByPartnerResponse);
+  rpc UpdateStateVoucher (UpdateStateVoucherRequest) returns (UpdateStateVoucherResponse);
+  rpc StartEarlyVoucher (StartEarlyVoucherRequest) returns (StartEarlyVoucherResponse);
+  rpc EndedVoucher (EndedVoucherRequest) returns (EndedVoucherResponse);
+  rpc UpdateListUser (UpdateListUserRequest) returns (UpdateListUserResponse);
+  rpc DeleteVoucher (DeleteVoucherRequest) returns (DeleteVoucherResponse);
+  rpc DeleteVoucherByPartner (DeleteVoucherByPartnerRequest) returns (DeleteVoucherByPartnerResponse);
+  rpc UseVoucher (UseVoucherRequest) returns (UseVoucherResponse);
+}
+
+message PVoucher {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  int64 ProviderId = 3;
+  int32 Type = 4;
+  int32 DiscountType = 5; 
+  string VoucherCode = 6;
+  string Name = 7;
+  int32 Quantity = 8;
+  int32 CurrentUsage = 9;
+  int64 MinBasketPrice = 10;
+  int64 MaxPrice = 11;
+  int32 Percentage = 12;
+  int64 DiscountAmount = 13;
+  string DateStart = 14;
+  string DateEnd = 15;
+  int32 State = 16;
+  string CreationTime = 17;
+  string Description = 18;
+  bool IsAdminCreate = 19;
+  int32 MaxDistributionBuyer = 20;
+  int64 CreatorUserId = 21;
+  repeated PBuyer ListUser = 22;
+  repeated int64 ListItems = 23;
+  int32 Scope = 24;
+}
+
+message PBuyer {
+  int64 UserId = 1;
+  int32 Count = 2;
+}
+
+message GetAllVouchersByAdminRequest {
+  int32 TenantId = 1;
+  int64 ProviderId = 2;
+  string Search = 3;
+  int32 FormId = 4;
+  bool IsAdminCreate = 5;
+  int32 SkipCount = 6;
+  int32 MaxResultCount = 7;
+}
+
+message GetAllVouchersByAdminResponse {   
+  int32 TotalCount = 1;
+  repeated PVoucher Items = 2;
+}
+
+message GetAllVouchersByPartnerRequest {
+  int32 TenantId = 1;
+  int64 ProviderId = 2;
+  string Search = 3;
+  int32 FormId = 4;
+  bool IsAdminCreate = 5;
+  int32 SkipCount = 6;
+  int32 MaxResultCount = 7;
+}
+
+message GetAllVouchersByPartnerResponse {   
+  int32 TotalCount = 1;
+  repeated PVoucher Items = 2;
+}
+
+message GetAllVouchersByUserRequest {
+  int32 TenantId = 1;
+  int64 ProviderId = 2;
+  string Search = 3;
+  int32 FormId = 4;
+  bool IsAdminCreate = 5;
+  int32 SkipCount = 6;
+  int32 MaxResultCount = 7;
+}
+
+message GetAllVouchersByUserResponse {   
+  int32 TotalCount = 1;
+  repeated PVoucher Items = 2;
+}
+
+message GetAllVouchersByIdsRequest {
+  repeated int64 Items = 1;
+}
+
+message GetAllVouchersByIdsResponse {   
+  repeated PVoucher Data = 2;
+}
+
+message GetVoucherDetailRequest {
+  int64 Id = 1;
+}
+
+message GetVoucherDetailResponse {
+  PVoucher Data = 1;
+}
+
+message CreateVoucherRequest {
+  int32 TenantId = 1;
+  int64 ProviderId = 2;
+  int32 Type = 3;
+  int32 DiscountType = 4; 
+  string VoucherCode = 5; 
+  string Name = 6;
+  int32 Quantity = 7;
+  int32 CurrentUsage = 8;
+  int64 MinBasketPrice = 9;
+  int64 MaxPrice = 10;  
+  int32 Percentage = 11;  
+  int64 DiscountAmount = 12;   
+  string DateStart = 13;
+  string DateEnd = 14;
+  string Description = 15;
+  bool IsAdminCreate = 16;
+  int32 MaxDistributionBuyer = 17;
+  repeated int64 ListItems = 18;
+  int32 Scope = 19;
+}
+
+message CreateVoucherResponse {
+  bool Data = 1;
+}
+
+message CheckVoucherAvailableRequest {
+  repeated int64 Items = 1;
+}
+
+message CheckVoucherAvailableResponse {
+  repeated bool Data = 1;
+}
+
+message UpdateVoucherRequest {
+  int64 Id = 1;
+  string Name = 2;
+  int32 Quantity = 3;
+  int64 MinBasketPrice = 4;
+  int64 MaxPrice = 5;
+  int32 Percentage = 6;
+  int64 DiscountAmount = 7;
+  string DateStart = 8;
+  string DateEnd = 9;
+  string Description = 10;
+  int32 MaxDistributionBuyer = 11;
+}
+
+message UpdateVoucherResponse {
+  bool Data = 1;
+}
+
+message UpdateVoucherByPartnerRequest {
+  int64 Id = 1;
+  string Name = 2;
+  int32 Quantity = 3;
+  int64 MinBasketPrice = 4;
+  int64 MaxPrice = 5;
+  int32 Percentage = 6;
+  int64 DiscountAmount = 7;
+  string DateStart = 8;
+  string DateEnd = 9;
+  string Description = 10;
+  int32 MaxDistributionBuyer = 11;
+}
+
+message UpdateVoucherByPartnerResponse {
+  bool Data = 1;
+}
+
+message UpdateStateVoucherRequest{
+  int64 Id = 1;
+  int32 CurrentState = 2;
+  int32 UpdateState = 3;
+}
+
+message UpdateStateVoucherResponse {
+  bool Data = 1;
+}
+
+message StartEarlyVoucherRequest {
+  int64 Id = 1;
+}
+
+message StartEarlyVoucherResponse {
+  bool Data = 1;
+}
+
+message EndedVoucherRequest {
+  int64 Id = 1;
+}
+
+message EndedVoucherResponse {
+  bool Data = 1;
+}
+
+message UpdateListUserRequest {
+  int64 Id = 1;
+  PBuyer Item = 2;
+}
+
+message UpdateListUserResponse {
+  bool Data = 1;
+}
+
+message DeleteVoucherRequest {
+    int64 Id = 1;
+}
+
+message DeleteVoucherResponse {
+  bool Data = 1;
+}
+
+message DeleteVoucherByPartnerRequest {
+    int64 Id = 1;
+}
+
+message DeleteVoucherByPartnerResponse {
+  bool Data = 1;
+}
+
+message UseVoucherRequest { 
+  repeated int64 Items = 1;
+}
+
+message UseVoucherResponse {
+  bool Data = 1;
+}

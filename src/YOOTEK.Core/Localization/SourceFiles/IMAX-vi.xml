@@ -1,0 +1,3192 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<localizationDictionary culture="vi">
+  <texts>
+    <!--IdentityResultExtensions-->
+    <!--=========================================================================-->
+    <text name="Identity.DuplicateEmail">Email '{0} đã được sử dụng.</text>
+
+    <!--=========================================================================-->
+    <text name="HomePage">Trang chủ</text>
+    <text name="AboutPage">Giới thiệu</text>
+    <text name="AboutUs">Về chúng tôi</text>
+    <text name="Administration">Quản trị</text>
+    <text name="EmployeeManager">Quản lý nhân viên</text>
+    <text name="Roles">Vai trò</text>
+    <text name="Users">Người dùng</text>
+    <text name="InvalidFormMessage">Biểu mẫu của bạn không hợp lệ. Vui lòng kiểm tra và sửa lại.</text>
+    <text name="InvalidUserNameOrPassword">Sai tên truy cập hoặc mật khẩu</text>
+    <text name="ThereIsNoTenantDefinedWithName{0}">Không có Tenant được định nghĩa với tên {0}</text>
+    <text name="TenantIsNotActive">Tenant {0} không hoạt động.</text>
+    <text name="UserIsNotActiveAndCanNotLogin">Người dùng {0} không hoạt động và không thể đăng nhập.</text>
+    <text name="PleaseEnterLoginInformation">Vui lòng nhập thông tin đăng nhập</text>
+    <text name="TenancyName">Mã TenantID</text>
+    <text name="UserNameOrEmail">Tên người dùng hoặc email</text>
+    <text name="Password">Mật khẩu</text>
+    <text name="RememberMe">Lưu thông tin</text>
+    <text name="LogIn">Đăng nhập</text>
+    <text name="ForgotPassword">Quên mật khẩu?</text>
+    <text name="DontYouHaveAnAccount">Bạn không có tài khoản?</text>
+    <text name="CreateAnAccount">Tạo tài khoản</text>
+    <text name="Pages">Trang</text>
+    <text name="RoleName">Tên vai trò</text>
+    <text name="EditRole">Chỉnh sửa vai trò</text>
+    <text name="CreateNewRole">Tạo vai trò mới</text>
+    <text name="RoleProperties">Thuộc tính vai trò</text>
+    <text name="Permissions">Quyền</text>
+    <text name="Save">Lưu thông tin</text>
+    <text name="Cancel">Hủy bỏ</text>
+    <text name="RolesHeaderInfo">Sử dụng vai trò để nhóm quyền.</text>
+    <text name="Static">Tĩnh</text>
+    <text name="Actions">Hành động</text>
+
+    <text name="SavedSuccessfully">Đã lưu thành công.</text>
+    <text name="AreYouSure">Bạn có chắc không?</text>
+    <text name="YesDelete">Có, xóa!</text>
+    <text name="DeletingUser">Đang xóa người dùng</text>
+    <text name="UsersHeaderInfo">Quản lý tài khoản người dùng và phân quyền.</text>
+    <text name="CreateNewUser">Tạo tài khoản người dùng mới</text>
+    <text name="UserName">Tên truy cập</text>
+    <text name="Name">Tên</text>
+    <text name="Surname">Họ</text>
+    <text name="EmailAddress">Địa chỉ email</text>
+    <text name="LastLoginTime">Lần đăng nhập cuối cùng</text>
+    <text name="EditUser">Cập nhật người dùng</text>
+    <text name="UserInformations">Thông tin người dùng</text>
+    <text name="PasswordRepeat">Mật khẩu (nhắc lại)</text>
+    <text name="SuccessfullyDeleted">Đã xóa thành công.</text>
+    <text name="RoleDeleteWarningMessage">Vai trò {0} sẽ bị xóa và bỏ gán cho tất cả người dùng được chỉ định.</text>
+    <text name="UserDeleteWarningMessage">Người dùng {0} sẽ bị xóa.</text>
+    <text name="Active">Kích hoạt</text>
+    <text name="EmailConfirm">Email xác nhận</text>
+    <text name="Yes">Có</text>
+    <text name="No">Không</text>
+    <text name="MySettings">Cài đặt của tôi</text>
+    <text name="Logout">Đăng xuất</text>
+    <text name="Reset">Cài lại</text>
+    <text name="ResetPermissionsTooltip">
+      Nút này ngay lập tức đặt lại cài đặt quyền của người dùng cụ thể và lưu thay
+      đổi. Người dùng sẽ chỉ có quyền từ vai trò được chỉ định.
+    </text>
+    <text name="ResetSuccessfully">Đặt lại thành công</text>
+    <text name="Tenants">Tenant</text>
+    <text name="TenantsHeaderInfo">Quản lý Tenant.</text>
+    <text name="CreateNewTenant">Tạo Tenant mới</text>
+    <text name="TenancyCodeName">Mã Tenant</text>
+    <text name="TenantName">Tên Tenant</text>
+    <text name="TenantDeleteWarningMessage">Tenant {0} sẽ bị xóa.</text>
+    <text name="AdminEmailAddress">email quản trị</text>
+    <text name="AdminPassword">Mật khẩu quản trị</text>
+    <text name="AdminPasswordRepeat">Mật khẩu quản trị viên (nhắc lại)</text>
+    <text name="EditTenant">Chỉnh sửa thông tin Tenant</text>
+    <text name="ChangingPermissions">Đang thay đổi quyền</text>
+    <text name="EditingUser">Chỉnh sửa người dùng</text>
+    <text name="CreatingNewUser">Tạo người dùng mới</text>
+    <text name="Edit">Chỉnh sửa</text>
+    <text name="EditingTenant">Chỉnh sửa Tenant</text>
+    <text name="CreatingNewTenant">Tạo Tenant mới</text>
+    <text name="DeletingTenant">Đang xóa Tenant</text>
+    <text name="EditingRole">Chỉnh sửa vai trò</text>
+    <text name="CreatingNewRole">Tạo vai trò mới</text>
+    <text name="DeletingRole">Đang xóa vai trò</text>
+    <text name="CreationTime">Thời gian tạo mới</text>
+    <text name="SearchWithThreeDot">Tìm kiếm...</text>
+    <text name="ResetSpecialPermissions">Đặt lại quyền đặc biệt</text>
+    <text name="SavingWithThreeDot">Tiết kiệm...</text>
+    <text name="Settings">Cài đặt</text>
+    <text name="SaveAll">Lưu tất cả</text>
+    <text name="SettingsHeaderInfo">Hiển thị và thay đổi cài đặt ứng dụng.</text>
+    <text name="EmailSmtp">Email (SMTP)</text>
+    <text name="DefaultFromAddress">Địa chỉ email người gửi mặc định</text>
+    <text name="DefaultFromDisplayName">Tên hiển thị của người gửi mặc định</text>
+    <text name="SmtpHost">Địa chỉ IP của máy chủ SMTP</text>
+    <text name="SmtpPort">Cổng SMTP</text>
+    <text name="UseDefaultCredentials">Sử dụng thông tin xác thực mặc định</text>
+    <text name="DomainName">Tên miền</text>
+    <text name="UseSsl">Sử dụng SSL</text>
+    <text name="ThisWebSiteRootAddress">Địa chỉ gốc trang web</text>
+    <text name="ThisWebSiteRootAddress_Hint">
+      Nó sẽ được sử dụng khi xây dựng liên kết đến trang web này. Nó cần thiết
+      cho một số nhiệm vụ như xây dựng liên kết đặt lại mật khẩu. Ví dụ: http://mydomain.com/
+    </text>
+    <text name="General">Chung</text>
+    <text name="SendPasswordResetLink_Information">
+      Liên kết đặt lại mật khẩu sẽ được gửi đến email của bạn để đặt lại
+      mật khẩu của bạn. Nếu bạn không nhận được email trong vòng vài phút, vui lòng thử lại.
+    </text>
+    <text name="Send">Gửi</text>
+    <text name="PasswordReset">Đặt lại mật khẩu</text>
+    <text name="InvalidUserNameOrEmailAddress">Tên người dùng hoặc địa chỉ email không hợp lệ</text>
+    <text name="PasswordResetEmail_Subject">Cài đặt lại mật khẩu</text>
+    <text name="PasswordResetEmail_Title">Cài đặt lại mật khẩu.</text>
+    <text name="PasswordResetEmail_SubTitle">Email này được gửi cho bạn để đặt lại và tạo lại mật khẩu của bạn.</text>
+    <text name="PasswordResetEmail_ClickTheLinkBelowToResetYourPassword">
+      Vui lòng nhấp vào liên kết bên dưới để đặt lại
+      mật khẩu của bạn:
+    </text>
+    <text name="EmailActivation_Subject">Cài đặt kích hoạt tài khoản email</text>
+    <text name="EmailActivation_Title">Chào mừng bạn đến với DemoCore.</text>
+    <text name="EmailActivation_SubTitle">Email này được gửi cho bạn để xác minh email của bạn.</text>
+    <text name="EmailActivation_ClickTheLinkBelowToVerifyYourEmail">
+      Vui lòng nhấp vào liên kết bên dưới để xác minh địa
+      chỉ email của bạn:
+    </text>
+    <text name="InvalidEmailAddress">Địa chỉ email không hợp lệ</text>
+    <text name="InvalidPattern">Trường này không hợp lệ</text>
+    <text name="InvalidPasswordResetCode">Mã đặt lại mật khẩu không hợp lệ</text>
+    <text name="InvalidPasswordResetCode_Detail">
+      Vui lòng đảm bảo bạn đã nhập trang này bằng cách nhấp vào liên kết được
+      gửi tới email của bạn. Nếu cách này không giải quyết được sự cố, bạn có thể thử yêu cầu liên kết đặt lại mật khẩu
+      mới.
+    </text>
+    <text name="PleaseEnterYourNewPassword">Vui lòng nhập mật khẩu mới của bạn.</text>
+    <text name="UserEmailIsNotConfirmedAndCanNotLogin">
+      Địa chỉ email của bạn chưa được xác nhận. Vui lòng kiểm tra email
+      của bạn và nhấp vào liên kết xác nhận email để kích hoạt tài khoản của bạn. Nếu bạn không nhận được email kích
+      hoạt, hãy nhấp vào 'xác nhận email' để yêu cầu một email mới.
+    </text>
+    <text name="LoginFailed">Đăng nhập thất bại!</text>
+    <text name="InvalidEmailConfirmationCode">Mã xác nhận email không hợp lệ</text>
+    <text name="InvalidEmailConfirmationCode_Detail">
+      Vui lòng đảm bảo bạn đã nhập trang này bằng cách nhấp vào liên kết
+      được gửi tới email của bạn. Nếu cách này không giải quyết được sự cố, bạn có thể thử yêu cầu mã xác nhận mới.
+    </text>
+    <text name="YourEmailIsConfirmedMessage">Địa chỉ email của bạn đã được xác nhận thành công.</text>
+    <text name="ShouldChangePasswordOnNextLogin">Cần thay đổi mật khẩu vào lần đăng nhập tiếp theo.</text>
+    <text name="SetRandomPassword">Đặt mật khẩu ngẫu nhiên.</text>
+    <text name="EmailActivation">Kích hoạt email</text>
+    <text name="SendEmailActivationLink_Information">
+      Một liên kết sẽ được gửi đến email của bạn để kích hoạt địa chỉ
+      email của bạn. Nếu bạn không nhận được email trong vòng vài phút, vui lòng thử lại.
+    </text>
+    <text name="SendActivationEmail">Gửi email kích hoạt.</text>
+    <text name="SavePassword">Lưu mật khẩu</text>
+    <text name="CurrentPassword">Mật khẩu hiện tại</text>
+    <text name="NewPassword">Mật khẩu mới</text>
+    <text name="NewPasswordRepeat">Mật khẩu mới (lặp lại)</text>
+    <text name="YourPasswordHasChangedSuccessfully">Mật khẩu của bạn đã thay đổi thành công.</text>
+    <text name="SelfUserRegistrationIsDisabledMessage">Bạn không thể đăng ký hệ thống!</text>
+    <text name="SelfUserRegistrationIsDisabledMessage_Detail">
+      Đăng ký tự người dùng bị tắt. Vui lòng liên hệ với quản
+      trị viên hệ thống để đăng ký.
+    </text>
+    <text name="SuccessfullyRegistered">Đăng ký thành công</text>
+    <text name="ConfirmationMailSentPleaseClickLinkInTheEmail">
+      Một thư xác nhận được gửi tới {0}. Vui lòng nhấp vào liên
+      kết trong email để xác nhận địa chỉ thư của bạn.
+    </text>
+    <text name="YourAccountIsWaitingToBeActivatedByAdmin">
+      Tài khoản của bạn đang chờ được kích hoạt bởi quản trị viên hệ
+      thống.
+    </text>
+    <text name="NameSurname">Tên họ</text>
+    <text name="UserManagement">Quản lý người dùng</text>
+    <text name="AllowUsersToRegisterThemselves">Cho phép người dùng tự đăng ký.</text>
+    <text name="AllowUsersToRegisterThemselves_Hint">
+      Nếu bạn tắt chức năng này, người dùng sẽ chỉ được quản trị viên
+      thêm vào bằng trang quản lý người dùng.
+    </text>
+    <text name="NewRegisteredUsersIsActiveByDefault">Người dùng đăng ký mới mặc định sẽ được kích hoạt.</text>
+    <text name="NewRegisteredUsersIsActiveByDefault_Hint">
+      Nếu bạn tắt chức năng này, người dùng mới sẽ không được kích
+      hoạt (và không thể đăng nhập) cho đến khi quản trị viên kích hoạt tài khoản theo cách thủ công.
+    </text>
+    <text name="Default">Mặc định</text>
+    <text name="DefaultRole_Description">Mặc định gán cho tài khoản được tạo mới</text>
+    <text name="StaticRole_Tooltip">Không thể xóa các vai trò tĩnh.</text>
+    <text name="EmailConfirmationRequiredForLogin">Yêu cầu xác nhận email để đăng nhập.</text>
+    <text name="{0}UserCannotBeDeleted">Không thể xóa tài khoản '{0}'.</text>
+    <text name="TenantNameCanNotBeEmpty">Tên Tenant không được để trống</text>
+    <text name="ExportToExcel">Xuất sang excel</text>
+    <text name="ChangeProfilePicture">Thay đổi hình ảnh đại diện</text>
+    <text name="TenantName_Regex_Description">
+      Tên Tenant phải có ít nhất 2 ký tự, bắt đầu bằng một chữ cái và tiếp tục
+      với chữ cái, số, dấu gạch ngang hoặc dấu gạch dưới.
+    </text>
+    <text name="ProfilePicture_Change_Info">Bạn có thể chọn tập tin JPG / JPEG / PNG có kích thước tối đa {0} MB.</text>
+    <text name="ProfilePicture_Change_Error">Không thể thay đổi ảnh tiểu sử của bạn.</text>
+    <text name="ProfilePicture_Warn_SizeLimit">
+      Kích thước hình ảnh phải nhỏ hơn {0} MB. Vui lòng chọn một tập tin
+      khác.
+    </text>
+    <text name="ProfilePicture_Warn_FileType">
+      Bạn chỉ có thể chọn tập tin JPG / JPEG. Vui lòng chọn một tập tin khác.
+    </text>
+    <text name="Dashboard">Dashboard</text>
+    <text name="DashboardHeaderInfo">Bảng thông tin thống kê và báo cáo tổng hợp</text>
+    <text name="GoToApplication">Chuyển đến ứng dụng</text>
+    <text name="TenantInformations">Thông tin Tenant</text>
+    <text name="PersonalInformations">Thông tin cá nhân</text>
+    <text name="AccountSettings">Cài đặt tài khoản</text>
+    <text name="Captha_Hint">Vui lòng chứng minh rằng bạn không phải là rô-bốt</text>
+    <text name="Back">Trở lại</text>
+    <text name="Submit">Gửi đi</text>
+    <text name="SignUp">Đăng ký</text>
+    <text name="CaptchaCanNotBeEmpty">Mã bảo mật không được để trống.</text>
+    <text name="IncorrectCaptchaAnswer">Mã bảo mật không hợp lệ.</text>
+    <text name="FormIsNotValidMessage">Biểu mẫu không hợp lệ. Vui lòng kiểm tra và sửa lỗi.</text>
+    <text name="CanNotChangeAdminUserName">Không thể thay đổi tên truy cập của quản trị viên.</text>
+    <text name="Error">Lỗi!</text>
+    <text name="OopsYouAreLost">Rất tiếc! Bạn thua rồi.</text>
+    <text name="WeCanNotFindThePage">Chúng tôi không thể tìm thấy trang bạn đang tìm kiếm.</text>
+    <text name="DashboardDemo_Note_Title">Chào mừng bạn đến với dự án khởi động ASP.NET Zero!</text>
+    <text name="DashboardDemo_Note_Info">
+      Trong bản demo này, bạn có thể sử dụng menu bên trái để kiểm tra ứng dụng.
+      Trang bảng điều khiển này chỉ để minh họa, nhưng tất cả các trang và chức năng khác được triển khai đầy đủ, hoạt
+      động và sẵn sàng để sản xuất.
+      Bạn có thể thêm / áp dụng các yêu cầu nghiệp vụ của mình vào dự án khởi động này (hoặc loại bỏ bất kỳ chức năng
+      nào bạn không cần).
+      Do đó, bạn có thể có được thời gian biểu thị để bắt đầu ngay lập tức các yêu cầu dự án của riêng bạn.
+    </text>
+    <text name="WelcomePage_Title">Chào mừng bạn!</text>
+    <text name="WelcomePage_Info">
+      Chào mừng bạn đến với ứng dụng. Bạn có thể sử dụng menu để bắt đầu sử dụng ứng dụng.
+      Nếu bạn không thấy bất kỳ mục menu nào, có thể bạn không có quyền xem bất kỳ trang nào. Xem xét yêu cầu quản trị
+      hệ thống cho phép.
+    </text>
+    <text name="RequestedFileDoesNotExists">Tập tin được yêu cầu không tồn tại!</text>
+    <text name="MailSent">Thư đã gửi</text>
+    <text name="PasswordResetMailSentMessage">
+      Liên kết đặt lại mật khẩu được gửi đến địa chỉ email của bạn. Vui lòng
+      kiểm tra email của bạn.
+    </text>
+    <text name="UseCaptchaOnRegistration">Sử dụng câu hỏi hình ảnh bảo mật (captcha) khi đăng ký.</text>
+    <text name="FormBasedRegistration">Đăng ký dựa trên biểu mẫu</text>
+    <text name="LdapSettings">Cài đặt LDAP</text>
+    <text name="EnableLdapAuthentication">Bật Xác thực LDAP.</text>
+    <text name="OtherSettings">Các thiết lập khác</text>
+    <text name="AuditLogs">Nhật ký kiểm tra</text>
+    <text name="Success">Thành công</text>
+    <text name="Time">Thời gian</text>
+    <text name="Service">Dịch vụ</text>
+    <text name="Action">Hoạt động</text>
+    <text name="Duration">Khoảng thời gian</text>
+    <text name="IpAddress">Địa chỉ IP</text>
+    <text name="Client">Khách hàng</text>
+    <text name="Browser">Trình duyệt</text>
+    <text name="Xms">{0} mili giây</text>
+    <text name="Close">Đóng</text>
+    <text name="Refresh">Làm tươi</text>
+    <text name="ErrorState">Trạng thái lỗi</text>
+    <text name="All">Tất cả</text>
+    <text name="HasError">Có lỗi</text>
+    <text name="ShowAdvancedFilters">Hiển thị bộ lọc nâng cao</text>
+    <text name="HideAdvancedFilters">Ẩn bộ lọc nâng cao</text>
+    <text name="AuditLogDetail">Chi tiết nhật ký kiểm tra</text>
+    <text name="Parameters">Thông số</text>
+    <text name="DateRange">Phạm vi ngày</text>
+    <text name="ActionInformations">Thông tin hành động</text>
+    <text name="Today">Hôm nay</text>
+    <text name="Yesterday">Hôm qua</text>
+    <text name="Last7Days">7 ngày qua</text>
+    <text name="Last30Days">30 ngày trước</text>
+    <text name="ThisMonth">Tháng này</text>
+    <text name="LastMonth">Tháng trước</text>
+    <text name="TenantSelection">Lựa chọn đối tượng thuê</text>
+    <text name="TenantSelection_Detail">Vui lòng chọn một trong các đối tượng thuê sau.</text>
+    <text name="LoginWith">Đăng nhập với:</text>
+    <text name="PasswordChangeDontRememberMessage">Nếu bạn không thể nhớ mật khẩu của mình, {0}.</text>
+    <text name="ClickHere">bấm vào đây</text>
+    <text name="Apply">Ứng dụng</text>
+    <text name="CustomRange">Phạm vi tùy chỉnh</text>
+    <text name="DashboardNoteForMpaVersion">
+      <![CDATA[
+      Xem thêm phiên bản Demo dành cho Multi-Page Application (MPA) sử dụng <strong>ASP.NET MVC</strong> và <strong>jQuery</strong>.
+      ]]>
+    </text>
+    <text name="DashboardNoteForSpaVersion">
+      <![CDATA[
+      Lưu ý: Cũng có phiên bản dành cho <strong>Single-Page Application (SPA)</strong> được xây dựng bằng ASP.NET MVC và <strong>AngularJs</strong>.
+      ]]>
+    </text>
+    <text name="SeeDemo">Xem bản trình diễn</text>
+    <text name="Edition">Phiên bản</text>
+    <text name="Editions">Phiên bản</text>
+    <text name="EditionsHeaderInfo">Quản lý các phiên bản và chức năng của ứng dụng</text>
+    <text name="CreateNewEdition">Tạo phiên bản mới</text>
+    <text name="EditEdition">Chỉnh sửa phiên bản</text>
+    <text name="EditionProperties">Thuộc tính phiên bản</text>
+    <text name="EditionName">Tên phiên bản</text>
+    <text name="Features">Chức năng</text>
+    <text name="EditionDeleteWarningMessage">Bạn có chắc chắn xóa phiên bản {0}?</text>
+    <text name="CreatingNewEdition">Tạo phiên bản mới</text>
+    <text name="EditingEdition">Chỉnh sửa phiên bản</text>
+    <text name="DeletingEdition">Đang xóa phiên bản</text>
+    <text name="ChangingFeatures">Thay đổi chức năng</text>
+    <text name="ResetSpecialFeatures">Đặt lại các chức năng đặc biệt</text>
+    <text name="ResetFeaturesTooltip">
+      Nút này ngay lập tức đặt lại các cài đặt chức năng cụ thể của Tenant và lưu thay
+      đổi. Tenant sẽ chỉ có các chức năng từ phiên bản được chỉ định.
+    </text>
+    <text name="NotAssigned">Chưa chỉ định</text>
+    <text name="InvalidFeaturesWarning">Một hoặc nhiều giá trị chức năng không hợp lệ!</text>
+    <text name="Languages">Ngôn ngữ</text>
+    <text name="LanguagesHeaderInfo">Quản lý ngôn ngữ giao diện người dùng.</text>
+    <text name="CreateNewLanguage">Tạo ngôn ngữ mới</text>
+    <text name="Code">Mã</text>
+    <text name="CreatingNewLanguage">Đang tạo ngôn ngữ mới</text>
+    <text name="EditingLanguage">Chỉnh sửa ngôn ngữ</text>
+    <text name="DeletingLanguages">Xóa ngôn ngữ</text>
+    <text name="ChangingTexts">Thay đổi văn bản</text>Đang chỉnh sửa ngôn ngữ
+    <text name="SuccessfullySaved">Lưu thành công.</text>
+    <text name="Language">Ngôn ngữ</text>
+    <text name="Flag">Cờ</text>
+    <text name="SetAsDefaultLanguage">Đặt làm ngôn ngữ mặc định</text>
+    <text name="EditLanguage">Chỉnh sửa ngôn ngữ</text>
+    <text name="ChangeTexts">Thay đổi văn bản</text>
+    <text name="TargetValue">Giá trị của mục tiêu</text>
+    <text name="BaseValue">Giá trị cơ sở</text>
+    <text name="Key">Chìa khóa</text>
+    <text name="SaveAndClose">Lưu &amp; Đóng</text>
+    <text name="SaveAndNext">Lưu &amp; Chuyển tiếp</text>
+    <text name="EditText">Chỉnh sửa văn bản</text>
+    <text name="LanguageTexts">Văn bản ngôn ngữ</text>
+    <text name="LanguageTextsHeaderInfo">Chỉnh sửa văn bản cho các ngôn ngữ.</text>
+    <text name="EmptyOnes">Những cái trống</text>
+    <text name="Source">Nguồn</text>
+    <text name="BaseLanguage">Ngôn ngữ cơ bản</text>
+    <text name="TargetLanguage">Ngôn ngữ mục tiêu</text>
+    <text name="Previous">Trước</text>
+    <text name="LanguageDeleteWarningMessage">Bạn có chắc chắn muốn xóa ngôn ngữ {0} không?</text>
+    <text name="CanNotEditOrDeleteDefaultLanguages">
+      Không thể chỉnh sửa hoặc xóa ngôn ngữ mặc định. Bạn chỉ có thể chỉnh
+      sửa hoặc xóa các ngôn ngữ bạn đã thêm. Nhưng bạn có thể thay đổi văn bản của tất cả các ngôn ngữ.
+    </text>
+    <text name="LookingForMpaVersion">Bạn đang tìm phiên bản ứng dụng nhiều trang?</text>
+    <text name="LookingForSpaVersion">Bạn đang tìm phiên bản ứng dụng một trang?</text>
+    <text name="ThisLanguageAlreadyExists">Ngôn ngữ này đã tồn tại!</text>
+    <text name="OrganizationUnitsHeaderInfo">Sử dụng Cơ cấu Tổ chức để tổ chức người dùng và tổ chức</text>
+    <text name="OrganizationTree">Sơ đồ cơ cấu tổ chức dạng cây</text>
+    <text name="Members">Các thành viên</text>
+    <text name="SelectAnOrganizationUnitToSeeMembers">Chọn Cơ cấu Tổ chức để xem thành viên.</text>
+    <text name="OrganizationUnitDeleteWarningMessage">Bạn có chắc chắn muốn xóa cơ cấu tổ chức {0} không?</text>
+    <text name="AddSubUnit">Thêm đơn vị phụ</text>
+    <text name="AddMember">Thêm thành viên</text>
+    <text name="SuccessfullyAdded">Thêm thành công</text>
+    <text name="RemoveUserFromOuWarningMessage">
+      Bạn có chắc chắn muốn xóa người dùng {0} khỏi cơ cấu tổ chức {1}
+      không?
+    </text>
+    <text name="SuccessfullyRemoved">Đã xóa thành công</text>
+    <text name="SelectAnItem">Chọn một mục</text>
+    <text name="NewOrganizationUnit">Cơ cấu tổ chức mới</text>
+    <text name="SelectAUser">Chọn người dùng</text>
+    <text name="Select">Lựa chọn</text>
+    <text name="UserIsAlreadyInTheOrganizationUnit">Người dùng này đã có trong Cơ cấu Tổ chức!</text>
+    <text name="AddRootUnit">Thêm đơn vị gốc</text>
+    <text name="AddUser">Thêm người dùng</text>
+    <text name="NoOrganizationUnitDefinedYet">Chưa có Cơ cấu Tổ chức nào được xác định.</text>
+    <text name="OrganizationUnitMoveConfirmMessage">Vui lòng xác nhận để di chuyển {0} đến dưới {1}.</text>
+    <text name="Root">Gốc</text>
+    <text name="SuccessfullyMoved">Đã di chuyển thành công.</text>
+    <text name="AddedTime">Thời gian thêm mới</text>
+    <text name="ManagingMembers">Quản lý thành viên</text>
+    <text name="ManagingOrganizationTree">Quản lý cây tổ chức</text>
+    <text name="LoginForUsers">Đăng nhập cho người dùng</text>
+    <text name="LoginAsThisUser">Đăng nhập với tư cách người dùng này</text>
+    <text name="BackToMyAccount">Quay lại tài khoản của tôi</text>
+    <text name="LoginForTenants">Đăng nhập cho Tenant</text>
+    <text name="LoginAsThisTenant">Đăng nhập với tư cách Tenant này</text>
+    <text name="AuditLogImpersonatedOperationInfo">
+      Lưu ý: Thao tác này được thực hiện bởi một người dùng khác thay mặt
+      cho người dùng này.
+    </text>
+    <text name="CustomData">Dữ liệu tùy chỉnh</text>
+    <text name="None">Không</text>
+    <text name="YouCanBackToYourAccount">Bạn có thể quay lại tài khoản của mình tại đây.</text>
+    <text name="CascadeImpersonationErrorMessage">
+      Không thể làm cho mạo danh thác. Đây là một thông tin đăng nhập mạo
+      danh!
+    </text>
+    <text name="FromTenantToHostImpersonationErrorMessage">
+      Không thể mạo danh người dùng Host từ người dùng Tenant!
+    </text>
+    <text name="DifferentTenantImpersonationErrorMessage">Không thể mạo danh người dùng của Tenant khác nhau!</text>
+    <text name="ImpersonationTokenErrorMessage">Mã thông báo mạo danh không hợp lệ hoặc đã hết hạn!</text>
+    <text name="NotImpersonatedLoginErrorMessage">Đây không phải là thông tin đăng nhập mạo danh!</text>
+    <text name="YouCannotLinkToSameAccount">Bạn không thể liên kết với cùng một tài khoản!</text>
+    <text name="ChangePasswordBeforeLinkToAnAccount">
+      Bạn phải thay đổi mật khẩu của mình trước khi liên kết tài khoản
+      này!
+    </text>
+    <text name="LinkedAccounts">Tài khoản được liên kết</text>
+    <text name="ManageLinkedAccounts">Quản lý tài khoản được liên kết</text>
+    <text name="LinkNewAccount">Liên kết tài khoản mới</text>
+    <text name="SuccessfullyUnlinked">Đã hủy liên kết thành công</text>
+    <text name="LinkedUserDeleteWarningMessage">Liên kết tới người dùng {0} sẽ bị xóa.</text>
+    <text name="SwitchToLinkedAccountTokenErrorMessage">Mã thông báo mạo danh không hợp lệ hoặc đã hết hạn!</text>
+    <text name="WelcomeToTheApplicationNotificationMessage">
+      Chào mừng bạn đến với DemoCore! Hệ thống thông báo được sử
+      dụng để thông báo cho bạn về các sự kiện dự định. Bạn có thể chọn loại thông báo bạn muốn nhận từ cài đặt thông
+      báo.
+    </text>
+    <text name="NewUserRegisteredNotificationDefinition">Khi có người dùng mới được đăng ký vào ứng dụng.</text>
+    <text name="NewUserRegisteredNotificationMessage">
+      Một người dùng mới đã đăng ký vào ứng dụng. Tên người dùng:
+      {userName}, Địa chỉ email: {emailAddress}.
+    </text>
+    <text name="SeeAllNotifications">Xem tất cả thông báo</text>
+    <text name="SetAsRead">thiết lập là đã đọc</text>
+    <text name="SetAllAsRead">Đặt tất cả là đã đọc</text>
+    <text name="NotificationSettings">Thiết lập thông báo</text>
+    <text name="ReceiveNotifications">Nhận thông báo</text>
+    <text name="ReceiveNotifications_Definition">
+      Tùy chọn này có thể được sử dụng để bật / tắt hoàn toàn thông báo
+      nhận.
+    </text>
+    <text name="NotificationTypes">Loại thông báo</text>
+    <text name="ReceiveNotifications_DisableInfo">
+      Bạn đã tắt hoàn toàn nhận thông báo. Bạn có thể bật nó và chọn loại
+      thông báo bạn muốn nhận.
+    </text>
+    <text name="Notifications">Thông báo</text>
+    <text name="ThereAreNoNotifications">Không có thông báo.</text>
+    <text name="Unread">Chưa đọc</text>
+    <text name="YouCanNotDeleteOwnAccount">Bạn không thể xóa tài khoản người dùng riêng!</text>
+    <text name="On">Bật</text>
+    <text name="Off">Tắt</text>
+    <text name="Maintenance">Bảo trì</text>
+    <text name="Caches">Bộ nhớ cache</text>
+    <text name="CacheSuccessfullyCleared">Đã xóa bộ nhớ cache thành công.</text>
+    <text name="AllCachesSuccessfullyCleared">Tất cả bộ đệm đã được xóa thành công.</text>
+    <text name="ClearAll">Xóa tất cả</text>
+    <text name="Clear">Xóa</text>
+    <text name="CachesHeaderInfo">Bạn có thể xóa bộ nhớ cache của ứng dụng trên trang này.</text>
+    <text name="TestEmailSettingsHeader">Kiểm tra cài đặt email</text>
+    <text name="SendTestEmail">Gửi email kiểm tra</text>
+    <text name="TestEmail_Subject">DemoXem thêm email kiểm tra</text>
+    <text name="TestEmail_Body">Đây là một email thử nghiệm.</text>
+    <text name="TestEmailSentSuccessfully">Kiểm tra e-mail đã được gửi thành công.</text>
+    <text name="WebSiteLogs">Nhật ký trang web</text>
+    <text name="WebSiteLogsHeaderInfo">
+      Bạn có thể xem nhật ký mới nhất trong trang này hoặc tải xuống tất cả nhật ký
+      trong một tập tin zip.
+    </text>
+    <text name="DownloadAll">Tải xuống tất cả</text>
+    <text name="TenantManagement">Quản lý Tenant</text>
+    <text name="AllowTenantsToRegisterThemselves">Cho phép Tenant đăng ký tự đăng ký mới trên hệ thống.</text>
+    <text name="AllowTenantsToRegisterThemselves_Hint">
+      Nếu bạn tắt chức năng này, Tenant sẽ chỉ được quản trị viên thêm
+      bằng cách sử dụng trang quản lý Tenant.
+    </text>
+    <text name="NewRegisteredTenantsIsActiveByDefault">Tenant đăng ký mới mặc định sẽ được kích hoạt.</text>
+    <text name="NewRegisteredTenantsIsActiveByDefault_Hint">
+      Nếu bạn vô hiệu hóa chức năng này, Tenant mới sẽ không được
+      kích hoạt (và không thể đăng nhập) cho đến khi quản trị viên kích hoạt tài khoản theo cách thủ công.
+    </text>
+    <text name="TenantSignUp">Đăng ký Tenant</text>
+    <text name="NewTenantRegisteredNotificationDefinition">Trên Tenant mới đã đăng ký với đơn đăng ký.</text>
+    <text name="NewTenantRegisteredNotificationMessage">
+      Người thuê mới đã đăng ký với ứng dụng. Tên thuê nhà:
+      {tenancyName}.
+    </text>
+    <text name="LoginAttempts">Số lần đăng nhập thất bại</text>
+    <text name="Failed">Thất bại</text>
+    <text name="NewTenant">Tenant mới</text>
+    <text name="ResizedProfilePicture_Warn_SizeLimit">
+      Kích thước hình ảnh được chỉnh lại kích thước phải nhỏ hơn {0} KB.
+      Vui lòng đổi kích thước xuống và thử lại.
+    </text>
+    <text name="RegisterFormUserNameInvalidMessage">Vui lòng không nhập địa chỉ email cho tên người dùng.</text>
+    <text name="UseHostDatabase">Sử dụng chung cơ sở dữ liệu với Host</text>
+    <text name="DatabaseConnectionString">Chuỗi kết nối cơ sở dữ liệu</text>
+    <text name="TenantDatabaseConnectionStringChangeWarningMessage">
+      Lưu ý: Trước khi thay đổi chuỗi kết nối cơ sở dữ
+      liệu cho một đối tượng thuê, bạn nên di chuyển cơ sở dữ liệu Tenant đến vị trí mới. Thay đổi chuỗi kết nối không
+      di chuyển cơ sở dữ liệu Tenant.
+    </text>
+    <text name="Timezone">Múi giờ</text>
+    <text name="HasOwnDatabase">Có cơ sở dữ liệu riêng</text>
+    <text name="TimeZoneSettingChangedRefreshPageNotification">
+      Đã thay đổi cài đặt múi giờ. Nhấp vào nút OK để làm mới
+      trang và các thay đổi có hiệu lực.
+    </text>
+    <text name="Ok">Được</text>
+    <text name="Permission">Giấy phép</text>
+    <text name="Role">Vai trò</text>
+    <text name="Security">Bảo mật</text>
+    <text name="PasswordComplexity">Mật khẩu phức tạp</text>
+    <text name="UseDefaultSettings">Sử dụng các cài đặt mặc định</text>
+    <text name="PasswordComplexityNotSatisfied">Độ phức tạp của mật khẩu không hài lòng.</text>
+    <text name="YouAlreadySentAFriendshipRequestToThisUser">Bạn đã thêm người dùng này.</text>
+    <text name="YouCannotBeFriendWithYourself">Bạn không thể là bạn với chính mình.</text>
+    <text name="NewChatMessageEmail_Title">Thông tin chi tiết</text>
+    <text name="NewChatMessageEmail_SubTitle"></text>
+    <text name="NewChatMessageEmail_Subject">Bạn có một tin nhắn trò chuyện mới</text>
+    <text name="Sender">Người gửi</text>
+    <text name="Message">Thông điệp</text>
+    <text name="UserBlocked">Đã chặn thành công người dùng.</text>
+    <text name="UserUnblocked">Chặn thành công khỏi người dùng.</text>
+    <text name="BlockUser">Chặn người dùng</text>
+    <text name="UnblockUser">Mở khóa</text>
+    <text name="FriendshipRequestAccepted">Yêu cầu kết bạn đã được chấp nhận</text>
+    <text name="UserSendYouAFriendshipRequest">{0} đã thêm bạn làm bạn bè.</text>
+    <text name="Friends">Bạn bè</text>
+    <text name="Others">Khác</text>
+    <text name="BlockedUsers">Người dùng bị chặn</text>
+    <text name="YouDontHaveAnyFriend">
+      Bạn không có bạn bè nào. Viết tên truy cập của người dùng vào hộp nhập liệu ở trên
+      và nhấp vào nút "Thêm bạn bè".
+    </text>
+    <text name="YouDontHaveAnyBlockedFriend">
+      Bạn không có bất kỳ người dùng bị chặn nào. Để thiết lập ngăn chặn, hãy
+      chọn một người dùng và chọn chặn từ các hành động thả xuống.
+    </text>
+    <text name="ChatUserSearch_Hint">
+      <![CDATA[
+      Chỉ cần ghi TênTàiKhoản nếu trong cùng một đơn vị Tenant, <br>
+      <strong>[TênThuêBao]\[TênTàiKhoản]</strong> nếu khác đơn vị Tenant <br><br>
+      Ví dụ: <br>
+      .\admin -> tức là 'admin' của Host<br>
+      Test\admin -> tức là 'admin' của đơn vị Tenant Test<br>
+      admin -> tức là 'admin' của chính đơn vị Tenant của bạn
+      ]]>
+    </text>
+    <text name="AddFriend">Thêm bạn</text>
+    <text name="TypeAMessageHere">Nhập tin nhắn tại đây ...</text>
+    <text name="Chat">Trò chuyện</text>
+    <text name="ChatFeature">Trò chuyện</text>
+    <text name="ChatFeatureIsNotEnabledForSender">Trò chuyện không được bật cho bạn.</text>
+    <text name="ChatFeatureIsNotEnabledForReceiver">Trò chuyện không được bật cho Tenant.</text>
+    <text name="UserIsBlocked">Người dùng bị chặn.</text>
+    <text name="ChatIsNotConnectedWarning">Trò chuyện chưa được kết nối.</text>
+    <text name="Demo_SampleChatMessage">
+      Xin chào, Đây là tin nhắn thử nghiệm. Vui lòng đăng nhập bằng tài khoản của tôi
+      trong một trình duyệt khác và kiểm tra chức năng trò chuyện hoạt động như thế nào.
+    </text>
+    <text name="TenantToTenantChatFeatureIsNotEnabledForSender">
+      Trò chuyện với Tenant khác không được bật cho bạn.
+    </text>
+    <text name="TenantToTenantChatFeatureIsNotEnabledForReceiver">
+      Trò chuyện với Tenant khác không được bật cho
+      Tenant.
+    </text>
+    <text name="TenantToHostChatFeatureIsNotEnabledForSender">Trò chuyện với Host không được bật cho bạn.</text>
+    <text name="TenantToHostChatFeatureIsNotEnabledForReceiver">Trò chuyện với Host không được bật cho Tenant.</text>
+    <text name="TenantToTenantChatFeature">Trò chuyện với Tenant khác</text>
+    <text name="TenantToHostChatFeature">Trò chuyện với Host</text>
+    <text name="FilterByPermission">Lọc theo quyền</text>
+    <text name="FilterByRole">Lọc theo vai trò</text>
+    <text name="FilterOrAddUser">Lọc / Thêm người dùng</text>
+    <text name="HangfireDashboard">Bảng điều khiển Hangfire</text>
+    <text name="CouldNotCompleteLoginOperation">Không thể hoàn tất thao tác đăng nhập.</text>
+    <text name="UnAuthorizedOperation">Hoạt động trái phép</text>
+    <text name="YouAreNotAuthorizedToPerformThisOperation">Bạn không được phép thực hiện thao tác này.</text>
+    <text name="TargetUserNotFoundProbablyDeleted">Không thể tìm thấy người dùng mục tiêu. Nó có thể bị xóa.</text>
+    <text name="UserLockedOutMessage">Tài khoản người dùng đã bị khóa. Vui lòng thử lại sau.</text>
+    <text name="SendSecurityCode">Gửi mã bảo mật.</text>
+    <text name="SendSecurityCode_Information">
+      Bạn nên xác minh chính mình để đăng nhập. Vui lòng chọn loại xác minh. Mã
+      sẽ được gửi dựa trên loại xác minh đã chọn.
+    </text>
+    <text name="SendSecurityCodeErrorMessage">Không thể gửi mã bảo mật!</text>
+    <text name="VerifySecurityCodeNotLoggedInErrorMessage">
+      Bạn nên đăng nhập trước, để xác minh bản thân! Có thể, thông
+      tin đăng nhập của bạn đã hết thời gian chờ. Vui lòng truy cập trang đăng nhập và thử lại.
+    </text>
+    <text name="VerificationCode">Mã xác nhận</text>
+    <text name="VerifySecurityCode">Xác minh mã bảo mật</text>
+    <text name="VerifySecurityCode_Information">Vui lòng nhập mã xác minh được gửi cho bạn.</text>
+    <text name="RememberThisBrowser">Nhớ trình duyệt này</text>
+    <text name="InvalidSecurityCode">Mã bảo mật không hợp lệ!</text>
+    <text name="PhoneNumber">Số điện thoại</text>
+    <text name="Unlock">Mở khóa</text>
+    <text name="UnlockedTheUser">Đã mở khóa người dùng {0}</text>
+    <text name="UserLockOut">Khóa người dùng</text>
+    <text name="EnableUserAccountLockingOnFailedLoginAttemts">
+      Bật chức năng Khóa tài khoản người dùng dựa trên số lần
+      đăng nhập thất bại
+    </text>
+    <text name="MaxFailedAccessAttemptsBeforeLockout">
+      Số lần đăng nhập thất bại tối đa cho phép trước khi khóa tài
+      khoản
+    </text>
+    <text name="DefaultAccountLockoutDurationAsSeconds">Thời giản khóa tài khoản (tính bằng giây)</text>
+    <text name="TwoFactorLogin">Bảo mật 2 lớp</text>
+    <text name="EnableTwoFactorLogin">Bật chức năng Bảo mật 2 lớp.</text>
+    <text name="IsEmailVerificationEnabled">Bật xác minh email.</text>
+    <text name="IsSmsVerificationEnabled">Bật xác minh SMS.</text>
+    <text name="AllowToRememberBrowserForTwoFactorLogin">
+      Cho phép ghi nhớ trình duyệt. Nếu bạn cho phép điều này, người
+      dùng có thể chọn để nhớ trình duyệt và bỏ qua Bảo mật 2 lớp cho cùng một trình duyệt.
+    </text>
+    <text name="CurrentTenant">Tenant hiện tại</text>
+    <text name="NotSelected">Chưa chọn</text>
+    <text name="Change">Thay đổi</text>
+    <text name="ChangeTenant">Thay đổi Tenant</text>
+    <text name="UnknownTenantId{0}">Id Tenant không xác định: {0}</text>
+    <text name="TenantIdIsNotActive{0}">Id Tenant không hoạt động: {0}</text>
+    <text name="TimeoutPleaseTryAgain">Hết giờ! Vui lòng thử lại.</text>
+    <text name="RemainingTime">Thời gian còn lại</text>
+    <text name="SecondShort{0}">{0} giây</text>
+    <text name="ResetCode">Đặt lại mã</text>
+    <text name="IsTwoFactorEnabled">Đã bật xác thực hai yếu tố</text>
+    <text name="IsLockoutEnabled">Bật chức năng Khóa tài khoản tự động</text>
+    <text name="IsLockoutEnabled_Hint">
+      Người dùng bị khóa trong một thời gian sau một số lần đăng nhập thất bại nhất
+      định.
+    </text>
+    <text name="TenantRegistrationLoginInfo">Nhấn vào đây để đăng nhập</text>
+    <text name="CouldNotValidateExternalUser">Không thể xác thực đăng nhập người dùng bên ngoài</text>
+    <text name="LeaveEmptyToSwitchToHost">Để trống để chuyển sang Host</text>
+    <text name="PleaseWaitToConfirmYourEmailMessage">Vui lòng chờ trong khi xác nhận địa chỉ email của bạn ...</text>
+    <text name="ChatIsConnecting">Trò chuyện đang kết nối ...</text>
+    <text name="Note_RefreshPageForPermissionChanges">
+      Nếu bạn đang thay đổi quyền của riêng bạn, bạn có thể cần phải làm
+      mới trang (F5) để có hiệu lực của các thay đổi quyền trên màn hình của riêng bạn!
+    </text>
+    <text name="ApplicationLogo">Biểu trưng ứng dụng</text>
+    <text name="CustomCSS">CSS tùy chỉnh</text>
+    <text name="Upload">Tải lên</text>
+    <text name="Download">Tải về</text>
+    <text name="UploadLogo_Info">
+      Chọn tập tin JPG / JPEG / PNG / GIF có kích thước tối đa 30KB và độ phân giải 139x35
+      pixel.
+    </text>
+    <text name="UploadCSS_Info">Chọn tập tin .css có kích thước tối đa là 1MB.</text>
+    <text name="Browse">Duyệt</text>
+    <text name="Appearance">Xuất hiện</text>
+    <text name="ClearedSuccessfully">Đã xóa thành công</text>
+    <text name="File_Empty_Error">Vui lòng chọn một tập tin!</text>
+    <text name="File_SizeLimit_Error">Kích thước của tập tin vượt quá giới hạn cho phép!</text>
+    <text name="File_Invalid_Type_Error">Loại tập tin không hợp lệ!</text>
+    <text name="MaximumUserCount">Số lượng người dùng tối đa</text>
+    <text name="MaximumUserCount_Description">0 = không giới hạn</text>
+    <text name="MaximumUserCount_Error_Message">Đã đạt đến số lượng người dùng tối đa được phép!</text>
+    <text name="MaximumUserCount_Error_Detail">Người thuê này được phép có tối đa {0} người dùng.</text>
+    <text name="UnlockedTenandAdmin">Đã mở khóa Quản trị viên cho {0}</text>
+    <text name="Email">E-mail</text>
+    <text name="EmailSecurityCodeSubject">Mã bảo mật</text>
+    <text name="EmailSecurityCodeBody">Mã bảo mật của bạn là: {0}</text>
+    <text name="Sms">Tin nhắn</text>
+    <text name="SmsSecurityCodeMessage">Mã bảo mật của bạn là: {0}</text>
+    <text name="PasswordComplexity_RequireDigit_Hint">Mật khẩu phải có ít nhất một chữ số ('0' - '9').</text>
+    <text name="PasswordComplexity_RequireLowercase_Hint">Mật khẩu phải có ít nhất một chữ thường ('a' - 'z').</text>
+    <text name="PasswordComplexity_RequireNonAlphanumeric_Hint">
+      Mật khẩu phải có ít nhất một ký tự không phải chữ và
+      số.
+    </text>
+    <text name="PasswordComplexity_RequireUppercase_Hint">Mật khẩu phải có ít nhất một chữ hoa ('A' - 'Z').</text>
+    <text name="PasswordComplexity_RequiredLength_Hint">Mật khẩu phải có ít nhất {0} ký tự.</text>
+    <text name="PasswordComplexity_RequireDigit">Yêu cầu phải bao gồm chữ số</text>
+    <text name="PasswordComplexity_RequireLowercase">Yêu cầu phải bao gồm chữ thường</text>
+    <text name="PasswordComplexity_RequireNonAlphanumeric">Yêu cầu phải bao gồm ký tự đặc biệt</text>
+    <text name="PasswordComplexity_RequireUppercase">Yêu cầu phải bao gồm chữ hoa</text>
+    <text name="PasswordComplexity_RequiredLength">Độ dài yêu cầu</text>
+    <text name="HostDashboardHeaderInfo">Bảng thông tin thống kê và báo cáo tổng hợp</text>
+    <text name="DashboardSampleStatistics">Thống kê mẫu</text>
+    <text name="DashboardSampleStatisticsHelpText">Phát triển</text>
+    <text name="NewTenants">Tenant mới</text>
+    <text name="NewSubscriptionAmount">Số tiền đăng ký mới</text>
+    <text name="Income">Thu nhập</text>
+    <text name="IncomeStatistics">Thống kê thu nhập</text>
+    <text name="ChangeDateRange">Thay đổi phạm vi ngày</text>
+    <text name="Daily">Hàng ngày</text>
+    <text name="Weekly">Hàng tuần</text>
+    <text name="Monthly">Hàng tháng</text>
+    <text name="DateFormatShort">dd.MM.yyyy</text>
+    <text name="EditionStatistics">Thống kê phiên bản</text>
+    <text name="SubscriptionExpiringTenants">Tenant hết hạn đăng ký</text>
+    <text name="RemainingDay">Ngày còn lại</text>
+    <text name="SeeAllRecords">Xem tất cả hồ sơ</text>
+    <text name="RecentTenants">Tenant gần đây</text>
+    <text name="RecentTenantsHelpText">{1} khách hàng cuối cùng đã đăng ký sau {0} ngày ...</text>
+    <text name="ExpiringTenantsHelpText">{1} khách hàng đầu tiên hết hạn sau {0} ngày ...</text>
+    <text name="NoData">Không có dữ liệu</text>
+    <text name="SubscriptionEndDate">Ngày kết thúc đăng ký</text>
+    <text name="TenantNameOrTenancyCode">Tên Tenant / mã Tenant</text>
+    <text name="IncomeWithAmount">Thu nhập: {0}</text>
+    <text name="Subscription">Đăng ký</text>
+    <text name="Extend">Mở rộng</text>
+    <text name="Upgrade">Nâng cấp</text>
+    <text name="PaymentPeriodType">Loại thời gian thanh toán</text>
+    <text name="PaymentInfo">Thông tin thanh toán</text>
+    <text name="MonthlyPrice">Giá hàng tháng</text>
+    <text name="AnnualPrice">Giá thường niên</text>
+    <text name="StartUsingFree">Bắt đầu sử dụng miễn phí</text>
+    <text name="TryIt">Thử nó</text>
+    <text name="Days">Ngày</text>
+    <text name="PerMonth">Mỗi tháng</text>
+    <text name="PerYear">Mỗi năm</text>
+    <text name="TestCheckFeature">Kiểm tra chức năng kiểm tra</text>
+    <text name="TestCheckFeature2">Kiểm tra chức năng kiểm tra 2</text>
+    <text name="Unlimited">Không giới hạn</text>
+    <text name="LatestPaymentAmount">Số tiền thanh toán mới nhất</text>
+    <text name="Payment">Thanh toán</text>
+    <text name="PaymentCode">Mã thanh toán</text>
+    <text name="Next">Kế tiếp</text>
+    <text name="Start">Bắt đầu</text>
+    <text name="FreeTrial">Dùng thử miễn phí</text>
+    <text name="BuyNow">Mua ngay</text>
+    <text name="WhatWillDoneAfterSubscriptionExpiry">Điều gì sẽ được thực hiện sau khi hết hạn đăng ký</text>
+    <text name="DeactiveTenant">Tenant</text>
+    <text name="AssignToAnotherEdition">Chỉ định cho một phiên bản khác</text>
+    <text name="SubscriptionPrice">Giá Tenant</text>
+    <text name="Free">Miễn phí</text>
+    <text name="Paid">Trả tiền</text>
+    <text name="IsTrialActive">Thử nghiệm đang hoạt động</text>
+    <text name="TrialDayCount">Số ngày dùng thử</text>
+    <text name="WaitAfterSubscriptionExpireDate">Đợi sau ngày hết hạn đăng ký</text>
+    <text name="WaitingDayAfterExpire">Chờ một ngày sau khi hết hạn</text>
+    <text name="DisplayOrder">Thứ tự hiển thị</text>
+    <text name="Annual">Hàng năm</text>
+    <text name="SubscriptionStartDate">Ngày bắt đầu đăng ký</text>
+    <text name="Pricing">Định giá</text>
+    <text name="ClientIsRequestingYourPermission">{0} đang yêu cầu sự cho phép của bạn</text>
+    <text name="ApplicationAccess">Truy cập ứng dụng</text>
+    <text name="RememberMyDecision">Nhớ quyết định của tôi</text>
+    <text name="Allow">Cho phép</text>
+    <text name="DoNotAllow">Không cho phép</text>
+    <text name="Your user identifier">Mã nhận dạng người dùng của bạn</text>
+    <text name="Required">Cần thiết</text>
+    <text name="User profile">Thông tin người dùng</text>
+    <text name="Your user profile information (first name, last name, etc.)">
+      Thông tin hồ sơ người dùng của bạn (tên,
+      họ, v.v.)
+    </text>
+    <text name="Your email address">Địa chỉ email của bạn</text>
+    <text name="Your phone number">Số điện thoại của bạn</text>
+    <text name="Your postal address">Địa chỉ bưu điện của bạn</text>
+    <text name="AllFunctionalityYouHaveInTheApplication">Tất cả chức năng bạn có trong ứng dụng</text>
+    <text name="Default (all) API">API mặc định (tất cả)</text>
+    <text name="Offline Access">Truy cập ngoại tuyến</text>
+    <text name="Access to your applications and resources, even when you are offline">
+      Truy cập vào các ứng dụng và tài
+      nguyên của bạn, ngay cả khi bạn đang ngoại tuyến
+    </text>
+    <text name="Purchase">Thanh toán</text>
+    <text name="Trial">Thử nghiệm</text>
+    <text name="IsDisabled">Bị vô hiệu hóa</text>
+    <text name="ChartDateFormat">% m /% d /% Y</text>
+    <text name="ThereIsNoLoggedInUser">Không có người dùng đã đăng nhập.</text>
+    <text name="IsInTrialPeriod">Đang trong giai đoạn dùng thử?</text>
+    <text name="FailedSubscriptionTerminations_Email_Subject">Chấm dứt đăng ký không thành công</text>
+    <text name="FailedSubscriptionTerminations_Email_Body">
+      Đăng ký chấm dứt không thành công cho những Tenant sau {0}
+      tại {1}. Bạn có thể tìm thấy thông báo lỗi chi tiết trong nhật ký hệ thống.
+    </text>
+    <text name="SubscriptionExpire_Email_Subject">Đăng ký DemoCore của bạn đã hết hạn</text>
+    <text name="SubscriptionExpire_Email_Body">Đăng ký DemoCore của bạn đã hết hạn vào lúc {0}.</text>
+    <text name="UnlimitedTimeSubscription">Đăng ký thời gian không giới hạn</text>
+    <text name="SubscriptionEndDateUtc">Ngày kết thúc đăng ký (Utc)</text>
+    <text name="ExpiringEditionMustBeAFreeEdition">Phiên bản hết hạn phải là phiên bản miễn phí</text>
+    <text name="ThisEditionIsUsedAsAnExpiringEdition">
+      Phiên bản này được sử dụng làm phiên bản hết hạn cho một phiên bản
+      khác. Nếu bạn muốn làm cho phiên bản này được trả tiền, trước tiên bạn nên xóa nó khỏi phiên bản khác.
+    </text>
+    <text name="UpgradedTo">Đã nâng cấp lên phiên bản {0}</text>
+    <text name="ExtendedEdition">Phiên bản mở rộng {0}</text>
+    <text name="TrialSubscriptionNotification">Bạn đang trong giai đoạn dùng thử cho {0} phiên bản, {1} để mua.</text>
+    <text name="SubscriptionExpireNotification">Đăng ký của bạn sẽ hết hạn sau {0} ngày.</text>
+    <text name="TrialExpireNotification">Thời gian dùng thử của bạn sẽ hết hạn sau {0} ngày.</text>
+    <text name="CanNotUpgradeSubscriptionSinceTenantHasNoEditionAssigned">
+      Không thể nâng cấp đăng ký vì Tenant không có
+      phiên bản nào được chỉ định.
+    </text>
+    <text name="PaymentCouldNotCompleted">Thanh toán không thể hoàn thành</text>
+    <text name="TenantEditionIsNotAssigned">Phiên bản Tenant không được chỉ định</text>
+    <text name="FreeEditionsCannotHaveTrialVersions">Phiên bản miễn phí không thể có phiên bản dùng thử</text>
+    <text name="Total">Toàn bộ</text>
+    <text name="Extend_Edition_Description">Mở rộng {0} Phiên bản</text>
+    <text name="Upgrade_Edition_Description">Nâng cấp lên {0} Phiên bản</text>
+    <text name="PaymentMightBeExpiredWarning">
+      Hoạt động của bạn có thể hết hạn, vui lòng liên hệ với chúng tôi nếu bạn
+      đã thực hiện thanh toán.
+    </text>
+    <text name="GoToSubscriptionManagement">Chuyển tới đăng ký</text>
+    <text name="DemoPayPalAccount">Tài khoản PayPal Demo</text>
+    <text name="IsEnabled">Được kích hoạt</text>
+    <text name="IsGoogleAuthenticatorEnabled">Bật Google Authenticator</text>
+    <text name="GoogleAuthenticatorReferrerLink">
+      Bạn không chắc chắn màn hình này có nghĩa là gì? Bạn có thể cần phải
+      kiểm tra điều này
+    </text>
+    <text name="ScanQrCodeWithYourMobileApp">Quét mã QR này bằng ứng dụng dành cho thiết bị di động của bạn</text>
+    <text name="Profile">Hồ sơ</text>
+    <text name="Enable">Bật</text>
+    <text name="GoogleAuthenticatorIsNotEnabled">
+      Google Authenticator chưa được kích hoạt cho tài khoản của bạn. Trước
+      tiên, bạn phải bật chức năng này trong cài đặt của mình.
+    </text>
+    <text name="SubscriptionExpiringSoon_Email_Subject">Thông báo hết hạn đăng ký DemoCore của bạn</text>
+    <text name="SubscriptionExpiringSoon_Email_Body">Đăng ký DemoCore của bạn sẽ hết hạn vào lúc {0}.</text>
+    <text name="SubscriptionExpire_Title">DemoChi đăng ký hết hạn</text>
+    <text name="SubscriptionExpire_SubTitle">Email này được gửi cho bạn để thông báo về thời hạn đăng ký của bạn</text>
+    <text name="SubscriptionAssignedToAnother_Email_Body">
+      Đăng ký DemoCore của bạn đã hết hạn vào {1}. Phiên bản hiện
+      tại của bạn được gán cho {0}.
+    </text>
+    <text name="FailedSubscriptionTerminations_Title">Đăng ký không thành công</text>
+    <text name="FailedSubscriptionTerminations_SubTitle">Đăng ký chấm dứt không thành công đối với một số Tenant</text>
+    <text name="SubscriptionExpiringSoon_Title">DemoThông báo hết hạn đăng ký</text>
+    <text name="SubscriptionExpiringSoon_SubTitle">
+      Email này được gửi cho bạn để thông báo về việc hết hạn đăng ký của
+      bạn.
+    </text>
+    <text name="AdminRoleCannotRemoveFromAdminUser">Vai trò quản trị không thể xóa khỏi người dùng quản trị</text>
+    <text name="YouCannotRemoveUserRolePermissionsFromAdminRole">
+      Bạn không thể xóa chỉnh sửa quyền của người dùng / vai
+      trò khỏi vai trò quản trị
+    </text>
+    <text name="YouCannotRemoveUserRolePermissionsFromAdminUser">
+      Bạn không thể xóa chỉnh sửa quyền của người dùng / vai
+      trò khỏi người dùng quản trị
+    </text>
+    <text name="Notification">Thông báo</text>
+    <text name="TotalRecordsCount">Tổng cộng: {0}</text>
+    <text name="SubscriptionInformation">Thông tin đăng ký</text>
+    <text name="PaymentHistory">Lịch sử thanh toán</text>
+    <text name="Gateway">Gateway</text>
+    <text name="Amount">Số tiền</text>
+    <text name="Status">Trạng thái</text>
+    <text name="Period">Tháng</text>
+    <text name="DayCount">Số ngày</text>
+    <text name="LastModificationTime">Lần sửa đổi cuối cùng</text>
+    <text name="PaymentId">Id thanh toán</text>
+    <text name="SubscriptionPaymentGatewayType_Paypal">Paypal</text>
+    <text name="SubscriptionPaymentGatewayType_Stripe">Stripe</text>
+    <text name="SubscriptionPaymentStatus_Completed">Đã hoàn thành</text>
+    <text name="SubscriptionPaymentStatus_NotPaid">Not Paid</text>
+    <text name="SubscriptionPaymentStatus_Paid">Paid</text>
+    <text name="SubscriptionPaymentStatus_Failed">Thất bại</text>
+    <text name="SubscriptionPaymentStatus_Cancelled">Cancelled</text>
+    <text name="PaymentPeriodType_Annual">Hàng năm</text>
+    <text name="PaymentPeriodType_Monthly">Hàng tháng</text>
+    <text name="ProcessTime">Thời gian xử lý</text>
+    <text name="SmsVerificationEnabled">Kích hoạt xác minh số điện thoại (qua SMS)</text>
+    <text name="SmsVerificationMessage">Mã xác minh Yootek của bạn: {0}</text>
+    <text name="Verify">Kiểm chứng</text>
+    <text name="YourCode">Mã của bạn</text>
+    <text name="VerifyYourCode">Xác minh mã của bạn</text>
+    <text name="YourPhoneNumberIsVerified">Số điện thoại của bạn đã được xác minh</text>
+    <text name="YourPhoneNumberIsNotVerified">Số điện thoại của bạn chưa được xác minh</text>
+    <text name="WrongSmsVerificationCode">Mã xác minh sai!</text>
+    <text name="SelectUsers">Chọn người dùng</text>
+    <text name="OrganizationUnits">Cơ cấu tổ chức</text>
+    <text name="YouCanManageUsersOrganizationUnitsFromOrganizationUnitsPage">
+      Bạn có thể quản lý các Cơ cấu Tổ chức của
+      người dùng từ trang Cơ cấu Tổ chức.
+    </text>
+    <text name="DemoUiComponents">Thành phần giao diện người dùng demo</text>
+    <text name="DateAndTimePickers">Bộ chọn ngày và giờ</text>
+    <text name="FileUpload">Tập tin tải lên</text>
+    <text name="PostedValue">Giá trị đã đăng</text>
+    <text name="SelectDate">Chọn ngày</text>
+    <text name="SelectFile">Chọn tập tin</text>
+    <text name="UploadedFile">Tập tin đã tải lên</text>
+    <text name="PostedData">Dữ liệu đã đăng</text>
+    <text name="Remove">Tẩy</text>
+    <text name="OrganizationUnitNotFoundForThisUser">Không tìm thấy Cơ cấu Tổ chức nào cho người dùng này.</text>
+    <text name="DemoUiComponents_Info">
+      Trang này giới thiệu một số thành phần giao diện người dùng hữu ích mà bạn có thể sử dụng trong ứng dụng của mình.
+      Các thành phần này được triển khai full stack (bao gồm cả server side).
+    </text>
+    <text name="DemoUiComponents_Info_Metronic_Link_Text">
+      Tham khảo Theme Metronic để biết thêm các thành phần giao diện
+      người dùng
+    </text>
+    <text name="Image">Hình ảnh</text>
+    <text name="File">Tập tin</text>
+    <text name="Link">Liên kết</text>
+    <text name="Billing">Thanh toán</text>
+    <text name="LegalName">Tên pháp nhân</text>
+    <text name="Address">Địa chỉ</text>
+    <text name="Tax/VatNo">Thuế / VAT</text>
+    <text name="Invoice">Hóa đơn</text>
+    <text name="TotalAmount">Tổng cộng</text>
+    <text name="Print">In</text>
+    <text name="ShowInvoice">Hiển thị hóa đơn</text>
+    <text name="InvoiceInformation">Thông tin hóa đơn</text>
+    <text name="InvoiceNo">Số hóa đơn</text>
+    <text name="Date">Ngày</text>
+    <text name="ThisInvoiceIsNotYours">Hóa đơn này không phải của bạn!</text>
+    <text name="UiCustomizationHeaderInfo">Thay đổi giao diện người dùng</text>
+    <text name="UiCustomization_Layout">Bố trí</text>
+    <text name="UiCustomization_LayoutType">Loại bố cục</text>
+    <text name="UiCustomization_Fluid">Fluid</text>
+    <text name="UiCustomization_Boxed">Boxed</text>
+    <text name="UiCustomization_Disabled">Vô hiệu</text>
+    <text name="UiCustomization_Default">Mặc định</text>
+    <text name="UiCustomization_SpinnerMessage">Tin nhắn Spinner</text>
+    <text name="UiCustomization_ContentSkin">Giao diện Nội dung</text>
+    <text name="UiCustomization_LightGrey">Màu xám nhạt</text>
+    <text name="UiCustomization_White">Màu trắng</text>
+    <text name="UiCustomization_DesktopFixedHeader">Tiêu đề cố định</text>
+    <text name="UiCustomization_None">Không</text>
+    <text name="UiCustomization_Hide">Ẩn giấu</text>
+    <text name="UiCustomization_MobileFixedHeader">Tiêu đề cố định</text>
+    <text name="UiCustomization_DisplayHeaderMenu">Trình đơn tiêu đề hiển thị</text>
+    <text name="UiCustomization_DropdownSkinDesktop">Giao diện</text>
+    <text name="UiCustomization_Light">Sáng</text>
+    <text name="UiCustomization_Dark">Tối</text>
+    <text name="UiCustomization_DisplaySubmenuArrowDesktop">Hiển thị mũi tên menu phụ</text>
+    <text name="UiCustomization_DropdownSkin">Giao diện menu thả xuống</text>
+    <text name="UiCustomization_Menu">Menu</text>
+    <text name="UiCustomization_MenuPosition">Vị trí</text>
+    <text name="UiCustomization_Left">Bên trái</text>
+    <text name="UiCustomization_Top">Trên đỉnh</text>
+    <text name="UiCustomization_MenuSkin">Giao diện Menu</text>
+    <text name="UiCustomization_FixedMenu">Menu cố định</text>
+    <text name="UiCustomization_AllowAsideMinimizing">Cho phép thu nhỏ sang một bên</text>
+    <text name="UiCustomization_DefaultMinimizedAside">Mặc định thu nhỏ sang một bên</text>
+    <text name="UiCustomization_AllowAsideHiding">Cho phép ẩn sang một bên</text>
+    <text name="UiCustomization_DropdownSubmenuSkin">Giao diện menu con thả xuống</text>
+    <text name="UiCustomization_Inherit">Thừa kế</text>
+    <text name="UiCustomization_Footer">Chân trang</text>
+    <text name="UiCustomization_FixedFooter">Chân trang cố định</text>
+    <text name="UiCustomization_PushFooter">Đẩy chân trang</text>
+    <text name="UiCustomization_Header">Thanh tiêu đề</text>
+    <text name="UiCustomization_Theme">Chủ đề</text>
+    <text name="VisualSettings">Cài đặt giao diện</text>
+    <text name="SaveAsSystemDefault">Lưu làm mặc định hệ thống</text>
+    <text name="UseSystemDefaults">Sử dụng mặc định hệ thống</text>
+    <text name="NewNotifications">Thông báo mới</text>
+    <text name="Subscriptions">Đăng ký</text>
+    <text name="UiCustomization_DefaultHiddenAside">Mặc định ẩn sang một bên</text>
+    <text name="LoadWithThreeDot">Tải...</text>
+    <text name="NoInternetConnection">Bạn hiện chưa kết nối với internet</text>
+    <text name="Warning">Cảnh báo</text>
+    <text name="RequestTimedOut">Yêu cầu của bạn đã hết thời gian, vui lòng thử lại sau.</text>
+    <text name="AnErrorOccurred">Một lỗi xảy ra, xin vui lòng thử lại sau.</text>
+    <text name="AnHttpErrorOccured">Đã xảy ra lỗi khi kết nối với máy chủ.</text>
+    <text name="ChangePasswordToLogin">Bạn phải thay đổi mật khẩu của mình trước khi đăng nhập!</text>
+    <text name="NoPermission">Bạn không có bất kỳ sự cho phép nào. Kết nối với quản trị viên của bạn.</text>
+    <text name="NoCamera">Không tìm thấy máy ảnh nào!</text>
+    <text name="PickFromGallery">Chọn từ thư viện</text>
+    <text name="TakePhoto">Chụp một tấm</text>
+    <text name="Rotate">Quay</text>
+    <text name="PasswordsDontMatch">Mật khẩu không phù hợp!</text>
+    <text name="PasswordsDoNotMatch">Mật khẩu không trùng khớp!</text>
+    <text name="RequiredField">Trường {0} là bắt buộc.</text>
+    <text name="StringLengthDoesntMatch">Trường {0} phải có độ dài tối thiểu {1} và độ dài tối đa là {2}.</text>
+    <text name="LessThanMinStringLength">Trường {0} phải có độ dài minumum {1}.</text>
+    <text name="InvalidPhoneNumber">Trường {0} không phải là số điện thoại hợp lệ</text>
+    <text name="InvalidRegularExpression">Trường {0} không hợp lệ.</text>
+    <text name="LengthNotInRange">Phần thứ mười của trường {0} phải nằm trong khoảng từ {1} đến {2}.</text>
+    <text name="UiCustomization_Mobile">Điện thoại di động</text>
+    <text name="UiCustomization_Desktop">Máy tính để bàn</text>
+    <text name="TwoFactorLoginIsNotSupported">Bảo mật 2 lớp không được hỗ trợ!</text>
+    <text name="LinkToCurrentPage">Liên kết đến trang hiện tại</text>
+    <text name="ThisFieldIsRequired">Trường này là bắt buộc.</text>
+    <text name="PleaseEnterAtLeastNCharacter">Vui lòng nhập ít nhất {0} ký tự.</text>
+    <text name="PleaseEnterNoMoreThanNCharacter">Vui lòng nhập không quá {0} ký tự.</text>
+    <text name="SelectTwoFactorProvider">Chọn nhà cung cấp xác thực hai yếu tố</text>
+    <text name="InvoiceInfoIsMissingOrNotCompleted">Thông tin hóa đơn bị thiếu hoặc chưa hoàn thành</text>
+    <text name="InvoiceTo">Hóa đơn đến</text>
+    <text name="OperationLogs">Nhật ký hoạt động</text>
+    <text name="ChangeLogs">Thay đổi nhật ký</text>
+    <text name="Object">Đối tượng</text>
+    <text name="Property">Bất động sản</text>
+    <text name="OriginalValue">Giá trị ban đầu</text>
+    <text name="NewValue">Giá trị mới</text>
+    <text name="Detail">Chi tiết</text>
+    <text name="CreatedAtByUser"><![CDATA[Được tạo lúc <b>{0}</b> bởi <b>{1}</b>]]></text>
+    <text name="TruongViet.DemoCore.MultiTenancy.Tenant">Tenant</text>
+    <text name="Abp.Organizations.OrganizationUnit">Cơ cấu Tổ chức</text>
+    <text name="Search">Tìm kiếm</text>
+    <text name="Pin">Ghim</text>
+    <text name="TopMenu">Menu trên cùng</text>
+    <text name="LeftMenu">Menu bên trái</text>
+    <text name="UserAccounts">Tài khoản người dùng</text>
+    <text name="Blue">Màu lam</text>
+    <text name="Green">Màu lục</text>
+    <text name="Pink">Màu hồng</text>
+    <text name="Yellow">Màu vàng</text>
+    <text name="DisplayName">Tên hiển thị</text>
+    <text name="RoleDescription">Mô tả quyền</text>
+    <text name="SmartCommunity">Cộng đồng thông minh</text>
+    <text name="CitizenManager">Quản lý cư dân</text>
+    <text name="CityNotifications">Thông báo nội bộ</text>
+    <text name="CitizenInformations">Thông tin công dân</text>
+    <text name="CitizenVote">Khảo sát ý kiến công dân</text>
+    <text name="CitizenReflects">Phản ánh công dân</text>
+    <text name="FeeManager">Hóa đơn - chi phí số</text>
+    <text name="FeeElectrics">Phí nước sinh hoạt</text>
+    <text name="FeeParkings">Phí gửi xe tháng</text>
+    <text name="FeeLight">Phí chiếu sáng</text>
+    <text name="FeeWaters">Phí nước sinh hoạt</text>
+    <text name="FeeCitizen">Phí cư dân</text>
+    <text name="FeeManagement">Phí quản lý</text>
+    <text name="FeeOthers">Các loại phí khác</text>
+    <text name="News">Chính phủ số</text>
+    <text name="Register">Đăng ký</text>
+    <text name="CovenientService">Kinh tế số</text>
+    <text name="CreateStoreService">Tạo cửa hàng tiện ích</text>
+    <text name="StoreUtilities">Cửa hàng tiện ích</text>
+    <text name="UserDetail">Thông tin cá nhân người dùng</text>
+    <text name="ApproveStoreService">Kiểm duyệt cửa hàng dịch vụ</text>
+    <text name="ApproveReportUser">Tiếp nhận báo cáo người dùng</text>
+    <text name="PartnerChanel">Kênh đối tác</text>
+    <text name="ChatCitizen">Tiếp nhận tin nhắn người dân</text>
+    <text name="Repair">Dịch vụ sửa chữa</text>
+    <text name="Work">Việc làm</text>
+    <text name="Education">Giáo dục</text>
+    <text name="Health">Y tế</text>
+    <text name="HealthCare">Chăm sóc sức khoẻ</text>
+    <text name="Village">Di tích - Làng nghề</text>
+    <text name="Travel">Du lịch</text>
+    <text name="Stay">Lưu trú</text>
+    <text name="Shopping">Mua sắm</text>
+    <text name="Sport">Thể thao</text>
+    <text name="Transport">Giao thông</text>
+    <text name="ServicesEconomy">Kinh tế số</text>
+    <text name="ServicesEconomyCreateStore">Tạo cửa hàng tiện ích</text>
+    <text name="ServicesEconomyApproveStore">Phê duyệt cửa hàng đăng ký</text>
+    <text name="ServicesEconomyReportUser">Báo cáo người dùng về các cửa hàng</text>
+    <text name="CityPortal">Cổng thông tin</text>
+    <text name="CityNotification">Thông tin số</text>
+    <text name="SocialDigital">Xã hội số</text>
+    <text name="ResourceEnvironment">Phòng tài nguyên và môi trường</text>
+    <text name="FinancePlanning">Phòng tài chính và kế hoạch</text>
+    <text name="Internal">Phòng nội vụ</text>
+    <text name="Inspection">Phòng thanh tra</text>
+    <text name="Judical">Phòng tư pháp</text>
+    <text name="Commerce">Phòng kinh tế</text>
+    <text name="Invalids">Phòng lao động thương binh và xã hội</text>
+    <text name="EducationDepartment">Phòng giáo dục và đào tạo</text>
+    <text name="CulturalInfomation">Phòng văn hóa và thông tin</text>
+    <text name="Zoning">Phòng quản lý đô thị</text>
+    <text name="DistrictDepartment">Văn phòng quận</text>
+    <text name="Police">Công an quận</text>
+    <text name="Army">Ban chỉ huy quân sự quận</text>
+    <text name="PartnerCreateStore">Đăng ký cửa hàng</text>
+    <text name="PartnerManagementStore">Quản lý cửa hàng</text>
+    <text name="SelectRoles">Chọn quyền</text>
+    <text name="AddRole">Thêm quyền</text>
+    <text name="UrbanProjects">Dự án đô thị</text>
+    <text name="AddUrbanZone">Thêm khu đô thị</text>
+    <text name="BillsByCategory">Hoá đơn chi tiết</text>
+    <text name="PriceListCode">Mã bảng giá</text>
+
+    <!--Account manager-->
+
+
+
+
+    <!--HomePage-->
+    <text name="AppUserCount">Tổng số dân sử dụng ứng dụng</text>
+
+
+    <text name="ManageButton">Quản lý</text>
+    <text name="Feedbacks">Số lượt phản ánh</text>
+    <text name="InteractionBtwDistrictResident">Lượt giao tiếp giữa người dân và quận</text>
+    <text name="NewStores">Gian hàng mới</text>
+    <text name="ServiceOrders">Đơn đặt dịch vụ</text>
+
+    <text name="RegisteredStoresCount">Số lượng cửa hàng đăng ký</text>
+    <text name="ChooseBuilding">Chọn tòa nhà</text>
+    <text name="ConfirmNewPassword">Xác nhận lại mật khẩu</text>
+    <text name="HeadOfHousehold">Chủ hộ</text>
+
+    <text name="HomePage.ServiceOrderStatistics">Thống kê đơn đặt dịch vụ</text>
+    <text name="HomePage.StoreCountStatistics">Thống kê số lượng cửa hàng</text>
+    <text name="HomePage.StatisticalChart">Biểu đồ thống kê</text>
+    <text name="HomePage.ResidentFeedbackStatistics">Thống kê phản ánh của cư dân</text>
+    <text name="HomePage.ResidentChatStatistics">Thống kê giao tiếp</text>
+    <text name="HomePage.ResidentVoteStatistics">Thống kê khảo sát</text>
+
+    <text name="HomePage.CitizenComplaints">Phản ánh cư dân</text>
+    <text name="HomePage.ReflectCompleted">Phản ánh đã xử lý</text>
+    <text name="HomePage.TotalVotes">Tổng số khảo sát</text>
+    <text name="HomePage.TotalUsers">Số người tham gia</text>
+    <text name="HomePage.ParticipationRate">Tỉ lệ người tham gia (%)</text>
+    <text name="HomePage.ChatOrganizationResident">Tin nhắn Công dân - Phòng ban</text>
+    <text name="HomePage.ChatReflectResident">Tin nhắn phản ánh</text>
+
+    <text name="CitizenComplaints">Phản ánh cư dân</text>
+    <text name="ReflectProcessed">Phản ánh đã xử lý</text>
+    <text name="TotalNumPolls">Tổng số khảo sát</text>
+    <text name="TotalParticipants">% tham gia khảo sát</text>
+    <text name="TotalCitizens">Tổng số cư dân đã đăng ký theo tháng</text>
+    <text name="TotalNewCitizens">Số cư dân chưa được xác minh</text>
+    <text name="TotalAcceptedCitizens">Số cư dân đã được xác minh</text>
+    <text name="RejectedCitizens">Số cư dân bị từ chối</text>
+    <text name="ResidentFeedbackStat">Thống kê phản ánh cư dân</text>
+    <text name="ResidentVoteStatistics">Thống kê khảo sát cư dân</text>
+    <text name="UserResidentsStatistics">Thống kê cư dân sử dụng app</text>
+    <text name="UserAccountsStatistics">Thống kê tài khoản người dùng</text>
+    <text name="TotalNumUserAccounts">Tổng số tài khoản người dùng</text>
+
+    <text name="HomePage.BillPaid">Hoá đơn đã thanh toán</text>
+    <text name="HomePage.BillDebt">Hoá đơn công nợ</text>
+    <text name="HomePage.BillPending">Hoá đơn chưa trả</text>
+    <text name="HomePage.BillWaiting">Hoá đơn đang chờ xác nhận</text>
+    <text name="PaidAmount">Tổng đã trả</text>
+    <text name="UnpaidAmount">Tổng chưa trả</text>
+    <text name="BillsStatistics">Thống kê hoá đơn</text>
+
+    <text name="InteractionBtwManagementResident">Lượt giao tiếp giữa người dân và ban quản lý</text>
+    <text name="CitizenTempCount">Số dân cư</text>
+    <text name="AdminRegCountRequesting">Đăng ký hành chính đang chờ xử lý</text>
+    <text name="PollCount">Số khảo sát được thực hiện</text>
+    <text name="NoticeCount">Thông báo số</text>
+    <text name="QuestionAnswerCount">Số lượng câu hỏi</text>
+    <text name="MonthlyBillCount">Số lượng hoá đơn tháng</text>
+
+    <!--NotificationArea-->
+    <text name="AccountBtn">Tài khoản</text>
+
+    <!--AboutUs-->
+    <text name="About">Giới thiệu</text>
+    <text name="AboutEdit">Chỉnh sửa trang giới thiệu</text>
+
+    <!--GenericElements-->
+    <text name="SearchPlaceholder">Tìm kiếm...</text>
+    <text name="MoreDetails">Xem chi tiết</text>
+    <text name="DeleteBtn">Xoá</text>
+    <text name="ApproveBtn">Phê duyệt</text>
+    <text name="DenyBtn">Từ chối</text>
+    <text name="CancelBtn">Huỷ</text>
+    <text name="SubmitBtn">Lưu</text>
+    <text name="UpdateBtn">Cập nhật</text>
+    <text name="EditBtn">Sửa</text>
+    <text name="TaskHeader">Thao tác</text>
+    <text name="DetailsHeader">Chi tiết</text>
+    <text name="DataUnavailable">Chưa có dữ liệu</text>
+    <text name="FromTxt">Từ</text>
+    <text name="ToTxt">đến</text>
+    <text name="AndAbove">trở lên</text>
+    <text name="ReturnBtn">Quay lại</text>
+    <text name="AddBtn">Thêm</text>
+    <text name="NewBtn">Thêm mới</text>
+    <text name="ImportBtn">Nhập mới</text>
+    <text name="ExportBtn">Xuất ra file</text>
+    <text name="OrderedNumberHeader">STT</text>
+    <text name="Comments">Bình luận</text>
+    <text name="Comment">Bình luận</text>
+    <text name="ViewBtn">Xem</text>
+    <text name="AddAttachment">Thêm file đính kèm</text>
+    <text name="AllTxt">Tất cả</text>
+    <text name="ImportExcel">Nhập file Excel</text>
+    <text name="ExportExcel">Xuất ra file Excel</text>
+    <text name="Fullname">Họ tên</text>
+    <text name="BirthYear">Năm sinh</text>
+    <text name="Birthday">Ngày sinh</text>
+    <text name="Gender">Giới tính</text>
+    <text name="HomeAddress">Địa chỉ nhà</text>
+    <text name="VerifyBtn">Xác minh</text>
+    <text name="Male">Nam</text>
+    <text name="Female">Nữ</text>
+    <text name="RefreshBtn">Làm mới</text>
+    <text name="Description">Mô tả</text>
+    <text name="Information">Thông tin</text>
+    <text name="ID">ID</text>
+    <text name="PushNotificationBtn">Đẩy thông báo</text>
+
+    <!--NotificationComponent-->
+    <text name="NotificationList">Danh sách thông báo</text>
+    <text name="NotificationInfo">Nội dung thông báo</text>
+    <text name="DateCreated">Ngày tạo</text>
+    <text name="NotificationStatus">Trạng thái</text>
+    <text name="NewNotification">Thông báo mới</text>
+    <text name="ViewAllNotification">Xem tất cả</text>
+    <text name="HasBeenRead">Đã xem</text>
+
+    <!--BuildingComponent-->
+    <text name="AddNewBuilding">Thêm toà nhà</text>
+    <text name="SumArea">Diện tích</text>
+    <text name="RoomNo">Số phòng</text>
+
+    <!--AdminComponent-->
+    <text name="AdministrativeServices">Dịch vụ hành chính</text>
+    <text name="AdministrativeServiceType">Loại dịch vụ hành chính</text>
+    <text name="ServiceRequestList">Danh sách yêu cầu dịch vụ</text>
+    <text name="AdminFile">File hành chính</text>
+    <!--AdminTableComponent-->
+    <text name="SelectAdminServiceType">Chọn loại dịch vụ hành chính</text>
+    <text name="DigitalAdminList">Danh sách hành chính số</text>
+    <text name="ApartmentCode">Mã căn hộ</text>
+    <text name="RequesterName">Tên người yêu cầu</text>
+    <text name="PhoneNo">Số điện thoại</text>
+    <text name="RequestDateCreated">Ngày tạo yêu cầu</text>
+    <text name="ServiceType">Loại dịch vụ</text>
+    <text name="RequestDetail">Nội dung yêu cầu</text>
+    <!--AdminTypeComponent-->
+    <text name="ServiceTypeList">Danh sách các loại dịch vụ</text>
+    <text name="ServiceTypeName">Tên loại dịch vụ hành chính</text>
+    <text name="ServiceNameNotEmpty">Tên loại dịch vụ không được để trống</text>
+    <text name="ServiceTypeNameShort">Tên loại dịch vụ</text>
+    <text name="PriceList">Bảng giá</text>
+    <text name="Category">Hạng mục</text>
+    <text name="EachPrice">Đơn giá</text>
+    <text name="Price">Giá tiền</text>
+    <text name="PriceUnit">Đơn vị tính</text>
+    <text name="Notes">Ghi chú</text>
+    <text name="AdminTypeEmptyBoxes">Các lựa chọn không được để trống</text>
+    <text name="AdditionalNotes">Ghi chú thêm</text>
+    <text name="AddCategory">Thêm hạng mục</text>
+
+    <!--Charges-->
+    <text name="ElectricityBillManager">Quản lý phí sử dụng điện</text>
+    <text name="LightningFeeManager">Quản lý phí chiếu sáng</text>
+    <text name="ManagementFee">Phí quản lý</text>
+    <text name="MonthlyParkingFeeManager">Quản lý phí gửi xe hàng tháng</text>
+    <text name="WaterBillManager">Quản lý phí sử dụng nước</text>
+    <text name="ResidentBillManager">Quản lý phí dân cư</text>
+    <text name="FilterBill">Lọc hóa đơn</text>
+
+
+    <!--============================Hóa đơn khu đô thị ======================================-->
+    <text name="ServiceFeeList">Bảng giá dịch vụ</text>
+    <text name="EditFeeList">Sửa bảng giá</text>
+    <text name="AdditionalFeeList">Bảng giá phụ phí dịch vụ</text>
+    <text name="ServiceDetails">Thông tin chi tiết dịch vụ</text>
+    <text name="FeeTypeName">Tên loại giá</text>
+    <text name="FeeTypeValue">Giá trị</text>
+    <text name="PriceDong">Giá (đồng)</text>
+    <text name="AddFeeType">Thêm loại giá</text>
+    <text name="FeeCombo">Combo giá</text>
+    <text name="AmountToNearestDollar">Ước tính (tới giá trị dollar gần nhất)</text>
+    <text name="FeeUnit">Đơn vị</text>
+    <text name="BillList">Danh sách hoá đơn:</text>
+    <text name="BillCode">Mã hoá đơn</text>
+    <text name="CustomerName">Tên khách hàng</text>
+    <text name="NoOfNameTypeUsed">Số { nameType } sử dụng</text>
+    <text name="CustomerNameNotEmpty">Tên khách hàng không được để trống</text>
+    <text name="CustomerCode">Mã khách hàng</text>
+    <text name="CustomerCodeNotEmpty">Mã khách hàng không được để trống</text>
+    <text name="SmartHomeCode">Mã nhà thông minh</text>
+    <text name="SmartHomeCodeNotEmpty">Mã nhà thông minh không được để trống</text>
+    <text name="OldIndex">Chỉ số cũ</text>
+    <text name="NewIndex">Chỉ số mới</text>
+    <text name="TotalUse">Tổng sử dụng</text>
+    <text name="Bill">Hoá đơn</text>
+    <text name="DraftBills">Hóa đơn nháp</text>
+    <text name="SaveDraftBills">Lưu bản nháp</text>
+    <text name="SaveDraftBillsSuccess">Lưu bản nháp thành công</text>
+    <text name="SaveDraftBillsFail">Lưu bản nháp thất bại</text>
+    <text name="MoveToDraftBills">Chuyển sang nháp</text>
+    <text name="MoveToDraftBillsSuccess">Chuyển sang bản nháp thành công</text>
+    <text name="MoveToDraftBillsFail">Chuyển sang bản nháp thất bại</text>
+    <text name="BillCreateSuccess">Tạo hoá đơn thành công!</text>
+    <text name="BillCreateFail">Tạo hoá đơn thất bại!</text>
+    <text name="DueDate">Ngày hết hạn</text>
+    <text name="Tasks">Thao tác</text>
+    <text name="BillCost">Chi phí</text>
+    <text name="BillPeriod">Chu kỳ</text>
+    <text name="End">Kết thúc</text>
+    <text name="PeriodStart">Từ chu kỳ</text>
+    <text name="PeriodEnd">Đến chu kỳ</text>
+    <text name="DueDateFrom">Từ ngày đáo hạn</text>
+    <text name="DueDateTo">Đến ngày đáo hạn</text>
+    <text name="BillPaid">Đã thanh toán</text>
+    <text name="BillNotPaid">Chưa thanh toán</text>
+    <text name="BillDebt">Công nợ</text>
+    <text name="Cancelled">Đã huỷ</text>
+    <text name="BillDeleteSuccess">Xoá hoá đơn thành công</text>
+    <text name="BillDeleteFail">Xoá hoá đơn thất bại</text>
+    <text name="UpdateBillList">Cập nhật bảng giá dịch vụ</text>
+    <text name="UpdateBillListSuccess">Cập nhật bảng giá thành công</text>
+    <text name="UpdateBillListFail">Cập nhật bảng giá thất bại</text>
+    <text name="DeleteThisQ">Bạn có muốn xoá mục này?</text>
+    <text name="AddBill">Thêm hoá đơn</text>
+    <text name="ViewBill">Xem hóa đơn</text>
+    <text name="EditBill">Chỉnh sửa hóa đơn</text>
+    <text name="IsDraft">Bản nháp</text>
+    <text name="CreateBillSuccess">Tạo hoá đơn thành công</text>
+    <text name="CreateBillFail">Tạo hoá đơn thất bại</text>
+    <text name="DeleteBillQ">Bạn có muốn xoá hoá đơn này?</text>
+    <text name="DeleteBillSuccess">Xoá hoá đơn thành công!</text>
+    <text name="DeleteBillFail">Xoá hoá đơn thất bại!</text>
+    <text name="CodeBill">Mã hoá đơn</text>
+    <text name="Notify">Thông báo</text>
+    <text name="BillApartmentNotificationTitle">Thông báo hóa đơn</text>
+    <text name="BillApartmentNotificationBody">Nhấn để xem chi tiết</text>
+    <text name="SendBillNotificationSuccess">Gửi thông báo hóa đơn thành công</text>
+    <text name="SendBillNotificationFail">Gửi thông báo hóa đơn thất bại</text>
+    <text name="BillNotification">Thông báo hóa đơn</text>
+    <text name="BillNotificationComingDueBody">Bạn có hóa đơn sắp đến hạn thanh toán!</text>
+    <text name="BillNotificationDueBody">Bạn có hóa đơn đã hết hạn thanh toán!</text>
+    <text name="Electricity">Điện</text>
+    <text name="Water">Nước</text>
+    <text name="Lightning">Chiếu sáng</text>
+    <text name="Management">Quản lý</text>
+    <text name="Parking">Gửi xe tháng</text>
+    <text name="Residency">Dân cư</text>
+    <text name="TitleNotBlank">Tiêu đề hoá đơn không được để trống!</text>
+    <text name="BillCodeNotBlank">Mã hoá đơn không được để trống!</text>
+    <text name="CustomerNameNotBlank">Tên khách hàng không được để trống!</text>
+    <text name="LastCostNotLessThan1000">Thành tiền của hoá đơn phải từ 1000đ trở lên!</text>
+    <text name="BillType">Loại hoá đơn</text>
+    <text name="MonthlyInvoice">Hoá đơn hàng tháng</text>
+    <text name="TotalNotLessThan1000">Tổng thành tiền phải lớn hơn 0đ</text>
+    <text name="BillTotal">Tổng cộng</text>
+    <text name="IndexHeadPeriod">Số đầu kỳ</text>
+    <text name="IndexEndPeriod">Số cuối kỳ</text>
+    <text name="IndexTotal">Tổng số</text>
+    <text name="PriceByRapport">Giá theo tỉ lệ</text>
+    <text name="PriceByPercent">Giá theo phần trăm</text>
+
+    <!--BillConfigDialog-->
+    <text name="PriceType">Loại giá</text>
+    <text name="PriceTypeNone">Không có</text>
+    <text name="PriceFixed">Giá cố định</text>
+    <text name="PriceByLevel">Giá theo mức</text>
+    <text name="PriceAdditional">Cộng thêm</text>
+    <text name="PriceLevelList">Bảng mức giá</text>
+    <text name="From">Từ</text>
+    <text name="To">Đến</text>
+    <text name="UpperLevel">Cấp trên</text>
+
+    <!--BillDialog-->
+    <text name="Count">Số lượng</text>
+    <text name="BillAmount">Thành tiền</text>
+    <text name="AdditionalFee">Phụ phí</text>
+    <text name="Value">Giá trị</text>
+    <text name="Format">Định dạng</text>
+    <text name="Surcharge">Cộng thêm</text>
+
+    <!--================================================================-->
+
+    <!--ChatCitizen-->
+    <text name="ReceiverMessage">Tiếp nhận tin nhắn</text>
+    <text name="SendFile">Gửi file</text>
+
+    <!--SettingCharges-->
+    <text name="DeviceManager">Quản lý thiết bị</text>
+    <text name="AttributeName">Tên thuộc tính</text>
+    <text name="ExcelColumnName">Tên cột bảng Excel</text>
+    <text name="ElectricityBillExcel">Excel Phí điện</text>
+    <text name="WaterBillExcel">Excel Phí nước</text>
+    <!--CityEvent-->
+    <text name="ResidentNews">Bảng tin cư dân</text>
+    <text name="NewsArticleList">Danh sách tin tức</text>
+    <text name="NewsHeadline">Tiêu đề tin tức</text>
+    <text name="NewsDetailed">Nội dung tin tức</text>
+    <text name="CommentsLowercaps">bình luận</text>
+    <text name="InterestedLowercaps">quan tâm</text>
+    <text name="HeadlineNotEmpty">Tiêu đề bài viết không được để trống</text>
+    <text name="NewsDetailsNotEmpty">Nội dung tin tức không được để trống</text>
+    <!--CityNotification-->
+    <text name="InternalAnnoucementManager">Quản lý thông báo nội bộ</text>
+    <text name="AnnouncementList">Danh sách thông báo</text>
+    <text name="AnnouncementTitle">Tiêu đề thông báo</text>
+    <text name="AnnouncementDetails">Nội dung thông báo</text>
+    <text name="AttachedFile">File đính kèm</text>
+    <text name="AnnouncementRecipient">Thông báo đến</text>
+    <text name="ResidentGroup">Nhóm cư dân</text>
+    <text name="AnnouncementTitleNotEmpty">Tiêu đề thông báo không được để trống</text>
+    <text name="AnnouncementDetailsNotEmpty">Nội dung thông báo không được để trống</text>
+    <text name="AddResidentNotice">Thêm thông báo dân cư</text>
+    <text name="AddNoticeSuccess">Thêm thông báo dân cư thành công</text>
+    <text name="AddNoticeFail">Thêm thông báo dân cư thất bại</text>
+    <text name="EditResidentNotice">Sửa thông báo</text>
+    <text name="DeleteNoticeSuccess">Xoá thông báo thành công</text>
+    <text name="DeleteNoticeFail">Xoá thông báo thất bại</text>
+    <text name="ApartmentGroup">Nhóm căn hộ</text>
+    <text name="AllowPushAnnouncement">Cho phép đẩy thông báo</text>
+    <text name="Push">Đẩy ngay</text>
+    <text name="Later">Để sau</text>
+    <text name="EditNoticeSuccess">Sửa thông báo thành công</text>
+    <text name="EditNoticeFail">Sửa thông báo thất bại</text>
+    <text name="AnnouncementsNew">Thông báo mới</text>
+    <text name="AnnouncementsPushed">Thông báo đã đẩy</text>
+    <text name="AnnouncementState">Trạng thái</text>
+    <text name="PushSelectedNoti">Đẩy thông báo đã chọn</text>
+    <text name="ConfirmDeleteAnnouncement">Bạn muốn xóa thông báo này không?</text>
+    <text name="ConfirmDeleteListAnnouncements">Bạn muốn xóa các thông báo đã chọn này không?</text>
+    <text name="ConfirmPushOneAnnouncement">Bạn muốn đẩy thông báo này không?</text>
+    <text name="ConfirmPushListAnnouncements">Bạn muốn đẩy các thông báo đã chọn này không?</text>
+    <text name="IsAllowComment">Cho phép bình luận?</text>
+    <text name="NotAllow">Không cho</text>
+    <text name="NotAllowComment">Không cho phép bình luận</text>
+    <!--CityNotificationView-->
+    <text name="SummaryCityNotification">Tổng quan</text>
+    <text name="CommentCountTxt">lượt bình luận</text>
+    <text name="InterestCountTxt">lượt quan tâm</text>
+    <text name="CommentList">Danh sách bình luận</text>
+    <text name="EnterComment">Nhập bình luận</text>
+    <text name="NoFile">Không có file</text>
+    <!--HotlineComponent-->
+    <text name="Hotlines">Đường dây nóng</text>
+    <text name="Hotline">Đường dây nóng</text>
+    <text name="HotlineList">Danh sách đường dây nóng</text>
+    <text name="NameCannotBeEmpty">Tên không được để trống</text>
+    <text name="HotlineCannotBeEmpty">Đường dây nóng không được để trống</text>
+    <text name="HotlineAddSuccess">Thêm thông tin hotline thành công!</text>
+    <text name="HotlineAddFail">Thêm thông tin hotline thất bại</text>
+    <text name="HotlineDeleteSuccess">Xoá thông tin hotline thành công</text>
+    <text name="HotlineDeleteFail">Xoá thông tin hotline thất bại</text>
+    <text name="AddHotline">Thêm đường dây nóng</text>
+    <text name="DeleteHotlineQ">Bạn có muốn xoá hotline này không?</text>
+    <text name="Note">Ghi chú</text>
+    <!--ManageCitizen-->
+    <text name="ResidentManager">Công dân số</text>
+    <text name="MatchingInfo">Thông tin khớp</text>
+    <text name="Unverified">Chưa xác minh</text>
+    <text name="Verified">Đã xác minh</text>
+    <text name="Terminated">Đã huỷ</text>
+    <text name="AddCitizen">Thêm thông tin dân cư</text>
+    <text name="AddCitizenSuccess">Thêm thông tin cư dân thành công</text>
+    <text name="AddCitizenFailed">Thêm thông tin cư dân thất bại</text>
+    <text name="DeleteCitizenSuccess">Xoá thông tin cư dân thành công</text>
+    <text name="DeleteCitizenFailed">Xoá thông tin cư dân thất bại</text>
+    <text name="EditCitizen">Sửa thông tin cư dân</text>
+    <text name="VerifyCitizenQ">Bạn chắc chắn muốn xác minh?</text>
+    <text name="VerifyCitizenSuccess">Xác minh cư dân thành công</text>
+    <text name="VerifyCitizenFailed">Xác minh cư dân thất bại</text>
+    <text name="DoQuestion">Bạn chắc chắn muốn thực hiện thao tác?</text>
+    <text name="ResidentInfo">Thông tin công dân</text>
+    <text name="ValidateResidentAcc">Xác minh công dân</text>
+    <!--CitizenTable-->
+    <text name="ResidentTable">Danh sách cư dân</text>
+    <text name="AvatarPhoto">Ảnh đại diện</text>
+    <text name="ChooseAcc">Chọn tài khoản</text>
+    <text name="SelectUser">Chọn người dùng</text>
+    <text name="SelectUserCantBeEmpty">Tên người dùng không được để trống</text>
+    <text name="ResidentNameCantBeEmpty">Tên cư dân không được để trống</text>
+    <text name="FamRep">Đại diện hộ gia đình</text>
+    <text name="FamilyRelationShip">Quan hệ với chủ hộ</text>
+    <text name="MemberNumber">Số thành viên</text>
+    <text name="BirthdayCantBeEmpty">Ngày sinh không được để trống</text>
+    <text name="PhoneNoCantBeEmpty">Số điện thoại không được để trống</text>
+    <text name="EmailAddressCantBeEmpty">Địa chỉ email không được để trống</text>
+    <text name="HomeAddressCantBeEmpty">Địa chỉ không được để trống</text>
+    <text name="CMND">CMND/CCCD</text>
+    <text name="Nationality">Quốc tịch</text>
+    <text name="NationalityCantBeEmpty">Quốc tịch không được để trống</text>
+    <text name="VerificationInfo">Thông tin xác minh</text>
+    <text name="AvailableResidentInfo">Thông tin cư dân trên hệ thống</text>
+    <text name="BuildingCode">Mã toà nhà</text>
+    <text name="InformationByResident">Thông tin cư dân khai báo</text>
+    <text name="ConfirmCitizenSuccess">Xác minh cư dân thành công</text>
+    <text name="ConfirmCitizenFail">Xác minh cư dân thất bại</text>
+    <text name="CancelRequest">Huỷ yêu cầu</text>
+    <text name="DeleteCitizen">Bạn chắc chắn muốn xóa?</text>
+    <text name="Career">Nghề nghiệp</text>
+    <text name="Age">Tuổi</text>
+    <text name="YearsOld">tuổi</text>
+    <text name="AboutAge">Độ tuổi</text>
+    <text name="SelectApartment">Chọn căn hộ</text>
+    <text name="SelectRelationShip">Chọn vai trò</text>
+    <text name="FilterCitizen">Lọc</text>
+    <text name="FilterResident">Lọc thông tin công dân</text>
+    <text name="ResidentCode">Mã công dân</text>
+    <!--ReflectCitizen-->
+    <text name="DigitalFeedbackManager">Quản lý phản ánh số</text>
+    <text name="CitizenFeedbackList">Danh sách phản ánh cư dân</text>
+    <text name="RateContentFeedbackDetail">Xem nhận xét của cư dân</text>
+    <text name="FeedBackDetailModalHeader">Xem chi tiết phản ánh của cư dân</text>
+    <text name="ConfirmChangeStateFeedback">Bạn chắc chắn muốn thay đổi trạng thái của phản ánh?</text>
+    <text name="ReturnStateHanding">Xử lý lại</text>
+    <text name="ReturnStatePending">Tiếp nhận lại</text>
+    <text name="ReceptionRoom">Phòng tiếp nhận</text>
+    <text name="ContactComplainant">Liên hệ người phản ánh</text>
+    <text name="ResidentsAlreadyExist">Cư dân đã tồn tại</text>
+    <text name="ReceivingDept">Phòng ban tiếp nhận</text>
+    <text name="SelectReceiveDept">Chọn phòng ban tiếp nhận</text>
+
+    <!--feebback table header-->
+    <text name="NewFeedback">Phản ánh mới</text>
+    <text name="Received">Đã tiếp nhận</text>
+    <text name="Processing">Đang xử lý</text>
+    <text name="Declined">Bị từ chối</text>
+    <text name="Processed">Hoàn thành</text>
+    <text name="Rated">Đã đánh giá</text>
+    <text name="seeFeedbackDetail">Xem chi tiết</text>
+    <text name="AdminProcessed">Admin đã xử lý</text>
+    <text name="ResidentConfirmed">Cư dân đã xác nhận</text>
+
+
+    <text name="TypeAMessage">Nhắn tin ở đây...</text>
+    <text name="FeedbackTitle">Tên phản ánh</text>
+    <text name="FeedbackDetail">Nội dung phản ánh</text>
+    <text name="Feedbacker">Người phản ánh</text>
+    <text name="FeedbackTime">Thời gian phản ánh</text>
+    <text name="StartProcessingTime">Thời gian hẹn xử lý</text>
+    <text name="NewCommunication">Lượt giao tiếp mới</text>
+    <text name="FinishTime">Thời gian hoàn thành</text>
+    <text name="AcceptToProcess">Tiếp nhận xử lý</text>
+    <text name="MarkAsComplete">Đã hoàn thành</text>
+    <text name="ReplyToFeedback">Giao tiếp</text>
+    <text name="SelectFeedback">Tiếp nhận</text>
+    <text name="SetTimeToProcess">Đặt lịch xử lý</text>
+    <text name="ScheduleSuccess">Hẹn lịch xử lý thành công</text>
+    <text name="ScheduleError">Hẹn lịch xử lý bị lỗi</text>
+    <text name="FeedbackReturnSuccess">Quay lại thành công</text>
+    <text name="ErrorHappened">Có lỗi xảy ra</text>
+    <text name="ReceiveComplaintSuccess">Tiếp nhận phản ánh thành công</text>
+    <text name="TaskFinished">Hoàn thành công việc</text>
+    <text name="TaskProcessing">Công việc đang xử lý!</text>
+    <text name="Rating">Đánh giá</text>
+    <text name="RatingContent">Nội dung đánh giá</text>
+
+    <!--VoteCitizen-->
+    <text name="DigitalSurveyManager">Quản lý khảo sát số</text>
+    <text name="NewSurvey">Khảo sát mới</text>
+    <text name="EndedSurvey">Đã kết thúc</text>
+    <text name="SurveyList">Danh sách khảo sát</text>
+    <text name="SurveyName">Tên khảo sát/câu hỏi</text>
+    <text name="SurveyContent">Nội dung khảo sát</text>
+    <text name="SurveyCreateDate">Ngày tạo</text>
+    <text name="SurveyCreateTime">Thời gian tạo</text>
+    <text name="SurveyEndDate">Ngày kết thúc</text>
+    <text name="SurveyEndTime">Thời gian kết thúc</text>
+    <text name="votes">bình chọn</text>
+    <text name="NotParticipatedSurvey">Chưa tham gia khảo sát</text>
+    <text name="notSurveyed">chưa bình chọn</text>
+    <text name="SurveyTitleBlank">Tiêu đề khảo sát không được để trống</text>
+    <text name="StartTime">Thời gian bắt đầu</text>
+    <text name="StartTimeBlank">Thời gian bắt đầu không được để trống</text>
+    <text name="EndTime">Thời gian kết thúc</text>
+    <text name="EndTimeBlank">Thời gian kết thúc không được để trống</text>
+    <text name="SurveyChoices">Các lựa chọn</text>
+    <text name="AddChoice">Thêm một lựa chọn</text>
+    <text name="SurveyChoicesBlank">Cần ít nhất 2 lựa chọn</text>
+    <text name="SurveyChoicesBlank2">Lựa chọn không có nội dung</text>
+    <text name="AddSurvey">Thêm khảo sát</text>
+    <text name="EditEvent">Sửa sự kiện</text>
+    <text name="IsShowNumbersVote">Xem lượt bình chọn?</text>
+
+    <!--MainCitizen-->
+    <text name="ManageCitizenInfo">Quản lý thông tin của các cư dân trong thành phố</text>
+    <text name="FeedbackManager">Quản lý phản ánh</text>
+    <text name="ManageFeedbackBySubject">Quản lý các phản hồi từ dân cư qua các nhóm bình luận theo chủ đề</text>
+    <text name="UserServices">Dịch vụ cho người dùng</text>
+    <text name="LightningFee">Phí chiếu sáng</text>
+    <text name="ElectricityBill">Phí điện</text>
+    <text name="WaterBill">Phí nước</text>
+    <text name="MonthlyParkingFee">Phí gửi xe tháng</text>
+    <text name="Operator">Vận hành</text>
+    <text name="SystemOperator">Vận hành hệ thống</text>
+
+    <!--CitizenTemp-->
+    <text name="CitizenTempHeader">Lưu trữ thông tin cư dân</text>
+    <text name="NoValue">Chưa có giá trị</text>
+    <text name="RelHost">Quan hệ với chủ hộ</text>
+    <text name="Host">Chủ hộ</text>
+    <text name="Wife">Vợ</text>
+    <text name="Husband">Chồng</text>
+    <text name="Daughter">Con gái</text>
+    <text name="Son">Con trai</text>
+    <text name="Relative">Họ hàng</text>
+    <text name="Father">Cha</text>
+    <text name="Mother">Mẹ</text>
+    <text name="Grandfather">Ông</text>
+    <text name="Grandmother">Bà</text>
+    <text name="Guest">Khách</text>
+    <text name="GuestHusband">Chồng của khách</text>
+    <text name="GuestWife">Vợ của khách</text>
+    <text name="GuestDaughter">Con gái của khách</text>
+    <text name="GuestSon">Con trai của khách</text>
+    <text name="GuestRelative">Họ hàng của khách</text>
+    <text name="GuestFather">Cha của khách</text>
+    <text name="GuestMother">Mẹ của khách</text>
+    <text name="GuestGrandfather">Ông của khách</text>
+    <text name="GuestGrandmother">Bà của khách</text>
+    <text name="EmailAddressNotValid">Địa chỉ email không hợp lệ!</text>
+    <text name="CitizenCode">Mã cư dân</text>
+    <text name="OwnerGeneration">Thế hệ cư dân</text>
+    <text name="RequestCorrection">Yêu cầu sửa</text>
+    <text name="HostOrMember">Chủ hộ hay thành viên</text>
+    <text name="HostName">Tên chủ hộ</text>
+    <text name="UrbanCodeFullNameNotValid">Mã khu đô thị, Họ tên, Mã căn hộ là bắt buộc</text>
+    <text name="MasterLife">Đời chủ</text>
+
+    <!--NewsComponent-->
+    <text name="DigitalAnnoucementManager">Quản lý thông báo số</text>
+    <text name="DigitalAnnoucementList">Danh sách thông báo số</text>
+    <text name="AnnouncementHeaderImg">Ảnh tiêu đề thông báo</text>
+    <text name="AddAnnouncement">Thêm thông báo</text>
+    <text name="SelectDepartment">Chọn phòng ban</text>
+    <text name="AdministrationDept">Ban quản trị</text>
+    <text name="ManagementDept">Ban quản lý</text>
+    <text name="Branch">Chi bộ</text>
+    <text name="CivilGroup">Tổ dân phố</text>
+    <text name="UpdateNotiSuccess">Cập nhật thông báo thành công</text>
+    <text name="UpdateNotiFail">Cập nhật thông báo thất bại</text>
+    <text name="DeleteNotiSuccess">Xoá thông báo thành công</text>
+    <text name="DeleteNotiFail">Xoá thông báo thất bại</text>
+    <text name="EditAnnouncement">Sửa thông báo</text>
+    <!--DetailsNewsFeed-->
+    <text name="CommentBtn">Bình luận</text>
+    <text name="LikeBtn">Thích</text>
+    <text name="ReadMoreBtn">Đọc thêm</text>
+    <text name="WhatsOnYourMind">Bạn ơi, bạn nghĩ gì thế?</text>
+    <text name="FinishEditing">Chỉnh sửa xong</text>
+    <text name="WritePublicComment">Viết bình luận công khai</text>
+    <text name="Anonymous">Người ẩn danh</text>
+    <text name="Reply">Phản hồi</text>
+    <text name="SeeMoreComments">Xem thêm bình luận</text>
+    <!--NewsFeedComponent-->
+    <text name="NewsFeed">Bảng tin</text>
+    <text name="Post">Bài viết</text>
+    <text name="YourThoughts">Bạn nghĩ gì?</text>
+    <text name="PostAuthor">Người đăng</text>
+    <text name="PostManager">Quản lý bài viết</text>
+    <text name="PostContent">Nội dung bài viết</text>
+    <text name="PostDetail">Chi tiết bài viết</text>
+    <text name="AddToPost">Thêm vào bài viết</text>
+    <text name="PostBtn">Đăng</text>
+    <text name="ApprovePost">Phê duyệt bài đăng</text>
+    <text name="CreatePost">Tạo bài viết</text>
+    <text name="PostPublic">Công khai</text>
+    <text name="EditPost">Chỉnh sửa bài viết</text>
+
+    <!--ParkingBooking-->
+    <text name="ParkingLotRentalManager">Quản lý lượt thuê</text>
+    <text name="ParkingLotRentalList">Danh sách lượt thuê</text>
+    <text name="RentParkingLot">Đặt chỗ</text>
+    <text name="ParkingLotName">Tên bãi đỗ xe</text>
+    <text name="RentCount">Lượt thuê</text>
+    <text name="Renter">Người thuê</text>
+    <text name="RentDate">Ngày thuê</text>
+    <text name="Profits">Doanh thu</text>
+    <text name="Tools">Công cụ</text>
+    <!--ParkingLot-->
+    <text name="ParkingLotManager">Quản lý chỗ đỗ xe</text>
+    <text name="TotalNoOfLots">Tổng số chỗ</text>
+    <text name="TotalNoOfVehicles">Tổng số xe</text>
+    <text name="TicketPrice">Giá vé</text>
+    <!--ParkingManager-->
+    <text name="ParkingManager">Quản lý bãi đỗ xe</text>
+    <!--ApproveStore-->
+    <text name="ApproveStore">Kiểm duyệt cửa hàng</text>
+    <text name="ApprovedStores">Cửa hàng đã duyệt</text>
+    <text name="StoresNeedEdit">Cửa hàng yêu cầu chỉnh sửa</text>
+    <text name="DefunctStores">Cửa hàng ngừng hoạt động</text>
+    <!--Stores-->
+    <text name="Cosmetics">Chăm sóc sức khoẻ</text>
+    <text name="EducationInstitutions">Cơ sở giáo dục</text>
+    <text name="Entertainment">Dịch vụ giải trí</text>
+    <text name="Healthcare">Y tế sức khoẻ</text>
+    <text name="HealthFacilities">Cơ sở y tế sức khoẻ</text>
+    <text name="RepairService">Dịch vụ sửa chữa</text>
+    <text name="SportFacilities">Sân thể thao</text>
+    <text name="Transportation">Giao thông</text>
+    <text name="TrafficSpot">Điểm giao thông</text>
+    <text name="PlaceAccomodation">Điểm lưu trú</text>
+    <text name="TravelSpot">Điểm du lịch - Lưu trú</text>
+    <text name="NewWorkplace">Trung tâm mới</text>
+    <text name="ApprovedWorkplace">Trung tâm đã duyệt</text>
+    <text name="WorkplacesNeedEdit">Trung tâm cần kiểm duyệt</text>
+    <text name="DefunctWorkplace">Trung tâm ngừng hoạt động</text>
+    <!--TableOrder-->
+    <text name="ListServiceOrder">Danh sách đơn đặt dịch vụ</text>
+    <text name="OrderCode">Mã đơn hàng</text>
+    <text name="AssistantName">Tên người hỗ trợ</text>
+    <text name="OrdererName">Người gọi</text>
+    <text name="WaitForConfirmation">Chờ xác nhận</text>
+    <text name="ConfirmedOrder">Đã xác nhận</text>
+    <text name="FinishedOrder">Đã hoàn thành</text>
+    <text name="CancelledOrder">Đã huỷ</text>
+    <!--ReportUser-->
+    <text name="UserReportManager">Quản lý báo cáo từ người dùng</text>
+    <text name="ReportList">Danh sách báo cáo</text>
+    <text name="StoreName">Tên cửa hàng</text>
+    <text name="Reason">Lý do</text>
+    <text name="ReasonDetails">Chi tiết lý do</text>
+    <text name="Reporter">Tên người báo cáo</text>
+    <text name="Preview">Xem trước</text>
+    <!--ServiceBase-->
+    <text name="ServiceManager">Quản lý dịch vụ</text>
+    <text name="FilterServiceType">Lọc loại dịch vụ</text>
+    <text name="SelectServiceType">Chọn một loại dịch vụ</text>
+    <text name="FilterBtn">Lọc</text>
+    <text name="NewOrder">Đơn đặt mới</text>
+    <text name="Contact">Liên hệ</text>
+    <text name="UtilityInfo">Thông tin tiện ích</text>
+    <text name="SelectService">Chọn dịch vụ</text>
+    <text name="ProfilePhotoNotBlank">Ảnh đại diện không được để trống</text>
+    <text name="DescriptionImg">Hình ảnh mô tả</text>
+    <text name="6ImgLimit">Tối đa 6 hình</text>
+    <text name="DescriptionImgNotBlank">Ảnh mô tả không được để trống</text>
+    <text name="ServiceName">Tên dịch vụ</text>
+    <text name="Directions">Chỉ dẫn đường</text>
+    <text name="SelectCoordinates">Chọn toạ độ</text>
+    <text name="Latitude">Vĩ độ</text>
+    <text name="LatitudeCantBeBlank">Vĩ độ không được để trống</text>
+    <text name="Longtitude">Kinh độ</text>
+    <text name="LongtitudeCantBeBlank">Kinh độ không được để trống</text>
+    <text name="ServiceDescription">Mô tả dịch vụ</text>
+    <text name="ServiceDescriptionNotBlank">Mô tả dịch vụ không được để trống</text>
+    <text name="ContactName">Người liên hệ</text>
+    <text name="ServicePriceList">Bảng giá dịch vụ</text>
+    <text name="ServicePrice">Giá dịch vụ</text>
+    <text name="WorkTimes">Khung giờ hoạt động</text>
+    <text name="OpeningDays">Mở cửa các ngày trong tuần</text>
+    <text name="OpeningHours">Khung giờ mở cửa</text>
+    <text name="AddHours">Thêm khung giờ</text>
+    <text name="OpenTime">Thời gian mở cửa</text>
+    <text name="CloseTime">Thời gian đóng cửa</text>
+    <text name="pointsLowcaps">điểm</text>
+    <text name="NewlyCreated">Mới tạo</text>
+    <text name="RequestedEdit">Yêu cầu chỉnh sửa</text>
+    <text name="Defunct">Ngừng hoạt động</text>
+    <text name="DayOpen">Ngày mở cửa</text>
+
+    <!--ViewService-->
+    <text name="BasicInfo">Thông tin cơ bản</text>
+    <text name="reviews">đánh giá</text>
+    <text name="AboutStore">Giới thiệu cửa hàng</text>
+    <text name="Support">Hỗ trợ</text>
+    <text name="ratePoint">điểm đánh giá</text>
+    <text name="ProductReviews">Đánh giá sản phẩm</text>
+    <text name="SortByBest">Sắp xếp theo: Đánh giá tốt nhất</text>
+    <text name="SortByWorst">Sắp xếp theo: Đánh giá thấp nhất</text>
+    <text name="Location">Vị trí</text>
+    <!--CitizenSettings-->
+    <text name="DefaultExcelColumn">Tên cột Excel mặc định</text>
+    <text name="NewExcelColumn">Tên cột Excel mới</text>
+    <!--BuildingComponent-->
+    <text name="BuildingManager">Quản lý toà nhà</text>
+    <text name="AddBuilding">Thêm toà nhà mới</text>
+    <text name="AlarmBtn">Báo động</text>
+    <text name="DownloadBuildingInfo">Tải xuống dữ liệu</text>
+    <text name="View3D">Xem dạng 3D</text>
+    <text name="TowerNo">Toà số</text>
+
+    <!--Elevator-->
+    <text name="ElevatorOperate">Vận hành thang máy</text>
+    <text name="BuildingOperate">Vận hành toà nhà</text>
+    <text name="ACSystem">Hệ thống điều hoà</text>
+    <text name="ElectricalSys">Hệ thống điện</text>
+    <text name="WaterSystem">Hệ thống cấp thoát nước</text>
+    <text name="ElevatorSystem">Hệ thống thang máy</text>
+    <text name="BuildingReception">Lễ tân toà nhà</text>
+
+    <!--BuildingRenting-->
+    <text name="RentService">Dịch vụ thuê</text>
+    <text name="RentShowroom">Dịch vụ thuê showroom</text>
+    <text name="RentOffice">Dịch vụ thuê văn phòng</text>
+    <text name="ShoppingCenterRent">Dịch vụ thuê trung tâm thương mại</text>
+    <text name="RestauarantRent">Dịch vụ thuê nhà hàng</text>
+    <!--BuildingSecurity-->
+    <text name="BuildingSecurity">An ninh toà nhà</text>
+    <text name="AccessCard">Thẻ ra vào toà nhà</text>
+    <text name="SecurityGuard">Đội bảo vệ toà nhà</text>
+    <text name="ParkingBuilding">Gửi xe toà nhà</text>
+
+    <!--ManageBuilding-->
+    <text name="Reception">Lễ tân</text>
+    <text name="BuildingOperation">Vận hành toà nhà</text>
+    <text name="SecurityMngr">Quản lý an ninh</text>
+    <text name="RentalServiceMngr">Quản lý dịch vụ thuê</text>
+
+    <!--Business components-->
+    <text name="AttributeSettings">Cài đặt thuộc tính</text>
+    <text name="AttributeSettingProducts">Thuộc tính sản phẩm</text>
+    <text name="ProductCategory">Loại mặt hàng</text>
+    <text name="ProductCategories">Loại mặt hàng</text>
+    <text name="ProductCategoryList">Danh sách các loại mặt hàng</text>
+    <text name="AddNode">Thêm nút</text>
+    <text name="EditNode">Sửa nút</text>
+    <text name="DelNode">Xoá nút</text>
+    <text name="ProductAttribute">Thuộc tính mặt hàng</text>
+    <text name="AddAttribute">Thêm thuộc tính</text>
+    <text name="Import">Nhập</text>
+    <text name="Export">Xuất</text>
+    <text name="ProductAttributeList">Danh sách thuộc tính sản phẩm</text>
+    <text name="AttributeType">Loại thuộc tính</text>
+    <text name="DataType">Kiểu dữ liệu</text>
+    <text name="InfoType">Loại thông tin</text>
+    <text name="AttributeInfo">Thông tin thuộc tính</text>
+    <text name="Important">Bắt buộc</text>
+    <text name="AttributeValue">Giá trị thuộc tính</text>
+    <text name="SaveAttributeCheckoutValue">
+      Bạn cần lưu thuộc tính checkout trước khi có thể thêm giá trị cho trang
+      thuộc tính thanh toán này.
+    </text>
+    <text name="AddAttributeValue">Thêm giá trị thuộc tính</text>
+    <text name="AddValue">Thêm giá trị</text>
+    <text name="DisplayedValue">Giá trị hiển thị</text>
+    <text name="SavedValue">Giá trị lưu</text>
+    <text name="AttrNoVal">Thuộc tính không có giá trị</text>
+    <text name="Icon">Biểu tượng</text>
+    <text name="ProductAttrSettings">Cấu hình thuộc tính mặt hàng</text>
+    <text name="Details">Thông tin chi tiết</text>
+    <text name="Attribute">Thuộc tính</text>
+    <text name="ViewOrder">Thứ tự hiển thị</text>
+    <text name="SaleInfo">Thông tin bán hàng</text>
+    <text name="OtherInfo">Thông tin khác</text>
+    <!--CommunitySetting-->
+    <text name="EngLearnCenters">Trung tâm tiếng Anh</text>
+    <text name="InfoTypeList">Danh sách các loại thông tin</text>
+    <text name="SportCenters">Trung tâm thể thao</text>
+    <text name="ListOfCenters">Danh sách các trung tâm</text>
+    <text name="Price1">Giá tiền</text>
+    <text name="Approved">Đã duyệt</text>
+    <text name="Approve">Duyệt</text>
+    <text name="Lock">Khoá</text>
+    <text name="StoreList">Danh sách cửa hàng</text>
+    <text name="ServicePropertyList">Danh sách thuộc tính dịch vụ</text>
+    <text name="ShopOwner">Tên chủ shop</text>
+    <text name="CommunityServices">Dịch vụ cộng đồng</text>
+    <text name="UploadFile">Tải file lên</text>
+    <!--CourseOfCenter-->
+    <text name="CourseID">Mã khoá học</text>
+    <text name="CourseName">Tên khoá học</text>
+    <text name="CourseCost">Giá khoá học</text>
+    <text name="CourseParicipants">Đối tượng tham gia</text>
+    <text name="ApproveCenter">Phê duyệt trung tâm</text>
+    <text name="RequestEdit">Yêu cầu chỉnh sửa</text>
+    <text name="CloseDown">Ngừng hoạt động</text>
+    <text name="InfoToEdit">Nội dung yêu cầu chỉnh sửa</text>
+    <text name="ReasonToClose">Lý do cho ngừng hoạt động</text>
+    <text name="Discount">Giảm giá</text>
+    <text name="CourseContent">Nội dung khoá học</text>
+    <text name="ClassInfo">Thông tin lớp học</text>
+    <text name="ClassId">Mã lớp</text>
+    <text name="ClassOpenDate">Khai giảng ngày</text>
+    <text name="ClassSchedule">Lịch học</text>
+    <text name="ClassTimes">Thời gian học</text>
+    <text name="TeacherInfo">Thông tin giảng viên</text>
+    <text name="CostNoun">Giá</text>
+    <!--ListCourseCenter-->
+    <text name="ListCoursesCenters">Danh sách khoá học thuộc trung tâm</text>
+    <text name="NewCourse">Khoá học mới</text>
+    <text name="CourseDeleted">Đã xoá khoá học</text>
+    <!--TableTutorCenter-->
+    <text name="ListTutors">Danh sách gia sư</text>
+    <text name="CollegeEntranceScore">Điểm thi đại học</text>
+    <text name="College">Trường đại học</text>
+    <text name="CenterTutorDeleted">Đã xoá gia sư trung tâm</text>
+    <!--ListTutorCenter-->
+    <text name="ListTutorsCenters">Danh sách gia sư thuộc trung tâm</text>
+    <text name="NewTutor">Gia sư mới</text>
+    <text name="Inactive">Ngừng hoạt động</text>
+    <!--EducationCenter-->
+    <text name="EducationCenter">Trung tâm giáo dục</text>
+    <text name="NewCenter">Trung tâm mới</text>
+    <text name="ApprovedCenters">Trung tâm đã duyệt</text>
+    <text name="CentersNeedEdit">Trung tâm yêu cầu chỉnh sửa</text>
+    <text name="DefunctCenters">Trung tâm ngừng hoạt động</text>
+    <!--TableCenters-->
+    <text name="ListCenters">Danh sách trung tâm</text>
+    <text name="MapLocation">Vị trí trên bản đồ</text>
+    <text name="ListCourses">Danh sách khoá học</text>
+    <text name="CenterImg">Hình ảnh trung tâm</text>
+    <text name="CenterName">Tên trung tâm</text>
+    <text name="EmailOrWebsite">Email hoặc Website</text>
+    <text name="CenterDescription">Mô tả trung tâm</text>
+    <text name="RepInfo">Thông tin người đại diện</text>
+    <text name="RegisterAs">Đăng kí dưới danh nghĩa</text>
+    <text name="Individual">Cá nhân</text>
+    <text name="RepName">Tên người đại diện</text>
+    <text name="RegisterBusiness">Đăng kí kinh doanh</text>
+    <!--TutorCenter-->
+    <text name="TutorCenter">Trung tâm gia sư</text>
+    <!--TutorComponent-->
+    <text name="FreelanceTutorList">Danh sách gia sư (tự do)</text>
+    <!--FoodDrink-->
+    <text name="DiningService">Dịch vụ ăn uống</text>
+    <text name="RestaurantServiceManager">Quản lý dịch vụ nhà hàng</text>
+    <text name="ReservationManager">Quản lý đặt bàn</text>
+    <text name="ProfitManager">Quản lý doanh thu</text>
+    <text name="CreateRestaurant">Tạo nhà hàng</text>
+    <text name="GoToRestaurant">Đến nhà hàng</text>
+    <text name="FindByName">Tìm kiếm theo tên</text>
+    <text name="ReservationList">Danh sách đặt bàn</text>
+    <text name="CustomerID">ID khách</text>
+    <text name="MenuType">Loại menu</text>
+    <text name="NoOfGuests">Số người</text>
+    <text name="RestaurantPaid">Đã thanh toán</text>
+    <text name="StartDate">Ngày bắt đầu</text>
+    <!--HealthComponent-->
+    <text name="HealthService">Dịch vụ sức khoẻ</text>
+    <text name="Pharmacy">Hiệu thuốc</text>
+    <text name="Clinic">Phòng khám</text>
+    <text name="FamilyDoctor">Bác sĩ gia đình</text>
+    <text name="Dentist">Nha khoa</text>
+    <!--KidClub-->
+    <text name="KidClubService">Dịch vụ CLB Trẻ em</text>
+    <text name="Kindergarten">Nhà trông trẻ</text>
+    <text name="MusicClasses">Lớp dạy múa hát</text>
+    <text name="SportClasses">Lớp thể thao đá bóng, bóng rổ, bơi</text>
+    <text name="MartialArtsClasses">Lớp dạy võ</text>
+    <!--MainCityComponent-->
+    <text name="RepairServiceDesc">Sửa chữa điện tử, điện lạnh, hệ thống cấp thoát nước, đồ nội thất...</text>
+    <text name="partners">đối tác</text>
+    <text name="DiningServiceDesc">Chọn và đặt những món ăn ngon và gần nhất, rẻ nhất</text>
+    <text name="questions">câu hỏi</text>
+    <text name="CommercialService">Dịch vụ thương mại</text>
+    <text name="CommercialServiceDesc">Cho thuê các văn phòng, tầng hay buôn bán nhà cửa căn hộ để kinh doanh</text>
+    <text name="EducationServiceDesc">Dịch vụ lớp trông và chăm sóc trẻ em từ A đến Z</text>
+    <text name="HealthServiceDesc">Khám chữa bệnh từ xa hoặc đặt phòng khám, bác sĩ riêng cho bạn</text>
+    <text name="SportService">Dịch vụ thể thao</text>
+    <text name="SportServiceDesc">Đặt các dịch vụ sân bóng, vui chơi giải trí</text>
+    <text name="ClubForum">Club (Forum)</text>
+    <text name="ClubForumDesc">Các dịch vụ văn nghệ nhảy múa giúp cư dân liên kết với nhau hơn</text>
+    <!--AddNewsComponent-->
+    <text name="NewsManager">Quản lý tin tức</text>
+    <text name="PostArticle">Đăng tin tức</text>
+    <text name="ArticleHeadline">Tên tin tức</text>
+    <text name="ArticleType">Loại tin tức</text>
+    <text name="ListOfPublishedArticles">Danh sách tin tức đã đăng</text>
+    <text name="PublishDate">Thời gian đăng</text>
+    <text name="ArticleHeadlineNotBlank">Tên tiêu đề không được để trống</text>
+    <text name="ChooseArticleType">Chọn loại tin tức</text>
+    <text name="ArticleHeadlineImg">Ảnh tiêu đề tin tức</text>
+    <text name="ArticleContent">Nội dung tin tức</text>
+    <text name="EditDeleteArticle">Sửa hoặc xoá tin</text>
+    <text name="PostNewsSuccess">Đăng tin thành công</text>
+    <text name="PostNewsFail">Đăng tin thất bại</text>
+    <!--UpdateDeleteNews-->
+    <text name="GetNewsByIdSuccess">Lấy tin theo ID thành công</text>
+    <!--NotificationComponent-->
+    <text name="NotificationManager">Quản lý thông báo</text>
+    <!--DetailProblem-->
+    <text name="SystemErrorFeedbackInfo">Thông tin phản ánh sự cố</text>
+    <text name="SystemErrorManager"></text>
+    <text name="ReceiveBtn">Tiếp nhận</text>
+    <text name="ErrorName">Tên sự cố</text>
+    <text name="ErrorReporter">Tên người phản ánh</text>
+    <text name="ReportDate">Ngày phản ánh</text>
+    <text name="ErrorType">Loại sự cố</text>
+    <text name="DetailedDesc">Mô tả chi tiết</text>
+    <text name="ErrorImage">Hình ảnh phản ánh</text>
+    <text name="ImageOfUrbanZone">Hình ảnh khu đô thị</text>
+    <text name="Video">Video</text>
+    <!--ProblenSystem-->
+    <text name="ErrorResolver">Xử lý sự cố</text>
+    <text name="TakeReport">Tiếp nhận phản ánh</text>
+    <text name="ListOfResidentReportedErrors">Danh sách sự cố người dân phản ánh</text>
+    <text name="Reporter1">Người phản ánh</text>
+    <text name="ReportTime">Thời gian phản ánh</text>
+    <text name="Assign">Phân công</text>
+    <text name="ResolveList">Danh sách xử lý</text>
+    <text name="ResolverName">Người xử lý</text>
+    <text name="DateToProcess">Ngày cần xử lý</text>
+    <text name="Resolved">Đã giải quyết</text>
+    <text name="ConfirmBtn">Xác nhận</text>
+    <text name="ListErrorWaitingConfirm">Danh sách sự cố chờ xác nhận</text>
+    <text name="Finished">Hoàn thành</text>
+    <text name="FinishList">Danh sách hoàn thành</text>
+    <text name="AddNewError">Thêm mới sự cố</text>
+    <text name="ChooseResolver">Chọn người xử lý</text>
+    <text name="DateToStartProcess">Ngày bắt đầu xử lý</text>
+    <text name="DateToFinishProcess">Ngày hoàn thành công việc</text>
+    <text name="AssignResolver">Phân công giải quyết</text>
+    <!--RepairService-->
+    <text name="Electronics">Điện tử</text>
+    <text name="ElectronicsDesc"></text>
+    <text name="Cooling">Điện lạnh</text>
+    <text name="CoolingDesc"></text>
+    <text name="WaterElectronics">Điện nước</text>
+    <text name="WaterElectronicsDesc"></text>
+    <text name="Furniture">Nội thất</text>
+    <text name="FurnitureDesc"></text>
+    <text name="HomeRenovation">Cải tạo nhà</text>
+    <text name="HomeRenovationDesc"></text>
+    <text name="HomeMoving">Dọn nhà, chuyển đồ</text>
+    <text name="HomeMovingDesc"></text>
+    <text name="StoreProfilePicture">Hình ảnh cửa hàng</text>
+    <text name="StoreDesc">Mô tả cửa hàng</text>
+    <text name="StorePropertiesSettings">Cài đặt thuộc tính cửa hàng</text>
+    <!--RestaurantItem-->
+    <text name="AllDishes">Tất cả món</text>
+    <text name="NewDishes">Món mới tạo</text>
+    <text name="ApprovedDishes">Món đã duyệt</text>
+    <text name="DishesNeedRevision">Món yêu cầu chỉnh sửa</text>
+    <text name="DiscontinuedDishes">Món ngừng bán</text>
+    <text name="DishCategories">Các loại món</text>
+    <text name="ListOfDishCategories">Danh sách các loại món</text>
+    <text name="PropertyList">Danh sách thuộc tính</text>
+    <text name="Targets">Đối tượng</text>
+    <text name="Order">Thứ tự</text>
+    <text name="UpdateDishStatus">Cập nhật trạng thái món</text>
+    <text name="ProductCategories1">Danh mục sản phẩm</text>
+    <text name="ProductImg">Hình ảnh sản phẩm</text>
+    <text name="NoImg">Không có ảnh</text>
+    <text name="ProductVideo">Video sản phẩm</text>
+    <text name="ProductName">Tên sản phẩm</text>
+    <text name="ProductDesc">Mô tả sản phẩm</text>
+    <text name="Next1">Tiếp theo</text>
+    <text name="ApproveRestaurant">Phê duyệt nhà hàng</text>
+    <text name="StopBusiness">Ngừng kinh doanh</text>
+    <!--TableItemRestaurant-->
+    <text name="ProductType">Loại sản phẩm</text>
+    <text name="FolderType">Loại thư mục</text>
+    <text name="ListOfDishes">Danh sách các món ăn</text>
+    <text name="DishImg">Ảnh món</text>
+    <text name="DishName">Tên món</text>
+    <text name="DishType">Loại</text>
+    <text name="DishPrice">Giá</text>
+    <text name="UpdateProductStatus">Cập nhật trạng thái sản phẩm</text>
+    <text name="NoVideo">Không có video</text>
+    <text name="Approve/Deny">Phê duyệt / Từ chối</text>
+    <text name="ApproveStore_">Phê duyệt cửa hàng</text>
+    <text name="UpdateStatusSuccess">Cập nhật trạng thái thành công!</text>
+    <!--RestaurantSetting-->
+    <text name="EditProperty">Chỉnh sửa thuộc tính</text>
+    <text name="AddNodeSuccess">Thêm nút thành công!</text>
+    <text name="UpdateNodeSuccess">Cập nhật nút thành công!</text>
+    <text name="DelAttrSuccess">Xoá thuộc tính thành công!</text>
+    <!--RestaurantTableObject-->"
+    <text name="QuickApprove">Duyệt nhanh</text>
+    <text name="ViewInfo">Xem thông tin</text>
+    <text name="ViewProduct">Xem sản phẩm</text>
+    <!--SportComponent-->
+    <text name="SelectSport">Chọn loại thể thao</text>
+    <text name="Soccer">Bóng đá</text>
+    <text name="Badminton">Cầu lông</text>
+    <text name="Swimming">Bơi</text>
+    <text name="Basketball">Bóng rổ</text>
+    <text name="Tennis">Quần vợt</text>
+    <text name="Volleyball">Bóng chuyền</text>
+    <text name="Gym">Gym</text>
+    <text name="Golf">Golf</text>
+    <!--StayComponent-->
+    <text name="SelectAccomodation">Chọn loại lưu trú</text>
+    <!--EducationComponent-->
+    <text name="Preschool">Trường mầm non</text>
+    <text name="CollegeUni">Trường đại học</text>
+
+    <!--TransportComponent-->
+    <text name="CarRentals">Thuê xe ô tô</text>
+    <text name="EVChargers">Trạm sạc xe điện</text>
+
+    <!--FootballBooking-->
+    <text name="FieldRentManager">Quản lý thuê sân bóng</text>
+    <text name="CreateRent">Tạo lượt thuê</text>
+    <text name="FieldStatus">Trạng thái sân</text>
+    <text name="PreRent">Đặt trước</text>
+    <text name="FieldName">Tên sân</text>
+    <text name="FieldCost">Giá sân</text>
+    <text name="FieldRentList">Danh sách lượt thuê</text>
+    <text name="FieldId">ID sân</text>
+    <text name="FootballManager">Quản lý dịch vụ bóng</text>
+    <text name="NewTab">Mới</text>
+    <text name="RequestedEditTab">Yêu cầu chỉnh sửa</text>
+    <text name="DefunctTab">Ngừng hoạt động</text>
+    <!--ForumTable-->
+    <text name="Forums">Diễn đàn</text>
+    <text name="ForumPost">Bài viết diễn đàn</text>
+    <text name="Creator">Người tạo</text>
+    <text name="ThreadName">Tên thread</text>
+    <text name="ThreadContent">Nội dung</text>
+    <text name="ForumResponseTime">Thời gian phản ánh</text>
+    <text name="AddPost">Thêm bài viết</text>
+    <text name="ChooseSubject">Chọn chủ đề</text>
+    <text name="SelectASubject">Chọn chủ đề</text>
+    <text name="ThreadType">Thể loại thread</text>
+    <text name="ThreadTitle">Tiêu đề của thread</text>
+    <text name="ThreadTitleNotBlank">Tiêu đề của thread không được để trống</text>
+    <text name="ThreadContentNotBlank">Nội dung không được để trống</text>
+    <text name="Tags">Thẻ tag</text>
+    <text name="NewPost">Bài viết mới</text>
+    <text name="AcceptedPost">Đã chấp nhận</text>
+    <text name="DeniedPost">Đã từ chối</text>
+    <text name="AllPosts">Tất cả</text>
+    <text name="Attention">Chú ý</text>
+    <text name="Discussion">Thảo luận</text>
+    <text name="Knowledge">Kiến thức</text>
+    <text name="NewsForum">Tin tức</text>
+    <text name="QuestionForum">Thắc mắc</text>
+    <text name="ShowForum">Khoe</text>
+    <text name="RatingForum">Đánh giá</text>
+    <text name="Computers">Máy tính</text>
+    <text name="RealEstate">Bất động sản</text>
+    <text name="Finance">Tài chính</text>
+    <text name="VideoGaming">Trò chơi điện tử</text>
+    <text name="Cars">Ô tô</text>
+    <text name="Software">Phần mềm</text>
+
+    <!--WebNewsYootek-->
+    <text name="ArticleThumb">Ảnh đại diện</text>
+    <text name="Title">Tiêu đề</text>
+    <text name="ShortDesc">Mô tả ngắn</text>
+    <text name="Displayed">Hiển thị</text>
+    <text name="SpecialNews">Tin nổi bật</text>
+    <text name="Hidden">Ẩn</text>
+    <text name="YootekNews">Tin tức Yootek</text>
+    <text name="ImgGallery">Thư viện hình ảnh</text>
+    <text name="Projects">Công trình - dự án</text>
+    <text name="TechNews">Tin tức công nghệ</text>
+    <text name="CancelQuestion">Bạn có muốn huỷ thao tác này không?</text>
+    <text name="ListOfArticles">Danh sách các bài đăng</text>
+    <text name="ArticleManager">Quản lý bài đăng</text>
+    <text name="AddArticle">Thêm bài đăng</text>
+    <text name="DelArticleQ">Bạn có muốn xoá bài viết này không?</text>
+    <text name="EditArticle">Sửa bài đăng</text>
+    <text name="DeleteArticle">Xoá bài đăng</text>
+    <text name="Confirm">Xác nhận</text>
+
+    <!--HospitalMain-->
+    <text name="HospitalManager">Quản lý bệnh viện</text>
+    <text name="Ratings">Đánh giá</text>
+    <text name="PatientRecordsManager">Quản lý hồ sơ bệnh nhân</text>
+    <text name="DoctorManager">Quản lý bác sĩ</text>
+    <text name="ClinicManager">Quản lý các phòng khám</text>
+    <text name="MedPropertyManager">Quản lý tài sản, máy móc</text>
+    <text name="IllnessManager">Quản lý các bệnh</text>
+    <text name="GridSystemManager">Quản lý hệ thống điện</text>
+    <!--LocalAmenities-->
+    <text name="LocalAmenitiesMngr">Quản lý dịch vụ nội khu</text>
+    <!--RegisterStore-->
+    <text name="PleaseSelectServiceType">Hãy chọn một loại dịch vụ</text>
+    <text name="ServiceNameNotBlank">Tên dịch vụ không được để trống</text>
+    <text name="AddPriceType">Thêm loại giá</text>
+    <Text name="Deposit">Tiền cọc</Text>
+    <text name="Fee"></text>
+    <text name="Unit">Đơn vị</text>
+    <text name="AddService">Thêm mới dịch vụ</text>
+
+    <!--Shopping-->
+    <text name="ConvenientStore">Tiện lợi</text>
+    <text name="Drinks">Đồ uống</text>
+    <text name="Seafood">Hải sản</text>
+    <text name="FarmProduces">Nông sản</text>
+    <text name="Fauna">Thú rừng</text>
+    <text name="FreshFood">Thực phẩm sạch</text>
+    <text name="Fashion">Thời trang</text>
+    <text name="Pets">Thú cưng</text>
+    <text name="DepartmentStore">Cửa hàng tạp hoá</text>
+
+    <!--Work-->
+    <text name="PlumbingUnclogger">Thông tắc vệ sinh, bể phốt,...</text>
+    <text name="PetCare">Chăm sóc thú cưng</text>
+    <text name="PlantKoiCare">Chăm sóc cây cảnh, cá koi,...</text>
+
+    <!--Repair-->
+    <text name="ElectronicsCoolingApplicancesRepair">Sửa chữa điện tử - điện lạnh - đồ gia dụng</text>
+    <text name="FurnitureRepair">Sửa chữa nội thất</text>
+    <text name="CarRepairRescue">Sửa chữa xe - Cứu hộ cứu nạn</text>
+    <text name="RepairWater">Sửa chữa điện nước</text>
+
+    <!--Beauty-->
+    <text name="HairSalon">Tiệm làm tóc</text>
+    <text name="NailSalon">Tiệm làm móng tay</text>
+    <text name="PlasticSurgery">Thẩm mỹ viện</text>
+    <text name="MakeupShop">Cửa hàng mỹ phẩm</text>
+    <text name="Spa">Spa</text>
+
+    <!--Entertainment-->
+    <text name="Bar">Quán bar</text>
+    <text name="EventCenter">Trung tâm sự kiện</text>
+    <text name="Karaoke">Quán karaoke</text>
+    <text name="Cinema">Rạp chiếu phim</text>
+    <text name="Park">Công viên</text>
+
+    <!--Assets-->
+    <text name="AssetManager">Quản lý tài sản</text>
+    <text name="AssetList">Danh sách tài sản</text>
+    <text name="AssetCode">Mã tài sản</text>
+    <text name="AssetName">Tên tài sản</text>
+    <text name="AssetType">Loại tài sản</text>
+    <text name="BuyValue">Giá trị mua</text>
+    <text name="WarrantyExpireDate">Thời gian hết hạn bảo hành</text>
+    <text name="AssetCodeCantBeBlank">Mã tài sản không được để trống</text>
+    <text name="AssetNameCantBeBlank">Tên tài sản không được để trống</text>
+    <text name="InputDateCantBeBlank">Thời gian nhập không được để trống</text>
+    <text name="PleaseSelectAssetType">Vui lòng chọn nhóm hàng</text>
+    <text name="BuyValueCantBeBlank">Giá mua không được để trống</text>
+    <!--CreateMaterial-->
+    <text name="AddMaterial">Thêm vật tư</text>
+    <text name="MaterialCode">Mã vật tư</text>
+    <text name="MaterialCodeCantBeBlank">Mã vật tư không được để trống</text>
+    <text name="MaterialName">Tên vật tư</text>
+    <text name="MaterialNameCantBeBlank">Tên vật tư không được để trống</text>
+    <text name="UnitCantBeBlank">Đơn vị không được để trống</text>
+    <text name="MaterialList">Danh sách vật tư</text>
+    <text name="ImportDate">Thời gian nhập</text>
+    <text name="BuyPrice">Giá mua</text>
+    <text name="BuyCount">Số lượng</text>
+    <text name="MaterialCodeNotBlank">Mã vật tư không được để trống</text>
+    <text name="MaterialNameNotBlank">Tên vật tư không được để trống</text>
+    <text name="PleaseChooseMaterialGroup">Vui lòng chọn nhóm hàng</text>
+    <text name="ImportDateCantBeEmpty">Thời gian nhập không được để trống</text>
+    <text name="BuyPriceCantBeEmpty">Giá mua không được để trống</text>
+    <text name="BuyCountCantBeEmpty">Số lượng không được để trống</text>
+    <text name="MaterialManager">Quản lý vật tư</text>
+    <!--PlanComponent-->
+    <text name="MaintenancePlan">Kế hoạch bảo trì</text>
+    <text name="ExecuteDate">Ngày thực hiện</text>
+    <text name="MaintenanceAsset">Tài sản cần bảo trì</text>
+    <text name="MaintenancePartner">Đối tác phụ trách</text>
+    <text name="SelectMaintenanceAsset">Chọn tài sản bảo trì</text>
+    <text name="PleaseSelectMaintenanceAsset">Vui lòng chọn tài sản bảo trì</text>
+    <text name="MaintenanceDate">Ngày bảo trì</text>
+    <text name="MaintenanceDateCantBeBlank">Ngày bảo trì không được để trống</text>
+    <text name="MaintenancePartnerCantBeEmpty">Đối tác phụ trách không được để trống</text>
+
+
+    <!-- Quản lý vận hành tòa nhà-->
+    <text name="BuildingOperationManagement">Quản lý vận hành</text>
+    <text name="MaterialAsset">Tài sản / vật tư</text>
+    <text name="InventoryManagement">Quản lý kho</text>
+    <text name="AssetDelivery">Giao nhận tài sản</text>
+    <text name="AssetStatistical">Thống kê tài sản</text>
+    <text name="MaterialCategory">Danh mục tài sản</text>
+    <text name="MaterialGroup">Nhóm tài sản</text>
+    <text name="MaterialType">Loại tài sản</text>
+    <text name="MaterialProducer">Nhà sản xuất</text>
+    <text name="MaterialUnit">Đơn vị tài sản</text>
+    <text name="MaterialInventory">Kho/ vị trí tài sản</text>
+
+
+    <!--MainSchool-->
+    <text name="SchoolManager">Quản lý trường học</text>
+    <text name="PrimarySchool">Trường tiểu học</text>
+    <text name="LowerSecSchool">Trường Trung học cơ sở</text>
+    <text name="UpperSecSchool">Trường Trung học phổ thông</text>
+    <text name="ManageTeacherProfiles">Quản lý hồ sơ giáo viên</text>
+    <text name="ManageStudentProfiles">Quản lý hồ sơ học sinh</text>
+    <text name="ManageClassrooms">Quản lý các phòng học</text>
+    <text name="ManageAssets">Quản lý tài sản</text>
+
+    <!--ConnectAPI__DeviceSmartHome-->
+    <text name="DeviceAPIManager">Quản lý API thiết bị</text>
+    <text name="APIList">Danh sách API</text>
+    <text name="HomeServers">Home Server</text>
+    <text name="Devices">Thiết bị</text>
+    <text name="Method">Method</text>
+    <text name="Url">URL</text>
+    <text name="ContentType">Content Type</text>
+    <text name="DataFormat">Định dạng dữ liệu</text>
+    <text name="SmartHomeApi">API cho nhà thông minh</text>
+    <text name="FindSmartHome">Tìm kiếm nhà thông minh...</text>
+    <text name="ApiSettings">Cấu hình API</text>
+    <text name="ApiName">Tên API</text>
+    <text name="UsedHomeServer">Home Server sử dụng</text>
+    <text name="SelectAHomeServer">Chọn một server</text>
+    <text name="UsingDevice">Thiết bị sủ dụng</text>
+    <text name="SelectADevice">Chọn một thiết bị</text>
+    <text name="Gateways">Gateways</text>
+    <text name="SelectGateway">Chọn gateway</text>
+    <text name="SelectAGateway">Chọn một gateway</text>
+    <text name="UrlAddress">Đường dẫn</text>
+    <text name="SmartHomeDevices">Thiết bị Smart Home</text>
+    <text name="DeviceList">Danh sách thiết bị</text>
+    <text name="DeviceName">Tên thiết bị</text>
+    <text name="DeviceCode">Mã thiết bị</text>
+    <text name="DeviceType">Loại thiết bị</text>
+    <text name="ChooseDeviceType">Chọn loại thiết bị</text>
+    <text name="AvailableHomeServer">Home server khả dụng</text>
+    <text name="DeviceBrand">Hãng sản xuất</text>
+    <text name="HomeServerList">Danh sách home server</text>
+    <text name="HomeServerName">Tên home server</text>
+    <text name="HomeServerCode">Mã home server</text>
+    <text name="HomeServerPort">Cổng</text>
+    <text name="HomeServerBrand">Hãng sản xuất</text>
+    <text name="Extended">Mở rộng</text>
+    <text name="ExtendedList">Danh sách thiết bị mở rộng</text>
+    <text name="AddNewDevice">Thêm mới thiết bị</text>
+    <text name="SelectHomeServer">Chọn một home server</text>
+    <text name="LoginUser">Tài khoản đăng nhập</text>
+    <!--HomeMember-->
+    <text name="VoteManager">Quản lý lượt vote</text>
+    <text name="HomeOwnerManager">Quản lý chủ nhà</text>
+    <text name="ListHomeOwners">Danh sách chủ nhà</text>
+    <text name="HomeOwnerCode">Mã chủ nhà</text>
+    <text name="HomeOwnerName">Tên chủ nhà</text>
+    <text name="VoteBtn">Vote</text>
+    <text name="UpdateVode">Cập nhật lượt vote</text>
+    <text name="SmartHomeApartmentManager">Quản lý căn hộ smart home</text>
+    <text name="YourSmartHomeSettings">Cấu hình cho ngôi nhà thông minh của bạn</text>
+    <text name="SmartHome">Nhà thông minh</text>
+    <text name="SmartDevice">Thiết bị thông minh</text>
+    <!--EditSmarthome-->
+    <text name="SmartHomeSettings">Cấu hình nhà thông minh</text>
+    <text name="ApartmentInfo">Thông tin căn hộ</text>
+    <text name="BackgroundImg">Hình nền</text>
+    <text name="UpgradeDate">Ngày nâng cấp</text>
+    <text name="GatewaySettings">Cấu hình gateway</text>
+    <text name="AddGateway">Thêm Gateway</text>
+    <text name="RoomSettings">Cấu hình phòng</text>
+    <text name="AddRoom">Thêm phòng</text>
+    <text name="HomeNotConfigured">Nhà chưa được cấu hình</text>
+    <text name="RoomInfo">Thông tin phòng</text>
+    <text name="RoomName">Tên phòng</text>
+    <text name="FunctionSettings">Thiết lập chức năng</text>
+    <text name="SmartLightning">Smart Lighting</text>
+    <text name="AddDeviceType">Thêm loại thiết bị</text>
+    <text name="SmartCurtains">Smart Curtains</text>
+    <text name="SmartAir">Smart Air</text>
+    <text name="SmartSecurity">Smart Security</text>
+    <text name="SmartDoorEntry">Smart Door Entry</text>
+    <text name="SmartConnection">Smart Connection</text>
+    <text name="SmartWater">Smart Water</text>
+    <text name="SmartConditioner">Smart Conditioner</text>
+    <text name="SmartFireAlarm">Smart Fire Alarm</text>
+    <text name="SelectGatewayType">Chọn loại gateway</text>
+    <!--SmartHomeSettings-->
+    <text name="SmartHomeManager">Quản lý nhà thông minh</text>
+    <text name="SmartHomeList">Danh sách nhà thông minh</text>
+    <text name="SmartHomeName">Tên nhà thông minh</text>
+    <text name="NumRooms">Số phòng</text>
+    <text name="AddNewSmartHome">Thêm mới nhà thông minh</text>
+    <text name="SmartHomeNameNotBlank">Tên nhà không được để trống</text>
+    <text name="HomeOwnerNameNotBlank">Tên chủ nhà không được để trống</text>
+    <text name="RoomList">Danh sách phòng</text>
+    <text name="YourSmartHomeCodeIs">Mã nhà thông minh của bạn là</text>
+    <text name="Configure">Cấu hình</text>
+    <!--Staff-->
+    <text name="StaffManager">Quản lý nhân viên</text>
+    <text name="StaffList">Danh sách nhân viên</text>
+    <text name="EmpName">Tên nhân viên</text>
+    <text name="EmpCode">Mã nhân viên</text>
+    <text name="Department">Phòng ban</text>
+    <text name="WorkBuilding">Thuộc toà nhà</text>
+    <text name="EmpCodeNotBlank">Mã nhân viên không được để trống</text>
+    <text name="EmpNameNotBlank">Tên nhân viên không được để trống</text>
+    <text name="PleaseSelectDept">Vui lòng chọn phòng ban</text>
+    <text name="PleaseSelectBuilding">Vui lòng chọn toà nhà</text>
+    <text name="Staff">Nhân viên</text>
+    <text name="TypeStaff">Loại nhân viên</text>
+    <text name="SelectTypeStaff">Chọn loại nhân viên</text>
+
+    <!--StoreRegister-->
+    <text name="RegisterNewStore">Đăng ký cửa hàng mới</text>
+    <!--ApartmentComponent-->
+    <text name="Apartment">Căn hộ</text>
+    <text name="ApartmentList">Danh sách căn hộ</text>
+    <text name="ApartmentOwner">Chủ hộ</text>
+    <text name="ApartmentRenter">Chủ thuê</text>
+    <text name="ApartmentDetails">Chi tiết căn hộ</text>
+    <text name="OfBuilding">Thuộc toà nhà</text>
+    <text name="OfUrbanArea">Thuộc khu đô thị</text>
+    <text name="ImageUrlOfApartment">Đường dẫn file đính kèm</text>
+    <text name="ApartmentStatus">Trạng thái căn hộ</text>
+    <text name="member_s_">thành viên</text>
+    <text name="direction">Hướng</text>
+    <text name="ClassifyApartment">Phân loại căn hộ</text>
+	<text name="OfBlock">Thuộc block</text>
+	<text name="OfFloor">Thuộc tầng</text>
+    <text name="ApartmentCodeNotBlank">Mã căn hộ không được để trống</text>
+    <text name="PleaseSelectUrban">Vui lòng chọn khu đô thị</text>
+    <text name="ApartmentSize">Diện tích căn hộ</text>
+    <text name="ApartmentSizeIsBlank">Diện tích căn hộ không được để trống</text>
+    <text name="ApartmentDir">Hướng</text>
+    <text name="AptDirIsBlank">Hướng không được để trống</text>
+    <text name="ApartmentDesc">Mô tả căn hộ</text>
+    <text name="AddApartment">Thêm căn hộ</text>
+    <text name="EditApartment">Sửa căn hộ</text>
+    <text name="Bedroom">Phòng ngủ</text>
+    <text name="LivingRoom">Phòng khách</text>
+    <text name="DelAptQ">Bạn có muốn xoá căn hộ này không?</text>
+    <text name="Member_s_">Thành viên</text>
+    <text name="ApartmentInhabitant">Người ở</text>
+    <text name="ApartmentArea">Diện tích căn hộ</text>
+    <text name="NationalityInhabitant">Quốc tịch người ở</text>
+    <text name="CategoryApartments">Danh mục căn hộ</text>
+    <text name="ApartmentCodeUrbanCodeIsValid">Mã căn hộ và Mã khu đô thị là bắt buộc</text>
+    
+    <!--Apartment status-->
+    <text name="Rented">Đã cho thuê</text>
+    <text name="Available">Có sẵn</text>
+    <text name="Repairs">Đang sửa chữa</text>
+    <text name="Sold">Đã bán</text>
+    <text name="Unavailable">Tạm thời không thể sử dụng</text>
+    <!--Apartment classify-->
+    <text name="Office">Văn phòng</text>
+    <text name="ShoppingMall">Trung tâm mua sắm</text>
+    <text name="ShopHouse">Nhà phố thương mại</text>
+    <!--Buildings-->
+    <text name="BuildingList">Danh sách toà nhà</text>
+    <text name="NoFloors">Số tầng</text>
+    <text name="NoApartments">Số căn hộ</text>
+    <text name="BuildingName">Tên toà nhà</text>
+    <text name="BuildingNameIsBlank">Tên toà nhà không được để trống</text>
+    <text name="BuildingCodeIsBlank">Mã toà nhà không được để trống</text>
+    <text name="NoFloorsIsBlank">Số tầng không được để trống</text>
+    <text name="NoRooms">Số lượng phòng</text>
+    <text name="NoRoomsIsBlank">Số lượng phòng không được để trống</text>
+    <text name="BuildingDesc">Mô tả toà nhà</text>
+    <text name="BuildingDescIsBlank">Mô tả toà nhà không được để trống</text>
+    <text name="UrbanAreaInfo">Thông tin khu đô thị</text>
+    <text name="UrbanAreaDesc">Mô tả khu đô thị</text>
+    <text name="EditBuilding">Sửa toà nhà</text>
+    <text name="DeleteBuildingQ">Bạn có muốn xoá toà nhà này không?</text>
+    <!--Translate Danh mục -->
+    <text name="CategoryBuildings">Danh mục toà nhà</text>
+
+    <!--Urbans-->
+    <text name="UrbanAreaManager">Quản lý khu đô thị</text>
+    <text name="CategoryUrbans">Danh mục khu đô thị</text>
+    <text name="UrbanAreaList">Danh sách khu đô thị</text>
+    <text name="UrbanAreaName">Tên khu đô thị</text>
+    <text name="UrbanAreaCode">Mã khu đô thị</text>
+    <text name="NoTowers">Số toà nhà</text>
+    <text name="UrbanAreaNameIsBlank">Tên khu đô thị không được để trống</text>
+    <text name="UrbanAreaCodeIsBlank">Mã khu đô thị không được để trống</text>
+    <text name="NoTowersIsBlank">Số toà nhà không được để trống</text>
+    <text name="UrbanAreaDescIsBlank">Mô tả khu đô thị không được để trống</text>
+    <text name="AddUrbanArea">Thêm khu đô thị</text>
+    <text name="EditUrbanArea">Sửa khu đô thị</text>
+    <text name="DelUrbanQ">Bạn có muốn xoá khu đô thị này không?</text>
+    <!--AdminRole-->
+    <text name="AdminRoleManager">Quản lý quyền quản trị</text>
+    <text name="ListOfRoles">Danh sách quyền</text>
+    <!--ImageManagement-->
+    <text name="ImageManager">Quản lý hình ảnh</text>
+    <text name="Tenant">Tenant</text>
+    <text name="SmartSocial">Smart Social</text>
+    <text name="SmartCommunity1">Smart Community</text>
+    <!--OrganizationChat-->
+    <text name="ChatUnitList">Danh sách đơn vị chat</text>
+    <text name="Project">Dự án</text>
+    <!--TypeLocalService-->
+    <text name="ListTypeLocalServices">Danh sách các loại tiện ích</text>
+    <text name="NameTypeLocalService">Tên tiện ích</text>
+    <text name="NameTypeLocalServiceBlank">Tên tiện ích không được để trống</text>
+    <text name="IconNotBlank">Biểu tượng không được để trống</text>
+    <text name="AddLocalService">Thêm tiện ích</text>
+    <text name="EditLocalService">Sửa tiện ích</text>
+
+    <!--AdminConfig-->
+    <text name="AdminConfig">Cấu hình hành chính công</text>
+    <text name="AdminType">Loại hành chính</text>
+    <text name="ListAdminType">Danh sách loại hành chính</text>
+    <text name="ConfigBtn">Cấu hình</text>
+    <text name="AdminTypeName">Tên loại hành chính</text>
+    <text name="ViewRegForm">Xem mẫu đơn đăng ký</text>
+    <text name="EditAdminTypeProperty">Cấu hình thuộc tính loại hành chính</text>
+
+    <!--ImageManagement-->
+    <text name="banner_header">Banner header</text>
+    <text name="banner_ad">Banner quảng cáo</text>
+    <text name="avatar">Avatar</text>
+    <text name="banner_shop_house">Banner shop house</text>
+
+    <!--Administrative-->
+    <text name="AdministrativeConfig">Cấu hình hành chính công</text>
+    <text name="SurchargeAdministrative">Có phí đặt cọc hay không ?</text>
+    <text name="PriceSurcharge">Phí đặt cọc</text>
+    <text name="PriceDetail">Chi tiết phí đặt cọc</text>
+    <text name="OrganizationUnitNotBlank">Vui lòng chọn dự án</text>
+    <text name="ImageNotBlank">Hình ảnh không được để trống</text>
+    <!--updateConfig-->
+    <text name="Cấu hình cho mobile">Cấu hình cho mobile</text>
+    <text name="Cấu hình cho web quản trị">Cấu hình cho web quản trị</text>
+    <!--UpdatePermission-->
+    <text name="SelectMenu">Chọn menu</text>
+    <!--Tenants-->
+    <text name="UserPrivilegesList">Danh sách quyền người dùng</text>
+    <text name="IsActive">Đang hoạt động</text>
+    <text name="ConfigMenu">Cấu hình menu</text>
+    <text name="UserImage">Ảnh tài khoản</text>
+    <text name="DefaultPasswordIs">Mật khẩu mặc định:</text>
+    <!--PublicHome-->
+    <text name="Functions">Các chức năng</text>
+    <!--PublicLogin-->
+    <text name="SignUpForAccount">Đăng ký tài khoản?</text>
+    <text name="IfNotSignedUp">Nếu bạn chưa có tài khoản</text>
+    <text name="ReturnToHomePage">Trở về trang chủ</text>
+    <text name="AreaAddress">Địa chỉ khu</text>
+    <text name="AccountName">Tên tài khoản</text>
+    <text name="PlaceOfBirth">Nơi sinh</text>
+    <text name="ApartmentAddress">Địa chỉ căn hộ</text>
+    <!--ChangePassword-->
+    <text name="AccountManager">Quản lý tài khoản</text>
+    <text name="ChangePassworDesc">Quản lý thông tin hồ sơ để bảo mật tài khoản</text>
+    <text name="Other">Khác</text>
+    <!--CreateUser-->
+    <text name="AddNewUser">Thêm mới người dùng</text>
+    <text name="ConfirmPassword">Xác nhận mật khẩu</text>
+    <text name="AssignUserRole">Phân quyền người dùng</text>
+    <!--Messager-->
+    <text name="ReplyMessage">Tin nhắn phản hồi</text>
+    <text name="SearchMessage">Tìm kiếm trong message</text>
+    <text name="CreateChatGroup">Tạo nhóm chat</text>
+    <text name="Group">Nhóm</text>
+    <text name="FriendInvitation">Lời mời kết bạn</text>
+    <text name="GroupList">Danh sách nhóm</text>
+    <text name="YouRepliedTo">Bạn đã trả lời</text>
+    <text name="yourself">chính mình</text>
+    <text name="You_">Bạn</text>
+    <text name="RepliedToYou">đã trả lời bạn</text>
+    <text name="YouReplied">Bạn đã trả lời</text>
+    <text name="RepliedToYourself">đã trả lời chính mình</text>
+    <text name="Replied">Trả lời</text>
+    <text name="EnterReply">Nhập nội dung trả lời</text>
+    <text name="TypeMessage">Nhập tin nhắn</text>
+    <text name="AcceptFriend">Chấp nhận</text>
+    <text name="DenyFriend">Từ chối</text>
+    <text name="NotJoinAnyGroup">Bạn chưa tham gia nhóm nào</text>
+    <text name="NotManageAnyGroup">Bạn chưa quản lý nhóm nào</text>
+    <text name="SelectMember">Chọn thành viên</text>
+    <text name="GroupName">Tên nhóm</text>
+    <text name="AccountInfo">Thông tin tài khoản</text>
+    <text name="Befriend">Kết bạn</text>
+    <text name="SendMessage">Nhắn tin</text>
+    <!--Users-->
+    <text name="AccountList">Danh sách tài khoản</text>
+    <text name="ResetPassword">Đặt lại mật khẩu</text>
+    <text name="ChangePassword">Đổi mật khẩu</text>
+    <text name="PasswordsMustBeAtLeast8CharactersContainLowercaseUppercaseNumber">
+      Mật khẩu phải có ít nhất 8 kí tự và
+      chứa ít nhất 1 kí tự viết hoa, 1 kí tự viết thường, 1 kí tự số
+    </text>
+
+    <!--SettingType-->
+    <text name="InternalFacilitiesType">Các loại tiện ích nội khu</text>
+    <text name="AddInteralFacilityType">Thêm loại tiện ích nội khu</text>
+    <text name="FacilityTypeName">Tên loại tiện ích</text>
+    <text name="SelectFacilityType">Chọn loại tiện ích</text>
+    <text name="FacilityTypeNameBlank">Tên loại dịch vụ không được để trống</text>
+    <text name="FacilityName">Tên tiện ích</text>
+    <text name="FacilityNameBlank">Tên tiện ích không được để trống</text>
+    <text name="SelectIcon">Chọn biểu tượng</text>
+    <text name="DeleteFacilityQ">Bạn có muốn xoá tiện ích này không:</text>
+    <text name="AddServiceType">Thêm loại dịch vụ</text>
+    <text name="OfProject">Thuộc dự án</text>
+    <text name="GroupTypeLocalService">Nhóm loại tiện ích nội khu</text>
+    <text name="EditLocalServiceType">Sửa loại tiện ích nội khu</text>
+    <text name="LocalServiceInfo">Thông tin loại dịch vụ nội khu</text>
+    <text name="SportUtility">Tiện ích thể thao</text>
+    <text name="ShoppingUtility">Tiện ích mua sắm</text>
+    <text name="CommunityUtility">Tiện ích cộng đồng</text>
+
+    <!--OrganizationUnit-->
+    <text name="TypeOrganization">Loại hình tổ chức</text>
+    <text name="Division">Phân khu</text>
+    <text name="Building">Toà nhà</text>
+    <text name="MessageDept">Bộ phận tiếp nhận tin nhắn</text>
+    <text name="ComplaintDept">Bộ phận xử lý phản ánh</text>
+    <text name="SurveyDept">Bộ phận xử lý khảo sát</text>
+    <text name="NotiDept">Bộ phận xử lý thông báo</text>
+    <text name="AdminiDept">Bộ phận xử lý hành chính công</text>
+    <text name="BillDept">Bộ phận xử lý hóa đơn</text>
+    <text name="QADept">Bộ phận xử lý hỏi đáp</text>
+    <text name="NewDept">Bộ phận quản lý bảng tin</text>
+    <text name="HotlineDept">Bộ phận quản lý đường dây nóng</text>
+    <text name="MaterialDept">Bộ phận quản lý tài sản</text>
+    <text name="UltiliDept">Bộ phận quản lý tiện ích</text>
+
+    <!--Shared-->
+    <text name="SelectAnImg">Chọn một ảnh</text>
+    <text name="SelectABuilding">Chọn toà nhà</text>
+    <text name="SelectProject">Chọn dự án</text>
+    <text name="SelectUrbanArea">Chọn khu đô thị</text>
+
+    <!--StoreListTableComponent-->
+    <text name="EditStoreInfo">Chỉnh sửa thông tin cửa hàng</text>
+    <text name="CentralInfo">Thông tin trung tâm</text>
+    <text name="Website">Website</text>
+    <text name="CompanyChain">Công ty/Chuỗi</text>
+    <text name="TaxCode">Mã số thuế</text>
+    <text name="StartDateIsBlank">Ngày bắt đầu không được để trống</text>
+    <text name="EndDate">Ngày kết thúc</text>
+    <text name="EndDateIsBlank">Ngày kết thúc không được để trống</text>
+    <text name="PleaseChooseOpenTime">Vui lòng chọn giờ mở cửa</text>
+    <text name="PleaseChooseCloseTime">Vui lòng chọn giờ đóng cửa</text>
+    <text name="EditStore">Sửa cửa hàng</text>
+    <text name="ValidateStore">Duyệt cửa hàng</text>
+    <text name="Monday">Thứ hai</text>
+    <text name="Tuesday">Thứ ba</text>
+    <text name="Wednesday">Thứ tư</text>
+    <text name="Thursday">Thứ năm</text>
+    <text name="Friday">Thứ sáu</text>
+    <text name="Saturday">Thứ bảy</text>
+    <text name="Sunday">Chủ nhật</text>
+    <text name="AddStore">Thêm cửa hàng</text>
+
+    <!--RegisterStore-->
+    <text name="FieldExpertise">Lĩnh vực</text>
+    <text name="SelectAField">Chọn một lĩnh vực</text>
+    <text name="ExpertiseIsBlank">Lĩnh vực không được để trống</text>
+    <text name="StoreServiceName">Tên cửa hàng/dịch vụ</text>
+    <text name="StoreServiceNameBlank">Tên cửa hàng/ dịch vụ không được để trống</text>
+    <text name="ContactAddress">Địa chỉ liên hệ</text>
+    <text name="StoreAddressBlank">Địa chỉ cửa hàng không được để trống</text>
+    <text name="DetailedDescIsBlank">Mô tả chi tiết không được để trống</text>
+    <text name="RepFullName">Tên đầy đủ người đại diện</text>
+    <text name="RepNameIsBlank">Tên người đại diện không được để trống</text>
+    <text name="RepEmailIsBlank">Email người đại diện không được để trống</text>
+    <text name="TaxCodeIsBlank">Mã số thuế không được để trống</text>
+    <text name="RegisterBusinessIsBlank">Đăng kí kinh doanh không được để trống</text>
+    <text name="OpenHour">Giờ mở cửa</text>
+    <text name="CloseHour">Giờ đóng cửa</text>
+    <!--TableOrder-->
+    <text name="Orders">Đơn đặt hàng</text>
+    <!--TableReview-->
+    <text name="BuyerReviews">Đánh giá từ người mua</text>
+    <text name="ReplyToYourReview">Trả lời đánh giá của bạn</text>
+    <!--BusinessInfo-->
+    <text name="MedicalStaff">Đội ngũ bác sĩ</text>
+    <text name="DoctorName">Tên bác sĩ - chuyên gia</text>
+    <text name="Speciality">Chuyên ngành</text>
+    <!--OrderComponet-->
+    <text name="SearchProduct">Tìm kiếm sản phẩm</text>
+    <!--OwnerInfo-->
+    <text name="OperateLicenseNo">Số giấy cấp phép hoạt động</text>
+    <text name="IssueDate">Ngày cấp phép</text>
+    <text name="RegisterBusinessImg">Hình ảnh giấy phép đăng kí kinh doanh:</text>
+    <text name="OperateLicenseImg">Hình ảnh giấy cấp phép hoạt động:</text>
+    <!--RatingStore-->
+    <text name="StoreRatings">Đánh giá của hàng</text>
+    <text name="ViewYourStoreRatings">Xem đánh giá cửa hàng của bạn</text>
+    <text name="NotReplied">Chưa trả lời</text>
+    <text name="HasBeenReplied">Đã trả lời</text>
+    <!--StoreInfo-->
+    <text name="DescImgBlank">Ảnh mô tả không được để trống</text>
+    <!--StoreManagement-->
+    <text name="Content">Nội dung</text>
+    <text name="BusinessService">Dịch vụ kinh doanh</text>
+    <text name="OrderList">Danh sách order</text>
+    <text name="ReviewUpcaps">Đánh giá</text>
+
+    <!--SideBar-->
+    <text name="Restaurant">Nhà hàng</text>
+    <text name="Dishes">Món ăn</text>
+    <text name="Products">Hàng hoá</text>
+    <text name="SmartDevices">Thiết bị thông minh</text>
+    <text name="Dining">Dịch vụ đồ ăn - đồ uống</text>
+    <text name="Repair_">Sửa chữa</text>
+    <text name="ElectronicsAppliances">Điện tử - Điện nước - Đồ gia dụng</text>
+    <text name="Rescue">Sửa xe - Cứu hộ</text>
+    <text name="CarWash">Rửa xe</text>
+    <text name="Laundry">Dịch vụ giặt là</text>
+    <text name="Clinics">Phòng khám</text>
+    <text name="Pharmacies">Hiệu thuốc</text>
+    <text name="BeautySalons">Thẩm mỹ viện</text>
+    <text name="Telehealth">Y tế tại nhà</text>
+    <text name="SpaMassage">Spa - Massage</text>
+    <text name="MedStation">Trạm y tế</text>
+    <text name="ElementarySubjects">Môn học cơ bản</text>
+    <text name="FreelanceTutors">Gia sư (tự do)</text>
+    <text name="FootballField">Sân bóng đá</text>
+    <text name="BasketballCourt">Sân bóng rổ</text>
+    <text name="BadmintonCourt">Sân cầu lông</text>
+    <text name="TennisCourt">Sân tennis</text>
+    <text name="VolleyballCourt">Sân bóng chuyền</text>
+    <text name="GymFitness">Gym - Thể hình</text>
+    <text name="GolfCourse">Sân golf</text>
+    <text name="Billiards">Billiard</text>
+    <text name="Maids">Giúp việc</text>
+    <text name="MaidCenters">Trung tâm giúp việc</text>
+    <text name="FreelanceMaids">Giúp việc tự do</text>
+    <text name="Travelling">Du lịch</text>
+    <text name="Homestay">Homestay</text>
+    <text name="Resort">Resort</text>
+    <text name="TouristAttractions">Điểm du lịch</text>
+    <text name="Hotels">Khách sạn</text>
+    <text name="Resthouses">Nhà nghỉ</text>
+    <text name="Hostels">Nhà trọ</text>
+    <text name="TradCraftVillages">Làng nghề truyền thống</text>
+    <text name="CraftVillages">Làng nghề</text>
+    <text name="Entertainmnt">Giải trí</text>
+    <text name="Gaming">Gaming</text>
+    <text name="Theaters">Rạp hát - Nhà hát</text>
+    <text name="BusStop">Điểm xe bus</text>
+    <text name="GasStation">Trạm xăng</text>
+    <text name="ParkingLots">Bãi đỗ xe</text>
+    <text name="BikeRentals">Thuê xe đạp</text>
+    <text name="MotorbikeCarRentals">Thuê xe máy - Ô tô</text>
+    <text name="MetroStations">Ga tàu điện</text>
+    <text name="EChargeStations">Trạm sạc xe điện</text>
+    <text name="DrivingTrainCenters">Trung tâm đào tạo lái xe</text>
+    <text name="BusinessMngr">Quản lý đơn vị kinh doanh</text>
+    <text name="UserReports">Báo cáo người dùng</text>
+    <text name="YootekWebNews">Tin tức Web Yootek</text>
+    <text name="BuildingInfo">Thông tin toà nhà</text>
+    <text name="DigitalAdministration">Hành chính số</text>
+    <text name="DigitalCitizenship">Công dân số</text>
+    <text name="ValidateCitizenAcc">Xác minh tài khoản cư dân</text>
+    <text name="CitizenInfo">Thông tin cư dân</text>
+    <text name="BillsPayments">Hoá đơn - Chi phí số</text>
+    <text name="ElectricityBills">Phí điện tiêu dùng</text>
+    <text name="WaterBills">Phí nước tiêu dùng</text>
+    <text name="MonthlyParkingBills">Phí gửi xe tháng</text>
+    <text name="LightningBills">Phí chiếu sáng</text>
+    <text name="ManagementBills">Phí quản lý</text>
+    <text name="CitizenBills">Phí cư dân</text>
+    <text name="DigitalComm">Giao tiếp số</text>
+    <text name="DigitalFeedback">Phản ánh số</text>
+    <text name="DigitalSurvey">Khảo sát số</text>
+    <text name="DigitalNotices">Thông báo số</text>
+    <text name="PeopleLife">Đời sống nhân dân</text>
+    <text name="NewsFeed_">Bảng tin</text>
+    <text name="InternalNotifications">Thông báo nội bộ</text>
+    <text name="DigitalEcon">Kinh tế số</text>
+    <text name="CreateStore">Tạo cửa hàng tiện ích</text>
+    <text name="ReviewRegStores">Phê duyệt cửa hàng đăng ký</text>
+    <text name="eCommerce">Mua sắm số</text>
+    <text name="DigitalCareers">Việc làm số</text>
+    <text name="DigitalHealthcare">Chăm sóc sức khoẻ số</text>
+    <text name="DigitalEntertainment">Giải trí số</text>
+    <text name="UserReportStores">Báo cáo của người dùng về các cửa hàng</text>
+    <text name="LocalAmentities">Tiện ích nội khu</text>
+    <text name="CreateAmentity">Tạo cửa hàng tiện ích</text>
+    <text name="DigitalSociety">Xã hội số</text>
+    <text name="DigitalSports">Thể thao số</text>
+    <text name="DigitalAccomodation">Lưu trú số</text>
+    <text name="DigitalEdu">Giáo dục số</text>
+    <text name="DigitalHealth">Y tế số</text>
+    <text name="DigitalTransport">Giao thông số</text>
+    <text name="DigitalTravel">Du lịch - Thắng cảnh số</text>
+    <text name="DigitalSitesVillages">Di tích - làng nghề số</text>
+    <text name="AssignRoles">Phân quyền</text>
+    <text name="LocalServicesSettings">Cài đặt loại dịch vụ nội khu</text>
+    <text name="PositionManagement">Chức vụ</text>
+    <text name="StaffManagement">Quản lý nhân viên</text>
+    <text name="ImgManager">Quản lý hình ảnh</text>
+    <text name="OrganizationChat">Đơn vị giao tiếp</text>
+    <text name="AdminSettings">Cài đặt cấu hình hành chính công</text>
+    <text name="PartnerChannel">Kênh đối tác</text>
+
+    <!--MessagePopup-->
+    <text name="InsertSuccess">Thêm thành công</text>
+    <text name="InsertFail">Thêm thất bại</text>
+    <text name="UpdateSuccessfully">Cập nhật thành công</text>
+    <text name="UpdateFailed">Cập nhật thất bại</text>
+    <text name="SystemError">Hệ thống có lỗi</text>
+    <text name="DeletedSuccessfully">Xoá thành công</text>
+    <text name="DeleteFailed">Xoá thất bại</text>
+    <text name="UploadSuccess">Tải lên thành công!</text>
+    <text name="UploadFail">Tải lên thất bại!</text>
+    <text name="ImportSuccess">Nhập dữ liệu thành công!</text>
+    <text name="ImportFail">Nhập dữ liệu thất bại!</text>
+    <text name="WaitForImport">Xin vui lòng chờ nhập dữ liệu</text>
+    <text name="SaveSuccess">Lưu thành công!</text>
+    <text name="WarningDulp">Trùng lập dữ liệu!</text>
+
+    <!--BusinessUnit-->
+    <text name="BusinessUnitComponentTitle">Quản lý đơn vị kinh doanh</text>
+    <text name="BusinessUnitList">Danh sách các đơn vị kinh doanh</text>
+    <text name="BUImg">Ảnh đại diện</text>
+    <text name="BUName">Tên đơn vị kinh doanh</text>
+    <text name="Province">Tỉnh/TP.</text>
+    <text name="District">Quận huyện</text>
+    <text name="Ward">Xã/Phường</text>
+    <text name="BUType">Loại hình đơn vị kinh doanh</text>
+    <text name="BUOwner">Chủ sở hữu</text>
+    <text name="BusinessNameIsBlank">Tên đơn vị kinh doanh không được để trống</text>
+    <text name="BusinessTypeIsBlank">Loại hình đơn vị kinh doanh không được để trống</text>
+    <text name="BusinessOwnerNameIsBlank">Tên chủ đơn vị kinh doanh không được để trống</text>
+    <text name="BusinessAddressIsBlank">Địa chỉ đơn vị kinh doanh không được để trống</text>
+    <text name="BusinessDescIsBlank">Mô tả không được để trống</text>
+    <text name="BusinessType">Loại hình đơn vị kinh doanh</text>
+    <text name="BusinessOwnerName">Tên chủ đơn vị kinh doanh</text>
+    <!--AddNews-->
+    <text name="Keywords">Từ khoá</text>
+    <!--BusinessSetting-->
+    <text name="CreateAttrSuccess">Tạo thuộc tính thành công</text>
+    <text name="DeleteAttrSuccess">Xoá thuộc tính thành công</text>
+    <text name="ConfigattrSuccess">Cấu hình thuộc tính thành công</text>
+    <text name="SaveBtn">Lưu</text>
+
+    <!--Permission -->
+    <text name="ManagementUrban">Quản lý khu đô thị</text>
+    <text name="Urbans">Thông tin khu đô thị</text>
+    <text name="Buildings">Thông tin toà nhà</text>
+    <text name="Apartments">Thông tin căn hộ</text>
+    <text name="NewsWebYootek">Tin tức web Yootek</text>
+    <text name="SettingImages">Quản lý hình ảnh</text>
+    <text name="Setting">Cài đặt</text>
+    <text name="CityVerification">Xác minh cư dân</text>
+    <text name="CitizenInformation">Thông tin cư dân</text>
+    <text name="TypeLocalService">Cấu hình loại tiện ích nội khu</text>
+    <text name="Food">Thực phẩm</text>
+    <text name="Goods">Hàng hoá</text>
+    <text name="Staffs">Quản lý nhân viên</text>
+    <text name="LocalAmenities">Tiện ích nội khu</text>
+    <text name="LocalAmenitiesCreateStore">Tạo cửa hàng tiện ích</text>
+    <text name="LocalAmenitiesApproveStore">Phê duyệt cửa hàng đăng ký</text>
+    <text name="LocalAmenitiesReportUser">Báo cáo người dùng về cửa hàng</text>
+    <text name="DigitalGovernment">Chính phủ số</text>
+    <text name="GovernmentChatCitizen">Giao tiếp số</text>
+    <text name="GovernmentCitizensReflects">Phản ánh số</text>
+    <text name="GovernmentCitizensVote">Khảo sát số</text>
+    <text name="GovernmentCitizensCityEvents">Thông báo số</text>
+    <text name="DigitalManagement">Ban quản lý số</text>
+    <text name="CitizensReflects">Phản ánh số</text>
+    <text name="CitizensReflectsAdvance">Phản ánh số *</text>
+    <text name="CitizensVote">Khảo sát số</text>
+    <text name="Newsfeed">Bảng tin</text>
+    <text name="CityEvents">Thông báo số</text>
+    <text name="TraditionVillage">Làng nghề truyền thống</text>
+
+    <!--CRUD-Web-->
+
+    <text name="GRID.FUNCTION">Chức năng</text>
+    <text name="FORM.EDIT">Sửa</text>
+    <text name="FORM.DELETE">Xoá</text>
+    <text name="Filter">Lọc</text>
+    <text name="View">Xem</text>
+    <text name="Update">Sửa</text>
+    <text name="Delete">Xóa bỏ</text>
+    <text name="Create">Thêm mới</text>
+    <text name="FromDay">Từ ngày</text>
+    <text name="ToDay">Đến ngày</text>
+
+    <!--File upload-->
+    <text name="FILE_UPLOAD.CHOOSE">Chọn file</text>
+    <text name="FILE_UPLOAD.CANCEL">Xóa file</text>
+
+    <!--TypeCommonPipe-->
+    <text name="OtherIssue">Các sự cố khác</text>
+    <text name="Traffic">Giao thông</text>
+    <text name="SecuritySys">Hệ thống an ninh</text>
+    <text name="Energy">Năng lượng</text>
+    <text name="LightningSys">Hệ thống chiếu sáng</text>
+    <text name="ResidentCommunity">Cộng đồng dân cư</text>
+    <text name="Unfinished">Chưa hoàn thành</text>
+    <text name="MsgDept">Ban xử lý tin nhắn</text>
+    <text name="ComplaintDpt">Ban xử lý phản ánh</text>
+    <text name="SurveyDpt">Ban xử lý khảo sát</text>
+    <text name="NoticeDpt">Ban xử lý thông báo</text>
+
+    <!--CitizenPipe-->
+    <text name="ValueError">Lỗi giá trị</text>
+    <text name="Member">Thành viên</text>
+    <text name="RepTenant">Người thuê đại diện</text>
+    <text name="New">Mới</text>
+    <text name="Unmatched">Chưa khớp</text>
+    <text name="RequestEdit_">Yêu cầu sửa</text>
+    <text name="StaffVerified">Nhân viên xác nhận</text>
+    <text name="SelectStatus">Lựa chọn trạng thái</text>
+
+    <!--StateProblemPipe-->
+    <text name="Complaint">Phản ánh</text>
+    <text name="WaitForVerify">Chờ xét duyệt</text>
+
+    <!--GatewayPipe-->
+    <text name="OtherGateway">Gateway khác</text>
+
+    <!--DateTimePipe-->
+    <text name="yearsago">năm trước.</text>
+    <text name="monthsago">tháng trước.</text>
+    <text name="daysago">ngày trước.</text>
+    <text name="hoursago">giờ trước.</text>
+    <text name="minutesago">phút trước.</text>
+    <text name="fewsecondsago">Vài giây trước.</text>
+
+    <!--BusinessPipe-->
+    <text name="AttributeError">Lỗi thuộc tính</text>
+    <text name="StoreInfo">Thông tin cửa hàng</text>
+    <text name="ServiceInfo">Thông tin dịch vụ</text>
+    <text name="otherLowercaps">khác</text>
+    <text name="repairLowercaps">sửa chữa</text>
+    <text name="restaurantLowercaps">nhà hàng</text>
+    <text name="sportsLowercaps">thể thao</text>
+
+    <!--notifier.service.ts-->
+    <text name="MESSAGE.INSERT_DATA_SUCCESS">Thêm mới dữ liệu thành công</text>
+    <text name="MESSAGE.COMMON_SUCCESS_HEADER">Thao tác thành công</text>
+    <text name="MESSAGE.UPDATE_DATA_SUCCESS">Cập nhật dữ liệu thành công</text>
+    <text name="MESSAGE.DELETE_DATA_SUCCESS">Xoá dữ liệu thành công</text>
+    <text name="MESSAGE.COMMON_ERROR_HEADER">Thao tác thất bại</text>
+    <text name="MESSAGE.COMMON_ERROR">Thao tác thất bại</text>
+    <text name="MESSAGE.DELETE_DATA_ERROR">Xoá dữ liệu thất bại</text>
+    <text name="MESSAGE.DELETE_AT_LEASE_ONE_ERROR">Hãy chọn ít nhất một bản ghi để xoá</text>
+    <text name="MESSAGE.HTTP_UNKNOW_ERROR_HEADER">Lỗi chưa biết</text>
+    <text name="MESSAGE.HTTP_UNKNOW_ERROR">Bạn vừa gặp phải một sự cố chưa rõ ràng</text>
+    <text name="MESSAGE.NOT_FOUND_ERROR">Không tìm thấy dữ liệu</text>
+    <text name="MESSAGE.UNAUTHORIZED_ERROR">Chưa được uỷ quyền</text>
+    <text name="MESSAGE.ACCESS_DENINED_ERROR">Bạn không có quyền truy cập dữ liệu này</text>
+    <text name="MESSAGE.INTERNAL_SERVER_ERROR">Lỗi hệ thống nội bộ</text>
+    <text name="MESSAGE.CONFLICT_ERROR">Lỗi xung đột</text>
+    <text name="MESSAGE.INVALID_INPUT_HEADER">Dữ liệu đầu vào không hợp lệ</text>
+    <text name="MESSAGE.INVALID_INPUT">Vui lòng kiểm tra dữ liệu đầu vào</text>
+    <text name="MESSAGE.SERVICE_UNAVAILABLE_HEADER">Dịch vụ không hoạt động</text>
+    <text name="MESSAGE.SERVICE_UNAVAILABLE">"Vui lòng kiểm tra lại cài đặt hệ thống"</text>
+    <text name="MESSAGE.INSERT_DATA_FAILED">Thêm mới dữ liệu thất bại</text>
+    <text name="MESSAGE.UPDATE_DATA_FAILED">Cập nhật dữ liệu thất bại</text>
+    <text name="MESSAGE.CATEGORY_UNAVAILABLE">Mã hoặc tên danh mục đã tồn tại</text>
+    <text name="MESSAGE.PASSWORD_NOT_EMPTY">Mật khẩu không được để trống</text>
+    <text name="CONFIRM.ACCEPT_LABEL">Chấp nhận</text>
+    <text name="CONFIRM.REJECT_LABEL">Từ chối</text>
+    <text name="CONFIRM.DEFAULT_DELETE_CONFIRM">Bạn có muốn xoá dữ liệu?</text>
+    <text name="CONFIRM.DEFAULT_DELETE_CONFIRM_TITLE">Xác nhận xoá dữ liệu</text>
+    <text name="MESSAGE.VALIDATION_FAILED">Xác nhận dữ liệu đã bị lỗi!</text>
+    <text name="MESSAFE.ERROR_MESSAGE">Thông báo lỗi</text>
+
+    <text name="Return">Trở về</text>
+    <text name="Manager">Quản lý</text>
+    <!--booking tenant busines-->
+    <text name="T2">Thứ hai</text>
+    <text name="T3">Thứ ba</text>
+    <text name="T4">Thứ tư</text>
+    <text name="T5">Thứ năm</text>
+    <text name="T6">Thứ sáu</text>
+    <text name="T7">Thứ bảy</text>
+    <text name="CN">Chủ nhật</text>
+    <text name="Closed">Đóng cửa</text>
+    <text name="Opened">Mở cửa</text>
+    <text name="ImageItemBooking">Hình ảnh dịch vụ </text>
+    <text name="AddItemBooking">Thêm dịch vụ</text>
+    <text name="NameItemBooking">Tên dịch vụ</text>
+    <text name="CustomerComment">Bình luận khách hàng</text>
+    <text name="ItemBookingName">Tên dịch vụ</text>
+    <text name="CustomerPhoneNumber">Số điện thoại khách hàng</text>
+    <text name="BookingTime">Khung giờ</text>
+    <text name="State">Trạng thái</text>
+    <text name="CustomerAddress">Địa chỉ khách hàng</text>
+    <text name="BookingDay">Ngày đặt</text>
+    <text name="new">Mới tạo</text>
+    <text name="accepted">Xác nhận</text>
+    <text name="denied">Từ chối</text>
+    <text name="cancel">Đơn huỷ</text>
+    <text name="bookingcancel">Đơn hủy</text>
+    <text name="expired">Hết hạn</text>
+    <text name="SelectTimeRange">Chọn khoảng thời gian</text>
+    <text name="completed">Hoàn thành</text>
+    <text name="CompleteVerify">Hoàn thành</text>
+    <text name="RefuseReason">Lý do từ chối</text>
+    <text name="Hour">Một giờ</text>
+    <text name="HalfHour">Nửa giờ</text>
+    <text name="Day">Một ngày</text>
+    <text name="HalfDay">Nửa ngày</text>
+
+    <text name="Requesting">Đang yêu cầu</text>
+    <text name="Accepted">Đã xác nhận</text>
+    <text name="Denied">Đã từ chối</text>
+
+    <!--Utilities-->
+    <text name="GroupType">Loại tiện ích</text>
+    <text name="TypeBooking">Loại dịch vụ đặt</text>
+    <text name="FormBasedBooking">Dịch vụ đặt theo form</text>
+    <text name="ItemBasedBooking">Dịch vụ đặt theo item</text>
+
+    <text name="DigitalAdministrative">Hành chính số</text>
+    <!--<text name="MESSAFE.ERROR_MESSAGE">Thông báo lỗi</text>
+	  <text name="MESSAFE.ERROR_MESSAGE">Thông báo lỗi</text>-->
+
+    <text name="OtherBills">Hoá đơn khác</text>
+    <text name="ManagePayments">Quản lý thanh toán</text>
+    <text name="FilterPayment">Lọc thanh toán</text>
+    <text name="BillCount">Số hoá đơn</text>
+    <text name="Cash">Tiền mặt</text>
+    <text name="TotalPayment">Số tiền thanh toán</text>
+    <text name="paymentMethod">Phương thức</text>
+    <text name="VerifyImg">Ảnh xác thực </text>
+    <text name="SetAsPending">Chuyển sang chờ xác thực</text>
+    <text name="Pending">Đang chờ</text>
+    <text name="ExportAll">Xuất tất cả</text>
+    <text name="ExportSelected">Xuất các mục đã chọn</text>
+    <text name="VerifySuccess">Xác thực thành công!</text>
+    <text name="VerifyFail">Xác thực thất bại!</text>
+    <text name="BackToMain">Về màn hình chính</text>
+    <text name="TaskNotDone">Tính năng này đang phát triển</text>
+    <text name="DownloadFileSampleExcel">Tải file excel mẫu</text>
+    <text name="DownloadFileSampleExcelNote">Tải file excel mẫu tại đây trước khi thực hiện nhập danh sách với file excel</text>
+    <text name="CategoryGeneral">Danh mục chung</text>
+
+    <!--quan ly nhan vien-->
+    <text name="CreateNewPosition">Tạo chức vụ mới</text>
+
+    <!--Smart parking-->
+    <text name="ParkingPositionManagement">Vị trí đỗ xe</text>
+    <text name="ParkingManagement">Quản lý bãi đỗ xe</text>
+    <text name="NameParkingPosition">Tên vị trí</text>
+    <text name="VehicleType">Loại phương tiện</text>
+    <text name="ParkingPosition">Vị trí</text>
+    <text name="QRCode">Mã QR</text>
+
+    <!--HomeMeter-->
+    <text name="EnergyManagement">Quản lý năng lượng</text>
+    <text name="UpdateTime">Thời gian cập nhật</text>
+    <text name="ElectricityMeter">Đồng hồ điện</text>
+    <text name="WaterMeter">Đồng hồ nước</text>
+    <text name="kWh">Số điện (kWh)</text>
+    <text name="WaterVol">Số nước (m³)</text>
+    <text name="ElectricityPayment">Tiền điện (VNĐ)</text>
+    <text name="WaterPayment">Tiền nước (VNĐ)</text>
+    <text name="EMeterName">Tên đồn hồ điện</text>
+    <text name="WaterMeterName">Tên đồng hồ nước</text>
+    <text name="CurrentPower">Số điện/trạng thái hiện tại</text>
+    <text name="CurrentWater">Số nước/trạng thái hiện tại</text>
+    <text name="ElectricityPayment1">Tiền điện</text>
+    <text name="WaterPayment1">Tiền nước</text>
+    <text name="StatisticalTableU">BẢNG THỐNG KÊ</text>
+    <text name="ElectricSmartDevices">Đồng hồ điện</text>
+    <text name="WaterSmartDevices">Đồng hồ nước</text>
+    <text name="ElectricAndWaterSmartMeters">Đồng hồ điện nước</text>
+
+    <text name="Tomorrow">Ngày mai</text>
+    <text name="ThisWeek">Tuân này</text>
+
+    <!--Parking-->
+    <text name="Car">Ô tô</text>
+    <text name="Motorbike">Xe máy</text>
+    <text name="Bicycle">Xe đạp</text>
+
+    <text name="Month">Tháng</text>
+    <text name="UrbanArea">Khu đô thị</text>
+
+    <text name="MobileConfiguration">Cấu hình cho điện thoại</text>
+    <text name="MobileSocialConfig">Cấu hình social cho mobile</text>
+    <text name="MobileComunityConfig">Cấu hình community cho mobile</text>
+    <text name="Type">Loại</text>
+    <text name="MobileVersion">Phiên bản mobile</text>
+    <text name="VersionType">Loại phiên bản</text>
+    <text name="PortalWebsite">Trang web cổng thông tin điện tử</text>
+    <text name="AdminPageConfiguration">Cấu hình cho web quản trị</text>
+    <text name="LabelTenantConfig">Cấu hình tên tenant</text>
+    <text name="IconTenantConfig">Cấu hình icon tenant</text>
+    <text name="LogoTenantConfig">Cấu hình logo tenant</text>
+    <text name="ShownStats">Hiện thống kê</text>
+    <text name="ConfigMenus">Cấu hình menu</text>
+
+    <!--phản ánh số-->
+    <text name="Assigned">Đã phân công</text>
+    <text name="ChatReflect">Chat phản ánh</text>
+    <text name="HandleReflect">Xử lý phản ánh</text>
+    <text name="AssignDepartment">Phân công phòng ban</text>
+    <text name="AssignHandler">Phân công người xử lý</text>
+
+    <text name="ReceivingUser">Người tiếp nhận xử lý</text>
+    <text name="SelectReceiveUser">Chọn người tiếp nhận</text>
+    <!--Quản lý chức vụ-->
+    <text name="DeletePosition">Xác nhận xóa chức vụ?</text>
+    <text name="PositionDeleteSuccess">Xóa chức vụ thành công</text>
+    <text name="PositionDeleteFail">Xóa chức vụ thất bại</text>
+    <!--quản lý nhân viên-->
+    <text name="EmployeeAuthorization">Phân quyền nhân viên</text>
+    <text name="SelectPosition">Chọn chức vụ</text>
+    <text name="CreateNewStaff">Tạo nhân viên mới</text>
+    <text name="Specialize">Chuyên môn</text>
+    <text name="Position">Chức vụ</text>
+    <text name="UpdateStaffSuccess">Cập nhật nhân viên thành công</text>
+    <text name="UpdateStaffFailed">Cập nhật nhân viên thất bại</text>
+    <text name="ConfirmYourDeletionRequest">
+      Nhấn "OK" để xóa tài khoản người dùng {0} và vai trò nhân viên của người dùng.
+      Nhấn "Cancel" để xóa vai trò nhân viên của {0}
+    </text>
+    <text name="DeleteUserStaff">Xóa tài khoản</text>
+    <text name="DeleteStaff">Xóa nhân viên</text>
+    <text name="ReceptionUnit">Đơn vị tiếp nhận</text>
+    <text name="EditStaff">Chỉnh sửa thông tin nhân viên</text>
+    <text name="ManagementStaff">Nhân viên quản lý</text>
+    <text name="StaffProject">Nhân viên dự án</text>
+
+
+
+    <text name="UploadHandleReport">Tải lên biên bản xử lý</text>
+
+
+    <text name="DigitalDaily">Cuộc sống thường ngày</text>
+    <text name="QuestionAnswer">Hỏi đáp</text>
+
+    <!--Topic-->
+    <text name="TopicManagement">Quản lý chủ đề</text>
+
+    <text name="BillDetails">Thông tin hoá đơn</text>
+    <text name="CalcFormula">Công thức tính</text>
+
+    <!--TenantSettings-->
+    <text name="TenantSettings">Cấu hình tenant</text>
+    <text name="HeadPeriodDay">Ngày đầu chu kỳ</text>
+    <text name="EndPeriodDay">Ngày kết thúc chu kỳ</text>
+    <text name="DueDateElectric">Ngày hết hạn hóa đơn điện( hàng tháng)</text>
+    <text name="DueDateWater">Ngày hết hạn hóa đơn nước( hàng tháng)</text>
+    <text name="DueDateLightning">Ngày hết hạn hóa đơn chiếu sáng( hàng tháng)</text>
+    <text name="DueDateParking">Ngày hết hạn hóa đơn gửi xe( hàng tháng)</text>
+    <text name="DueDateManager">Ngày hết hạn hóa đơn quản lý( hàng tháng)</text>
+    <text name="DueDateResidence">Ngày hết hạn hóa đơn phí cư dân( hàng tháng)</text>
+    <text name="DueMonthAfter">Số tháng sau đó hết hạn</text>
+    <text name="DueMonthElectric">Tháng hết hạn thu tiền điện</text>
+    <text name="DueMonthWater">Tháng hết hạn thu tiền nước</text>
+    <text name="DueMonthLighting">Tháng hết hạn thu tiền chiếu sáng</text>
+    <text name="DueMonthParking">Tháng hết hạn thu tiền gửi xe</text>
+    <text name="DueMonthManager">Tháng hết hạn thu tiền quản lý</text>
+    <text name="DueMonthResidence">Tháng hết hạn thu tiền cư dân</text>
+    <text name="SendUserBillNotificationDay">Ngày gửi thông báo hoá đơn</text>
+    <text name="TimeScheduleCheckBill">Thời gian biểu</text>
+    <text name="UserBillSetting">Cài đặt hoá đơn</text>
+
+    <text name="QATopic">Chủ đề hỏi đáp</text>
+    <text name="TenantSetting">Cài đặt chung</text>
+    <text name="Schedule">Thời gian biểu</text>
+    <text name="UserBillConfig">Cài đặt hóa đơn</text>
+    <text name="BankingConfig">Cài đặt chuyển khoản</text>
+
+
+    <!--CitizenContract-->
+    <text name="StartRentDate">Ngày bắt đầu thuê</text>
+    <text name="ExpiryDate">Ngày hết hạn</text>
+    <text name="ProviderFullName">Họ tên của bên cho thuê</text>
+    <text name="RenterFullName">Họ tên của bên thuê</text>
+    <text name="BankAccount">Tài khoản ngân hàng</text>
+    <text name="BankName">Tên ngân hàng</text>
+    <text name="BankBranch">Chi nhánh</text>
+    <text name="MonthlyPayDate">Ngày trả tiền theo tháng</text>
+    <text name="RentMoney">Tiền thuê</text>
+    <text name="CitizenContract">Hợp đồng cho thuê</text>
+
+    <text name="OrganizationStructure">Cơ cấu quản lý</text>
+    <text name="OrganizationProject">Cơ cấu dự án</text>
+    <!--Thống kê tài sản-->
+    <text name="TotalStatistics">Thống kê tài sản</text>
+    <text name="StatisticsWarehouse">Thống kê kho</text>
+    <text name="StatisticsDepartment">Thống kê phòng ban</text>
+    <text name="DeliveryStatistics">Thống kê giao nhận</text>
+    <text name="ParentUnit">Đơn vị cấp trên</text>
+    <text name="ChildUnits">Các đơn vị cấp dưới</text>
+
+    <text name="AddDepartment">Thêm phòng ban</text>
+    <text name="DepartmentName">Tên phòng ban</text>
+    <text name="SelectAnOrganizationUnitToSeeDepartments">Chọn cơ cấu tổ chức để xem các phòng ban</text>
+    <text name="SelectDepartments">Lựa chọn phòng ban</text>
+    <text name="Departments">Các phòng ban</text>
+
+    <text name="CountStaff">Số lượng thành viên</text>
+    <text name="CodeUnit">Mã tổ chức</text>
+    <text name="ParentDepartment">Phòng ban cấp trên</text>
+
+    <text name="ParentUnitOrgStruct">Đơn vị cấp trên</text>
+    <text name="StaffCount">Số lượng nhân viên</text>
+    <text name="UnitCharge">Đơn vị phụ trách</text>
+
+    <text name="AddUnit">Thêm chức năng</text>
+    <text name="UnitChargeName">Tên đơn vị</text>
+    <text name="SureDeleteOrganizationCharge">
+      Bạn có chắc chắn muốn xóa chức năng {0} khỏi cơ cấu tổ chức {1}
+      không?
+    </text>
+
+    <!--Quản lý mặt bằng-->
+    <text name="GroundArea">Quản lý mặt bằng</text>
+    <text name="KeysDelivered">Bàn giao chìa khoá</text>
+    <text name="Under_Development">Đang được phát triển</text>
+    <text name="In_User">Đang sử dụng</text>
+    <text name="Unuseable">Không sử dụng được</text>
+    <text name="CodeApartment">Mã mặt bằng</text>
+    <text name="FloorType">Loại mặt bằng</text>
+    <text name="GroundInfo">Thông tin mặt bằng</text>
+    <text name="Undeveloped">Chưa phát triển</text>
+    <text name="IsHandRedBook">Bàn giao sổ đỏ</text>
+    <text name="NotYetHanded">Chưa bàn giao</text>
+    <text name="HandedOver">Đã bàn giao</text>
+    <text name="DetailGround">Chi tiết mặt bằng</text>
+    <!--Giao việc-->
+    <text name="AssignWork">Giao việc</text>
+    <text name="NameWork">Tên công việc</text>
+    <text name="Executor">Người thực hiện</text>
+    <text name="Followers">Người theo dõi</text>
+    <text name="GiveIt">Giao cho tôi</text>
+    <text name="IAssign">Tôi giao việc</text>
+    <text name="IFollow">Tôi theo dõi</text>
+    <text name="Doing">Đang làm</text>
+    <text name="Completed">Hoàn thành</text>
+    <text name="Overdue">Quá hạn</text>
+    <text name="ReceivingBlock">Khối tiếp nhận</text>
+    <text name="DateExpected">Ngày dự kiến hoàn thành</text>
+    <text name="HourExpected">Dự kiến hoàn thành</text>
+    <text name="UpdateState">Cập nhật trạng thái</text>
+    <text name="ConfirmChangeStateAssign">Bạn chắc chắn muốn thay đổi trạng thái của công việc?</text>
+    <text name="Handover">Giao lại</text>
+    <text name="CompletionTime">Thời gian hoàn thành</text>
+    
+
+	  <text name="VehicleRegister">Đăng ký xe</text>
+	  <text name="ParkingLot">Bãi xe</text>
+	  <text name="CitizenName">Tên cư dân</text>
+	  <text name="VehicleCode">Biển số xe</text>
+	  <text name="VehicleName">Tên phương tiện</text>
+	  <text name="VehicleList">Danh sách xe</text>
+	  <text name="ParkingLotList">Danh sách bãi xe</text>
+	  <text name="LicensePlates">Biển số</text>
+	  <text name="AddVehicle">Thêm phương tiện</text>
+	  <text name="ChooseLot">Chọn bãi đỗ xe</text>
+	  <text name="ParkingLotCode">Mã bãi đỗ</text>
+	  <text name="VehicleListUpper">DANH SÁCH XE</text>
+	  <text name="SerialNumber">Số seri</text>
+	  <text name="AssetGroup">Nhóm tài sản</text>
+	  <text name="AssetProducer">Nhà sản xuất</text>
+	  <text name="AssetUnit">Đơn vị</text>
+	  <text name="WearRate">Tỉ lệ hao mòn (%)</text>
+	  <text name="ImportPrice">Giá nhập (VNĐ)</text>
+	  <text name="ManufactureDate">Ngày sản xuất</text>
+	  <text name="WarrantyPeriod">Thời hạn bảo hành (tháng)</text>
+	  
+	  <text name="CreateNewTopic">Tạo chủ đề</text>
+	  <text name="HandlingDept">Phòng ban xử lý</text>
+	  <text name="HandlingUser">Người xử lý</text>
+	  <text name="QuestionTitle">Tiêu đề câu hỏi</text>
+	  <text name="QuestionType">Loại câu hỏi</text>
+	  <text name="Topic">Chủ đề</text>
+
+  </texts>
+</localizationDictionary>
