@@ -1,0 +1,330 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Providers";
+
+package Providers;
+
+service ProviderProtoGrpc {
+  rpc GetAllProvidersByAdmin (GetAllProvidersByAdminRequest) returns (GetAllProvidersByAdminResponse);
+  rpc GetAllProvidersByUser (GetAllProvidersByUserRequest) returns (GetAllProvidersByUserResponse);
+  rpc GetAllProvidersRandom (GetAllProvidersRandomRequest) returns (GetAllProvidersRandomResponse);
+  rpc GetAllProvidersByPartner (GetAllProvidersByPartnerRequest) returns (GetAllProvidersByPartnerResponse);
+  rpc GetAllProvidersInvestmentByPartner (GetAllProvidersInvestmentByPartnerRequest) returns (GetAllProvidersInvestmentByPartnerResponse);
+  rpc GetAllProvidersByIds (GetAllProvidersByIdsRequest) returns (GetAllProvidersByIdsResponse);
+  rpc GetAddressOfProviderByListId(GetAddressOfProviderByListIdRequest) returns (GetAddressOfProviderByListIdResponse);
+  rpc GetProviderById (GetProviderByIdRequest) returns (GetProviderByIdResponse);
+  rpc CreateProvider (CreateProviderRequest) returns (CreateProviderResponse);
+  rpc CreateListProviders (CreateListProvidersRequest) returns (CreateListProvidersResponse);
+  rpc UpdateProvider (UpdateProviderRequest) returns (UpdateProviderResponse);
+  rpc UpdateProviderByPartner (UpdateProviderByPartnerRequest) returns (UpdateProviderByPartnerResponse);
+  rpc UpdateStateOfProvider (UpdateStateOfProviderRequest) returns (UpdateStateOfProviderResponse);
+  rpc UpdateStateOfProviderByAdmin (UpdateStateOfProviderByAdminRequest) returns (UpdateStateOfProviderByAdminResponse);
+  rpc UpdateRateOfProvider (UpdateRateOfProviderRequest) returns (UpdateRateOfProviderResponse);
+  rpc UpdateRateOfProviderStatic (UpdateRateOfProviderStaticRequest) returns (UpdateRateOfProviderStaticResponse);
+  rpc DeleteProvider (DeleteProviderRequest) returns (DeleteProviderResponse);
+  rpc DeleteProviderByPartner (DeleteProviderByPartnerRequest) returns (DeleteProviderByPartnerResponse);
+  rpc DeleteAllProviders (DeleteAllProvidersRequest) returns (DeleteAllProvidersResponse);
+}
+
+message PProvider {
+  int64 Id = 1;
+  string Name = 2;
+  string Email = 3;
+  string Contact = 4;
+  string Description = 5;
+  string PhoneNumber = 6;
+  repeated string ImageUrls = 7;
+  string OwnerInfo = 8;
+  string BusinessInfo = 9;
+  string WorkTime = 10;
+  int32 TenantId = 11;
+  int32 SocialTenantId = 12;
+  int32 Type = 13;
+  int32 GroupType = 14;
+  double Latitude = 15;
+  double Longitude = 16;
+  string PropertyHistories = 17;
+  string Properties = 18;
+  int32 State = 19;
+  string StateProperties = 20;
+  int32 CountRate = 21;
+  double RatePoint = 22;
+  bool IsDataStatic = 23;
+  bool IsAdminCreate = 24;
+  string DistrictId = 25;
+  string ProvinceId = 26;
+  string WardId = 27;
+  string Address = 28;
+  google.protobuf.Timestamp CreationTime = 29;
+  double Distance = 30;
+  int64 OwnerId = 31;
+  int64 CreatorUserId = 32;
+  int32 ServiceType = 33;
+}
+
+message PAddressOfProvider {
+  int64 Id = 1;
+  string DistrictId = 2;
+  string ProvinceId = 3;
+  string WardId = 4;
+  string Address = 5;
+  string DistrictName = 6;
+  string ProvinceName = 7;
+  string WardName = 8;
+}
+
+message GetAllProvidersByAdminRequest {
+  int32 TenantId = 1;
+  string Keyword = 2;
+  google.protobuf.Timestamp DateFrom = 3;
+  google.protobuf.Timestamp DateTo = 4;
+  int32 FormId = 5;
+  int64 PartnerId = 6;
+  int32 MaxResultCount = 7;
+  int32 SkipCount = 8;
+}
+
+message GetAllProvidersByAdminResponse {
+  int32 TotalCount = 1;
+  repeated PProvider Items = 2;
+}
+
+message GetAllProvidersByUserRequest {
+  int32 TenantId = 1;
+  int64 UserId = 2;
+  int32 Type = 3;
+  int32 GroupType = 4;
+  string Keyword = 5;
+  bool IsDataStatic = 6;
+  repeated int32 OrderBy = 7;
+  google.protobuf.Timestamp DateFrom = 8;
+  google.protobuf.Timestamp DateTo = 9;
+  double Latitude = 10;
+  double Longitude = 11;
+  int32 SkipCount = 12;
+  int32 MaxResultCount = 13;
+  int32 FormId = 14;
+  int32 MinRatePoint = 15;
+  repeated int32 ListServiceType = 16;
+}
+
+message GetAllProvidersByUserResponse {
+  int32 TotalCount = 1;
+  repeated PProvider Items = 2;
+}
+
+message GetAllProvidersByPartnerRequest {
+  int32 TenantId = 1;
+  int64 UserId = 2;
+  int32 Type = 3;
+  int32 GroupType = 4;
+  string Keyword = 5; 
+  int32 OrderBy = 6;
+  int32 SkipCount = 7;
+  int32 MaxResultCount = 8;
+  int32 FormId = 9;
+}
+
+message GetAllProvidersByPartnerResponse {
+  int32 TotalCount = 1;
+  repeated PProvider Items = 2;
+}
+
+message GetAllProvidersInvestmentByPartnerRequest {
+  int32 TenantId = 1;
+  int32 Type = 2;
+  int32 GroupType = 3;
+  string Keyword = 4; 
+  int32 OrderBy = 5;
+  int32 FormId = 6;
+  int32 SkipCount = 7;
+  int32 MaxResultCount = 8;
+}
+
+message GetAllProvidersInvestmentByPartnerResponse {
+  int32 TotalCount = 1;
+  repeated PProvider Items = 2;
+}
+
+message GetAllProvidersRandomRequest {
+  double Latitude = 1;
+  double Longitude = 2;
+  int32 SkipCount = 3;
+  int32 MaxResultCount = 4;
+}
+
+message GetAllProvidersRandomResponse {
+  int32 TotalCount = 1;
+  repeated PProvider Items = 2;
+}
+
+message GetAllProvidersByIdsRequest {
+  repeated int64 Data = 1;
+}
+
+message GetAllProvidersByIdsResponse {
+  int32 TotalCount = 1;
+  repeated PProvider Items = 2;
+}
+
+message GetProviderByIdRequest {
+  int64 Id = 1;
+  bool IsDataStatic = 2;
+}
+
+message GetProviderByIdResponse {
+  PProvider Data = 1;
+}
+
+message GetAddressOfProviderByListIdRequest {
+  repeated int64 Items = 1;
+}
+
+message GetAddressOfProviderByListIdResponse {
+  repeated PAddressOfProvider Data = 1;
+}
+
+message CreateProviderRequest {
+  string Name = 1;
+  string Email = 2;
+  string Contact = 3;
+  string Description = 4;
+  string PhoneNumber = 5;
+  repeated string ImageUrls = 6;
+  string OwnerInfo = 7;
+  string BusinessInfo = 8;
+  int32 TenantId = 9;
+  int32 SocialTenantId = 10;
+  int32 Type = 11;
+  int32 GroupType = 12;
+  double Latitude = 13;
+  double Longitude = 14;
+  string PropertyHistories = 15;
+  string Properties = 16;
+  int32 State = 17;
+  string StateProperties = 18;
+  bool IsAdminCreate = 19;
+  string DistrictId = 20;
+  string ProvinceId = 21;
+  string WardId = 22;
+  string Address = 23;
+  string WorkTime = 24;
+  int64 OwnerId = 25;
+}
+
+message CreateProviderResponse {
+  bool Data = 1;
+}
+
+message CreateListProvidersRequest {
+  repeated CreateProviderRequest Items = 1;
+}
+
+message CreateListProvidersResponse {
+  bool Data = 1;
+}
+
+message UpdateProviderRequest {
+  int64 Id = 1;
+  string Name = 2;
+  string Email = 3;
+  string Contact = 4;
+  string Description = 5;
+  string PhoneNumber = 6;
+  repeated string ImageUrls = 7;
+  string BusinessInfo = 8;
+  double Latitude = 9;
+  double Longitude = 10;
+  string DistrictId = 11;
+  string ProvinceId = 12;
+  string WardId = 13;
+  string Address = 14;
+}
+
+message UpdateProviderResponse {
+  bool Data = 1;
+}
+
+message UpdateProviderByPartnerRequest {
+  int64 Id = 1;
+  string Name = 2;
+  string Email = 3;
+  string Contact = 4;
+  string Description = 5;
+  string PhoneNumber = 6;
+  repeated string ImageUrls = 7;
+  string BusinessInfo = 8;
+  double Latitude = 9;
+  double Longitude = 10;
+  string DistrictId = 11;
+  string ProvinceId = 12;
+  string WardId = 13;
+  string Address = 14;
+}
+
+message UpdateProviderByPartnerResponse {
+  bool Data = 1;
+}
+
+message UpdateStateOfProviderRequest {
+  int64 Id = 1;
+  int32 FormId = 2;
+}
+
+message UpdateStateOfProviderResponse {
+  bool Data = 1;
+}
+
+message UpdateStateOfProviderByAdminRequest {
+  int64 Id = 1;
+  int32 FormId = 2;
+}
+
+message UpdateStateOfProviderByAdminResponse {
+  bool Data = 1;
+}
+
+message UpdateRateOfProviderRequest {
+  int64 Id = 1; // ProviderId
+  double RatePoint = 2;
+  int32 CountRate = 3;
+}
+
+message UpdateRateOfProviderResponse {
+  bool Data = 1;
+}
+
+message UpdateRateOfProviderStaticRequest {
+  int64 Id = 1; // ProviderId
+  double RatePoint = 2;
+  int32 CountRate = 3;
+}
+
+message UpdateRateOfProviderStaticResponse {
+  bool Data = 1;
+}
+
+message DeleteProviderRequest {
+  int64 Id = 1;
+}
+
+message DeleteProviderResponse {
+  bool Data = 1;
+}
+
+message DeleteProviderByPartnerRequest {
+  int64 Id = 1;
+}
+
+message DeleteProviderByPartnerResponse {
+  bool Data = 1;
+}
+
+message DeleteAllProvidersRequest {
+  int64 UserId = 1;
+}
+
+message DeleteAllProvidersResponse {
+  bool Data = 1;
+}

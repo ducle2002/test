@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+import "Protos/Business/item_model.proto";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Items";
+
+package Items;
+
+message PCart {
+  int64 UserId = 1;
+  repeated PCartItem Items = 2;
+}
+
+message PCartItem {
+  int64 ItemModelId = 1;
+  int32 Quantity = 2;
+  int64 ProviderId = 3;
+}
+
+message PCartItemModel {
+  PItemModel ItemModel = 1;
+  int32 Quantity = 2;
+  int64 ProviderId = 3;
+  string ProviderName = 4;
+  string ItemName = 5;
+}
+
+message UpdateCartRequest {
+  int64 Id = 1;
+  int64 UserId = 2;
+  repeated PCartItem Items = 3;
+}
+
+message UpdateCartResponse {
+  bool Data = 1;
+}
+
+message GetCartRequest {
+  int64 UserId = 1;
+}
+
+message GetCartResponse {
+  int32 TotalCount = 1;
+  repeated PCartItemModel Items = 2;
+}
+
+message AddItemModelToCartRequest {
+	int64 UserId = 1;
+	int64 ItemModelId = 2;
+	int32 Quantity = 3;
+	int64 ProviderId = 4;
+}
+
+message AddItemModelToCartResponse {
+    bool Data = 1;
+}
+
+message PCheckoutItem {
+	int64 ItemModelId = 1;
+	int32 Count = 2;
+}
+
+message CheckoutRequest {
+	int64 UserId = 1;
+	repeated PCheckoutItem Items = 2;
+}
+
+message CheckoutResponse {
+	bool Data = 1;
+}
+
+message UpdateCartAfterOrderingRequest {
+	int64 UserId = 1;
+	repeated int64 OrderedModelListId = 2;
+}
+
+message UpdateCartAfterOrderingResponse {
+  bool Data = 1;
+}

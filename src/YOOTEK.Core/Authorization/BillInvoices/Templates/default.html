@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
+    <meta charset="utf-8">
+    <meta name="x-apple-disable-message-reformatting">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="format-detection" content="telephone=no, date=no, address=no, email=no, url=no">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
+    <title>THÔNG BÁO THU PHÍ</title>
+    <style>
+        :root {
+            color-scheme: light;
+        }
+    </style>
+    <style>
+        blockquote,
+        dl,
+        dd,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        hr,
+        figure,
+        p,
+        pre {
+            margin: 0;
+        }
+
+        .border-collapse-table th,
+        .border-collapse-table td {
+            white-space: nowrap;
+            border-width: 1px;
+            border-style: solid;
+        }
+    </style>
+</head>
+<body style="margin: 0; background-color: #fff">
+    <div role="article" aria-roledescription="email" aria-label="THÔNG BÁO THU PHÍ" lang="vi" style="margin-left: auto; margin-right: auto; width: 860px; background-color: #fff; padding: 24px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 16px">
+      
+        <div style="margin-bottom: 24px">
+            <table style="margin-left: auto; width: 100%; table-layout: auto" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                    <td style="padding-top: 6px; padding-bottom: 6px; padding-left: 120px; text-align: center; font-weight: 600; text-transform: uppercase; font-size: 22px;">
+                        Phiếu thu
+                    </td>
+                    <td style="width: 240px; padding-top: 6px; padding-bottom: 6px; font-weight: 600">Liên 1: Giao khách hàng</td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 6px; padding-bottom: 6px; padding-left: 120px; text-align: center;">Ngày {DAY_NOW} tháng {MONTH_NOW} năm {YEAR_NOW}</td>
+                    <td style="padding-top: 6px; padding-bottom: 6px; font-weight: 600;">Số phiếu: CK{YEAR_NOW}/{MONTH_NOW}/{PAYMENT_ID}</td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 6px; padding-bottom: 6px;"></td>
+                    <td style="padding-top: 6px; padding-bottom: 6px; font-weight: 600;">Số phòng/số kiot: {APARTMENT_CODE}</td>
+                </tr>
+                <tr>
+                    <td style="padding-top: 6px; padding-bottom: 6px;">Tên khách hàng: {CUSTOMER_NAME}</td>
+                    <td style="padding-top: 6px; padding-bottom: 6px; font-weight: 600;">Đơn vị tính: đồng</td>
+                </tr>
+            </table>
+        </div>
+        <div style="margin-bottom: 12px; font-weight: 600">I. Phí quản lý</div>
+        <table class="border-collapse-table" style="margin-bottom: 20px; width: 100%; table-layout: auto; border-collapse: collapse" cellpadding="0" cellspacing="0" role="presentation">
+            <thead>
+                <tr>
+                    <th style="width: 32px; padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid">STT</th>
+                    <th style="padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Diện tích</th>
+                    <th style="padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">ĐVT</th>
+                    <th style="padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Diễn giải</th>
+                    <th style="width: 72px; padding: 10px 6px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid">Số tháng</th>
+                    <th style="padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Đơn giá</th>
+                    <th style="width: 120px; padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="width: 32px; padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid">1</td>
+                    <td style="padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">{ACREAGE_APARTMENT}</td>
+                    <td style="padding: 6px; text-align: left; white-space: nowrap; border-width: 1px; border-style: solid">m2</td>
+                    <td style="padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Phí quản lý tháng {PERIOD}</td>
+                    <td style="padding: 6px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;text-align: center;">{NUMBER_MONTH_M}</td>
+                    <td style="padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">{UNIT_PRICE_MANAGEMENT}</td>
+                    <td style="padding: 6px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;">{COST_MANAGEMENT}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="padding: 6px; text-align: center; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">
+                        Tổng tiền phí quản lý
+                    </td>
+                    <td style="padding: 6px; text-align: right; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">{COST_MANAGEMENT}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div style="margin-bottom: 12px; font-weight: 600;">II. Phí giữ xe</div>
+        <table class="border-collapse-table" style="margin-bottom: 20px; width: 100%; table-layout: auto; border-collapse: collapse;" cellpadding="0" cellspacing="0" role="presentation">
+            <thead>
+                <tr>
+                    <th style="width: 32px; padding: 8px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid">STT</th>
+                    <th style="padding: 8px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Loại xe</th>
+                    <th style="padding: 8px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Biển số</th>
+                    <th style="padding: 8px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Diễn giải</th>
+                    <th style="width: 72px; padding: 8px 6px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;">Số tháng</th>
+                    <th style="padding: 8px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Đơn giá</th>
+                    <th style="width: 120px; padding: 8px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                {LIST_VEHICLE}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="padding: 6px; text-align: center; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">
+                        Tổng phí giữ xe
+                    </td>
+                    <td style="padding: 6px; text-align: right; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">{COST_PARKING}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <!-- Phí nước -->
+        <div style="margin-bottom: 12px; font-weight: 600;">III. Phí nước</div>
+        <table class="border-collapse-table" style="margin-bottom: 20px; width: 100%; table-layout: auto; border-collapse: collapse;" cellpadding="0" cellspacing="0" role="presentation">
+            <thead>
+                <tr>
+                    <th style="width: 32px; padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">STT</th>
+                    <th style="padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Nội dung</th>
+                    <th style="width: 120px; padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                {LIST_WATER_BILL}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="padding: 6px; text-align: center; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">Tổng tiền nước</td>
+                    <td style="padding: 6px; text-align: right; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">{COST_WATER}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <!-- Phí điện -->
+        {LIST_ELECTRIC_BILL}
+        {LIST_BILL_OTHER}
+        <!--<div style="margin-bottom: 12px; font-weight: 600;">IV. Phí điện</div>
+        <table class="border-collapse-table" style="margin-bottom: 20px; width: 100%; table-layout: auto; border-collapse: collapse;" cellpadding="0" cellspacing="0" role="presentation">
+            <thead>
+                <tr>
+                    <th style="width: 32px; padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">STT</th>
+                    <th style="padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Nội dung</th>
+                    <th style="width: 120px; padding: 10px 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;">Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                {LIST_ELECTRIC_BILL}
+            </tbody>
+
+            <tfoot>
+                <tr>
+                    <td colspan="2" style="padding: 6px; text-align: center; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">Tổng tiền điện</td>
+                    <td style="padding: 6px; text-align: right; font-weight: 600; white-space: nowrap; border-width: 1px; border-style: solid;">{COST_ELECTRIC}</td>
+                </tr>
+            </tfoot>
+        </table>-->
+        <div style="margin-bottom: 12px; margin-top: 24px; font-weight: 600">Tổng tiền: {COST_TOTAL}</div>
+        <div style="margin-bottom: 12px; font-weight: 600;">
+            Bằng chữ: {COST_TOTAL_TEXT}
+        </div>
+        <table style="margin-bottom: 120px; margin-top: 36px; width: 100%" cellpadding="0" cellspacing="0" role="presentation">
+            <tr>
+                <td style="text-align: center; font-weight: 600; text-transform: uppercase;">Người thu tiền</td>
+                <td style="text-align: center; font-weight: 600; text-transform: uppercase;">Người nộp tiền</td>
+            </tr>
+        </table>
+        <div style="margin-bottom: 16px; margin-top: 24px; height: 1px;border: black; width: 100%; background-color: #000;"></div>
+      
+    </div>
+</body>
+</html>

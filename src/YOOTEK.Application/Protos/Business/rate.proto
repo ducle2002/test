@@ -1,0 +1,165 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Rates";
+
+package Rates;
+
+service RateProtoGrpc {
+  rpc GetAllRates(GetRatesRequest) returns (GetRatesResponse);
+  rpc GetRateDetail(GetRateDetailRequest) returns (GetRateDetailResponse);
+  rpc GetCountRate(GetCountRateRequest) returns (GetCountRateResponse);
+  rpc CreateListRate(CreateListRateRequest) returns (CreateListRateResponse);
+  rpc CreateRate(CreateRateRequest) returns (CreateRateResponse);
+  rpc UpdateRate(UpdateRateRequest) returns (UpdateRateResponse);
+  rpc UpdateRateByUser(UpdateRateByUserRequest) returns (UpdateRateByUserResponse);
+  rpc DeleteRate(DeleteRateRequest) returns (DeleteRateResponse);
+  rpc DeleteRateByUser(DeleteRateByUserRequest) returns (DeleteRateByUserResponse);
+}
+
+message PRate {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  int64 ItemId = 3;
+  int64 ProviderId = 4;
+  int32 RatePoint = 5;
+  string FileUrl = 6;
+  string Comment = 7;
+  int64 AnswerRateId = 8;
+  int32 Type = 9;
+  string UserName = 10;
+  string CreationTime = 11;
+  string Email = 12;
+  int64 CreatorUserId = 13;
+  string Avatar = 14;
+  int64 OrderId = 15;
+  int64 BookingId = 16;
+}
+
+message GetRatesRequest {
+  int64 ProviderId = 1;
+  int64 ItemId = 2;
+  int64 UserId = 3;
+  bool IsComment = 4;
+  bool IsMedia = 5;
+  int32 Rating = 6;
+  int32 Type = 7;
+  int32 TenantId = 8;
+  int32 OrderBy = 9;
+  int64 OrderId = 10;
+  int64 BookingId = 11;
+  int32 MaxResultCount = 12;
+  int32 SkipCount = 13;
+}
+
+message GetRatesResponse  {
+  int32 TotalCount = 1;
+  repeated PRate Items = 2;
+}
+
+message GetCountRateRequest {
+  int64 ProviderId = 1;
+  int64 ItemId = 2;
+  int64 UserId = 3;
+  bool IsComment = 4;
+  bool IsMedia = 5;
+  int32 Rating = 6;
+  int32 Type = 7;
+  int32 TenantId = 8;
+  int32 OrderBy = 9;
+  int64 OrderId = 10;
+  int64 BookingId = 11;
+}
+
+message GetCountRateResponse { 
+  int32 CountRate = 1;
+  double RatePoint = 2;
+  PCountRating CountRating = 3;
+}
+
+message PCountRating {
+  int32 One = 1;
+  int32 Two = 2;
+  int32 Three = 3;
+  int32 Four = 4;
+  int32 Five = 5;
+}
+
+message GetRateDetailRequest {
+  int64 Id = 1; // rateId
+}
+
+message GetRateDetailResponse {
+  PRate Data = 1;
+}
+
+message CreateRateRequest {
+  int32 TenantId = 1;
+  int64 ItemId = 2; 
+  int64 ProviderId = 3;
+  int32 RatePoint = 4;
+  string FileUrl = 5;
+  string Comment = 6;
+  string UserName = 7;
+  string Email = 8;
+  int64 AnswerRateId = 9;
+  int32 Type = 10;
+  string Avatar = 11;
+  int64 OrderId = 12;
+  int64 BookingId = 13;
+}
+
+message CreateRateResponse {
+  bool Data = 1;
+}
+
+message CreateListRateRequest {
+  repeated CreateRateRequest Items = 1;
+}
+
+message CreateListRateResponse {
+  bool Data = 1;
+}
+
+message UpdateRateRequest {
+  int64 Id = 1;
+  int32 RatePoint = 2;
+  string FileUrl = 3;
+  string Comment = 4;
+  string UserName = 5;
+  string Email = 6;
+  int64 AnswerRateId = 7;
+}
+
+message UpdateRateResponse {
+  bool Data = 1;
+}
+
+message DeleteRateRequest {
+  int64 Id = 1;
+}
+
+message DeleteRateResponse {
+  bool Data = 1;
+}
+
+message UpdateRateByUserRequest {
+  int64 Id = 1;
+  int32 RatePoint = 2;
+  string FileUrl = 3;
+  string Comment = 4;
+  string UserName = 5;
+  string Email = 6;
+  int64 AnswerRateId = 7;
+}
+
+message UpdateRateByUserResponse {
+  bool Data = 1;
+}
+
+message DeleteRateByUserRequest {
+  int64 Id = 1;
+}
+
+message DeleteRateByUserResponse {
+  bool Data = 1;
+}

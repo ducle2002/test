@@ -1,0 +1,88 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "IMAX.Application.Protos.Business.Categories";
+
+package Categories;
+
+service CategoryProtoGrpc {
+  rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse) {}
+  rpc GetListCategoryFromChildren(GetListCategoryFromChildrenRequest) returns (GetListCategoryFromChildrenResponse) {}
+  rpc GetDetailCategory(GetDetailCategoryRequest) returns (GetDetailCategoryResponse) {}
+  rpc CreateCategory(CreateCategoryRequest) returns (CreateCategoryResponse) {}
+  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse) {}
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse) {}
+}
+
+message PCategory {
+  int64 Id = 1;
+  int32 TenantId = 2;
+  string Name = 3;
+  int64 ParentId = 4;
+  int64 BusinessType = 5;
+  string IconUrl = 6;
+  bool HasChildren = 7;
+}
+
+message GetCategoriesRequest {
+  string Search = 1;
+  int64 BusinessType = 2; 
+  int64 ParentId = 3;
+  int32 SkipCount = 4;
+  int32 MaxResultCount = 5;
+}
+
+message GetCategoriesResponse {
+  int32 TotalCount = 1;
+  repeated PCategory Items = 2;
+}
+
+message GetListCategoryFromChildrenRequest {
+  int64 Id = 1;
+}
+
+message GetListCategoryFromChildrenResponse {
+  repeated PCategory Items = 1;
+}
+
+message GetDetailCategoryRequest{
+  int64 Id = 1;
+}
+
+message GetDetailCategoryResponse {
+  PCategory Data = 1;
+}
+
+message CreateCategoryRequest{
+  int32 TenantId = 1;
+  string Name = 2;
+  int64 ParentId = 3;
+  bool HasChildren = 4;
+  string IconUrl = 5;
+  int64 BusinessType = 6;
+}
+
+message CreateCategoryResponse {
+  bool Data = 1;
+}
+
+message UpdateCategoryRequest{
+  int64 Id = 1;
+  int32 TenantId = 2;
+  string Name = 3;
+  int64 ParentId = 4;
+  bool HasChildren = 5;
+  string IconUrl = 6;
+  int64 BusinessType = 7;
+}
+
+message UpdateCategoryResponse {
+  bool Data = 1;
+}
+
+message DeleteCategoryRequest{
+  int64 Id = 1;
+}
+
+message DeleteCategoryResponse {
+  bool Data = 1;
+}

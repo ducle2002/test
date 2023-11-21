@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form Using jQuery - Demo Preview</title>
+    <meta name="robots" content="noindex, nofollow">
+    <!-- Include CSS File Here -->
+
+    <!-- Include CSS File Here -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Droid+Serif);
+
+        h2 {
+            text-align: center;
+            font-size: 24px;
+        }
+
+        hr {
+            margin-bottom: 30px;
+        }
+
+        div.container {
+            width: 960px;
+            height: 610px;
+            margin: 50px auto;
+            font-family: 'Droid Serif', serif;
+            position: relative;
+        }
+
+        div.main {
+            width: 320px;
+            margin-top: 80px;
+            float: left;
+            padding: 10px 55px 40px;
+            background-color: rgba(187, 255, 184, 0.65);
+            border: 15px solid white;
+            box-shadow: 0 0 10px;
+            border-radius: 2px;
+            font-size: 13px;
+        }
+
+        input[type=text], [type=password] {
+            width: 97.7%;
+            height: 34px;
+            padding-left: 5px;
+            margin-bottom: 20px;
+            margin-top: 8px;
+            box-shadow: 0 0 5px #00F5FF;
+            border: 2px solid #00F5FF;
+            color: #4f4f4f;
+            font-size: 16px;
+        }
+
+        label {
+            color: #464646;
+            text-shadow: 0 1px 0 #fff;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #login {
+            width: 100%;
+            background: linear-gradient(#22abe9 5%, #36caf0 100%);
+            border: 1px solid #0F799E;
+            font-size: 20px;
+            margin-top: 15px;
+            padding: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            color: white;
+            text-shadow: 0px 1px 0px #13506D;
+        }
+
+            #login:hover {
+                background: linear-gradient(#36caf0 5%, #22abe9 100%);
+            }
+
+        Copy
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="main">
+            <form class="form" method="post" action="#">
+                <h2>Create Login Form Using jQuery</h2>
+                <label>Email :</label>
+                <input type="text" name="demail" id="email">
+                <label>Password :</label>
+                <input type="password" name="password" id="password">
+                <input type="button" name="login" id="login" value="Login">
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    $(document).ready(function () {
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                    c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                    return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+        }
+        $("#login").click(function () {
+            var email = $("#email").val();
+            var password = $("#password").val();
+            var data1 = { userNameOrEmailAddress: email, password: password, rememberClient: true };
+             console.log(data1)
+            // Checking for blank fields.
+            if (email == '' || password == '' || password == null || email == null) {
+                $('input[type="text"],input[type="password"]').css("border", "2px solid red");
+                $('input[type="text"],input[type="password"]').css("box-shadow", "0 0 3px red");
+                alert("Please fill all fields...!!!!!!");
+            } else {
+                //await $.post("http://localhost:21021/api/TokenAuth/Authenticate", data1,
+                //    function (data, status) {
+                        
+                //    });
+
+                //fetch('http://localhost:21021/api/TokenAuth/Authenticate', {
+                //    method: 'POST',
+                //    mode: 'cors',
+                //    cache: 'no-cache',
+                //    credentials: 'same-origin',
+
+                //    headers: {
+                //        'content-type': 'application/json'
+                //    },
+                //    body: JSON.stringify(data1)
+
+                //}).catch(function (erro) {
+                //    console.log(erro);
+                //});
+
+                //fetch("http://localhost:21021/api/TokenAuth/Authenticate", {
+                //    "headers": {
+                //        "content-type": "application/json-patch+json",
+                //        "x-xsrf-token": "CfDJ8Hi1ybqLb2RFmg23p0B6QHQEbXS0QHxiltCGmQrZ52I1Q05OCslYULHbPfh2r6VpBM2qt18CGB6ORuRSBMJTcsVeXSmUuvy-bfhQBm7Wro9kwrt0JooHGJySTQCDHJ8A2faxI3iuNUegu3LvOSvURWo"
+                //    },
+                //    "referrer": "http://localhost:21021/swagger/index.html",
+                //    "referrerPolicy": "strict-origin-when-cross-origin",
+                //    "body": JSON.stringify(data1),
+                //    "method": "POST",
+                //    "mode": "cors",
+                //    "credentials": "include"
+                //});
+
+                $.ajax({
+                    url: "http://localhost:21021/api/TokenAuth/AccessToken",
+                    data: JSON.stringify(data1),
+                    "headers": {
+                        "content-type": "application/json-patch+json",
+                        "x-xsrf-token": getCookie("XSRF-TOKEN")
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        console.log(data)
+                    },
+                    error: function (reponse) {
+                        alert("error : " + reponse);
+                    }
+                })
+            }
+        });
+    });
+</script>
+</html>
