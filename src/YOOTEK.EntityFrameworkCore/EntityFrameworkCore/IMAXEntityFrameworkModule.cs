@@ -20,12 +20,9 @@ namespace IMAX.EntityFrameworkCore
         public override void PreInitialize()
         {
             Configuration.Auditing.IsEnabled = false;
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             if (!SkipDbContextRegistration)
             {
-                 Configuration.Modules.AbpEfCore().AddDbContext<IMAXDbContext>(options =>
-                 
-                 
+                 Configuration.Modules.AbpEfCore().AddDbContext<IMAXDbContext>(options =>     
                  {
                      if (options.ExistingConnection != null)
                      {

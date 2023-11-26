@@ -78,7 +78,7 @@ namespace YOOTEK.Web.Host.Startup
 
             IdentityRegistrar.Register(services);
             AuthConfigurer.Configure(services, _appConfiguration);
-
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             services.AddSignalR(e =>
             {
                 e.MaximumReceiveMessageSize = 204800000;
