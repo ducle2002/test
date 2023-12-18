@@ -7,7 +7,7 @@ build-development:
       when: always
   image: docker:latest
   script:
-    - docker build -t $CI_REGISTRY_IMAGE:development -f ./src/IMAX.Web.Host/Dockerfile ./src
+    - docker build -t $CI_REGISTRY_IMAGE:development -f ./src/YOOTEK.Web.Host/Dockerfile ./src
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker push $CI_REGISTRY_IMAGE:development
 
