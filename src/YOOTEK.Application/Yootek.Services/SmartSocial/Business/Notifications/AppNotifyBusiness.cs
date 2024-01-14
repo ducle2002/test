@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
-using Yootek.App.ServiceHttpClient.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
+using Yootek.App.ServiceHttpClient.Business;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using static Yootek.Services.Notifications.AppNotifyBusiness;

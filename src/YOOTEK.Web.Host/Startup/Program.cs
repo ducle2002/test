@@ -1,10 +1,8 @@
-﻿using Yootek.BackgroundJob;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using System.IO;
+using Abp.AspNetCore.Dependency;
+using Abp.Dependency;
 
 namespace Yootek.Web.Host.Startup
 {
@@ -12,20 +10,16 @@ namespace Yootek.Web.Host.Startup
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args)
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                .ConfigureServices(services =>
+        internal static IHostBuilder CreateHostBuilder(string[] args) =>
+            Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    //services.AddHostedService<TimedHostedService>();
-                    services.AddHostedService<QueuedHostedService>();
+                    webBuilder.UseStartup<Startup>();
                 })
-                .UseStartup<Startup>()
-                .Build();
-        }
+                .UseCastleWindsor(IocManager.Instance.IocContainer);
 
     }
 }

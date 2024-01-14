@@ -369,7 +369,7 @@ namespace Yootek.Chat
                          ""
                           );
             await _appNotifier.SendUserMessageNotifyOnlyFirebaseAsync(
-                "Imax chat . " + friend.FriendUserName,
+                "Yootek chat . " + friend.FriendUserName,
                 NotificationMessageCheckType(message),
                 new UserIdentifier[] { user },
                 messageDeclined,

@@ -1,5 +1,4 @@
-﻿using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
-using Yootek.Common;
+﻿using Yootek.Common;
 using Yootek.Organizations;
 using System;
 using System.Collections.Generic;

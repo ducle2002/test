@@ -2,8 +2,8 @@
 using Abp.Application.Services.Dto;
 using Abp.UI;
 using Yootek.App.ServiceHttpClient.Dto;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
-using Yootek.App.ServiceHttpClient.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
+using Yootek.App.ServiceHttpClient.Business;
 using Yootek.Common.DataResult;
 using System;
 using System.Collections.Generic;

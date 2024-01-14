@@ -2,7 +2,7 @@
 using Yootek.EntityDb;
 using JetBrains.Annotations;
 using System.Collections.Generic;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
 
 namespace Yootek.Yootek.Services.Yootek.SmartSocial.BusinessNEW.BusinessDto
 {

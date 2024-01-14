@@ -1,6 +1,6 @@
 ﻿using Common.Logging;
-using Yootek.App.ServiceHttpClient.Imax.Business;
-using Yootek.App.ServiceHttpClient.Imax.Social;
+using Yootek.App.ServiceHttpClient.Business;
+using Yootek.App.ServiceHttpClient.Social;
 using Yootek.App.ServiceHttpClient.Yootek.SmartCommunity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

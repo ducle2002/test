@@ -2,8 +2,8 @@
 using Abp.UI;
 using Grpc.Core;
 using Yootek.App.Grpc;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
-using Yootek.App.ServiceHttpClient.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
+using Yootek.App.ServiceHttpClient.Business;
 using Yootek.Application.Protos.Business.Providers;
 using Yootek.Common.DataResult;
 using Yootek.Services.SmartSocial.Providers.Dto;

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Abp;
 using Abp.Application.Services.Dto;
 using Abp.Runtime.Session;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
 using Yootek.Common.DataResult;
 using Yootek.Services.Notifications;
 using Microsoft.AspNetCore.Mvc;

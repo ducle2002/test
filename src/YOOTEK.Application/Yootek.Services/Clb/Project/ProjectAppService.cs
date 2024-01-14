@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Linq.Extensions;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum;
+using Yootek.App.ServiceHttpClient.Dto.Social.Forum;
 using Yootek.Application;
 using Yootek.EntityDb;
 using Yootek.Yootek.EntityDb.Clb.Projects;

@@ -5,7 +5,7 @@ using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Runtime.Session;
 using Abp.UI;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
 using Yootek.Common.DataResult;
 using Yootek.Services.SmartSocial.Ecofarm;
 using Microsoft.Extensions.Configuration;

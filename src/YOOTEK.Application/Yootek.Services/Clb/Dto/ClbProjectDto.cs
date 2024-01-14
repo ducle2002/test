@@ -1,7 +1,7 @@
 using System;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum;
+using Yootek.App.ServiceHttpClient.Dto.Social.Forum;
 using Yootek.Common;
 using Yootek.Yootek.EntityDb.Clb.Projects;
 

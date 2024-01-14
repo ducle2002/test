@@ -15,7 +15,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Yootek.App.ServiceHttpClient.Dto;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
 using Yootek.App.ServiceHttpClient.Yootek.SmartCommunity;
 
 namespace Yootek.Services.SmartSocial.Items

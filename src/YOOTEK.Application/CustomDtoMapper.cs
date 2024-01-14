@@ -10,8 +10,8 @@ using Yootek.Services;
 using Yootek.Services.Dto;
 using System.Collections;
 using System.Collections.Generic;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum;
+using Yootek.App.ServiceHttpClient.Dto.Business;
+using Yootek.App.ServiceHttpClient.Dto.Social.Forum;
 using Yootek.Authorization.Users;
 using Yootek.Common.Enum;
 using Yootek.Yootek.EntityDb.Clb.Enterprise;
@@ -255,19 +255,21 @@ namespace Yootek
             mapper.CreateMap<CreateForumPostDto, ForumPost>()
                 .ForMember(dest => dest.State,
                         opt => opt.MapFrom( src => CommonENumForum.FORUM_STATE.NEW));
-            
+
+            //=====change========
             mapper.CreateMap<UpdateForumPostDto, ForumPost>()
                 .ForMember(dest=> dest.State,
                     opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
                 .ForMember(dest=>dest.Type ,
                     opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
-                .ForAllOtherMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
 
             mapper.CreateMap<CreateForumCommentDto, ForumComment>()
-                .ForAllOtherMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<UpdateForumCommentDto, ForumComment>()
-                .ForAllOtherMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
-            
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            //=====change========
+
             mapper.CreateMap<CreateMemberByUserDto, Member>()
                 .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<UpdateMemberByUserDto, Member>()
@@ -307,20 +309,23 @@ namespace Yootek
                 .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<ClbEvent, ClbEventDto>()
                 .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+
+            //=====change========
             mapper.CreateMap<CreateClbEventCommentDto, ClbEventComment>()
                 .ForMember(x=>x.IsLike, opt => opt.MapFrom(src => false))
-                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<UpdateClbEventCommentDto, ClbEventComment>()
                 .ForMember(x=>x.IsLike, opt =>opt.Ignore())
-                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<CreateClbEventFollowDto, ClbEventComment>()
                 .ForMember(x => x.Comment, opt => opt.Ignore())
                 .ForMember(x=>x.IsLike, opt => opt.MapFrom(src => true))
-                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<UpdateClbEventFollowDto, ClbEventComment>()
                 .ForMember(x=>x.IsLike, opt =>opt.Ignore())
-                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
-            
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            //=====change========
+
             mapper.CreateMap<CreateEnterpriseDto, Enterprises>()
                 .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
             mapper.CreateMap<UpdateEnterpriseDto, Enterprises>()

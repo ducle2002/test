@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using Abp;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum;
-using Yootek.App.ServiceHttpClient.Imax.Social;
+using Yootek.App.ServiceHttpClient.Dto.Social.Forum;
+using Yootek.App.ServiceHttpClient.Social;
 using Yootek.Common.DataResult;
 
 namespace Yootek.Yootek.Services.Yootek.SmartSocial.YooSocialMedia

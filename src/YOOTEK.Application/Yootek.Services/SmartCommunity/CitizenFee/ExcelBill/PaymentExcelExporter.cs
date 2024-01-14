@@ -1,6 +1,6 @@
 ﻿using Abp.Extensions;
 using DocumentFormat.OpenXml.Drawing.Charts;
-using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Business;
 using Yootek.Common.Enum;
 using Yootek.Core.Dto;
 using Yootek.DataExporting.Excel.NPOI;
