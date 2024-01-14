@@ -1,7 +1,7 @@
 ﻿using System;
 using Abp.Dependency;
 
-namespace IMAX.Timing
+namespace Yootek.Timing
 {
     public class AppTimes : ISingletonDependency
     {

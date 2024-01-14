@@ -3,7 +3,7 @@ using System.Linq;
 using System.Security.Claims;
 using Abp.Extensions;
 
-namespace IMAX.Identity
+namespace Yootek.Identity
 {
     public class ExternalLoginInfoHelper
     {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.MailBauilder
+namespace Yootek.MailBauilder
 {
     //This is to be compatible with Office 365 Mails
     public class CustomMailKitSmtpBuilder : DefaultMailKitSmtpBuilder

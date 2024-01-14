@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Dto.Interface
+namespace Yootek.Dto.Interface
 {
     public class ChatFriendOrRoomDto
     {

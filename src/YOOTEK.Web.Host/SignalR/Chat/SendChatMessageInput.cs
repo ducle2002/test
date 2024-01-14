@@ -1,6 +1,6 @@
 using System;
 
-namespace IMAX.Web.Host.Chat
+namespace Yootek.Web.Host.Chat
 {
     public class SendChatMessageInput
     {

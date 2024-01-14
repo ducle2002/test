@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
     public class ChatUserWithMessagesDto : ChatUserDto
     {

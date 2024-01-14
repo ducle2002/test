@@ -7,15 +7,15 @@ using Abp.Application.Services.Dto;
 using Abp.Linq.Extensions;
 using Abp.Authorization;
 using Abp.Domain.Repositories;
-using IMAX.Authorization.Permissions.Dto;
-using IMAX.Common.DataResult;
+using Yootek.Authorization.Permissions.Dto;
+using Yootek.Common.DataResult;
 using Abp.Runtime.Validation;
 using Microsoft.EntityFrameworkCore;
 using Abp.UI;
 
-namespace IMAX.Authorization.Permissions
+namespace Yootek.Authorization.Permissions
 {
-    public class PermissionAppService : IMAXAppServiceBase, IApplicationService
+    public class PermissionAppService : YootekAppServiceBase, IApplicationService
     {
         private readonly IPermissionManager _permissionManager;
         private readonly IRepository<PermissionTenant, long> _permissionTenantRepo;

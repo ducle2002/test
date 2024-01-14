@@ -10,19 +10,19 @@ using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX;
-using IMAX.Application.RoomOrFriendships.Dto;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
-using IMAX.Friendships.Dto;
-using IMAX.Users.Dto;
+using Yootek;
+using Yootek.Application.RoomOrFriendships.Dto;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
+using Yootek.Friendships.Dto;
+using Yootek.Users.Dto;
 
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
     [AbpAuthorize]
-    public class FriendshipAppService : IMAXAppServiceBase, IFriendshipAppService
+    public class FriendshipAppService : YootekAppServiceBase, IFriendshipAppService
     {
         private readonly IFriendshipManager _friendshipManager;
         private readonly IOnlineClientManager _onlineClientManager;
@@ -95,13 +95,13 @@ namespace IMAX.Friendships
                 }
 
                 var sourceFriendshipRequest = sourceFriendship.MapTo<FriendDto>();
-                var check = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
-                sourceFriendshipRequest.IsOnline = check.Any();
+                sourceFriendshipRequest.IsOnline = (await _onlineClientManager.GetAllByUserIdAsync(probableFriend)).Any();
+
                 return sourceFriendshipRequest;
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 

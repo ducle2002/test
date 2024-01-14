@@ -1,4 +1,4 @@
-﻿namespace IMAX.Core.Dto
+﻿namespace Yootek.Core.Dto
 {
     public class PagedSortedAndFilteredInputDto : PagedAndSortedInputDto
     {

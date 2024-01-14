@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Dto.ThirdAccount
+namespace Yootek.Dto.ThirdAccount
 {
 
     public class ThirdAccoutDto

@@ -1,15 +1,15 @@
 ﻿using Abp;
 using Abp.Notifications;
 using Abp.RealTime;
-using IMAX.Authorization.Users;
-using IMAX.EntityDb;
+using Yootek.Authorization.Users;
+using Yootek.EntityDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public interface INotificationCommunicator
     {

@@ -2,15 +2,15 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Abp.Application.Editions;
 using Abp.Application.Features;
-using IMAX.Editions;
+using Yootek.Editions;
 
-namespace IMAX.EntityFrameworkCore.Seed.Host
+namespace Yootek.EntityFrameworkCore.Seed.Host
 {
     public class DefaultEditionCreator
     {
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
 
-        public DefaultEditionCreator(IMAXDbContext context)
+        public DefaultEditionCreator(YootekDbContext context)
         {
             _context = context;
         }

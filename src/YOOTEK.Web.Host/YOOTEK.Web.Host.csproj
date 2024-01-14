@@ -33,6 +33,7 @@
     <PackageReference Include="Abp.AspNetZeroCore.Web" Version="4.1.0" />
     <PackageReference Include="Abp.Castle.Log4Net" Version="9.0.0" />
     <PackageReference Include="Abp.HangFire.AspNetCore" Version="9.0.0" />
+    <PackageReference Include="Abp.Quartz" Version="9.0.0" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.0" />
     <PackageReference Include="Hangfire.PostgreSql" Version="1.8.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">

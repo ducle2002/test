@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace IMAX.Storage
+namespace Yootek.Storage
 {
     public interface IBinaryObjectManager
     {

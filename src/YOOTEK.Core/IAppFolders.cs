@@ -1,4 +1,4 @@
-﻿namespace IMAX
+﻿namespace Yootek
 {
     public interface IAppFolders
     {

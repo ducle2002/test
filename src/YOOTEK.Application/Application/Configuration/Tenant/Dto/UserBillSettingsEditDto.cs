@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Yootek.EntityDb;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Configuration.Tenant.Dto
+namespace Yootek.Application.Configuration.Tenant.Dto
 {
     public class UserBillSettingsEditDto
     {
@@ -23,5 +24,6 @@ namespace IMAX.Application.Configuration.Tenant.Dto
         public int DueDateResidence { get; set; }
         public int DueMonthResidence { get; set; }
         public int SendUserBillNotificationDay { get; set; }    
+        public int ParkingBillType { get;set; }
     }
 }

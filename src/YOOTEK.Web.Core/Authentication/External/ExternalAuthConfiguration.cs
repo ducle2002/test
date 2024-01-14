@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Abp.Dependency;
 
-namespace IMAX.Authentication.External
+namespace Yootek.Authentication.External
 {
     public class ExternalAuthConfiguration : IExternalAuthConfiguration, ISingletonDependency
     {

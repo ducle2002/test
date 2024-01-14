@@ -1,10 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Runtime.Validation;
-using IMAX.Common;
-using IMAX.Core.Dto;
-using IMAX.Dto;
+using Yootek.Common;
+using Yootek.Core.Dto;
+using Yootek.Dto;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class GetOrganizationUnitRolesInput : PagedAndSortedInputDto, IShouldNormalize
     {

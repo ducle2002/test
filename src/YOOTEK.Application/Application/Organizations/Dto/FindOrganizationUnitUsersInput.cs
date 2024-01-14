@@ -1,7 +1,7 @@
-﻿using IMAX.Core.Dto;
-using IMAX.Dto;
+﻿using Yootek.Core.Dto;
+using Yootek.Dto;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class FindOrganizationUnitUsersInput : PagedAndFilteredInputDto
     {

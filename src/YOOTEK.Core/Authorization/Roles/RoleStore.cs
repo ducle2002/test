@@ -1,9 +1,9 @@
 using Abp.Authorization.Roles;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Authorization.Roles
+namespace Yootek.Authorization.Roles
 {
     public class RoleStore : AbpRoleStore<Role, User>
     {

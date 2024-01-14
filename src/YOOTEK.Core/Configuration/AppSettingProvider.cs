@@ -5,7 +5,7 @@ using Abp.Zero.Configuration;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace IMAX.Configuration
+namespace Yootek.Configuration
 {
     public class AppSettingProvider : SettingProvider
     {
@@ -42,13 +42,17 @@ namespace IMAX.Configuration
                 // Tenant config
                 //new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.EndPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.EndPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
                 //new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.HeadPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.HeadPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
-
+               new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateP, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateP] ?? "false", scopes: SettingScopes.Tenant),
+               new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateM, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateM] ?? "false", scopes: SettingScopes.Tenant),
+                new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateE, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateE] ?? "false", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricEndPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricEndPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricHeadPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricHeadPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
 
+                new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateW, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateW] ?? "false", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.WaterEndPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.WaterEndPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
 
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay] ?? "0", scopes: SettingScopes.Tenant),
+                new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay] ?? "0", scopes: SettingScopes.Tenant),
 
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.WaterHeadPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.WaterHeadPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.BillNotificationTime1, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.BillNotificationTime1] ?? "0", scopes: SettingScopes.Tenant),
@@ -69,6 +73,8 @@ namespace IMAX.Configuration
 
                 new SettingDefinition(AppSettings.TenantManagement.UserBillConfig.DueDateManager, ConfigurationManager.AppSettings[AppSettings.TenantManagement.UserBillConfig.DueDateManager] ?? "1", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.UserBillConfig.DueMonthManager, ConfigurationManager.AppSettings[AppSettings.TenantManagement.UserBillConfig.DueMonthManager] ?? "1", scopes: SettingScopes.Tenant),
+
+                 new SettingDefinition(AppSettings.TenantManagement.UserBillConfig.ParkingBillType, ConfigurationManager.AppSettings[AppSettings.TenantManagement.UserBillConfig.ParkingBillType] ?? "5", scopes: SettingScopes.Tenant),
 
                 new SettingDefinition(AppSettings.TenantManagement.UserBillConfig.DueDateParking, ConfigurationManager.AppSettings[AppSettings.TenantManagement.UserBillConfig.DueDateParking] ?? "1", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.UserBillConfig.DueMonthParking, ConfigurationManager.AppSettings[AppSettings.TenantManagement.UserBillConfig.DueMonthParking] ?? "1", scopes: SettingScopes.Tenant),
@@ -103,23 +109,23 @@ namespace IMAX.Configuration
 
         private void ChangeEmailSettingScopes(SettingDefinitionProviderContext context)
         {
-            if (!IMAXConsts.AllowTenantsToChangeEmailSettings)
+            if (!YootekConsts.AllowTenantsToChangeEmailSettings)
             {
-                context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.Host).Scopes = SettingScopes.Application;
+                context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.Host).Scopes = SettingScopes.Tenant;
                 context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.Port).Scopes = SettingScopes.Application;
                 context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.UserName).Scopes =
-                    SettingScopes.Application;
+                    SettingScopes.Tenant;
                 context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.Password).Scopes =
-                    SettingScopes.Application;
-                context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.Domain).Scopes = SettingScopes.Application;
+                    SettingScopes.Tenant;
+                context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.Domain).Scopes = SettingScopes.Tenant;
                 context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.EnableSsl).Scopes =
                     SettingScopes.Application;
                 context.Manager.GetSettingDefinition(EmailSettingNames.Smtp.UseDefaultCredentials).Scopes =
                     SettingScopes.Application;
                 context.Manager.GetSettingDefinition(EmailSettingNames.DefaultFromAddress).Scopes =
-                    SettingScopes.Application;
+                    SettingScopes.Tenant;
                 context.Manager.GetSettingDefinition(EmailSettingNames.DefaultFromDisplayName).Scopes =
-                    SettingScopes.Application;
+                    SettingScopes.Tenant;
 
             }
         }

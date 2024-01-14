@@ -1,5 +1,5 @@
 ﻿
-namespace IMAX.Common.Enum
+namespace Yootek.Common.Enum
 {
     public static partial class UserFeedbackEnum
     {

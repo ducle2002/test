@@ -1,11 +1,11 @@
-﻿using IMAX.App.ServiceHttpClient.Dto.VietNamAdministrativeUnit;
+﻿using Yootek.App.ServiceHttpClient.Dto.VietNamAdministrativeUnit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Configuration.Settings.User.Dto
+namespace Yootek.Application.Configuration.Settings.User.Dto
 {
     public class UserAddressSettingEditDto
     {

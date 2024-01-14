@@ -1,6 +1,6 @@
 ﻿using Abp;
 
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
     public static class FriendshipExtensions
     {

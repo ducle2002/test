@@ -8,15 +8,15 @@ using Abp.Runtime.Session;
 using Abp.UI;
 using Castle.Core.Logging;
 using Castle.Windsor;
-using IMAX.Chat;
-using IMAX.GroupChats;
+using Yootek.Chat;
+using Yootek.GroupChats;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Chat
+namespace Yootek.Web.Host.Chat
 {
     public class ForumHub : OnlineClientHubBase, ITransientDependency
     {

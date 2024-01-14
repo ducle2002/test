@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "IMAX.Application.Protos.Business.Categories";
+option csharp_namespace = "Yootek.Application.Protos.Business.Categories";
 
 package Categories;
 

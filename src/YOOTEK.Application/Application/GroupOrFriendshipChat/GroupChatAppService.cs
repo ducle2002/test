@@ -9,15 +9,15 @@ using Abp.RealTime;
 using Abp.Runtime.Session;
 using Abp.Timing;
 using Abp.UI;
-using IMAX.Application;
-using IMAX.Application.RoomOrFriendships.Dto;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
-using IMAX.Chat.Dto;
-using IMAX.Common.DataResult;
-using IMAX.Friendships;
-using IMAX.Friendships.Dto;
-using IMAX.GroupChats;
+using Yootek.Application;
+using Yootek.Application.RoomOrFriendships.Dto;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
+using Yootek.Chat.Dto;
+using Yootek.Common.DataResult;
+using Yootek.Friendships;
+using Yootek.Friendships.Dto;
+using Yootek.GroupChats;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +31,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace IMAX.Abp.Application.Friendships
+namespace Yootek.Abp.Application.Friendships
 {
     public interface IGroupChatAppService : IApplicationService
     {
@@ -44,7 +44,7 @@ namespace IMAX.Abp.Application.Friendships
     }
 
     [AbpAuthorize]
-    public class GroupChatAppService : IMAXAppServiceBase, IGroupChatAppService
+    public class GroupChatAppService : YootekAppServiceBase, IGroupChatAppService
     {
 
         private readonly IOnlineClientManager _onlineClientManager;
@@ -103,7 +103,7 @@ namespace IMAX.Abp.Application.Friendships
                             await _groupChatManager.AddMembershipGroupChat(friend, input.GroupId);
                         }
 
-                        var clients =  await _onlineClientManager.GetAllByUserIdAsync(friend);
+                        var clients = await _onlineClientManager.GetAllByUserIdAsync(friend);
                         if (clients.Any())
                         {
                             var isFriendOnline = await _onlineClientManager.IsOnlineAsync(friend);
@@ -117,7 +117,7 @@ namespace IMAX.Abp.Application.Friendships
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -163,7 +163,7 @@ namespace IMAX.Abp.Application.Friendships
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -184,7 +184,7 @@ namespace IMAX.Abp.Application.Friendships
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -245,7 +245,7 @@ namespace IMAX.Abp.Application.Friendships
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -277,7 +277,7 @@ namespace IMAX.Abp.Application.Friendships
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -317,7 +317,7 @@ namespace IMAX.Abp.Application.Friendships
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 

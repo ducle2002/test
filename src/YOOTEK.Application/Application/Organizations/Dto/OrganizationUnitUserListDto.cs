@@ -1,9 +1,9 @@
 ﻿using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     [AutoMap(typeof(User))]
     public class OrganizationUnitUserListDto : EntityDto<long>

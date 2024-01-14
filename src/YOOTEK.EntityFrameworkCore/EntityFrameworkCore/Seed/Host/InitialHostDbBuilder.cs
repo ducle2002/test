@@ -1,10 +1,10 @@
-﻿namespace IMAX.EntityFrameworkCore.Seed.Host
+﻿namespace Yootek.EntityFrameworkCore.Seed.Host
 {
     public class InitialHostDbBuilder
     {
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
 
-        public InitialHostDbBuilder(IMAXDbContext context)
+        public InitialHostDbBuilder(YootekDbContext context)
         {
             _context = context;
         }

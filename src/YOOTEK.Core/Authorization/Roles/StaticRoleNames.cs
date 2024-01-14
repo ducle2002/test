@@ -1,4 +1,4 @@
-namespace IMAX.Authorization.Roles
+namespace Yootek.Authorization.Roles
 {
     public static class StaticRoleNames
     {

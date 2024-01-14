@@ -1,4 +1,4 @@
-﻿namespace IMAX.Authentication.External
+﻿namespace Yootek.Authentication.External
 {
     public class ExternalAuthUserInfo
     {

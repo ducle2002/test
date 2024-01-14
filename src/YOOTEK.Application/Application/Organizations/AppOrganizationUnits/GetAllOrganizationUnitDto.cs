@@ -1,14 +1,14 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Organizations;
-using IMAX.Organizations.Dto;
+using Yootek.Organizations;
+using Yootek.Organizations.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Organizations.AppOrganizationUnits
+namespace Yootek.Application.Organizations.AppOrganizationUnits
 {
     [AutoMap(typeof(AppOrganizationUnit))]
     public class GetAllOrganizationUnitDto: AuditedEntityDto<long>

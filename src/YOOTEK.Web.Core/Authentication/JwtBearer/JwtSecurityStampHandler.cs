@@ -5,12 +5,12 @@ using Abp;
 using Abp.Dependency;
 using Abp.Domain.Uow;
 using Abp.Runtime.Caching;
-using IMAX;
-using IMAX.Authentication.JwtBearer;
-using IMAX.Authorization.Users;
-using IMAX.Identity;
+using Yootek;
+using Yootek.Authentication.JwtBearer;
+using Yootek.Authorization.Users;
+using Yootek.Identity;
 
-namespace MIMAX.Authentication.JwtBearer
+namespace MYootek.Authentication.JwtBearer
 {
     public class JwtSecurityStampHandler : IJwtSecurityStampHandler, ITransientDependency
     {

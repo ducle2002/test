@@ -1,8 +1,8 @@
-﻿using IMAX.Organizations.Interface;
+﻿using Yootek.Organizations.Interface;
 using System;
 using System.Collections.Generic;
 
-namespace IMAX.Services.Dto
+namespace Yootek.Services.Dto
 {
     public enum QueryCaseOrganizationChat
     {

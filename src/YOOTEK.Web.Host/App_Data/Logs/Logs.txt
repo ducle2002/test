@@ -14,7 +14,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-13 10:02:22,638 [4    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":null,"RememberClient":false}
+FATAL 2023-11-13 10:02:22,638 [4    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":null,"RememberClient":false}
 ERROR 2023-11-13 10:05:31,600 [er #7] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:02:24
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -34,18 +34,18 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
 FATAL 2023-11-13 10:06:12,769 [7    ] X.Services.AdminQuestionAnswerAppService - Nullable object must have a value.
 System.InvalidOperationException: Nullable object must have a value.
    at System.Nullable`1.get_Value()
-   at IMAX.Services.AdminQuestionAnswerAppService.QueryDataQNA(GetAllQuestionAnswerInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 99
-   at IMAX.Services.AdminQuestionAnswerAppService.GetAllQuestionAnswerSocialAsync(GetAllQuestionAnswerInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 132
+   at Yootek.Services.AdminQuestionAnswerAppService.QueryDataQNA(GetAllQuestionAnswerInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 99
+   at Yootek.Services.AdminQuestionAnswerAppService.GetAllQuestionAnswerSocialAsync(GetAllQuestionAnswerInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 132
 FATAL 2023-11-13 10:06:36,970 [6    ] X.Services.AdminQuestionAnswerAppService - Nullable object must have a value.
 System.InvalidOperationException: Nullable object must have a value.
    at System.Nullable`1.get_Value()
-   at IMAX.Services.AdminQuestionAnswerAppService.QueryDataQNA(GetAllQuestionAnswerInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 99
-   at IMAX.Services.AdminQuestionAnswerAppService.GetAllQuestionAnswerSocialAsync(GetAllQuestionAnswerInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 132
+   at Yootek.Services.AdminQuestionAnswerAppService.QueryDataQNA(GetAllQuestionAnswerInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 99
+   at Yootek.Services.AdminQuestionAnswerAppService.GetAllQuestionAnswerSocialAsync(GetAllQuestionAnswerInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 132
 FATAL 2023-11-13 10:07:37,129 [7    ] X.Services.AdminQuestionAnswerAppService - Nullable object must have a value.
 System.InvalidOperationException: Nullable object must have a value.
    at System.Nullable`1.get_Value()
-   at IMAX.Services.AdminQuestionAnswerAppService.QueryDataQNA(GetAllQuestionAnswerInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 99
-   at IMAX.Services.AdminQuestionAnswerAppService.GetAllQuestionAnswerSocialAsync(GetAllQuestionAnswerInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 132
+   at Yootek.Services.AdminQuestionAnswerAppService.QueryDataQNA(GetAllQuestionAnswerInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 99
+   at Yootek.Services.AdminQuestionAnswerAppService.GetAllQuestionAnswerSocialAsync(GetAllQuestionAnswerInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\QuestionAnswer\AdminQuestionAnswerAppService.cs:line 132
 ERROR 2023-11-13 10:13:16,256 [r #16] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:16
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -69,7 +69,7 @@ SELECT a."Id", a."ADTypeId", a."CreationTime", a."CreatorUserId", a."DeleterUser
 FROM public."Administrative" AS a
 WHERE a."Id" = @__p_0
 LIMIT 1
-ERROR 2023-11-13 10:17:01,338 [4    ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-13 10:17:01,338 [4    ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Npgsql.PostgresException (0x80004005): 25P02: current transaction is aborted, commands ignored until end of transaction block
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -106,13 +106,13 @@ Npgsql.PostgresException (0x80004005): 25P02: current transaction is aborted, co
     File: postgres.c
     Line: 1470
     Routine: exec_parse_message
-FATAL 2023-11-13 10:17:01,469 [4    ] IMAX.Services.AdministrativeAppService   - 25P02: current transaction is aborted, commands ignored until end of transaction block
+FATAL 2023-11-13 10:17:01,469 [4    ] Yootek.Services.AdministrativeAppService   - 25P02: current transaction is aborted, commands ignored until end of transaction block
 ERROR 2023-11-13 10:17:01,480 [4    ] oft.EntityFrameworkCore.Database.Command - Failed executing DbCommand (6ms) [Parameters=[@__p_0='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
 SELECT a."Id", a."ADTypeId", a."CreationTime", a."CreatorUserId", a."DeleterUserId", a."DeletionTime", a."DeniedReason", a."IsDeleted", a."LastModificationTime", a."LastModifierUserId", a."OrganizationUnitId", a."Properties", a."State", a."TenantId", a."UserBillId"
 FROM public."Administrative" AS a
 WHERE a."Id" = @__p_0
 LIMIT 1
-ERROR 2023-11-13 10:17:01,489 [4    ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-13 10:17:01,489 [4    ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Npgsql.PostgresException (0x80004005): 25P02: current transaction is aborted, commands ignored until end of transaction block
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -196,7 +196,7 @@ SELECT a."Id", a."ADTypeId", a."CreationTime", a."CreatorUserId", a."DeleterUser
 FROM public."Administrative" AS a
 WHERE a."Id" = @__p_0
 LIMIT 1
-ERROR 2023-11-13 10:17:26,715 [11   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-13 10:17:26,715 [11   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Npgsql.PostgresException (0x80004005): 25P02: current transaction is aborted, commands ignored until end of transaction block
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -233,13 +233,13 @@ Npgsql.PostgresException (0x80004005): 25P02: current transaction is aborted, co
     File: postgres.c
     Line: 1470
     Routine: exec_parse_message
-FATAL 2023-11-13 10:17:26,772 [11   ] IMAX.Services.AdministrativeAppService   - 25P02: current transaction is aborted, commands ignored until end of transaction block
+FATAL 2023-11-13 10:17:26,772 [11   ] Yootek.Services.AdministrativeAppService   - 25P02: current transaction is aborted, commands ignored until end of transaction block
 ERROR 2023-11-13 10:17:28,814 [11   ] oft.EntityFrameworkCore.Database.Command - Failed executing DbCommand (5ms) [Parameters=[@__p_0='?' (DbType = Int64)], CommandType='Text', CommandTimeout='30']
 SELECT a."Id", a."ADTypeId", a."CreationTime", a."CreatorUserId", a."DeleterUserId", a."DeletionTime", a."DeniedReason", a."IsDeleted", a."LastModificationTime", a."LastModifierUserId", a."OrganizationUnitId", a."Properties", a."State", a."TenantId", a."UserBillId"
 FROM public."Administrative" AS a
 WHERE a."Id" = @__p_0
 LIMIT 1
-ERROR 2023-11-13 10:17:28,825 [11   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-13 10:17:28,825 [11   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Npgsql.PostgresException (0x80004005): 25P02: current transaction is aborted, commands ignored until end of transaction block
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -332,7 +332,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-13 10:34:07,620 [4    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
+FATAL 2023-11-13 10:34:07,620 [4    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
 ERROR 2023-11-13 14:57:54,164 [r #13] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:16
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -351,8 +351,8 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
 ERROR 2023-11-13 14:58:06,697 [9    ] Mvc.ExceptionHandling.AbpExceptionFilter - Object reference not set to an instance of an object.
 System.NullReferenceException: Object reference not set to an instance of an object.
-   at IMAX.Users.UserDefaultAppService.MapToEntityDto(User user) in E:\imax-backend\src\IMAX.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 433
-   at IMAX.Users.UserDefaultAppService.GetDetail() in E:\imax-backend\src\IMAX.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 268
+   at Yootek.Users.UserDefaultAppService.MapToEntityDto(User user) in E:\imax-backend\src\Yootek.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 433
+   at Yootek.Users.UserDefaultAppService.GetDetail() in E:\imax-backend\src\Yootek.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 268
    at lambda_method1625(Closure , Object )
    at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
@@ -363,8 +363,8 @@ System.NullReferenceException: Object reference not set to an instance of an obj
    at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
 ERROR 2023-11-13 14:58:12,492 [63   ] Mvc.ExceptionHandling.AbpExceptionFilter - Object reference not set to an instance of an object.
 System.NullReferenceException: Object reference not set to an instance of an object.
-   at IMAX.Users.UserDefaultAppService.MapToEntityDto(User user) in E:\imax-backend\src\IMAX.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 433
-   at IMAX.Users.UserDefaultAppService.GetDetail() in E:\imax-backend\src\IMAX.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 268
+   at Yootek.Users.UserDefaultAppService.MapToEntityDto(User user) in E:\imax-backend\src\Yootek.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 433
+   at Yootek.Users.UserDefaultAppService.GetDetail() in E:\imax-backend\src\Yootek.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 268
    at lambda_method1625(Closure , Object )
    at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
@@ -373,7 +373,7 @@ System.NullReferenceException: Object reference not set to an instance of an obj
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-FATAL 2023-11-13 14:58:27,387 [12   ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"Hudland@123","TenancyName":"ct17viethung","RememberClient":false}
+FATAL 2023-11-13 14:58:27,387 [12   ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"Hudland@123","TenancyName":"ct17viethung","RememberClient":false}
 ERROR 2023-11-13 16:36:50,510 [er #8] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:02:49
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -390,38 +390,15 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-ERROR 2023-11-13 16:36:55,187 [12   ] Mvc.ExceptionHandling.AbpExceptionFilter - Can't create component 'IMAX.Services.AdminForumAppService' as it has dependencies to be satisfied.
+ERROR 2023-11-13 16:36:55,187 [12   ] Mvc.ExceptionHandling.AbpExceptionFilter - Can't create component 'Yootek.Services.AdminForumAppService' as it has dependencies to be satisfied.
 
-'IMAX.Services.AdminForumAppService' is waiting for the following dependencies:
-- Service 'IMAX.Services.IAdminForumExcelExporter' which was not registered.
+'Yootek.Services.AdminForumAppService' is waiting for the following dependencies:
+- Service 'Yootek.Services.IAdminForumExcelExporter' which was not registered.
 
-Castle.MicroKernel.Handlers.HandlerException: Can't create component 'IMAX.Services.AdminForumAppService' as it has dependencies to be satisfied.
+Castle.MicroKernel.Handlers.HandlerException: Can't create component 'Yootek.Services.AdminForumAppService' as it has dependencies to be satisfied.
 
-'IMAX.Services.AdminForumAppService' is waiting for the following dependencies:
-- Service 'IMAX.Services.IAdminForumExcelExporter' which was not registered.
-
-   at Castle.MicroKernel.Handlers.DefaultHandler.AssertNotWaitingForDependency()
-   at Castle.MicroKernel.Handlers.DefaultHandler.ResolveCore(CreationContext context, Boolean requiresDecommission, Boolean instanceRequired, Burden& burden)
-   at Castle.MicroKernel.Handlers.DefaultHandler.Resolve(CreationContext context, Boolean instanceRequired)
-   at Castle.MicroKernel.DefaultKernel.ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy, Boolean ignoreParentContext)
-   at Castle.MicroKernel.DefaultKernel.Castle.MicroKernel.IKernelInternal.Resolve(Type service, Arguments arguments, IReleasePolicy policy, Boolean ignoreParentContext)
-   at Castle.MicroKernel.DefaultKernel.Resolve(Type service, Arguments arguments)
-   at Castle.Windsor.MsDependencyInjection.ScopedWindsorServiceProvider.GetServiceInternal(Type serviceType, Boolean isOptional)
-   at Microsoft.AspNetCore.Mvc.Controllers.ServiceBasedControllerActivator.Create(ControllerContext actionContext)
-   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
---- End of stack trace from previous location ---
-   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-ERROR 2023-11-13 16:37:23,977 [9    ] Mvc.ExceptionHandling.AbpExceptionFilter - Can't create component 'IMAX.Services.AdminForumAppService' as it has dependencies to be satisfied.
-
-'IMAX.Services.AdminForumAppService' is waiting for the following dependencies:
-- Service 'IMAX.Services.IAdminForumExcelExporter' which was not registered.
-
-Castle.MicroKernel.Handlers.HandlerException: Can't create component 'IMAX.Services.AdminForumAppService' as it has dependencies to be satisfied.
-
-'IMAX.Services.AdminForumAppService' is waiting for the following dependencies:
-- Service 'IMAX.Services.IAdminForumExcelExporter' which was not registered.
+'Yootek.Services.AdminForumAppService' is waiting for the following dependencies:
+- Service 'Yootek.Services.IAdminForumExcelExporter' which was not registered.
 
    at Castle.MicroKernel.Handlers.DefaultHandler.AssertNotWaitingForDependency()
    at Castle.MicroKernel.Handlers.DefaultHandler.ResolveCore(CreationContext context, Boolean requiresDecommission, Boolean instanceRequired, Burden& burden)
@@ -436,11 +413,34 @@ Castle.MicroKernel.Handlers.HandlerException: Can't create component 'IMAX.Servi
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
 --- End of stack trace from previous location ---
    at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-FATAL 2023-11-13 16:39:18,457 [4    ] IMAX.Services.AdminForumAppService       - Nullable object must have a value.
+ERROR 2023-11-13 16:37:23,977 [9    ] Mvc.ExceptionHandling.AbpExceptionFilter - Can't create component 'Yootek.Services.AdminForumAppService' as it has dependencies to be satisfied.
+
+'Yootek.Services.AdminForumAppService' is waiting for the following dependencies:
+- Service 'Yootek.Services.IAdminForumExcelExporter' which was not registered.
+
+Castle.MicroKernel.Handlers.HandlerException: Can't create component 'Yootek.Services.AdminForumAppService' as it has dependencies to be satisfied.
+
+'Yootek.Services.AdminForumAppService' is waiting for the following dependencies:
+- Service 'Yootek.Services.IAdminForumExcelExporter' which was not registered.
+
+   at Castle.MicroKernel.Handlers.DefaultHandler.AssertNotWaitingForDependency()
+   at Castle.MicroKernel.Handlers.DefaultHandler.ResolveCore(CreationContext context, Boolean requiresDecommission, Boolean instanceRequired, Burden& burden)
+   at Castle.MicroKernel.Handlers.DefaultHandler.Resolve(CreationContext context, Boolean instanceRequired)
+   at Castle.MicroKernel.DefaultKernel.ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy, Boolean ignoreParentContext)
+   at Castle.MicroKernel.DefaultKernel.Castle.MicroKernel.IKernelInternal.Resolve(Type service, Arguments arguments, IReleasePolicy policy, Boolean ignoreParentContext)
+   at Castle.MicroKernel.DefaultKernel.Resolve(Type service, Arguments arguments)
+   at Castle.Windsor.MsDependencyInjection.ScopedWindsorServiceProvider.GetServiceInternal(Type serviceType, Boolean isOptional)
+   at Microsoft.AspNetCore.Mvc.Controllers.ServiceBasedControllerActivator.Create(ControllerContext actionContext)
+   at Microsoft.AspNetCore.Mvc.Controllers.ControllerFactoryProvider.<>c__DisplayClass5_0.<CreateControllerFactory>g__CreateController|0(ControllerContext controllerContext)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+FATAL 2023-11-13 16:39:18,457 [4    ] Yootek.Services.AdminForumAppService       - Nullable object must have a value.
 System.InvalidOperationException: Nullable object must have a value.
    at System.Nullable`1.get_Value()
-   at IMAX.Services.AdminForumAppService.QueryDataQNA(GetAllForumInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 96
-   at IMAX.Services.AdminForumAppService.GetAllForumSocialAsync(GetAllForumInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 129
+   at Yootek.Services.AdminForumAppService.QueryDataQNA(GetAllForumInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 96
+   at Yootek.Services.AdminForumAppService.GetAllForumSocialAsync(GetAllForumInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 129
 ERROR 2023-11-13 16:39:36,515 [59   ] oft.EntityFrameworkCore.Database.Command - Failed executing DbCommand (13ms) [Parameters=[@__ef_filter__p_6='?' (DbType = Boolean), @__ef_filter__p_7='?' (DbType = Boolean), @__ef_filter__CurrentTenantId_8='?' (DbType = Int32), @__ef_filter__p_3='?' (DbType = Boolean), @__ef_filter__p_4='?' (DbType = Boolean), @__ef_filter__CurrentTenantId_5='?' (DbType = Int32), @__ef_filter__p_0='?' (DbType = Boolean), @__ef_filter__p_1='?' (DbType = Boolean), @__ef_filter__CurrentTenantId_2='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
 SELECT c1."Id", c1."FileUrl", c1."Type", c1."Content", c1."State", c1."CreationTime", t."ImageUrl", t."Id", t."AccessFailedCount", t."AddressOfBirth", t."AuthenticationSource", t."ConcurrencyStamp", t."CreationTime", t."CreatorUserId", t."DateOfBirth", t."DeleterUserId", t."DeletionTime", t."EmailAddress", t."EmailConfirmationCode", t."Gender", t."GoogleAuthenticatorKey", t."HomeAddress", t."IsActive", t."IsCitizen", t."IsDeleted", t."IsEmailConfirmed", t."IsLockoutEnabled", t."IsPhoneNumberConfirmed", t."IsTwoFactorEnabled", t."LastModificationTime", t."LastModifierUserId", t."LockoutEndDateUtc", t."Name", t."Nationality", t."NormalizedEmailAddress", t."NormalizedUserName", t."Password", t."PasswordResetCode", t."PhoneNumber", t."ProfilePictureId", t."SecurityStamp", t."SignInToken", t."SignInTokenExpireTimeUtc", t."Surname", t."TenantId", t."ThirdAccounts", t."UserName", t."WillBeDeletedDate", c1."CreatorUserId", c1."LastModificationTime", c1."LastModifierUserId", c1."Tags", c1."TenantId", c1."ThreadTitle", c1."TypeTitle", (
     SELECT COUNT(*)::INT
@@ -458,7 +458,7 @@ LEFT JOIN (
 WHERE ((@__ef_filter__p_0 OR NOT (c1."IsDeleted")) AND (@__ef_filter__p_1 OR (c1."TenantId" = @__ef_filter__CurrentTenantId_2))) AND (c1."State" = 2)
 ORDER BY c1."CreationTime" DESC
 LIMIT @__p_0 OFFSET 0
-ERROR 2023-11-13 16:39:36,552 [59   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-13 16:39:36,552 [59   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does not exist
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -497,7 +497,7 @@ Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does n
     File: parse_relation.c
     Line: 1360
     Routine: parserOpenTable
-FATAL 2023-11-13 16:39:56,257 [59   ] IMAX.Services.AdminForumAppService       - 42P01: relation "public.ClbForums" does not exist
+FATAL 2023-11-13 16:39:56,257 [59   ] Yootek.Services.AdminForumAppService       - 42P01: relation "public.ClbForums" does not exist
 Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does not exist
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -511,7 +511,7 @@ Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does n
    at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
    at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
-   at IMAX.Services.AdminForumAppService.GetAllForumSocialAsync(GetAllForumInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 130
+   at Yootek.Services.AdminForumAppService.GetAllForumSocialAsync(GetAllForumInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 130
   Exception data:
     Severity: ERROR
     SqlState: 42P01
@@ -553,7 +553,7 @@ LEFT JOIN (
 WHERE ((@__ef_filter__p_0 OR NOT (c1."IsDeleted")) AND (@__ef_filter__p_1 OR (c1."TenantId" = @__ef_filter__CurrentTenantId_2))) AND (c1."State" = 2)
 ORDER BY c1."CreationTime" DESC
 LIMIT @__p_0 OFFSET 0
-ERROR 2023-11-13 16:44:11,462 [79   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-13 16:44:11,462 [79   ] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does not exist
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -592,7 +592,7 @@ Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does n
     File: parse_relation.c
     Line: 1360
     Routine: parserOpenTable
-FATAL 2023-11-13 16:44:11,531 [79   ] IMAX.Services.AdminForumAppService       - 42P01: relation "public.ClbForums" does not exist
+FATAL 2023-11-13 16:44:11,531 [79   ] Yootek.Services.AdminForumAppService       - 42P01: relation "public.ClbForums" does not exist
 Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does not exist
    at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
    at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
@@ -606,7 +606,7 @@ Npgsql.PostgresException (0x80004005): 42P01: relation "public.ClbForums" does n
    at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
    at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
    at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
-   at IMAX.Services.AdminForumAppService.GetAllForumSocialAsync(GetAllForumInput input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 130
+   at Yootek.Services.AdminForumAppService.GetAllForumSocialAsync(GetAllForumInput input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartSocial\Clb.Forum\AdminForumAppService.cs:line 130
   Exception data:
     Severity: ERROR
     SqlState: 42P01
@@ -631,7 +631,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-14 10:22:05,973 [5    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
+FATAL 2023-11-14 10:22:05,973 [5    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
 ERROR 2023-11-14 10:54:51,778 [er #1] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:16
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -781,10 +781,10 @@ System.InvalidOperationException: Cannot add merged region A3:A4 to sheet becaus
    at NPOI.XSSF.UserModel.XSSFSheet.ValidateMergedRegions(CellRangeAddress candidateRegion)
    at NPOI.XSSF.UserModel.XSSFSheet.AddMergedRegion(CellRangeAddress region, Boolean validate)
    at NPOI.XSSF.UserModel.XSSFSheet.AddMergedRegion(CellRangeAddress region)
-   at IMAX.Services.PaymentExcelExporter.<>c__DisplayClass1_0.<ExportToFile>b__0(XSSFWorkbook excelPackage) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartCommunity\CitizenFee\ExcelBill\PaymentExcelExporter.cs:line 102
-   at IMAX.DataExporting.Excel.NPOI.NpoiExcelExporterBase.CreateExcelPackage(String fileName, Action`1 creator) in E:\imax-backend\src\IMAX.Application\Application\DataExporting\Excel\NPOI\NpoiExcelExporterBase.cs:line 73
-   at IMAX.Services.PaymentExcelExporter.ExportToFile(List`1 payments) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartCommunity\CitizenFee\ExcelBill\PaymentExcelExporter.cs:line 30
-   at IMAX.IMAX.Services.SmartCommunity.Phidichvu.AdminManagerBillPaymentAppService.ExportPaymentExcel(GetAllAdminUserBillPaymentDto input) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartCommunity\CitizenFee\Payment\AdminManagerBillPaymentAppService.cs:line 346
+   at Yootek.Services.PaymentExcelExporter.<>c__DisplayClass1_0.<ExportToFile>b__0(XSSFWorkbook excelPackage) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartCommunity\CitizenFee\ExcelBill\PaymentExcelExporter.cs:line 102
+   at Yootek.DataExporting.Excel.NPOI.NpoiExcelExporterBase.CreateExcelPackage(String fileName, Action`1 creator) in E:\imax-backend\src\Yootek.Application\Application\DataExporting\Excel\NPOI\NpoiExcelExporterBase.cs:line 73
+   at Yootek.Services.PaymentExcelExporter.ExportToFile(List`1 payments) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartCommunity\CitizenFee\ExcelBill\PaymentExcelExporter.cs:line 30
+   at Yootek.Yootek.Services.SmartCommunity.Phidichvu.AdminManagerBillPaymentAppService.ExportPaymentExcel(GetAllAdminUserBillPaymentDto input) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartCommunity\CitizenFee\Payment\AdminManagerBillPaymentAppService.cs:line 346
 ERROR 2023-11-14 17:00:05,410 [r #15] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:49
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -803,8 +803,8 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
 ERROR 2023-11-14 17:28:12,404 [14   ] Mvc.ExceptionHandling.AbpExceptionFilter - Object reference not set to an instance of an object.
 System.NullReferenceException: Object reference not set to an instance of an object.
-   at IMAX.Users.UserDefaultAppService.MapToEntityDto(User user) in E:\imax-backend\src\IMAX.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 433
-   at IMAX.Users.UserDefaultAppService.GetDetail() in E:\imax-backend\src\IMAX.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 268
+   at Yootek.Users.UserDefaultAppService.MapToEntityDto(User user) in E:\imax-backend\src\Yootek.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 433
+   at Yootek.Users.UserDefaultAppService.GetDetail() in E:\imax-backend\src\Yootek.Application\Authorization\Users\UserDefault\UserDefaultAppService.cs:line 268
    at lambda_method1618(Closure , Object )
    at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
@@ -813,7 +813,7 @@ System.NullReferenceException: Object reference not set to an instance of an obj
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
    at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-FATAL 2023-11-14 17:28:50,519 [4    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"Hudland@123","TenancyName":"ct17viethung","RememberClient":false}
+FATAL 2023-11-14 17:28:50,519 [4    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"Hudland@123","TenancyName":"ct17viethung","RememberClient":false}
 ERROR 2023-11-14 17:34:34,932 [r #15] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:49
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -1511,7 +1511,7 @@ Abp.AbpException: There is no tenant with given id: 62
    at Microsoft.AspNetCore.Watch.BrowserRefresh.BrowserRefreshMiddleware.InvokeAsync(HttpContext context)
    at Microsoft.AspNetCore.Builder.Extensions.MapWhenMiddleware.Invoke(HttpContext context)
    at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContextOfT`1.ProcessRequestAsync()
-FATAL 2023-11-15 09:13:52,885 [13   ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
+FATAL 2023-11-15 09:13:52,885 [13   ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
 ERROR 2023-11-15 11:44:22,838 [r #15] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:02:01
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -1528,7 +1528,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-15 11:46:38,385 [5    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"Hudland@123","TenancyName":"ct17viethung","RememberClient":false}
+FATAL 2023-11-15 11:46:38,385 [5    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"Hudland@123","TenancyName":"ct17viethung","RememberClient":false}
 ERROR 2023-11-15 16:21:57,586 [61   ] AspNetCore.Server.IIS.Core.IISHttpServer - Connection ID "18230571314681217040", Request ID "80000015-0005-fd00-b63f-84710c7967bb": An unhandled exception was thrown by the application.
 Abp.AbpException: There is no tenant with given id: 62
    at Abp.MultiTenancy.TenantCache`2.GetAsync(Int32 tenantId)
@@ -1755,7 +1755,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-15 16:22:30,327 [6    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
+FATAL 2023-11-15 16:22:30,327 [6    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
 ERROR 2023-11-15 16:32:57,628 [r #13] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:49
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -1784,7 +1784,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-15 16:46:03,415 [18   ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":null,"RememberClient":false}
+FATAL 2023-11-15 16:46:03,415 [18   ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":null,"RememberClient":false}
 ERROR 2023-11-15 16:54:30,391 [r #12] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:03:16
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -1833,17 +1833,17 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-16 16:10:42,119 [6    ] dichvu.AdminManagerBillPaymentAppService - There is no such an entity. Entity type: IMAX.EntityDb.UserBillPayment, id: 496
-Abp.Domain.Entities.EntityNotFoundException: There is no such an entity. Entity type: IMAX.EntityDb.UserBillPayment, id: 496
+FATAL 2023-11-16 16:10:42,119 [6    ] dichvu.AdminManagerBillPaymentAppService - There is no such an entity. Entity type: Yootek.EntityDb.UserBillPayment, id: 496
+Abp.Domain.Entities.EntityNotFoundException: There is no such an entity. Entity type: Yootek.EntityDb.UserBillPayment, id: 496
    at Abp.Domain.Repositories.AbpRepositoryBase`2.GetAsync(TPrimaryKey id)
    at Abp.Domain.Uow.UnitOfWorkInterceptor.InternalInterceptAsynchronous[TResult](IInvocation invocation)
-   at IMAX.IMAX.Services.SmartCommunity.Phidichvu.AdminManagerBillPaymentAppService.RecoverPaymentUserBill(Int64 id) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartCommunity\CitizenFee\Payment\AdminManagerBillPaymentAppService.cs:line 653
-FATAL 2023-11-16 16:11:10,832 [73   ] dichvu.AdminManagerBillPaymentAppService - There is no such an entity. Entity type: IMAX.EntityDb.UserBillPayment, id: 496
-Abp.Domain.Entities.EntityNotFoundException: There is no such an entity. Entity type: IMAX.EntityDb.UserBillPayment, id: 496
+   at Yootek.Yootek.Services.SmartCommunity.Phidichvu.AdminManagerBillPaymentAppService.RecoverPaymentUserBill(Int64 id) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartCommunity\CitizenFee\Payment\AdminManagerBillPaymentAppService.cs:line 653
+FATAL 2023-11-16 16:11:10,832 [73   ] dichvu.AdminManagerBillPaymentAppService - There is no such an entity. Entity type: Yootek.EntityDb.UserBillPayment, id: 496
+Abp.Domain.Entities.EntityNotFoundException: There is no such an entity. Entity type: Yootek.EntityDb.UserBillPayment, id: 496
    at Abp.Domain.Repositories.AbpRepositoryBase`2.GetAsync(TPrimaryKey id)
    at Abp.Domain.Uow.UnitOfWorkInterceptor.InternalInterceptAsynchronous[TResult](IInvocation invocation)
-   at IMAX.IMAX.Services.SmartCommunity.Phidichvu.AdminManagerBillPaymentAppService.RecoverPaymentUserBill(Int64 id) in E:\imax-backend\src\IMAX.Application\IMAX.Services\IMAX.SmartCommunity\CitizenFee\Payment\AdminManagerBillPaymentAppService.cs:line 653
-FATAL 2023-11-16 16:11:26,564 [8    ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":null,"RememberClient":false}
+   at Yootek.Yootek.Services.SmartCommunity.Phidichvu.AdminManagerBillPaymentAppService.RecoverPaymentUserBill(Int64 id) in E:\imax-backend\src\Yootek.Application\Yootek.Services\Yootek.SmartCommunity\CitizenFee\Payment\AdminManagerBillPaymentAppService.cs:line 653
+FATAL 2023-11-16 16:11:26,564 [8    ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":null,"RememberClient":false}
 ERROR 2023-11-16 16:15:47,649 [r #15] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:05:00
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -1924,7 +1924,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-19 23:43:49,695 [19   ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
+FATAL 2023-11-19 23:43:49,695 [19   ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
 ERROR 2023-11-19 23:50:52,692 [er #6] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:04:16
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -2029,7 +2029,7 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
-FATAL 2023-11-20 14:45:54,334 [18   ] IMAX.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
+FATAL 2023-11-20 14:45:54,334 [18   ] Yootek.Controllers.TokenAuthController     - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":false}
 ERROR 2023-11-20 15:03:28,334 [r #17] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:05:00
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise MaxPoolSize (currently 10) or Timeout (currently 15 seconds)
    at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
@@ -2082,7 +2082,7 @@ ERROR 2023-11-21 11:03:31,953 [1    ] oft.EntityFrameworkCore.Database.Command -
 INSERT INTO public."AbpPermissions" ("CreationTime", "CreatorUserId", "Discriminator", "IsGranted", "Name", "RoleId", "TenantId")
 VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)
 RETURNING "Id";
-ERROR 2023-11-21 11:03:32,031 [1    ] Microsoft.EntityFrameworkCore.Update     - An exception occurred in the database while saving changes for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-21 11:03:32,031 [1    ] Microsoft.EntityFrameworkCore.Update     - An exception occurred in the database while saving changes for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
  ---> System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
    at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
@@ -2143,7 +2143,7 @@ FROM public."AbpBackgroundJobs" AS a
 WHERE NOT (a."IsAbandoned") AND a."NextTryTime" <= @__Now_0
 ORDER BY a."Priority" DESC, a."TryCount", a."NextTryTime"
 LIMIT @__p_1
-ERROR 2023-11-21 11:05:35,028 [orker] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-21 11:05:35,028 [orker] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
    at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
    at Npgsql.Internal.Converters.DateTimeConverterResolver.<>c.<CreateResolver>b__0_0(DateTimeConverterResolver`1 resolver, DateTime value, Nullable`1 expectedPgTypeId)
@@ -2186,7 +2186,7 @@ ERROR 2023-11-21 11:05:35,946 [1    ] oft.EntityFrameworkCore.Database.Command -
 INSERT INTO public."AbpPermissions" ("CreationTime", "CreatorUserId", "Discriminator", "IsGranted", "Name", "RoleId", "TenantId")
 VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)
 RETURNING "Id";
-ERROR 2023-11-21 11:05:35,965 [1    ] Microsoft.EntityFrameworkCore.Update     - An exception occurred in the database while saving changes for context type 'IMAX.EntityFrameworkCore.IMAXDbContext'.
+ERROR 2023-11-21 11:05:35,965 [1    ] Microsoft.EntityFrameworkCore.Update     - An exception occurred in the database while saving changes for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
 Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
  ---> System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
    at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
@@ -2385,9 +2385,9 @@ Castle.MicroKernel.ComponentActivator.ComponentActivatorException: ComponentActi
    at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllerRoute(IEndpointRouteBuilder endpoints, String name, String pattern, Object defaults, Object constraints, Object dataTokens)
-   at IMAX.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 253
+   at Yootek.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 253
    at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
-   at IMAX.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 248
+   at Yootek.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 248
    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
@@ -2461,9 +2461,9 @@ Castle.MicroKernel.ComponentActivator.ComponentActivatorException: ComponentActi
    at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllerRoute(IEndpointRouteBuilder endpoints, String name, String pattern, Object defaults, Object constraints, Object dataTokens)
-   at IMAX.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 253
+   at Yootek.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 253
    at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
-   at IMAX.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 248
+   at Yootek.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 248
    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
@@ -2540,9 +2540,9 @@ Castle.MicroKernel.ComponentActivator.ComponentActivatorException: ComponentActi
    at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllerRoute(IEndpointRouteBuilder endpoints, String name, String pattern, Object defaults, Object constraints, Object dataTokens)
-   at IMAX.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 254
+   at Yootek.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 254
    at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
-   at IMAX.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 249
+   at Yootek.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 249
    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
@@ -2617,9 +2617,9 @@ Castle.MicroKernel.ComponentActivator.ComponentActivatorException: ComponentActi
    at Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService[T](IServiceProvider provider)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.GetOrCreateDataSource(IEndpointRouteBuilder endpoints)
    at Microsoft.AspNetCore.Builder.ControllerEndpointRouteBuilderExtensions.MapControllerRoute(IEndpointRouteBuilder endpoints, String name, String pattern, Object defaults, Object constraints, Object dataTokens)
-   at IMAX.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 254
+   at Yootek.Web.Host.Startup.Startup.<>c.<Configure>b__7_1(IEndpointRouteBuilder endpoints) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 254
    at Microsoft.AspNetCore.Builder.EndpointRoutingApplicationBuilderExtensions.UseEndpoints(IApplicationBuilder builder, Action`1 configure)
-   at IMAX.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 249
+   at Yootek.Web.Host.Startup.Startup.Configure(IApplicationBuilder app, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory) in E:\Yootek\aspnet-core\src\YOOTEK.Web.Host\Startup\Startup.cs:line 249
    at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
    at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
    at System.Reflection.MethodBaseInvoker.InvokeWithFewArgs(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
@@ -2631,8 +2631,8 @@ Castle.MicroKernel.ComponentActivator.ComponentActivatorException: ComponentActi
    at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
    at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
    at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
-FATAL 2023-11-21 15:30:56,130 [1    ] IMAX.Web.Host.Startup.IMAXWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
-FATAL 2023-11-21 15:31:43,742 [1    ] IMAX.Web.Host.Startup.IMAXWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
+FATAL 2023-11-21 15:30:56,130 [1    ] Yootek.Web.Host.Startup.YootekWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
+FATAL 2023-11-21 15:31:43,742 [1    ] Yootek.Web.Host.Startup.YootekWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
 FATAL 2023-11-21 15:35:37,294 [1    ] Microsoft.AspNetCore.Hosting.Diagnostics - Application startup exception
 Castle.MicroKernel.ComponentActivator.ComponentActivatorException: ComponentActivator: could not instantiate Microsoft.AspNetCore.Authentication.AuthenticationSchemeProvider
  ---> System.InvalidOperationException: Scheme already exists: Identity.Application
@@ -2729,9 +2729,9 @@ System.ArgumentException: An item with the same key has already been added. Key:
    at Microsoft.AspNetCore.Hosting.GenericWebHostService.StartAsync(CancellationToken cancellationToken)
    at Microsoft.Extensions.Hosting.Internal.Host.<StartAsync>b__15_1(IHostedService service, CancellationToken token)
    at Microsoft.Extensions.Hosting.Internal.Host.ForeachService[T](IEnumerable`1 services, CancellationToken token, Boolean concurrent, Boolean abortOnFirstException, List`1 exceptions, Func`3 operation)
-FATAL 2023-11-21 21:13:51,452 [1    ] IMAX.Web.Host.Startup.IMAXWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
-FATAL 2023-11-21 21:17:05,555 [1    ] IMAX.Web.Host.Startup.IMAXWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
-FATAL 2023-11-21 21:19:20,672 [1    ] IMAX.Web.Host.Startup.IMAXWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
+FATAL 2023-11-21 21:13:51,452 [1    ] Yootek.Web.Host.Startup.YootekWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
+FATAL 2023-11-21 21:17:05,555 [1    ] Yootek.Web.Host.Startup.YootekWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
+FATAL 2023-11-21 21:19:20,672 [1    ] Yootek.Web.Host.Startup.YootekWebHostModule  - Current JobStorage instance has not been initialized yet. You must set it before using Hangfire Client or Server API. For .NET Core applications please call the `IServiceCollection.AddHangfire` extension method from Hangfire.NetCore or Hangfire.AspNetCore package depending on your application type when configuring the services and ensure service-based APIs are used instead of static ones, like `IBackgroundJobClient` instead of `BackgroundJob` and `IRecurringJobManager` instead of `RecurringJob`.hangfire exception
 ERROR 2023-11-21 22:22:38,198 [er #2] Hangfire.Processing.BackgroundExecution  - Execution Worker is in the Failed state now due to an exception, execution will be retried no more than in 00:05:00
 Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, either raise 'Max Pool Size' (currently 10) or 'Timeout' (currently 15 seconds) in your connection string.
  ---> System.TimeoutException: The operation has timed out.
@@ -2745,3 +2745,176 @@ Npgsql.NpgsqlException (0x80004005): The connection pool has been exhausted, eit
    at Hangfire.Server.Worker.Execute(BackgroundProcessContext context)
    at Hangfire.Server.BackgroundProcessDispatcherBuilder.ExecuteProcess(Guid executionId, Object state)
    at Hangfire.Processing.BackgroundExecution.Run(Action`2 callback, Object state)
+ERROR 2024-01-15 00:02:30,615 [orker] oft.EntityFrameworkCore.Database.Command - Failed executing DbCommand (44ms) [Parameters=[@__Now_0='?' (DbType = DateTime), @__p_1='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT a."Id", a."CreationTime", a."CreatorUserId", a."IsAbandoned", a."JobArgs", a."JobType", a."LastTryTime", a."NextTryTime", a."Priority", a."TryCount"
+FROM public."AbpBackgroundJobs" AS a
+WHERE NOT (a."IsAbandoned") AND a."NextTryTime" <= @__Now_0
+ORDER BY a."Priority" DESC, a."TryCount", a."NextTryTime"
+LIMIT @__p_1
+ERROR 2024-01-15 00:02:30,684 [orker] Microsoft.EntityFrameworkCore.Query      - An exception occurred while iterating over the results of a query for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
+System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver.<>c.<CreateResolver>b__0_0(DateTimeConverterResolver`1 resolver, DateTime value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(T value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgConverterResolver`1.GetAsObjectInternal(PgTypeInfo typeInfo, Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgResolverTypeInfo.GetResolutionAsObject(Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgTypeInfo.GetObjectResolution(Object value)
+   at Npgsql.NpgsqlParameter.ResolveConverter(PgTypeInfo typeInfo)
+   at Npgsql.NpgsqlParameter.ResolveTypeInfo(PgSerializerOptions options)
+   at Npgsql.NpgsqlParameterCollection.ProcessParameters(PgSerializerOptions options, Boolean validateValues, CommandType commandType)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver.<>c.<CreateResolver>b__0_0(DateTimeConverterResolver`1 resolver, DateTime value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(T value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgConverterResolver`1.GetAsObjectInternal(PgTypeInfo typeInfo, Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgResolverTypeInfo.GetResolutionAsObject(Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgTypeInfo.GetObjectResolution(Object value)
+   at Npgsql.NpgsqlParameter.ResolveConverter(PgTypeInfo typeInfo)
+   at Npgsql.NpgsqlParameter.ResolveTypeInfo(PgSerializerOptions options)
+   at Npgsql.NpgsqlParameterCollection.ProcessParameters(PgSerializerOptions options, Boolean validateValues, CommandType commandType)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.InitializeReader(Enumerator enumerator)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.<>c.<MoveNext>b__21_0(DbContext _, Enumerator enumerator)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.Enumerator.MoveNext()
+ERROR 2024-01-15 00:02:31,767 [1    ] oft.EntityFrameworkCore.Database.Command - Failed executing DbCommand (1ms) [Parameters=[@p0='?' (DbType = DateTime), @p1='?' (DbType = Int64), @p2='?', @p3='?' (DbType = Boolean), @p4='?', @p5='?' (DbType = Int32), @p6='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+INSERT INTO public."AbpPermissions" ("CreationTime", "CreatorUserId", "Discriminator", "IsGranted", "Name", "RoleId", "TenantId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6)
+RETURNING "Id";
+ERROR 2024-01-15 00:02:31,792 [1    ] Microsoft.EntityFrameworkCore.Update     - An exception occurred in the database while saving changes for context type 'Yootek.EntityFrameworkCore.YootekDbContext'.
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver.<>c.<CreateResolver>b__0_0(DateTimeConverterResolver`1 resolver, DateTime value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(T value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgConverterResolver`1.GetAsObjectInternal(PgTypeInfo typeInfo, Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgResolverTypeInfo.GetResolutionAsObject(Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgTypeInfo.GetObjectResolution(Object value)
+   at Npgsql.NpgsqlParameter.ResolveConverter(PgTypeInfo typeInfo)
+   at Npgsql.NpgsqlParameter.ResolveTypeInfo(PgSerializerOptions options)
+   at Npgsql.NpgsqlParameterCollection.ProcessParameters(PgSerializerOptions options, Boolean validateValues, CommandType commandType)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+ ---> System.ArgumentException: Cannot write DateTime with Kind=Local to PostgreSQL type 'timestamp with time zone', only UTC is supported. Note that it's not possible to mix DateTimes with different Kinds in an array, range, or multirange. (Parameter 'value')
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(DateTime value, Nullable`1 expectedPgTypeId, Boolean validateOnly)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver.<>c.<CreateResolver>b__0_0(DateTimeConverterResolver`1 resolver, DateTime value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.Converters.DateTimeConverterResolver`1.Get(T value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgConverterResolver`1.GetAsObjectInternal(PgTypeInfo typeInfo, Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgResolverTypeInfo.GetResolutionAsObject(Object value, Nullable`1 expectedPgTypeId)
+   at Npgsql.Internal.PgTypeInfo.GetObjectResolution(Object value)
+   at Npgsql.NpgsqlParameter.ResolveConverter(PgTypeInfo typeInfo)
+   at Npgsql.NpgsqlParameter.ResolveTypeInfo(PgSerializerOptions options)
+   at Npgsql.NpgsqlParameterCollection.ProcessParameters(PgSerializerOptions options, Boolean validateValues, CommandType commandType)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(Boolean async, CommandBehavior behavior, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior)
+   at Npgsql.NpgsqlCommand.ExecuteDbDataReader(CommandBehavior behavior)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReader(RelationalCommandParameterObject parameterObject)
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   --- End of inner exception stack trace ---
+   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.Execute(IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.Execute(IEnumerable`1 commandBatches, IRelationalConnection connection)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabase.SaveChanges(IList`1 entries)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(IList`1 entriesToSave)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(StateManager stateManager, Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.<>c.<SaveChanges>b__112_0(DbContext _, ValueTuple`2 t)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.Execute[TState,TResult](TState state, Func`3 operation, Func`3 verifySucceeded)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChanges(Boolean acceptAllChangesOnSuccess)
+   at Microsoft.EntityFrameworkCore.DbContext.SaveChanges(Boolean acceptAllChangesOnSuccess)
+ERROR 2024-01-15 00:06:02,887 [orker] AspNetCore.Server.IIS.Core.IISHttpServer - Connection ID "18230571314681217062", Request ID "80000028-0005-fd00-b63f-84710c7967bb": An unhandled exception was thrown by the application.
+System.ArgumentNullException: Value cannot be null. (Parameter 'stream')
+   at System.IO.StreamReader..ctor(Stream stream, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean leaveOpen)
+   at System.IO.StreamReader..ctor(Stream stream)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.RespondWithIndexHtml(HttpResponse response)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Abp.AspNetCore.Security.AbpSecurityHeadersMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.WebTools.BrowserLink.Net.BrowserLinkMiddleware.InvokeAsync(HttpContext context)
+   at Microsoft.AspNetCore.Watch.BrowserRefresh.BrowserRefreshMiddleware.InvokeAsync(HttpContext context)
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContextOfT`1.ProcessRequestAsync()
+ERROR 2024-01-15 00:06:26,634 [orker] AspNetCore.Server.IIS.Core.IISHttpServer - Connection ID "18230571314681217062", Request ID "80000029-0005-fd00-b63f-84710c7967bb": An unhandled exception was thrown by the application.
+System.ArgumentNullException: Value cannot be null. (Parameter 'stream')
+   at System.IO.StreamReader..ctor(Stream stream, Encoding encoding, Boolean detectEncodingFromByteOrderMarks, Int32 bufferSize, Boolean leaveOpen)
+   at System.IO.StreamReader..ctor(Stream stream)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.RespondWithIndexHtml(HttpResponse response)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Abp.AspNetCore.Security.AbpSecurityHeadersMiddleware.Invoke(HttpContext httpContext)
+   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.WebTools.BrowserLink.Net.BrowserLinkMiddleware.InvokeAsync(HttpContext context)
+   at Microsoft.AspNetCore.Watch.BrowserRefresh.BrowserRefreshMiddleware.InvokeAsync(HttpContext context)
+   at Microsoft.AspNetCore.Server.IIS.Core.IISHttpContextOfT`1.ProcessRequestAsync()
+FATAL 2024-01-15 00:12:52,728 [1    ] Abp.AbpBootstrapper                      - Castle.MicroKernel.Handlers.HandlerException: Can't create component 'Yootek.Web.Host.Startup.YootekWebHostModule' as it has dependencies to be satisfied.
+
+'Yootek.Web.Host.Startup.YootekWebHostModule' is waiting for the following dependencies:
+- Service 'Microsoft.AspNetCore.Hosting.IWebHostEnvironment' which was not registered.
+
+   at Castle.MicroKernel.Handlers.DefaultHandler.AssertNotWaitingForDependency()
+   at Castle.MicroKernel.Handlers.DefaultHandler.ResolveCore(CreationContext context, Boolean requiresDecommission, Boolean instanceRequired, Burden& burden)
+   at Castle.MicroKernel.Handlers.DefaultHandler.Resolve(CreationContext context, Boolean instanceRequired)
+   at Castle.MicroKernel.Handlers.AbstractHandler.Resolve(CreationContext context)
+   at Castle.MicroKernel.DefaultKernel.ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy, Boolean ignoreParentContext)
+   at Castle.MicroKernel.DefaultKernel.Castle.MicroKernel.IKernelInternal.Resolve(Type service, Arguments arguments, IReleasePolicy policy, Boolean ignoreParentContext)
+   at Castle.MicroKernel.DefaultKernel.Resolve(Type service, Arguments arguments)
+   at Castle.Windsor.WindsorContainer.Resolve(Type service)
+   at Abp.Dependency.IocManager.Resolve(Type type)
+   at Abp.Modules.AbpModuleManager.CreateModules(ICollection`1 moduleTypes, List`1 plugInModuleTypes)
+   at Abp.Modules.AbpModuleManager.LoadAllModules()
+   at Abp.Modules.AbpModuleManager.Initialize(Type startupModule)
+   at Abp.AbpBootstrapper.Initialize()
+Castle.MicroKernel.Handlers.HandlerException: Can't create component 'Yootek.Web.Host.Startup.YootekWebHostModule' as it has dependencies to be satisfied.
+
+'Yootek.Web.Host.Startup.YootekWebHostModule' is waiting for the following dependencies:
+- Service 'Microsoft.AspNetCore.Hosting.IWebHostEnvironment' which was not registered.
+
+   at Castle.MicroKernel.Handlers.DefaultHandler.AssertNotWaitingForDependency()
+   at Castle.MicroKernel.Handlers.DefaultHandler.ResolveCore(CreationContext context, Boolean requiresDecommission, Boolean instanceRequired, Burden& burden)
+   at Castle.MicroKernel.Handlers.DefaultHandler.Resolve(CreationContext context, Boolean instanceRequired)
+   at Castle.MicroKernel.Handlers.AbstractHandler.Resolve(CreationContext context)
+   at Castle.MicroKernel.DefaultKernel.ResolveComponent(IHandler handler, Type service, Arguments additionalArguments, IReleasePolicy policy, Boolean ignoreParentContext)
+   at Castle.MicroKernel.DefaultKernel.Castle.MicroKernel.IKernelInternal.Resolve(Type service, Arguments arguments, IReleasePolicy policy, Boolean ignoreParentContext)
+   at Castle.MicroKernel.DefaultKernel.Resolve(Type service, Arguments arguments)
+   at Castle.Windsor.WindsorContainer.Resolve(Type service)
+   at Abp.Dependency.IocManager.Resolve(Type type)
+   at Abp.Modules.AbpModuleManager.CreateModules(ICollection`1 moduleTypes, List`1 plugInModuleTypes)
+   at Abp.Modules.AbpModuleManager.LoadAllModules()
+   at Abp.Modules.AbpModuleManager.Initialize(Type startupModule)
+   at Abp.AbpBootstrapper.Initialize()
+FATAL 2024-01-15 00:15:54,226 [orker] Yootek.Controllers.TokenAuthController   - {"UserNameOrEmailAddress":"admin","Password":"123qwe","TenancyName":"dev","RememberClient":true}

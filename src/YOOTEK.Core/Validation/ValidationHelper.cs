@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Abp.Extensions;
 
-namespace IMAX.Validation
+namespace Yootek.Validation
 {
     public static class ValidationHelper
     {

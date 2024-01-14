@@ -3,14 +3,14 @@ using Abp.Authorization.Users;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
-namespace IMAX.GroupChats
+namespace Yootek.GroupChats
 {
 
     [Table("AppGroupChats")]

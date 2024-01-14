@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Configuration.Tenant.Dto
+namespace Yootek.Application.Configuration.Tenant.Dto
 {
     public class EmailSettingsEditDto
     {
@@ -24,8 +24,8 @@ namespace IMAX.Application.Configuration.Tenant.Dto
 
         public string SmtpDomain { get; set; }
 
-        public bool SmtpEnableSsl { get; set; }
+        //public bool SmtpEnableSsl { get; set; }
 
-        public bool SmtpUseDefaultCredentials { get; set; }
+        //public bool SmtpUseDefaultCredentials { get; set; }
     }
 }

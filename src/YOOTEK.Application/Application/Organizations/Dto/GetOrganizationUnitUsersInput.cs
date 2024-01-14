@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Runtime.Validation;
-using IMAX.Common;
-using IMAX.Core.Dto;
+using Yootek.Common;
+using Yootek.Core.Dto;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class GetOrganizationUnitUsersInput : PagedAndSortedInputDto, IShouldNormalize
     {

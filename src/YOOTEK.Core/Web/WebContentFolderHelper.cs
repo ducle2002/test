@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using Abp.Reflection.Extensions;
 
-namespace IMAX.Web
+namespace Yootek.Web
 {
     /// <summary>
     /// This class is used to find root path of the web project in;
@@ -13,14 +13,14 @@ namespace IMAX.Web
     {
         public static string CalculateContentRootFolder()
         {
-            var coreAssemblyDirectoryPath = Path.GetDirectoryName(typeof(IMAXCoreModule).GetAssembly().Location);
+            var coreAssemblyDirectoryPath = Path.GetDirectoryName(typeof(YootekCoreModule).GetAssembly().Location);
             if (coreAssemblyDirectoryPath == null)
             {
-                throw new Exception("Could not find location of IMAX.Core assembly!");
+                throw new Exception("Could not find location of Yootek.Core assembly!");
             }
 
             var directoryInfo = new DirectoryInfo(coreAssemblyDirectoryPath);
-            while (!DirectoryContains(directoryInfo.FullName, "IMAX.sln"))
+            while (!DirectoryContains(directoryInfo.FullName, "Yootek.sln"))
             {
                 if (directoryInfo.Parent == null)
                 {
@@ -30,13 +30,13 @@ namespace IMAX.Web
                 directoryInfo = directoryInfo.Parent;
             }
 
-            var webMvcFolder = Path.Combine(directoryInfo.FullName, "src", "IMAX.Web.Mvc");
+            var webMvcFolder = Path.Combine(directoryInfo.FullName, "src", "Yootek.Web.Mvc");
             if (Directory.Exists(webMvcFolder))
             {
                 return webMvcFolder;
             }
 
-            var webHostFolder = Path.Combine(directoryInfo.FullName, "src", "IMAX.Web.Host");
+            var webHostFolder = Path.Combine(directoryInfo.FullName, "src", "Yootek.Web.Host");
             if (Directory.Exists(webHostFolder))
             {
                 return webHostFolder;

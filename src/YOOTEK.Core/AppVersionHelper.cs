@@ -2,7 +2,7 @@
 using System.IO;
 using Abp.Reflection.Extensions;
 
-namespace IMAX
+namespace Yootek
 {
     /// <summary>
     /// Central point for application version.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Models.TokenAuth
+namespace Yootek.Models.TokenAuth
 {
     public enum TokenType
     {

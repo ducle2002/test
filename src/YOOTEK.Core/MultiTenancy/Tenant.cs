@@ -1,9 +1,9 @@
 ﻿using Abp.MultiTenancy;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace IMAX.MultiTenancy
+namespace Yootek.MultiTenancy
 {
     public class Tenant : AbpTenant<User>
     {

@@ -9,33 +9,33 @@ using Abp.RealTime;
 using Abp.Runtime.Session;
 using Abp.Timing;
 using Abp.UI;
-using IMAX.Application.Chat.Dto;
-using IMAX.Chat;
-using IMAX.Chat.Dto;
-using IMAX.Common.DataResult;
-using IMAX.Dto.Interface;
-using IMAX.EntityDb;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
-using IMAX.Friendships.Dto;
-using IMAX.Organizations;
-using IMAX.Organizations.AppOrganizationUnits;
-using IMAX.Organizations.Cache;
-using IMAX.Organizations.Dto;
+using Yootek.Application.Chat.Dto;
+using Yootek.Chat;
+using Yootek.Chat.Dto;
+using Yootek.Common.DataResult;
+using Yootek.Dto.Interface;
+using Yootek.EntityDb;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
+using Yootek.Friendships.Dto;
+using Yootek.Organizations;
+using Yootek.Organizations.AppOrganizationUnits;
+using Yootek.Organizations.Cache;
+using Yootek.Organizations.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
+namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 {
     public interface IOrganizationUnitChatAppService : IApplicationService
     {
         Task<object> GetOrganizationUnitChatUser(long orgId);
     }
 
-    public class OrganizationUnitChatAppService : IMAXAppServiceBase, IOrganizationUnitChatAppService
+    public class OrganizationUnitChatAppService : YootekAppServiceBase, IOrganizationUnitChatAppService
     {
         private readonly IRepository<ChatMessage, long> _chatMessageRepository;
         private readonly IRepository<Friendship, long> _friendshipRepos;
@@ -109,7 +109,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
     
@@ -145,7 +145,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
                             .ToList();
                 foreach (var friend in data)
                 {
-                    //friend.IsOnline = _onlineClientManager.IsOnline(
+                    //friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
                     //    new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
                     //);
 
@@ -166,7 +166,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
       
@@ -232,7 +232,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
       
@@ -270,7 +270,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -285,7 +285,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 

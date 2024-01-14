@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using JetBrains.Annotations;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public class CloudMessagingModel
     {

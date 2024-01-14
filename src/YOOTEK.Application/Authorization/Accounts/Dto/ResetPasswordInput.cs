@@ -5,7 +5,7 @@ using Abp.Auditing;
 using Abp.Runtime.Security;
 using Abp.Runtime.Validation;
 
-namespace IMAX.Authorization.Accounts.Dto
+namespace Yootek.Authorization.Accounts.Dto
 {
     public class ResetPasswordInput : IShouldNormalize
     {

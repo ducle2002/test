@@ -9,12 +9,12 @@ using Abp.Domain.Services;
 using Abp.IdentityFramework;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Authorization.Roles;
-using IMAX.MultiTenancy;
-using IMAX.EntityDb;
+using Yootek.Authorization.Roles;
+using Yootek.MultiTenancy;
+using Yootek.EntityDb;
 using Abp.Domain.Repositories;
 using Microsoft.Extensions.Configuration;
-using IMAX.Configuration;
+using Yootek.Configuration;
 using System.Net.Http;
 using System.Threading;
 using Newtonsoft.Json;
@@ -22,7 +22,7 @@ using System.Text;
 using System.Net;
 using System.Security.Cryptography;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
     public class UserRegistrationManager : DomainService
     {

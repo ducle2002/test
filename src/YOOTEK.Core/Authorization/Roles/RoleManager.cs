@@ -8,10 +8,10 @@ using Abp.Domain.Uow;
 using Abp.Organizations;
 using Abp.Runtime.Caching;
 using Abp.Zero.Configuration;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 using Abp;
 
-namespace IMAX.Authorization.Roles
+namespace Yootek.Authorization.Roles
 {
     public class RoleManager : AbpRoleManager<Role, User>
     {

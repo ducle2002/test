@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Common.Enum.RegBusinessEnums
+namespace Yootek.Common.Enum.RegBusinessEnums
 {
     public static partial class BusinessUnitEnums
     {

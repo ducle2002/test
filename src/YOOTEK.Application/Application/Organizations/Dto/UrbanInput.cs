@@ -1,4 +1,4 @@
-﻿using IMAX.Core.Dto;
+﻿using Yootek.Core.Dto;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
 
     public class FindUrbanInput : PagedAndFilteredInputDto

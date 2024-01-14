@@ -1,11 +1,10 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
-import "Protos/Business/item_attribute.proto";
 import "Protos/Business/item_model.proto";
 import "Protos/Business/item_cart.proto";
 
-option csharp_namespace = "IMAX.Application.Protos.Business.Items";
+option csharp_namespace = "Yootek.Application.Protos.Business.Items";
 
 package Items;
 

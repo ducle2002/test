@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Abp.Extensions;
 using Abp.Reflection.Extensions;
 
-namespace IMAX.Configuration
+namespace Yootek.Configuration
 {
     public static class AppConfigurations
     {

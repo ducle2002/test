@@ -1,6 +1,6 @@
 ﻿using JetBrains.Annotations;
 
-namespace IMAX.Common
+namespace Yootek.Common
 {
     public interface IFilteredInputDto
     {

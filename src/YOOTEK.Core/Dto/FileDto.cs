@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Core.Dto
+namespace Yootek.Core.Dto
 {
     public class FileDto
     {

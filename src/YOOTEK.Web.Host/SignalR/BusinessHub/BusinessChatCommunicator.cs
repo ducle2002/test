@@ -1,17 +1,17 @@
-﻿using IMAX.Chat.BusinessChat;
+﻿using Yootek.Chat.BusinessChat;
 using Castle.Core.Logging;
 using Abp.ObjectMapping;
 using Microsoft.AspNetCore.SignalR;
 using Abp.RealTime;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using IMAX.Application.BusinessChat.Dto;
+using Yootek.Application.BusinessChat.Dto;
 using Abp;
 using Abp.Dependency;
-using IMAX.Chat;
-using IMAX.Web.Host.Chat;
+using Yootek.Chat;
+using Yootek.Web.Host.Chat;
 
-namespace IMAX.Web.Host.SignalR.BusinessHub
+namespace Yootek.Web.Host.SignalR.BusinessHub
 {
     public class BusinessChatCommunicator : IBusinessChatCommunicator, ITransientDependency
     {

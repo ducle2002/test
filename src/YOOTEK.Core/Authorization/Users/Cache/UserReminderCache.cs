@@ -4,7 +4,7 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.MultiTenancy;
 using Abp.Runtime.Caching;
-using IMAX.EntityDb;
+using Yootek.EntityDb;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace IMAX.Authorization.Users.Cache
+namespace Yootek.Authorization.Users.Cache
 {
     public interface IUserReminderCache
     {

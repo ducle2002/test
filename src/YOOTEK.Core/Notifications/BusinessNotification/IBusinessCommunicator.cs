@@ -1,12 +1,12 @@
 ﻿using Abp.RealTime;
-using IMAX.EntityDb;
+using Yootek.EntityDb;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public interface ITenantBookingCommunicator
     {

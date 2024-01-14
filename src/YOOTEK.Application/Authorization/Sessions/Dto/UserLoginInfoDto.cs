@@ -1,8 +1,8 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Sessions.Dto
+namespace Yootek.Sessions.Dto
 {
     [AutoMapFrom(typeof(User))]
     public class UserLoginInfoDto : EntityDto<long>

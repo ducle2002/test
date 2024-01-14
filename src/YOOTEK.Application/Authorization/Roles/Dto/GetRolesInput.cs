@@ -1,4 +1,4 @@
-﻿namespace IMAX.Roles.Dto
+﻿namespace Yootek.Roles.Dto
 {
     public class GetRolesInput
     {

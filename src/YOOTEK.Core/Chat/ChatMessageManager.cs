@@ -6,10 +6,10 @@ using Abp.Domain.Uow;
 using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.UI;
-using IMAX.Authorization.Users;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
-using IMAX.Notifications;
+using Yootek.Authorization.Users;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
+using Yootek.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +17,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
     public interface IChatMessageManager : IDomainService
     {
@@ -30,7 +30,7 @@ namespace IMAX.Chat
     }
 
     [AbpAuthorize]
-    public class ChatMessageManager : IMAXDomainServiceBase, IChatMessageManager
+    public class ChatMessageManager : YootekDomainServiceBase, IChatMessageManager
     {
         private readonly IFriendshipManager _friendshipManager;
         private readonly IChatCommunicator _chatCommunicator;
@@ -369,7 +369,7 @@ namespace IMAX.Chat
                          ""
                           );
             await _appNotifier.SendUserMessageNotifyOnlyFirebaseAsync(
-                "Imax chat . " + friend.FriendUserName,
+                "Yootek chat . " + friend.FriendUserName,
                 NotificationMessageCheckType(message),
                 new UserIdentifier[] { user },
                 messageDeclined,

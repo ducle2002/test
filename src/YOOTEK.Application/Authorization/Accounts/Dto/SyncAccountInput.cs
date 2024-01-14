@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Authorization.Accounts.Dto
+namespace Yootek.Authorization.Accounts.Dto
 {
     public class SyncAccountInput
     {

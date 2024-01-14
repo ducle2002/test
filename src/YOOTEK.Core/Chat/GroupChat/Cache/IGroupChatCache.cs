@@ -1,13 +1,13 @@
 ﻿using Abp;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat.Cache
+namespace Yootek.Chat.Cache
 {
     public interface IGroupChatCache
     {

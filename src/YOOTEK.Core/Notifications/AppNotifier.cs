@@ -3,24 +3,32 @@ using Abp.BackgroundJobs;
 using Abp.Collections.Extensions;
 using Abp.Domain.Entities;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.Json;
 using Abp.Localization;
 using Abp.Notifications;
 using Abp.RealTime;
 using Abp.Runtime.Session;
-using IMAX.Authorization.Users;
-using IMAX.EntityDb;
-using IMAX.MultiTenancy;
+using crypto;
+using Yootek.Authorization.Users;
+using Yootek.Common.DataResult;
+using Yootek.EntityDb;
+using Yootek.MultiTenancy;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
+using Yootek.Extensions;
+using Yootek.Lib.CrudBase;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
-    public class AppNotifier : IMAXDomainServiceBase, IAppNotifier
+    public class AppNotifier : YootekDomainServiceBase, IAppNotifier
     {
         public const int MaxUserCountToDirectlyDistributeANotification = 100;
 
@@ -43,7 +51,9 @@ namespace IMAX.Notifications
         private readonly INotificationCommunicator _notificationCommunicator;
         private readonly ICloudMessagingManager _cloudMessagingManager;
         private readonly IRepository<FcmTokens, long> _fcmTokenRepos;
+        private readonly IRepository<FcmGroups, long> _fcmGroupRepos;
         private readonly IRepository<NotificationInfo, Guid> _notificationInfoRepos;
+        private readonly HttpClient _httpClient;
 
         public AppNotifier(
             INotificationPublisher notificationPublisher,
@@ -54,7 +64,10 @@ namespace IMAX.Notifications
             INotificationDistributer notificationDistributer,
             IGuidGenerator guidGenerator,
             IRepository<FcmTokens, long> fcmTokenRepos,
-            IOnlineClientManager onlineClientManager
+            IRepository<FcmGroups, long> fcmGroupRepos,
+            IOnlineClientManager onlineClientManager,
+            YootekHttpClient yootekHttpClient,
+            IConfiguration configuration
         )
         {
             _notificationPublisher = notificationPublisher;
@@ -67,21 +80,36 @@ namespace IMAX.Notifications
             AbpSession = NullAbpSession.Instance;
             _fcmTokenRepos = fcmTokenRepos;
             _onlineClientManager = onlineClientManager;
+            _fcmGroupRepos = fcmGroupRepos; 
+            _httpClient = yootekHttpClient.GetHttpClient(configuration["ApiSettings:Yootek.Notification"]);
         }
 
-
-        public async Task NewTenantRegisteredAsync(Tenant tenant)
+        public async Task WelcomeToTheApplicationAsync(User user)
         {
-            var notificationData = new LocalizableMessageNotificationData(
-                new LocalizableString(
-                    "NewTenantRegisteredNotificationMessage",
-                    IMAXConsts.LocalizationSourceName
-                )
-            );
+            var message = new UserMessageNotificationDataBase(
+                    AppNotificationAction.UserWelcomeApp,
+                    AppNotificationIcon.UserWelcomeApp,
+                    TypeAction.Detail,
+                    "Hãy cùng khám phá các tính năng thông minh trên nền tảng xã hội thông minh này nhé! Tham khảo thêm tại: https://yoolife.vn",
+                    "yoolife://app/smartsocial-shopping",
+                    "yoolife://app/smartsocial-shopping"
+                );
 
-            notificationData["tenancyName"] = tenant.TenancyName;
-            await PublishAsync(AppNotificationNames.NewTenantRegistered, notificationData);
+            await PublishAsync(
+              $"Chào mừng {user.FullName} đã đến với Yoolife !",
+              message,
+              severity: NotificationSeverity.Success,
+              userIds: new[] { user.ToUserIdentifier() }
+           );
+            await SendMessageFireBaseNotify("Hãy cùng khám phá các tính năng thông minh trên nền tảng xã hội thông minh này nhé! Tham khảo thêm tại: https://yoolife.vn",
+                 $"Chào mừng {user.FullName} đã đến với Yoolife !",
+                AppNotificationAction.UserWelcomeApp,
+                new UserIdentifier[] { user.ToUserIdentifier() },
+                    "yoolife://app/smartsocial-shopping",
+                    "yoolife://app/smartsocial-shopping");
+
         }
+
 
         // Chỉ gửi thông báo lưu
         /// <summary>
@@ -129,7 +157,7 @@ namespace IMAX.Notifications
             if (users.Length > 0)
             {
                 var userIds = users.Select(x => x.UserId).ToList();
-                await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, userIds, detailUrlApp, detailUrlWA);
+                await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, users, detailUrlApp, detailUrlWA);
             }
         }
 
@@ -156,7 +184,7 @@ namespace IMAX.Notifications
             var userOnlines = new List<UserIdentifier>();
             foreach (var us in users)
             {
-                if (await _onlineClientManager.IsOnlineAsync(us))
+                if ( await _onlineClientManager.IsOnlineAsync(us))
                 {
                     userOnlines.Add(us);
                 }
@@ -169,7 +197,7 @@ namespace IMAX.Notifications
             if (userOfflines.Count > 0)
             {
                 var userIds = userOfflines.Select(x => x.UserId).ToList();
-                await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, userIds, detailUrlApp, detailUrlWA);
+                await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, users, detailUrlApp, detailUrlWA);
             }
 
             //if (userOnlines.Count > 0)
@@ -186,7 +214,7 @@ namespace IMAX.Notifications
         {
 
             var userIds = users.Select(x => x.UserId).ToList();
-            await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, userIds, detailUrlApp, detailUrlWA);
+            await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, users, detailUrlApp, detailUrlWA);
 
         }
 
@@ -207,7 +235,7 @@ namespace IMAX.Notifications
                 //var userOnlines = new List<UserIdentifier>();
                 //foreach (var us in users)
                 //{
-                //    if (_onlineClientManager.IsOnline(us))
+                //    if (await _onlineClientManager.IsOnlineAsync(us))
                 //    {
                 //        userOnlines.Add(us);
                 //    }
@@ -217,7 +245,7 @@ namespace IMAX.Notifications
                 if (users.Length > 0)
                 {
                     var userIds = users.Select(x => x.UserId).ToList();
-                    await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, userIds, detailUrlApp, detailUrlWA, appType);
+                    await SendMessageFireBaseNotify(fireBaseMessage, notificationName, messageNotification.Action, users, detailUrlApp, detailUrlWA, appType);
                 }
 
                 //if (userOnlines.Count > 0)
@@ -275,7 +303,7 @@ namespace IMAX.Notifications
             return SendNotificationAsync(AppNotificationNames.DownloadInvalidImportUsers, user,
                 new LocalizableString(
                     "ClickToSeeInvalidUsers",
-                    IMAXConsts.LocalizationSourceName
+                    YootekConsts.LocalizationSourceName
                 ),
                 new Dictionary<string, object>
                 {
@@ -298,7 +326,7 @@ namespace IMAX.Notifications
 
                 if (!await _onlineClientManager.IsOnlineAsync(user))
                 {
-                    await SendMessageFireBaseNotify(mess, "", AppNotificationAction.PostCommentAction, new List<long>() { user.UserId }, detailUrlApp, detailUrlWA);
+                    await SendMessageFireBaseNotify(mess, "", AppNotificationAction.PostCommentAction, new UserIdentifier[] {user}, detailUrlApp, detailUrlWA);
                 }
 
                 var messageData = new UserPostMessageNotificationData(
@@ -339,7 +367,7 @@ namespace IMAX.Notifications
 
                 if (!await _onlineClientManager.IsOnlineAsync(user))
                 {
-                    await SendMessageFireBaseNotify(mess, "", AppNotificationAction.PostCommentAction, new List<long>() { user.UserId }, detailUrlApp, detailUrlWA);
+                    await SendMessageFireBaseNotify(mess, "", AppNotificationAction.PostCommentAction, new UserIdentifier[] { user }, detailUrlApp, detailUrlWA);
                 }
 
                 var messageData = new UserPostMessageNotificationData(
@@ -370,14 +398,35 @@ namespace IMAX.Notifications
             }
         }
 
-        private Task SendMessageFireBaseNotify(string message, string title, string action, List<long> userIds, string detailUrlApp, string detailUrlWA, int appType = 0)
+        public async Task SendUserMessageNotifyToAllUserSocialAsync(string notificationName, string fireBaseMessage, UserMessageNotificationDataBase messageNotification, string detailUrlApp, string detailUrlWA)
         {
-            var devicesIds = _fcmTokenRepos.GetAllList(x => x.CreatorUserId.HasValue && userIds.Contains(x.CreatorUserId.Value));
+            try
+            {
+                await SendMessageFireBaseGroup(fireBaseMessage, notificationName, messageNotification.Action, "tenant_", detailUrlApp, detailUrlWA);
+            }
+            catch (Exception e)
+            {
 
+            }
+        }
+
+        private Task SendMessageFireBaseNotify(string message, string title, string action, UserIdentifier[] users, string detailUrlApp, string detailUrlWA, int appType = 0)
+        {
+            var devicesIds = new List<FcmTokens>();
+            
+            foreach(var  user in users)
+            {
+                using(CurrentUnitOfWork.SetTenantId(user.TenantId))
+                {
+                    var ids = _fcmTokenRepos.GetAllList(x => x.CreatorUserId.HasValue && user.UserId == x.CreatorUserId.Value);
+                    devicesIds.AddRange(ids);
+                }
+
+            }
             // send FCM to AppType 
             if (appType != 0)
             {
-                devicesIds = devicesIds.Where(x => x.AppType == appType).ToList();
+                devicesIds = devicesIds.Where(x => x.AppType == (EntityDb.AppType)appType).ToList();
             }
             var tokens = devicesIds.Select(x => x.Token).ToList();
             var a = _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
@@ -392,8 +441,28 @@ namespace IMAX.Notifications
                 }),
                 Tokens = tokens
             });
+
             return Task.CompletedTask;
         }
+
+        private async Task SendMessageFireBaseGroup(string message, string title, string action, string groupName, string detailUrlApp, string detailUrlWA)
+        {
+
+            await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
+            {
+                Title = title,
+                Body = message,
+                Data = JsonConvert.SerializeObject(new
+                {
+                    action = action,
+                    detailUrlApp,
+                    detailUrlWA
+                }),
+                GroupName = groupName,
+            });
+
+        }
+
 
         private async Task PublishAsync(
             string notificationName,
@@ -487,6 +556,27 @@ namespace IMAX.Notifications
             return tenantIds
                 .Select(tenantId => tenantId == null ? "null" : tenantId.ToString())
                 .JoinAsString(",");
+        }
+
+        public async Task SendMessageNotificationInternalAsync(string notificationName, string fireBaseMessage, string detailUrlApp, string detailUrlWA, UserIdentifier[] users, NotificationData messageData, EntityDb.AppType appType = EntityDb.AppType.ALL, bool isOnlyFirebase = false, bool isSendGroup = false, string groupName = "", NotificationSeverity severity = NotificationSeverity.Info)
+        {
+            var request = new InternalNotificationInput()
+            {
+                AppType = appType,
+                DetailUrlApp = detailUrlApp,
+                DetailUrlWA = detailUrlWA,
+                FirebaseMessage = fireBaseMessage,
+                GroupName = groupName,
+                IsOnlyFirebase = isOnlyFirebase,
+                IsSendGroup = isSendGroup,
+                NotificationName = notificationName,
+                NotificationMessageData = messageData,
+                Severity = severity,
+                Users = users
+            };
+
+            await _httpClient.SendAsync<DataResult>("/notification/api/services/app/InternalNotification/CreateNotification", HttpMethod.Post, request);
+
         }
 
         public enum AppType

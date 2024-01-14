@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using IMAX.Authorization.Permissions.Dto;
+using Yootek.Authorization.Permissions.Dto;
 
-namespace IMAX.Authorization.Permissions
+namespace Yootek.Authorization.Permissions
 {
     public interface IPermissionAppService : IApplicationService
     {

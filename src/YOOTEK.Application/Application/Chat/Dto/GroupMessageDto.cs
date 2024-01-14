@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
 
     [AutoMapFrom(typeof(GroupMessage))]

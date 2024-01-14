@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IMAX.Authentication.JwtBearer
+namespace Yootek.Authentication.JwtBearer
 {
     public class TokenAuthConfiguration
     {

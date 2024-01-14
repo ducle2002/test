@@ -8,9 +8,12 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Abp.Runtime.Security;
+using Microsoft.Net.Http.Headers;
+using System.Collections.Generic;
+using System.Security.Claims;
 
 
-namespace IMAX.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public static class AuthConfigurer
     {
@@ -73,6 +76,7 @@ namespace IMAX.Web.Host.Startup
          * SignalR can not send authorization header. So, we are getting it from query string as an encrypted text. */
         private static Task QueryStringTokenResolver(MessageReceivedContext context)
         {
+
             if (!context.HttpContext.Request.Path.HasValue ||
                 !context.HttpContext.Request.Path.Value.StartsWith("/messager"))
             {

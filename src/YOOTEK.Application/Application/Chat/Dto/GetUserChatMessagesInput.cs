@@ -1,7 +1,7 @@
-using IMAX.Common;
+using Yootek.Common;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
     public class GetUserChatMessagesInput: CommonInputDto
     {

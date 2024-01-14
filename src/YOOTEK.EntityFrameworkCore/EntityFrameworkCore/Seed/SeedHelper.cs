@@ -5,19 +5,19 @@ using Abp.Dependency;
 using Abp.Domain.Uow;
 using Abp.EntityFrameworkCore.Uow;
 using Abp.MultiTenancy;
-using IMAX.EntityFrameworkCore.Seed.Host;
-using IMAX.EntityFrameworkCore.Seed.Tenants;
+using Yootek.EntityFrameworkCore.Seed.Host;
+using Yootek.EntityFrameworkCore.Seed.Tenants;
 
-namespace IMAX.EntityFrameworkCore.Seed
+namespace Yootek.EntityFrameworkCore.Seed
 {
     public static class SeedHelper
     {
         public static void SeedHostDb(IIocResolver iocResolver)
         {
-            WithDbContext<IMAXDbContext>(iocResolver, SeedHostDb);
+            WithDbContext<YootekDbContext>(iocResolver, SeedHostDb);
         }
 
-        public static void SeedHostDb(IMAXDbContext context)
+        public static void SeedHostDb(YootekDbContext context)
         {
             context.SuppressAutoSetTenantId = true;
 

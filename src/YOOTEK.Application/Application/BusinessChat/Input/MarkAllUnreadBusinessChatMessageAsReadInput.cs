@@ -1,6 +1,6 @@
 ﻿using Abp;
 
-namespace IMAX.Application.BusinessChat.Input
+namespace Yootek.Application.BusinessChat.Input
 {
     public class MarkAllUnreadBusinessChatMessageAsReadInput
     {

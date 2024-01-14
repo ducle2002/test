@@ -4,7 +4,7 @@ using Abp.Dependency;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace IMAX.Net.Sms
+namespace Yootek.Net.Sms
 {
     public class TwilioSmsSender : ISmsSender, ITransientDependency
     {

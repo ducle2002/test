@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.App.ServiceHttpClient.Dto.VietNamAdministrativeUnit
+namespace Yootek.App.ServiceHttpClient.Dto.VietNamAdministrativeUnit
 {
     public class Province
     {

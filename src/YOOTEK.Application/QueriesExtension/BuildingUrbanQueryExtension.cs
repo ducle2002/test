@@ -1,10 +1,10 @@
-﻿using IMAX.Organizations.Interface;
+﻿using Yootek.Organizations.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace IMAX.QueriesExtension
+namespace Yootek.QueriesExtension
 {
     public static class BuildingUrbanQueryExtension
     {

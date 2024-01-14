@@ -1,8 +1,8 @@
 ﻿using Abp.Domain.Services;
-using IMAX.EntityDb;
+using Yootek.EntityDb;
 using System.Threading.Tasks;
 
-namespace IMAX.AppManager.HomeMembers
+namespace Yootek.AppManager.HomeMembers
 {
     public interface IHomeMemberManager : IDomainService
     {

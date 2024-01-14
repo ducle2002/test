@@ -1,6 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 
-namespace IMAX.Roles.Dto
+namespace Yootek.Roles.Dto
 {
     public class PagedRoleResultRequestDto : PagedResultRequestDto
     {

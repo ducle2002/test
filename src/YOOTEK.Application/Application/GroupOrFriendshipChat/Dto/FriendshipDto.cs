@@ -1,14 +1,14 @@
 ﻿using Abp.AutoMapper;
-using IMAX.Chat;
-using IMAX.Chat.Dto;
-using IMAX.Dto.Interface;
-using IMAX.EntityDb;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
+using Yootek.Chat;
+using Yootek.Chat.Dto;
+using Yootek.Dto.Interface;
+using Yootek.EntityDb;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
 using System;
 
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     [AutoMapFrom(typeof(FriendCacheItem), typeof(Friendship))]
     public class FriendDto : ChatFriendOrRoomDto

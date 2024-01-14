@@ -4,7 +4,7 @@ using Grpc.Core.Interceptors;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public class GrpcHeaderInterceptor : Interceptor
     {

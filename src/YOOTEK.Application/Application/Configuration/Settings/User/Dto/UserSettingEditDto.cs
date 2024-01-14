@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Configuration.Settings.User.Dto
+namespace Yootek.Application.Configuration.Settings.User.Dto
 {
     public class UserSettingEditDto
     {

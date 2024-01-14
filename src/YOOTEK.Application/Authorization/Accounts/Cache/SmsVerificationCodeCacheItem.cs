@@ -1,6 +1,6 @@
 using System;
 
-namespace IMAX.Account.Cache
+namespace Yootek.Account.Cache
 {
     [Serializable]
     public class SmsVerificationCodeCacheItem

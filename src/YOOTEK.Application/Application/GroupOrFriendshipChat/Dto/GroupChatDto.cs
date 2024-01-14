@@ -1,16 +1,16 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Authorization.Users;
 using Abp.AutoMapper;
-using IMAX.Chat;
-using IMAX.Chat.Cache;
-using IMAX.Chat.Dto;
-using IMAX.Dto.Interface;
-using IMAX.GroupChats;
+using Yootek.Chat;
+using Yootek.Chat.Cache;
+using Yootek.Chat.Dto;
+using Yootek.Dto.Interface;
+using Yootek.GroupChats;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     [AutoMapFrom(typeof(GroupChat), typeof(GroupChatCacheItem))]
     public class GroupChatDto : ChatFriendOrRoomDto

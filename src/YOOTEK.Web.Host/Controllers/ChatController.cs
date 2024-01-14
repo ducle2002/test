@@ -1,14 +1,15 @@
 ﻿using Abp.AspNetCore.Mvc.Authorization;
+using Abp.Auditing;
 using Abp.IO.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
 using Abp.Web.Models;
-using IMAX.Chat;
-using IMAX.Configuration;
-using IMAX.Controllers;
-using IMAX.GroupChats;
-using IMAX.Storage;
-using IMAX.Web.Host.Chat;
+using Yootek.Chat;
+using Yootek.Configuration;
+using Yootek.Controllers;
+using Yootek.GroupChats;
+using Yootek.Storage;
+using Yootek.Web.Host.Chat;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
@@ -18,9 +19,10 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Controllers
+namespace Yootek.Web.Host.Controllers
 {
-    public class ChatController : IMAXControllerBase
+    [DisableAuditing]
+    public class ChatController : YootekControllerBase
     {
         private readonly IAbpSession _session;
         private static IHubContext<ChatHub> ChatHub;

@@ -1,0 +1,50 @@
+﻿using Abp.Modules;
+using Abp.Quartz;
+using Abp.Reflection.Extensions;
+using Hangfire;
+using Hangfire.Common;
+using Yootek.Configuration;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using System;
+
+namespace Yootek.Web.Host.Startup
+{
+    [DependsOn(
+        typeof(YootekWebCoreModule),
+        typeof(AbpQuartzModule)
+        )
+        ]
+    public class YootekWebHostModule : AbpModule
+    {
+        private readonly IWebHostEnvironment _env;
+        private readonly IConfigurationRoot _appConfiguration;
+
+        public YootekWebHostModule(IWebHostEnvironment env)
+        {
+            _env = env;
+            _appConfiguration = env.GetAppConfiguration();
+        }
+
+        public override void PreInitialize()
+        {
+            // Configuration.BackgroundJobs.UseHangfire();
+        }
+
+
+        public override void Initialize()
+        {
+            IocManager.RegisterAssemblyByConvention(typeof(YootekWebHostModule).GetAssembly());
+        }
+
+        public override void PostInitialize()
+        {
+            var appFolders = IocManager.Resolve<AppFolders>();
+            appFolders.TempFileDownloadFolder = "C://Download";
+
+            // Quartz scheduler
+            var _quartzScheduler = IocManager.Resolve<IQuartzScheduler>();
+            _quartzScheduler.Init();
+        }
+    }
+}

@@ -4,9 +4,9 @@ using Abp.Auditing;
 using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using Abp.Runtime.Validation;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Users.Dto
+namespace Yootek.Users.Dto
 {
     [AutoMapTo(typeof(User))]
     public class CreateUserDto : IShouldNormalize

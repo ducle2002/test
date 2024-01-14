@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Abp.Application.Services;
-using IMAX.Sessions.Dto;
+using Yootek.Sessions.Dto;
 
-namespace IMAX.Sessions
+namespace Yootek.Sessions
 {
     public interface ISessionAppService : IApplicationService
     {

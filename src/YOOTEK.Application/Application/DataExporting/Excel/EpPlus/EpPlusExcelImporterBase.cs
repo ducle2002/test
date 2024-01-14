@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using OfficeOpenXml;
 using System.IO;
 
-namespace IMAX.DataExporting.Excel.EpPlus
+namespace Yootek.DataExporting.Excel.EpPlus
 {
     public abstract class EpPlusExcelImporterBase<TEntity>
     {

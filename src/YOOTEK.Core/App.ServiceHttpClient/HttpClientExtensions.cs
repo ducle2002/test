@@ -7,7 +7,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace IMAX.App.ServiceHttpClient
+namespace Yootek.App.ServiceHttpClient
 {
     public static class HttpClientExtensions
     {

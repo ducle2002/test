@@ -1,11 +1,11 @@
 ﻿using Abp.Configuration;
 using Abp.Runtime.Caching;
-using IMAX.Organizations.Cache.Dto;
-using IMAX.Organizations.OrganizationStructure;
+using Yootek.Organizations.Cache.Dto;
+using Yootek.Organizations.OrganizationStructure;
 using System;
 using System.Collections.Generic;
 
-namespace IMAX.Organizations.Cache
+namespace Yootek.Organizations.Cache
 {
     /// </summary>
     public static class CacheManagerUserBuildingUrbanExtension

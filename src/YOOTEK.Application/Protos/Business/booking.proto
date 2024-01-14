@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "IMAX.Application.Protos.Business.Bookings";
+option csharp_namespace = "Yootek.Application.Protos.Business.Bookings";
 import "google/protobuf/timestamp.proto";
 
 package Bookings;

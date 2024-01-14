@@ -1,4 +1,4 @@
-namespace IMAX.Configuration.Dto
+namespace Yootek.Configuration.Dto
 {
     public class ThemeFooterSettingsDto
     {

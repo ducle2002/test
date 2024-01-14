@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace IMAX.Authorization
+namespace Yootek.Authorization
 {
     public static class PermissionConst
     {

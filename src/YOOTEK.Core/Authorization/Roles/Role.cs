@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Authorization.Roles
+namespace Yootek.Authorization.Roles
 {
     public class Role : AbpRole<User>
     {

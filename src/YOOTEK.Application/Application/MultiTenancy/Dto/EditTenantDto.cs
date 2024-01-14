@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.MultiTenancy.Dto
+namespace Yootek.MultiTenancy.Dto
 {
     public class TenantEditDto : EntityDto
     {

@@ -6,13 +6,13 @@ using Abp.MultiTenancy;
 using Abp.Net.Mail;
 using Abp.Runtime.Security;
 
-namespace IMAX.EntityFrameworkCore.Seed.Host
+namespace Yootek.EntityFrameworkCore.Seed.Host
 {
     public class DefaultSettingsCreator
     {
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
 
-        public DefaultSettingsCreator(IMAXDbContext context)
+        public DefaultSettingsCreator(YootekDbContext context)
         {
             _context = context;
         }
@@ -21,27 +21,22 @@ namespace IMAX.EntityFrameworkCore.Seed.Host
         {
             int? tenantId = null;
 
-            if (IMAXConsts.MultiTenancyEnabled == false)
+            if (YootekConsts.MultiTenancyEnabled == false)
             {
                 tenantId = MultiTenancyConsts.DefaultTenantId;
             }
-
-            // Emailing
-            AddSettingIfNotExists(EmailSettingNames.DefaultFromAddress, "admin@mydomain.com", tenantId);
-            AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, "mydomain.com mailer", tenantId);
-
             // Languages
             AddSettingIfNotExists(LocalizationSettingNames.DefaultLanguage, "en", tenantId);
 
 
 
             AddSettingIfNotExists(EmailSettingNames.DefaultFromAddress, "nguyenminhhieubk61@gmail.com");
-            AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, "Imax");
+            AddSettingIfNotExists(EmailSettingNames.DefaultFromDisplayName, "Yoolife");
             AddSettingIfNotExists(EmailSettingNames.Smtp.Host, "smtp.gmail.com");
             AddSettingIfNotExists(EmailSettingNames.Smtp.Port, "587");
             AddSettingIfNotExists(EmailSettingNames.Smtp.UserName, "nguyenminhhieubk61@gmail.com");
-            AddSettingIfNotExists(EmailSettingNames.Smtp.Password, SimpleStringCipher.Instance.Encrypt("@9bambutogmail"));
-            AddSettingIfNotExists(EmailSettingNames.Smtp.Domain, null);
+            AddSettingIfNotExists(EmailSettingNames.Smtp.Password, SimpleStringCipher.Instance.Encrypt("hieudz"));
+            AddSettingIfNotExists(EmailSettingNames.Smtp.Domain, "Yoolife");
             AddSettingIfNotExists(EmailSettingNames.Smtp.EnableSsl, "true");
             AddSettingIfNotExists(EmailSettingNames.Smtp.UseDefaultCredentials, "false");
         }
