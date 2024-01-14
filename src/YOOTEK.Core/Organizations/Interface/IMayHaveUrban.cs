@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Interface
+namespace Yootek.Organizations.Interface
 {
     public interface IMayHaveUrban
     {

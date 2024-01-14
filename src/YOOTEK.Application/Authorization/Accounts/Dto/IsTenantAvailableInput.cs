@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Abp.MultiTenancy;
 
-namespace IMAX.Authorization.Accounts.Dto
+namespace Yootek.Authorization.Accounts.Dto
 {
     public class IsTenantAvailableInput
     {

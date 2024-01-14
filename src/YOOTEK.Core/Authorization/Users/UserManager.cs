@@ -10,26 +10,26 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Organizations;
 using Abp.Runtime.Caching;
-using IMAX.Authorization.Roles;
+using Yootek.Authorization.Roles;
 using System.Threading.Tasks;
 using Abp;
 using Abp.Threading;
-using IMAX.MultiTenancy;
+using Yootek.MultiTenancy;
 using System.Linq;
-using IMAX.Organizations;
+using Yootek.Organizations;
 using Abp.UI;
 using Abp.MultiTenancy;
 using System.Security.Claims;
-using IMAX.Organizations.Cache;
+using Yootek.Organizations.Cache;
 using Abp.Runtime.Session;
-using IMAX.Friendships.Cache;
+using Yootek.Friendships.Cache;
 using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
-using IMAX.Organizations.OrganizationStructure;
-using IMAX.Organizations.Cache.Dto;
+using Yootek.Organizations.OrganizationStructure;
+using Yootek.Organizations.Cache.Dto;
 using Abp.AutoMapper;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
     public class UserManager : AbpUserManager<Role, User>
     {

@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
 	/// <summary>
 	/// Khởi tạo đối tượng Dịch vụ
@@ -63,5 +63,6 @@ namespace IMAX.EntityDb
 		/// Tenant
 		/// </summary>
 		public  int? TenantId { get; set; }
+        public DateTime? OrderDate { get; set; }
     }
 }

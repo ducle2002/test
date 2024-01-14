@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<body style="margin: 0; background-color: #fff">
+    <div role="article" aria-roledescription="email" aria-label="THÔNG BÁO THU PHÍ" lang="vi"
+        style="margin-left: auto; margin-right: auto; box-sizing: border-box; width: 800px; background-color: #fff; padding: 24px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px">
+        <table style="margin-bottom: 12px; width: 100%; table-layout: auto" cellpadding="0" cellspacing="0" role="none">
+            <tr>
+                <td style="width: 100%; text-align: center">
+                    <h2 style="margin-bottom: 26px; text-transform: uppercase; line-height: 0">THÔNG BÁO PHÍ DỊCH VỤ
+                        THÁNG {MONTH_PERIOD}/{YEAR_PERIOD}</h2>
+
+                </td>
+                <td style="text-align: right">
+                    <div style="width: 80px;">
+
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <table style="margin-bottom: 12px; width: 100%; table-layout: auto; font-size: 14px;" cellpadding="0"
+            cellspacing="0" role="none">
+            <tr>
+                <td colspan="4" style="padding-bottom: 6px">
+                    <span>
+                        <span style="font-weight: 600;">Kính gửi:</span>
+                    </span>
+                    <span style="font-size: 15px; font-weight: 600">{CUSTOMER_NAME}</span>
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-bottom: 6px;">
+                    <span>
+                        <span style="font-weight: 600;">Căn hộ:</span>
+                    </span>
+                    <span style="font-weight: 600;">{APARTMENT_CODE}</span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="12" style="font-size: 15px;">
+                    Trước hết, Ban Quản lý khu đô thị Hinode Royal Park <span style="font-weight: 600;">("BQL")</span> xin gửi lời chào trân trọng và lời cảm ơn chân thành đối với sự đồng
+                    hành của Quý cư dân.
+                </td>
+
+            </tr>
+            <tr>
+                <td colspan="12" style="font-size: 15px;">
+                    BQL trân trọng thông báo tới Quý cư dân về các khoản phí dịch vụ tháng {MONTH_PERIOD}/{YEAR_PERIOD}
+                    như sau:
+                </td>
+
+            </tr>
+            </tr>
+
+        </table>
+        <table style="margin-bottom: 6px; width: 100%; table-layout: auto;" cellpadding="0" cellspacing="0"
+            role="presentation">
+            <tbody>
+                <tr>
+                    <td style="font-weight: 600; text-decoration-line:none">1. Tổng phí thanh toán</td>
+
+                </tr>
+                <tr>
+                    <td colspan="12">
+                        <span style="font-style: italic;">Bằng chữ: </span>
+                        <span style="font-style: italic;">{TOTAL_PRICE_PAYMENT_TEXT}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="font-weight: 600; text-decoration-line:none">
+                        2. Chi tiết các khoản tiền phí dịch vụ như bảng dưới đây:
+                    </td>
+
+                </tr>
+
+            </tbody>
+        </table>
+
+        <table style="margin-bottom: 16px; width: 100%; table-layout: auto; border-collapse: collapse; font-size: 14px"
+            cellpadding="0" cellspacing="0" role="none">
+
+            <thead>
+                <tr>
+                    <th
+                        style="width: 40px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px">
+                        <div>TT</div>
+                        <div style="font-weight: 300; font-style: italic">No</div>
+                    </th>
+                    <th colspan="4"
+                        style="border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center;">
+                        <div>Hạng mục</div>
+                        <div style="font-weight: 300; font-style: italic;">Description</div>
+                    </th>
+                    <th
+                        style="width: 20px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center;">
+                        <div>Số lượng</div>
+                        <div style="font-weight: 300; font-style: italic;">Qty.</div>
+                    </th>
+                    <th
+                        style="width: 20px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center;">
+                        <div>Đơn giá</div>
+                        <div style="font-weight: 600">(VND)</div>
+                    </th>
+                    <th
+                        style="width: 40px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center">
+                        <div>Thành tiền</div>
+                        <div style="font-weight: 600">(VND)</div>
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        I</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Tiền phí dịch vụ còn nợ kỳ trước chưa thanh toán (nếu
+                                có):</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {DEBT}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Tiền phí quản lý</span>
+                        </span>
+                    </td>
+
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Tiền phí sử dụng điện</span>
+                        </span>
+                    </td>
+
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"> {TOTAL_INDEX_E}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_TOTAL_AMOUNT}
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        II</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Phí dịch vụ trong kỳ:</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        1</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Tiền phí quản lý</span>
+                        </span>
+                        <div style="font-style: italic;">(Đã bao gồm thuế VAT)</div>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Phí quản lý trước thuế</span>
+                        </span>
+                    </td>
+
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Thuế VAT (10%)/ <span style="font-style: italic;">VAT tax</span></span>
+                        </span>
+                    </td>
+
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        2</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Tiền phí sử dụng điện sau thuế</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+
+                </tr>
+
+
+
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Bậc 1: Cho kwh từ 0-50</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INDEX1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_AMOUNT1}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Bậc 2: Cho kwh từ 51-100</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INDEX2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_AMOUNT2}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Bậc 3: Cho kwh từ 101-200</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INDEX3}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE3}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_AMOUNT3}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Bậc 4: Cho kwh từ 201-300</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INDEX4}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE4}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_AMOUNT4}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Bậc 5: Cho kwh từ 301-400</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INDEX5}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE5}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_AMOUNT5}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Bậc 6: Cho kwh từ 401 trở lên</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INDEX6}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE6}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_AMOUNT6}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Hao tốn 5%</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_COSTLY}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        VAT 8%</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {E_VAT}
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        III</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                        <span>
+                            <span>Tổng số tiền phải thanh toán</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_TOTAL_AMOUNT}</td>
+
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        IV</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                        <span>
+                            <span>Khấu trừ trả trước</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+
+                </tr>
+
+
+
+                <tr>
+                    <td colspan="5" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>Còn phải thanh toán</span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{TOTAL_2}</td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 600;">
+                        <span>Tổng tiền cần thanh toán</span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;">
+                        {TOTAL_2}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 600;">
+                        <span>Bằng chữ: </span>
+                        <span style="font-style: italic;">{TOTAL_MONEY_TEXT}</span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div style="margin-bottom: 12px;">
+            <div style="margin-bottom: 3px">
+                3. Thời hạn thanh toán: Từ ngày 07 Đến ngày 15 hàng tháng.
+            </div>
+        </div>
+
+        <div style="margin-bottom: 3px;">4. Hình thức thanh toán:</div>
+        <div style="margin-left: 40px;">Thanh toán bằng chuyển khoản:</div>
+        <div style="margin-left: 40px;">
+            + Tên tài khoản: Tổng công ty Cổ phần Thương mại Xây dựng
+        </div>
+        <div style="margin-left: 40px;">+ Số tài khoản: 1500 2010 89052</div>
+        <div style="margin-left: 40px;">+ Tại Ngân hàng: Ngân hàng Nông nghiệp (Agribank) - Chi nhánh Hà Nội</div>
+        <div style="margin-left: 40px;">+ Nội dung chuyển: {CUSTOMER_NAME} {APARTMENT_CODE} &lt;Loại phí&gt;</div>
+
+        <div style="font-weight: 600;">
+            <span>Quý khách vui lòng bỏ qua thông báo này nếu đã thanh toán.</span>
+        </div>
+        <div style="margin-bottom: 2px;">
+            Mọi thông tin thắc mắc Quý cư dân vui lòng liên hệ số Hotline: 0917637757
+        </div>
+        <table style="margin-bottom: 80px; width: 100%; table-layout: auto; margin-top: 40px;" cellpadding="0"
+            cellspacing="0" role="presentation">
+            <tr>
+                <td style="width: 100%; vertical-align: top; font-weight: 700;">
+                    Trân trọng
+                </td>
+                <td style="text-align: center;">
+                    <div style="white-space: nowrap; text-align: center">
+                        Hà Nội, ngày {DAY_NOW} tháng {MONTH_NOW} năm
+                        {YEAR_NOW}
+                    </div>
+                    <div style="white-space: nowrap; text-align: center; font-weight: 900; ">BAN QUẢN LÝ KHU ĐÔ THỊ
+                    </div>
+                    <div style="font-style: italic;">(Đã ký/ Signed)</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -2,17 +2,17 @@
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.RealTime;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.GroupChats
+namespace Yootek.GroupChats
 {
-    public class GroupChatManager : IMAXDomainServiceBase, IGroupChatManager
+    public class GroupChatManager : YootekDomainServiceBase, IGroupChatManager
     {
         private readonly IRepository<GroupChat, long> _groupChatRepository;
         private readonly IRepository<GroupMessage, long> _groupMessageRepository;

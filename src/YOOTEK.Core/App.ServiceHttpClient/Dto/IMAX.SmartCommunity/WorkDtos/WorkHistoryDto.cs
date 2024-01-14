@@ -1,9 +1,9 @@
 using Abp.Domain.Entities;
-using IMAX.Common;
+using Yootek.Common;
 using System;
 using System.Collections.Generic;
 
-namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
+namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
 {
     public class CreateWorkHistoryDto
     {

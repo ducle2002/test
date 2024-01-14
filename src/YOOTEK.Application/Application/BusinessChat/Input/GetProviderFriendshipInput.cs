@@ -1,7 +1,7 @@
-﻿using IMAX.Common;
+﻿using Yootek.Common;
 
 
-namespace IMAX.Application.BusinessChat.Input
+namespace Yootek.Application.BusinessChat.Input
 {
     public class GetProviderFriendshipInput: CommonInputDto
     {

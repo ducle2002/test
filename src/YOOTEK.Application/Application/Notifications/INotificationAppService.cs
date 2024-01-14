@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using IMAX.Notifications.Dto;
+using Yootek.Notifications.Dto;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public interface INotificationAppService : IApplicationService
     {

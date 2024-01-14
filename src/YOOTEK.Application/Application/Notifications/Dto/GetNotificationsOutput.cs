@@ -2,7 +2,7 @@
 using Abp.Application.Services.Dto;
 using Abp.Notifications;
 
-namespace IMAX.Notifications.Dto
+namespace Yootek.Notifications.Dto
 {
     public class GetNotificationsOutput : PagedResultDto<UserNotification>
     {

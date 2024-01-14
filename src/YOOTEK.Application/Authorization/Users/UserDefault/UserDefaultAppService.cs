@@ -8,17 +8,17 @@ using Abp.IdentityFramework;
 using Abp.IO;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Authorization.Users.Cache;
-using IMAX.Common.DataResult;
-using IMAX.Common.Enum;
-using IMAX.EntityDb;
-using IMAX.Notifications;
-using IMAX.Roles.Dto;
-using IMAX.Storage;
-using IMAX.Users.Dto;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Authorization.Users.Cache;
+using Yootek.Common.DataResult;
+using Yootek.Common.Enum;
+using Yootek.EntityDb;
+using Yootek.Notifications;
+using Yootek.Roles.Dto;
+using Yootek.Storage;
+using Yootek.Users.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QRCoder;
@@ -33,7 +33,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace IMAX.Users
+namespace Yootek.Users
 {
     public interface IUserDefaultAppService : IApplicationService
     {
@@ -252,7 +252,7 @@ namespace IMAX.Users
             catch (Exception e)
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 

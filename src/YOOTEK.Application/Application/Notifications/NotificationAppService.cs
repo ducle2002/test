@@ -7,16 +7,16 @@ using Abp.Configuration;
 using Abp.Notifications;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Notifications.Dto;
+using Yootek.Notifications.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     [AbpAuthorize]
-    public class NotificationAppService : IMAXAppServiceBase, INotificationAppService
+    public class NotificationAppService : YootekAppServiceBase, INotificationAppService
     {
         private readonly INotificationDefinitionManager _notificationDefinitionManager;
         private readonly IUserNotificationManager _userNotificationManager;
@@ -73,7 +73,6 @@ namespace IMAX.Notifications
             await _userNotificationManager.UpdateUserNotificationStateAsync(AbpSession.TenantId, input.Id, UserNotificationState.Read);
         }
 
-      
         public async Task<GetNotificationSettingsOutput> GetNotificationSettings()
         {
             var output = new GetNotificationSettingsOutput();

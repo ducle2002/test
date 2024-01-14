@@ -1,6 +1,6 @@
 ﻿using Abp.Web.Models;
 
-namespace IMAX.Storage
+namespace Yootek.Storage
 {
     public class FileUploadCacheOutput : ErrorInfo
     {

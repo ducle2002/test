@@ -1,12 +1,12 @@
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common.Enum;
-using IMAX.Organizations.Interface;
+using Yootek.Common.Enum;
+using Yootek.Organizations.Interface;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("BillPrepayments")]
     public class BillPrepayment : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveBuilding, IMayHaveUrban

@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum
 {
     public enum GroupState
     {
@@ -26,6 +26,8 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public long TotalMembers { get; set; }
         public long TotalPosts { get; set; }
         public bool? IsMember { get; set; }
+        public Permission? Permission { get; set; }
+        public ShortenedInviteDto? Invite { get; set; }
     }
     
     public class GroupMemberDto
@@ -39,6 +41,11 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public Permission? Permission { get; set; }
         public GroupState State { get; set; }
         public ShortenedUserDto? User { get; set; }
+    }
+    
+    public class UserToGroupDto : ShortenedUserDto
+    {
+        public ShortenedInviteDto? Invite { get; set; }
     }
     
     public class CreateGroupByAdminDto
@@ -62,6 +69,18 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     {
         public long GroupId { get; set; }
         public Permission? Permission { get; set; }
+        public GroupState? State { get; set; }
+    }
+    
+    public class GetGroupByIdDto
+    {
+        public long Id { get; set; }
+    }
+    
+    public class GetSocialMediaUserDto : CommonInputDto
+    {
+        public long Id { get; set; }
+        public string? Keyword { get; set; }
     }
     
     public class UpdateGroupByAdminDto

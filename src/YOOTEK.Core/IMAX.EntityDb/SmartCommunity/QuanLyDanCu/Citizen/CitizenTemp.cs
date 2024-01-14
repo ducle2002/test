@@ -1,12 +1,12 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Organizations;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("CitizenTemp")]
     public class CitizenTemp : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit, IMayHaveBuilding, IMayHaveUrban
@@ -55,5 +55,6 @@ namespace IMAX.EntityDb
         public int? OwnerGeneration { get; set; }
         public long? OwnerId { get; set; }
         public long? AccountId { get; set; }
+        public int? CareerCategoryId { get; set; }
     }
 }

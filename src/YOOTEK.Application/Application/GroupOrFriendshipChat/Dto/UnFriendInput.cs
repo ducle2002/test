@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.RoomOrFriendships.Dto
+namespace Yootek.Application.RoomOrFriendships.Dto
 {
     public class UnFriendInput
     {

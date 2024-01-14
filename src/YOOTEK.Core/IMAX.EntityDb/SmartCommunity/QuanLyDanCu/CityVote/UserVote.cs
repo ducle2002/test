@@ -3,7 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public class UserVote : FullAuditedEntity<long>, IMayHaveTenant
     {
@@ -13,5 +13,6 @@ namespace IMAX.EntityDb
         public string Comment { get; set; }
         public long CityVoteId { get; set; }
         public int? TenantId { get; set; }
+        public string? OptionOther { get; set; }
     }
 }

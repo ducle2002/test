@@ -1,9 +1,9 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public class ObjectPartner : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveUrban, IMayHaveBuilding
     {

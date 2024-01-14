@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("News")]
     public class News : Entity<long>

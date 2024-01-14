@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IMAX.Web
+namespace Yootek.Web
 {
     public interface IWebUrlService
     {

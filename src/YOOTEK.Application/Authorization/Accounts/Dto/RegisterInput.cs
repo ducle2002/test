@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using Abp.Auditing;
 using Abp.Authorization.Users;
 using Abp.Extensions;
-using IMAX.Validation;
+using Yootek.Validation;
 
-namespace IMAX.Authorization.Accounts.Dto
+namespace Yootek.Authorization.Accounts.Dto
 {
     public class RegisterInput : IValidatableObject
     {

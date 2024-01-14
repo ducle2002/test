@@ -9,12 +9,12 @@ using Abp.Linq.Extensions;
 using Abp.RealTime;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Application.BusinessChat.Dto;
-using IMAX.Application.BusinessChat.Input;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
-using IMAX.Chat.BusinessChat;
-using IMAX.Common.DataResult;
+using Yootek.Application.BusinessChat.Dto;
+using Yootek.Application.BusinessChat.Input;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
+using Yootek.Chat.BusinessChat;
+using Yootek.Common.DataResult;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,14 +22,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.BusinessChat
+namespace Yootek.Application.BusinessChat
 {
     public interface IProviderBusinessChatAppService : IApplicationService
     {
         Task<DataResult> GetUserFriendshipChats(GetUserFriendshipInput input);
     }
 
-    public class ProviderBusinessChatAppService : IMAXAppServiceBase, IProviderBusinessChatAppService
+    public class ProviderBusinessChatAppService : YootekAppServiceBase, IProviderBusinessChatAppService
     {
 
         private readonly IOnlineClientManager _onlineClientManager;

@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
-using IMAX.Core.Dto;
+using Yootek.Common;
+using Yootek.Core.Dto;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum
 {
     public enum BlackListAction
     {
@@ -47,6 +47,9 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     public class GetListBlackListDto : CommonInputDto
     {
         public BlackListAction? BlackListAction { get; set; }
+        public BlackListScope? BlackListScope { get; set; }
+        public long? PostId { get; set; }
+        public long? UserId { get; set; }
     }
     
     public class UpdateBlackListDto

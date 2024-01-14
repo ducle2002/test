@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Authorization.Accounts.Dto
+namespace Yootek.Authorization.Accounts.Dto
 {
     public class SendEmailActivationLinkInput
     {

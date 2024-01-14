@@ -9,15 +9,15 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX
+namespace Yootek
 {
-    public abstract class IMAXDomainServiceBase : DomainService
+    public abstract class YootekDomainServiceBase : DomainService
     {
         /* Add your common members for all your domain services. */
 
-        protected IMAXDomainServiceBase()
+        protected YootekDomainServiceBase()
         {
-            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+            LocalizationSourceName = YootekConsts.LocalizationSourceName;
         }
 
 
@@ -51,8 +51,8 @@ namespace IMAX
         {
             try
             {
-                string IMAX_FILE = GetUrlFileDefaut();
-                var folderPath = Path.Combine(IMAX_FILE, pathFile);
+                string Yootek_FILE = GetUrlFileDefaut();
+                var folderPath = Path.Combine(Yootek_FILE, pathFile);
 
                 byte[] bytes = File.ReadAllBytes(folderPath);
                 string pdfBase64 = Convert.ToBase64String(bytes);
@@ -67,17 +67,17 @@ namespace IMAX
 
         protected string GetUrlFileDefaut()
         {
-            string IMAX_FILE = ConfigurationManager.AppSettings["IMAX_FILE"];
-            if (string.IsNullOrEmpty(IMAX_FILE))
+            string Yootek_FILE = ConfigurationManager.AppSettings["Yootek_FILE"];
+            if (string.IsNullOrEmpty(Yootek_FILE))
             {
-                IMAX_FILE = @"C:\IMAX_FILE";
+                Yootek_FILE = @"C:\Yootek_FILE";
             }
 
-            if (!Directory.Exists(IMAX_FILE))
+            if (!Directory.Exists(Yootek_FILE))
             {
-                Directory.CreateDirectory(IMAX_FILE);
+                Directory.CreateDirectory(Yootek_FILE);
             }
-            return IMAX_FILE;
+            return Yootek_FILE;
         }
 
         protected string GetUniqueKey()

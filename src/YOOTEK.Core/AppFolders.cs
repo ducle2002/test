@@ -1,6 +1,6 @@
 ﻿using Abp.Dependency;
 
-namespace IMAX
+namespace Yootek
 {
     public class AppFolders : IAppFolders, ISingletonDependency
     {

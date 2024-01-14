@@ -1,10 +1,10 @@
 ﻿using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Authorization.Users;
-using IMAX.Friendships;
+using Yootek.Authorization.Users;
+using Yootek.Friendships;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
     [AutoMapFrom(typeof(User))]
     public class ChatUserDto : EntityDto<long>

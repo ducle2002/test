@@ -1,21 +1,22 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Runtime.Session;
-using IMAX.App.ServiceHttpClient.Dto;
-using IMAX.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto;
+using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace IMAX.App.ServiceHttpClient.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Imax.Business
 {
     public interface IHttpItemAttributeService
     {
         Task<MicroserviceResultDto<PagedResultDto<ItemAttributeDto>>> GetAllItemAttributes(GetAllItemAttributesDto input);
         Task<MicroserviceResultDto<ItemAttributeDto>> GetItemAttributeById(long id);
-        Task<MicroserviceResultDto<bool>> CreateListItemAttributes(CreateListItemAttributesDto input);
+        Task<MicroserviceResultDto<bool>> CreateListItemAttributes(List<CreateItemAttributeDto> input);
         Task<MicroserviceResultDto<bool>> CreateItemAttribute(CreateItemAttributeDto input);
         Task<MicroserviceResultDto<bool>> UpdateItemAttribute(UpdateItemAttributeDto input);
-        Task<MicroserviceResultDto<bool>> UpdateListItemAttributes(UpdateListItemAttributesDto input);
+        Task<MicroserviceResultDto<bool>> UpdateListItemAttributes(List<UpdateItemAttributeDto> input);
         Task<MicroserviceResultDto<bool>> DeleteItemAttribute(DeleteItemAttributeDto input);
     }
     public class HttpItemAttributeService : IHttpItemAttributeService
@@ -57,13 +58,19 @@ namespace IMAX.App.ServiceHttpClient.Imax.Business
                 return await response.ReadContentAs<MicroserviceResultDto<bool>>();
             }
         }
-        public async Task<MicroserviceResultDto<bool>> CreateListItemAttributes(CreateListItemAttributesDto input)
+        public async Task<MicroserviceResultDto<bool>> CreateListItemAttributes(List<CreateItemAttributeDto> input)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/ItemAttributes/create-list-item-attribute"))
+            try
             {
-                request.HandlePostAsJson(input, _session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+                using (var request = new HttpRequestMessage(HttpMethod.Post, $"/api/v1/ItemAttributes/create-list-item-attribute"))
+                {
+                    request.HandlePostAsJson(input, _session);
+                    var response = await _client.SendAsync(request);
+                    return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+                }
+            }catch(Exception e)
+            {
+                throw e;
             }
         }
         public async Task<MicroserviceResultDto<bool>> UpdateItemAttribute(UpdateItemAttributeDto input)
@@ -73,13 +80,15 @@ namespace IMAX.App.ServiceHttpClient.Imax.Business
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<bool>>();
         }
-        public async Task<MicroserviceResultDto<bool>> UpdateListItemAttributes(UpdateListItemAttributesDto input)
+
+        public async Task<MicroserviceResultDto<bool>> UpdateListItemAttributes(List<UpdateItemAttributeDto> input)
         {
             using var request = new HttpRequestMessage(HttpMethod.Put, $"/api/v1/ItemAttributes/update-list-item-attribute");
             request.HandlePutAsJson(input, _session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<bool>>();
         }
+
         public async Task<MicroserviceResultDto<bool>> DeleteItemAttribute(DeleteItemAttributeDto input)
         {
             var query = "api/v1/ItemAttributes/delete-item-attribute" + input.GetStringQueryUri();

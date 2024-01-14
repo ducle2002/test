@@ -2,15 +2,14 @@
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Zero.EntityFrameworkCore;
-using IMAX.EntityFrameworkCore.Seed;
-using System;
+using Yootek.EntityFrameworkCore.Seed;
 
-namespace IMAX.EntityFrameworkCore
+namespace Yootek.EntityFrameworkCore
 {
     [DependsOn(
-        typeof(IMAXCoreModule),
+        typeof(YootekCoreModule),
         typeof(AbpZeroCoreEntityFrameworkCoreModule))]
-    public class IMAXEntityFrameworkModule : AbpModule
+    public class YootekEntityFrameworkModule : AbpModule
     {
         /* Used it tests to skip dbcontext registration, in order to use in-memory database of EF Core */
         public bool SkipDbContextRegistration { get; set; }
@@ -19,18 +18,19 @@ namespace IMAX.EntityFrameworkCore
 
         public override void PreInitialize()
         {
-            Configuration.Auditing.IsEnabled = false;
             if (!SkipDbContextRegistration)
             {
-                 Configuration.Modules.AbpEfCore().AddDbContext<IMAXDbContext>(options =>     
+                 Configuration.Modules.AbpEfCore().AddDbContext<YootekDbContext>(options =>
+                 
+                 
                  {
                      if (options.ExistingConnection != null)
                      {
-                         IMAXDbContextConfigurer.Configure(options.DbContextOptions, options.ExistingConnection);
+                         YootekDbContextConfigurer.Configure(options.DbContextOptions, options.ExistingConnection);
                      }
                      else
                      {
-                         IMAXDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
+                         YootekDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
                      }
                  });
             }
@@ -38,7 +38,7 @@ namespace IMAX.EntityFrameworkCore
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(IMAXEntityFrameworkModule).GetAssembly());
+            IocManager.RegisterAssemblyByConvention(typeof(YootekEntityFrameworkModule).GetAssembly());
            
         }
 

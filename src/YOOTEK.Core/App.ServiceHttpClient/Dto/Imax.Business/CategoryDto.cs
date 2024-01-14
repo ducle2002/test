@@ -1,9 +1,10 @@
-﻿using Abp.Application.Services.Dto;
-using IMAX.Common;
+﻿using System.ComponentModel;
+using Abp.Application.Services.Dto;
+using Yootek.Common;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Business
 {
     public class CategoryDto : EntityDto<long>
     {
@@ -33,6 +34,17 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
     {
         public long? BusinessType { get; set; }
         public long? ParentId { get; set; }
+        public int? OrderBy { get; set; }
+    }
+
+    public enum CategoryOrderBy
+    {
+        [Description("Name")] Name = 1,
+        [Description("ParentId")] ParentId = 2,
+        [Description("HasChildren")] HasChildren = 3,
+        [Description("BusinessType")] BusinessType = 4,
+        [Description("IconUrl")] IconUrl = 5,
+        [Description("Id")] Id = 6
     }
     public class GetCategoryByIdDto : EntityDto<long>
     {

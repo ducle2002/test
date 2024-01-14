@@ -1,10 +1,10 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.SmartCommunity
+namespace Yootek.SmartCommunity
 {
     public enum DeliveryState
     {

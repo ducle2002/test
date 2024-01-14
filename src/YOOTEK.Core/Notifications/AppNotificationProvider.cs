@@ -1,9 +1,9 @@
 ﻿using Abp.Authorization;
 using Abp.Localization;
 using Abp.Notifications;
-using IMAX.Authorization;
+using Yootek.Authorization;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public class AppNotificationProvider : NotificationProvider
     {
@@ -28,7 +28,7 @@ namespace IMAX.Notifications
 
         private static ILocalizableString L(string name)
         {
-            return new LocalizableString(name, IMAXConsts.LocalizationSourceName);
+            return new LocalizableString(name, YootekConsts.LocalizationSourceName);
         }
     }
 }

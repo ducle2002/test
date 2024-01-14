@@ -9,27 +9,27 @@ using Abp.AspNetCore.SignalR;
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Zero.Configuration;
-using IMAX.Authentication.JwtBearer;
-using IMAX.Configuration;
-using IMAX.EntityFrameworkCore;
+using Yootek.Authentication.JwtBearer;
+using Yootek.Configuration;
+using Yootek.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Abp.Runtime.Caching.Redis;
 
-namespace IMAX
+namespace Yootek
 {
     [DependsOn(
-         typeof(IMAXApplicationModule),
-         typeof(IMAXEntityFrameworkModule),
+         typeof(YootekApplicationModule),
+         typeof(YootekEntityFrameworkModule),
          typeof(AbpAspNetCoreModule)
         , typeof(AbpAspNetCoreSignalRModule),
          typeof(AbpRedisCacheModule)
      )]
-    public class IMAXWebCoreModule : AbpModule
+    public class YootekWebCoreModule : AbpModule
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
-        public IMAXWebCoreModule(IWebHostEnvironment env)
+        public YootekWebCoreModule(IWebHostEnvironment env)
         {
             _env = env;
             _appConfiguration = env.GetAppConfiguration();
@@ -38,15 +38,14 @@ namespace IMAX
         public override void PreInitialize()
         {
             Configuration.DefaultNameOrConnectionString = _appConfiguration.GetConnectionString(
-                IMAXConsts.ConnectionStringName
+                YootekConsts.ConnectionStringName
             );
 
             // Use database for language management
             Configuration.Modules.Zero().LanguageManagement.EnableDbLocalization();
-            Configuration.Auditing.IsEnabled = false;
             Configuration.Modules.AbpAspNetCore()
                  .CreateControllersForAppServices(
-                     typeof(IMAXApplicationModule).GetAssembly()
+                     typeof(YootekApplicationModule).GetAssembly()
                  );
             Configuration.Caching.ConfigureAll(cache =>
             {
@@ -67,7 +66,7 @@ namespace IMAX
             IocManager.Register<TokenAuthConfiguration>();
             var tokenAuthConfig = IocManager.Resolve<TokenAuthConfiguration>();
 
-            tokenAuthConfig.SecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appConfiguration["Authentication:JwtBearer:SecurityKey"]));
+            tokenAuthConfig.SecurityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_appConfiguration["Authentication:JwtBearer:SecurityKey"]));
             tokenAuthConfig.Issuer = _appConfiguration["Authentication:JwtBearer:Issuer"];
             tokenAuthConfig.Audience = _appConfiguration["Authentication:JwtBearer:Audience"];
             tokenAuthConfig.SigningCredentials = new SigningCredentials(tokenAuthConfig.SecurityKey, SecurityAlgorithms.HmacSha256);
@@ -78,13 +77,13 @@ namespace IMAX
         public override void Initialize()
         {
          
-            IocManager.RegisterAssemblyByConvention(typeof(IMAXWebCoreModule).GetAssembly());
+            IocManager.RegisterAssemblyByConvention(typeof(YootekWebCoreModule).GetAssembly());
         }
 
         public override void PostInitialize()
         {
             IocManager.Resolve<ApplicationPartManager>()
-                .AddApplicationPartsIfNotAddedBefore(typeof(IMAXWebCoreModule).Assembly);
+                .AddApplicationPartsIfNotAddedBefore(typeof(YootekWebCoreModule).Assembly);
         }
     }
 }

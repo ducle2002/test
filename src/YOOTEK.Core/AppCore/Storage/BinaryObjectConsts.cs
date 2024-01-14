@@ -1,4 +1,4 @@
-﻿namespace IMAX.Storage
+﻿namespace Yootek.Storage
 {
     public class BinaryObjectConsts
     {

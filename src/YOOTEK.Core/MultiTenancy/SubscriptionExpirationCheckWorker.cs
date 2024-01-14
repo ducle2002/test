@@ -9,10 +9,10 @@
 //using Abp.Threading.BackgroundWorkers;
 //using Abp.Threading.Timers;
 //using Abp.Timing;
-//using IMAX.Authorization.Users;
-//using IMAX.Editions;
+//using Yootek.Authorization.Users;
+//using Yootek.Editions;
 
-//namespace IMAX.MultiTenancy
+//namespace Yootek.MultiTenancy
 //{
 //    public class SubscriptionExpirationCheckWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
 //    {
@@ -41,7 +41,7 @@
 //            Timer.Period = CheckPeriodAsMilliseconds;
 //            Timer.RunOnStart = true;
 
-//            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+//            LocalizationSourceName = YootekConsts.LocalizationSourceName;
 //            _unitOfWorkManager = unitOfWorkManager;
 //        }
 

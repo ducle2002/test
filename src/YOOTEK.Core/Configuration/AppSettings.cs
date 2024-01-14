@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace IMAX.Configuration
+namespace Yootek.Configuration
 {
     /// <summary>
     /// Defines string constants for setting names in the application.
@@ -53,13 +53,19 @@ namespace IMAX.Configuration
                 public static string HeadPeriodDay = "Tenant.TimeScheduleCheckBill.HeadPeriod";
                 public static string EndPeriodDay = "Tenant.TimeScheduleCheckBill.EndPeriod";
 
+                public static string IsEnableCreateE = "Tenant.TimeScheduleCheckBill.IsEnableCreateE";
                 public static string ElectricHeadPeriodDay = "Tenant.TimeScheduleCheckBill.ElectricHeadPeriod";
                 public static string ElectricEndPeriodDay = "Tenant.TimeScheduleCheckBill.ElectricEndPeriod";
 
+                public static string IsEnableCreateW = "Tenant.TimeScheduleCheckBill.IsEnableCreateW";
                 public static string WaterHeadPeriodDay = "Tenant.TimeScheduleCheckBill.WaterHeadPeriod";
                 public static string WaterEndPeriodDay = "Tenant.TimeScheduleCheckBill.WaterEndPeriod";
 
+                public static string IsEnableCreateP = "Tenant.TimeScheduleCheckBill.IsEnableCreateP";
                 public static string ParkingCreateDay = "Tenant.TimeScheduleCheckBill.ParkingCreateDay";
+
+                public static string IsEnableCreateM = "Tenant.TimeScheduleCheckBill.IsEnableCreateM";
+                public static string ManagerCreateDay = "Tenant.TimeScheduleCheckBill.ManagerCreateDay";
 
                 public static string BillNotificationTime1 = "Tenant.TimeScheduleCheckBill.BillNotificationTime1";
                 public static string BillNotificationTime2 = "Tenant.TimeScheduleCheckBill.BillNotificationTime2";
@@ -94,6 +100,8 @@ namespace IMAX.Configuration
                 public static string DueMonthResidence = "UserBillConfig.DueMonthResidence";
 
                 public static string SendUserBillNotificationDay = "UserBillConfig.SendUserBillNotificationDay";
+
+                public static string ParkingBillType = "UserBillConfig.ParkingBillType";
             }
 
             public static class BankTransfer

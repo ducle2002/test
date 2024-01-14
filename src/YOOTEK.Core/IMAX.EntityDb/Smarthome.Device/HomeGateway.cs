@@ -3,7 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.IMAX.EntityDb.Smarthome.Device
+namespace Yootek.Yootek.EntityDb.Smarthome.Device
 {
     [Table("HomeGateways")]
     public class HomeGateway : FullAuditedEntity<long>, IMayHaveTenant

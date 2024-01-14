@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Abp.Authorization;
-using IMAX.Authorization.Roles;
+using Yootek.Authorization.Roles;
 using Abp.Domain.Uow;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
     public class UserClaimsPrincipalFactory : AbpUserClaimsPrincipalFactory<User, Role>
     {

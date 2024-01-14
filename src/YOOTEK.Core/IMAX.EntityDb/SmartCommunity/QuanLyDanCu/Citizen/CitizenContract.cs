@@ -1,11 +1,11 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Organizations;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.IMAX.EntityDb.SmartCommunity.QuanLyDanCu.Citizen
+namespace Yootek.Yootek.EntityDb.SmartCommunity.QuanLyDanCu.Citizen
 {
     [Table("CitizenContract")]
     public class CitizenContract : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit, IMayHaveUrban, IMayHaveBuilding

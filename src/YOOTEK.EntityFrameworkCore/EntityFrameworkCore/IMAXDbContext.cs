@@ -1,53 +1,75 @@
 using Abp.Zero.EntityFrameworkCore;
-using IMAX.Authorization.Permissions;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
-using IMAX.Chat.BusinessChat;
-using IMAX.EntityDb;
-using IMAX.Friendships;
-using IMAX.IMAX.EntityDb.Forum;
-using IMAX.IMAX.EntityDb.IMAX.DichVu.BusinessReg;
-using IMAX.IMAX.EntityDb.IMAX.DichVu.CheckingObj;
-using IMAX.IMAX.EntityDb.IMAX.Metrics;
-using IMAX.IMAX.EntityDb.IMAX.MobileAppFeedback;
-using IMAX.IMAX.EntityDb.SmartCommunity.Apartment;
-using IMAX.IMAX.EntityDb.SmartCommunity.Phidichvu;
-using IMAX.IMAX.EntityDb.SmartCommunity.QuanLyDanCu.Citizen;
-using IMAX.IMAX.EntityDb.Smarthome.Device;
-using IMAX.MultiTenancy;
-using IMAX.Organizations;
-using IMAX.Organizations.OrganizationStructure;
-using IMAX.GroupChats;
-using IMAX.SmartCommunity;
-using IMAX.Storage;
+using Yootek.Authorization.Permissions;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
+using Yootek.Chat.BusinessChat;
+using Yootek.EntityDb;
+using Yootek.Friendships;
+using Yootek.Yootek.EntityDb.Clb.Hotlines;
+using Yootek.Yootek.EntityDb.Clb.QnA;
+using Yootek.Yootek.EntityDb.Clb.Votes;
+using Yootek.Yootek.EntityDb.Forum;
+using Yootek.Yootek.EntityDb.Yootek.DichVu.BusinessReg;
+using Yootek.Yootek.EntityDb.Yootek.DichVu.CheckingObj;
+using Yootek.Yootek.EntityDb.Yootek.Metrics;
+using Yootek.Yootek.EntityDb.Yootek.MobileAppFeedback;
+using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
+using Yootek.Yootek.EntityDb.SmartCommunity.Phidichvu;
+using Yootek.Yootek.EntityDb.SmartCommunity.QuanLyDanCu.Citizen;
+using Yootek.Yootek.EntityDb.Smarthome.Device;
+using Yootek.MultiTenancy;
+using Yootek.Organizations;
+using Yootek.Organizations.OrganizationStructure;
+using Yootek.GroupChats;
+using Yootek.Yootek.EntityDb;
+using Yootek.Yootek.EntityDb.Clb.City_Notification;
+using Yootek.Yootek.EntityDb.Clb.Enterprise;
+using Yootek.Yootek.EntityDb.Clb.Event;
+using Yootek.Yootek.EntityDb.Clb.Jobs;
+using Yootek.Yootek.EntityDb.Clb.Projects;
+using Yootek.SmartCommunity;
+using Yootek.Storage;
 using Microsoft.EntityFrameworkCore;
+using ClbCityNotificationComment = Yootek.Yootek.EntityDb.Clb.City_Notification.ClbCityNotificationComment;
+using Yootek.Yootek.EntityDb.Yootek.DichVu.Business;
 
-namespace IMAX.EntityFrameworkCore
+namespace Yootek.EntityFrameworkCore
 {
-    public class IMAXDbContext : AbpZeroDbContext<Tenant, Role, User, IMAXDbContext>
+    public class YootekDbContext : AbpZeroDbContext<Tenant, Role, User, YootekDbContext>
     {
         #region DbSet
+        public virtual DbSet<SchedulerNotification> SchedulerNotifications { get; set; }
+
         #region Forum
+
         public virtual DbSet<QuestionAnswer> QuestionAnswers { get; set; }
         public virtual DbSet<QAComment> QAComments { get; set; }
         public virtual DbSet<QATopic> QATopics { get; set; }
 
-        public virtual DbSet<Forum> Forums { get; set; }
+        public virtual DbSet<ForumPost> Forums { get; set; }
         public virtual DbSet<ForumComment> ForumComments { get; set; }
         public virtual DbSet<ForumTopic> ForumTopics { get; set; }
+        public virtual DbSet<Tag> Tags { get; set; }
+        public virtual DbSet<ForumTag> ForumTags { get; set; }
+
         #endregion
 
         #region User Config
+
         public virtual DbSet<Reminder> Reminders { get; set; }
         public virtual DbSet<PermissionTenant> PermissionsTenants { get; set; }
+
         #endregion
 
         #region Report store
+
         public virtual DbSet<ReportStore> ReportStore { get; set; }
+
         #endregion
 
         #region Chathub
+
         public virtual DbSet<Friendship> Friendships { get; set; }
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
         public virtual DbSet<GroupChat> GroupChats { get; set; }
@@ -56,9 +78,11 @@ namespace IMAX.EntityFrameworkCore
         public virtual DbSet<BinaryObject> BinaryObjects { get; set; }
         public virtual DbSet<FcmTokens> FcmTokens { get; set; }
         public virtual DbSet<FcmGroups> FcmGroups { get; set; }
+
         #endregion
 
         #region Community
+
         // public virtual DbSet<ProblemSystem> ProblemSystems { get; set; }
         public virtual DbSet<CityNotification> CityNotifications { get; set; }
         public virtual DbSet<CitizenReflect> CitizenReflects { get; set; }
@@ -77,8 +101,11 @@ namespace IMAX.EntityFrameworkCore
 
         //fee
         public virtual DbSet<UserBill> UserBills { get; set; }
+        public virtual DbSet<UserBillVehicleInfo> UserBillVehicleInfos { get; set; }
         public virtual DbSet<BillConfig> BillConfigs { get; set; }
         public virtual DbSet<UserBillPayment> UserBillPayments { get; set; }
+        public virtual DbSet<UserBillPaymentHistory> UserBillPaymentHistories { get; set; }
+        public virtual DbSet<BillStatistic> BillStatistics { get; set; }
         public virtual DbSet<BillDebt> BillDebts { get; set; }
         public virtual DbSet<BillEmailHistory> BillEmailHistories { get; set; }
         public virtual DbSet<BillPrepayment> BillPrepayment { get; set; }
@@ -88,21 +115,29 @@ namespace IMAX.EntityFrameworkCore
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Ward> Ward { get; set; }
         public virtual DbSet<CitizenTemp> CitizenTemps { get; set; }
-        public virtual DbSet<TheXe> TheXe { get; set; }
         public virtual DbSet<CitizenContract> CitizenContracts { get; set; }
+
         #endregion
+
         #region Staff Management
+
         public virtual DbSet<Position> Position { get; set; }
 
         public virtual DbSet<Staff> Staff { get; set; }
+
         #endregion
 
         #region News
+
         public virtual DbSet<News> News { get; set; }
+
         #endregion
 
-        #region Images
+        #region Images/ImageConfigs
+
         public virtual DbSet<Images> Images { get; set; }
+        public virtual DbSet<ImageConfig> ImageConfigs { get; set; }
+
         #endregion
 
         #region Smarthome
@@ -115,6 +150,7 @@ namespace IMAX.EntityFrameworkCore
         public virtual DbSet<HomeGateway> HomeGateways { get; set; }
 
         #region Business
+
         public virtual DbSet<BusinessChatMessage> BusinessChatMessages { get; set; }
         public virtual DbSet<UserProviderFriendship> UserProviderFriendships { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
@@ -137,6 +173,7 @@ namespace IMAX.EntityFrameworkCore
         #endregion
 
         #endregion
+
         public virtual DbSet<AppOrganizationUnit> AppOrganizationUnits { get; set; }
         public virtual DbSet<CitizenVerification> CitizenVerifications { get; set; }
         public virtual DbSet<TypeAdministrative> TypeAdministratives { get; set; }
@@ -179,11 +216,36 @@ namespace IMAX.EntityFrameworkCore
         public virtual DbSet<Meter> Meters { get; set; }
         public virtual DbSet<MeterMonthly> MeterMonthlies { get; set; }
         public virtual DbSet<MeterType> MeterTypes { get; set; }
-        
+
         #endregion
 
+        #region Clb
+
+        public virtual DbSet<ClbHotlines> ClbHotlines { get; set; }
+
+        // public virtual DbSet<ClbForum> ClbForums { get; set; }
+        // public virtual DbSet<ClbForumComment> ClbForumComments { get; set; }
+        // public virtual DbSet<ClbForumTopic> ClbForumTopics { get; set; }
+        public virtual DbSet<ClbCityVote> ClbCityVotes { get; set; }
+        public virtual DbSet<ClbUserVote> ClbUserVotes { get; set; }
+        public virtual DbSet<ClbCityNotification> ClbCityNotifications { get; set; }
+        public virtual DbSet<ClbCityNotificationComment> ClbCityNotificationComments { get; set; }
+        public virtual DbSet<ClbUserCityNotification> ClbUserCityNotifications { get; set; }
+        public virtual DbSet<ClbEvent> ClbEvents { get; set; }
+        public virtual DbSet<ClbEventComment> ClbEventComments { get; set; }
+        public virtual DbSet<ClbUserEvent> ClbUserEvents { get; set; }
+        public virtual DbSet<Member> Members { get; set; }
+        public virtual DbSet<Enterprises> Enterprises { get; set; }
+        public virtual DbSet<UserEnterprises> UserEnterprises { get; set; }
+        public virtual DbSet<BusinessField> BusinessFields { get; set; }
+        public virtual DbSet<Projects> Projects { get; set; }
+        public virtual DbSet<Jobs> Jobs { get; set; }
+        public virtual DbSet<ForumPostReaction> ForumPostReactions { get; set; }
+
+        #endregion
 
         #region qlvl
+
         public virtual DbSet<Material> Materials { get; set; }
         public virtual DbSet<MaintenancePlan> MaintenancePlans { get; set; }
         public virtual DbSet<MaterialCategory> MaterialCategories { get; set; }
@@ -194,7 +256,15 @@ namespace IMAX.EntityFrameworkCore
         #endregion
 
         #region Metrics
+
         public virtual DbSet<HomeMeter> HomeMeters { get; set; }
+
+        #endregion
+
+        #region smart social
+
+        public virtual DbSet<Provider> Providers { get; set; }
+
         #endregion
 
         public virtual DbSet<NhomTaiSan> NhomTaiSan { get; set; }
@@ -215,15 +285,19 @@ namespace IMAX.EntityFrameworkCore
         public virtual DbSet<PhieuKiemKhoToTaiSan> PhieuKiemKhoToTaiSan { get; set; }
         public virtual DbSet<MaHeThong> MaHeThong { get; set; }
         public virtual DbSet<TaiSanChiTiet> TaiSanChiTiet { get; set; }
-
         public virtual DbSet<NhatKyVanHanh> NhatKyVanHanh { get; set; }
+        public virtual DbSet<CareerCategory> CareerCategory { get; set; }
+
         #region Digital Services
+
         public virtual DbSet<DigitalServiceOrder> DigitalServiceOrder { get; set; }
         public virtual DbSet<DigitalServiceCategory> DigitalServiceCategory { get; set; }
         public virtual DbSet<DigitalServices> DigitalServices { get; set; }
         public virtual DbSet<DigitalServiceDetails> DigitalServiceDetails { get; set; }
+
         #endregion
-        public IMAXDbContext(DbContextOptions<IMAXDbContext> options)
+
+        public YootekDbContext(DbContextOptions<YootekDbContext> options)
             : base(options)
         {
         }

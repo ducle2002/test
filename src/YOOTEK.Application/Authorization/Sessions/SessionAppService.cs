@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Auditing;
-using IMAX.Sessions.Dto;
+using Yootek.Sessions.Dto;
 using Microsoft.AspNetCore.Http;
 
-namespace IMAX.Sessions
+namespace Yootek.Sessions
 {
-    public class SessionAppService : IMAXAppServiceBase, ISessionAppService
+    public class SessionAppService : YootekAppServiceBase, ISessionAppService
     {
         public IHttpContextAccessor _httpContextAccessor;
         public SessionAppService(IHttpContextAccessor httpContextAccessor)

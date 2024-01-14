@@ -2,7 +2,7 @@
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Organizations;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public enum STATE_STAFF
     {

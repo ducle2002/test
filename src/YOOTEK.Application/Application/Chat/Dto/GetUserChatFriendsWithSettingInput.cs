@@ -1,6 +1,6 @@
-﻿using IMAX.Common;
+﻿using Yootek.Common;
 
-namespace IMAX.Application.Chat.Dto
+namespace Yootek.Application.Chat.Dto
 {
     public class GetUserChatFriendsWithSettingInput : FilteredInputDto
     {

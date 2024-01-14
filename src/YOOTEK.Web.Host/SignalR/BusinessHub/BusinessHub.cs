@@ -4,12 +4,12 @@
 //using Abp.MultiTenancy;
 //using Abp.RealTime;
 //using Castle.Core.Logging;
-//using IMAX.Chat;
-//using IMAX.Chat.BusinessChat;
+//using Yootek.Chat;
+//using Yootek.Chat.BusinessChat;
 //using System;
 //using System.Threading.Tasks;
 
-//namespace IMAX.Web.Host.SignalR.BusinessHub
+//namespace Yootek.Web.Host.SignalR.BusinessHub
 //{
 //    public class BusinessHub : OnlineClientHubBase, ITransientDependency
 //    {

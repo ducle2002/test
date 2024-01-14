@@ -1,6 +1,6 @@
 ﻿using Abp.Notifications;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public class UserMessageNotificationDataBase : NotificationData
     {

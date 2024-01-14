@@ -1,4 +1,4 @@
-﻿namespace IMAX.Sessions.Dto
+﻿namespace Yootek.Sessions.Dto
 {
     public class GetCurrentLoginInformationsOutput
     {

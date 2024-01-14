@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Abp.Configuration;
 
-namespace IMAX.Timing
+namespace Yootek.Timing
 {
     public interface ITimeZoneService
     {

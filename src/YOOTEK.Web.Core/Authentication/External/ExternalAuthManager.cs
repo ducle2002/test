@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Dependency;
 
-namespace IMAX.Authentication.External
+namespace Yootek.Authentication.External
 {
     public class ExternalAuthManager : IExternalAuthManager, ITransientDependency
     {

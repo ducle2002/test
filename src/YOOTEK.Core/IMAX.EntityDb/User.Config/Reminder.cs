@@ -2,7 +2,7 @@
 using Abp.Domain.Entities.Auditing;
 using System;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public class Reminder : Entity<long>, ICreationAudited, IMayHaveTenant
     {

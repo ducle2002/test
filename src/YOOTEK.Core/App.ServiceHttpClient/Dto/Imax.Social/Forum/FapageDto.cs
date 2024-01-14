@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum
 {
     public enum FanpageState
     {

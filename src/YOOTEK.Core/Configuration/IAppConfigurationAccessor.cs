@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 
-namespace IMAX.Configuration
+namespace Yootek.Configuration
 {
     public interface IAppConfigurationAccessor
     {

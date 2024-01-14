@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("HomeMembers")]
     public class HomeMember : Entity<long>, IMayHaveTenant

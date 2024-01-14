@@ -1,9 +1,9 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 using System.Collections.Generic;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Business
 {
     public enum TypeReport
     {

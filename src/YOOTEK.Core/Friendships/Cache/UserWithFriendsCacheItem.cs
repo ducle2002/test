@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IMAX.Friendships.Cache
+namespace Yootek.Friendships.Cache
 {
     public class UserWithFriendsCacheItem
     {

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using JetBrains.Annotations;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("MeterMonthlys")]
     public class MeterMonthly : FullAuditedEntity<long>, IMayHaveTenant
@@ -14,6 +14,8 @@ namespace IMAX.EntityDb
         public long? MeterId { get; set; }
         public DateTime Period { get; set; }
         public int Value { get; set; }
+        public int? FirstValue { get; set; }
+        public bool? IsClosed { get; set; }
         [CanBeNull] public string ImageUrl { get; set; }
     }
 }

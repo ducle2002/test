@@ -1,11 +1,11 @@
 ﻿using Abp.Application.Services.Dto;
 
-namespace IMAX.Users.Dto
+namespace Yootek.Users.Dto
 {
     //custom PagedResultRequestDto
     public class PagedUserResultRequestDto : PagedResultRequestDto
     {
-        // [Range(1, IMAXConsts.MaxPageSize)]
+        // [Range(1, YootekConsts.MaxPageSize)]
         // public int MaxResultCount { get; set; }
 
         // [Range(0, int.MaxValue)]
@@ -13,7 +13,7 @@ namespace IMAX.Users.Dto
 
         // public PagedUserResultRequestDto()
         // {
-        //     MaxResultCount = IMAXConsts.DefaultPageSize;
+        //     MaxResultCount = YootekConsts.DefaultPageSize;
         // }
         public string Keyword { get; set; }
         public bool? IsActive { get; set; }

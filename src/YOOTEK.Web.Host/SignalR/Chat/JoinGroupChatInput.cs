@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Chat.SignalR
+namespace Yootek.Web.Host.Chat.SignalR
 {
     public class JoinGroupChatInput
     {

@@ -9,11 +9,11 @@ using Abp.Linq.Extensions;
 using Abp.RealTime;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Application.BusinessChat.Dto;
-using IMAX.Application.BusinessChat.Input;
-using IMAX.Chat;
-using IMAX.Chat.BusinessChat;
-using IMAX.Common.DataResult;
+using Yootek.Application.BusinessChat.Dto;
+using Yootek.Application.BusinessChat.Input;
+using Yootek.Chat;
+using Yootek.Chat.BusinessChat;
+using Yootek.Common.DataResult;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,14 +21,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.BusinessChat
+namespace Yootek.Application.BusinessChat
 {
     public interface IUserBusinessChatAppService : IApplicationService
     {
 
     }
 
-    public class UserBusinessChatAppService: IMAXAppServiceBase, IUserBusinessChatAppService
+    public class UserBusinessChatAppService: YootekAppServiceBase, IUserBusinessChatAppService
     {
 
         private readonly IOnlineClientManager _onlineClientManager;
@@ -55,7 +55,7 @@ namespace IMAX.Application.BusinessChat
             try
             {
                 var userId = AbpSession.GetUserId();
-                return await UnitOfWorkManager.WithUnitOfWorkAsync(async () =>
+                return await UnitOfWorkManager.WithUnitOfWorkAsync( async () =>
                 {
                     var friends = _userProviderFriendshipRepos.GetAll()
                       .Where(x => x.UserId == userId && x.IsShop)
@@ -67,9 +67,7 @@ namespace IMAX.Application.BusinessChat
                     {
                         var friend = new ProviderFriendshipDto();
                         friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
-                        friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-                            new UserIdentifier(null, item.FriendUserId)
-                        );
+                        friend.IsOnline = await _onlineClientManager.IsOnlineAsync( new UserIdentifier(null, item.FriendUserId));
 
                         friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
                          .Where(m => (m.UserId == userId && m.TargetUserId == friend.FriendUserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))

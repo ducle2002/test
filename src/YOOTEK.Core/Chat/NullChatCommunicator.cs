@@ -1,14 +1,14 @@
 ﻿//using Abp;
 //using Abp.RealTime;
-//using IMAX.EntityDb;
-//using IMAX.Friendships;
+//using Yootek.EntityDb;
+//using Yootek.Friendships;
 //using System;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
 //using System.Threading.Tasks;
 
-//namespace IMAX.Chat
+//namespace Yootek.Chat
 //{
 //    public class NullChatCommunicator : IChatCommunicator
 //    {

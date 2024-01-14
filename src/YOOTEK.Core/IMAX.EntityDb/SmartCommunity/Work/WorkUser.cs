@@ -2,7 +2,7 @@
 using Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public enum Permission
     {

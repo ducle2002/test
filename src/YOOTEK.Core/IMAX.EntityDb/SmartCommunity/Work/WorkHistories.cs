@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("WorkHistories")]
     public class WorkHistory : FullAuditedEntity<long>, IMayHaveTenant

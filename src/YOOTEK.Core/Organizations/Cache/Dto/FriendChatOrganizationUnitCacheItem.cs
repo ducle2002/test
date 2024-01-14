@@ -1,11 +1,11 @@
-﻿using IMAX.Friendships;
+﻿using Yootek.Friendships;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Cache.Dto
+namespace Yootek.Organizations.Cache.Dto
 {
     public class FriendChatOrganizationUnitCacheItem
     {

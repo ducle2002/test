@@ -1,4 +1,4 @@
-﻿namespace IMAX.Models.TokenAuth
+﻿namespace Yootek.Models.TokenAuth
 {
     public class RefreshTokenResult
     {

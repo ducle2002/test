@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using Abp.Organizations;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class CreateOrganizationUnitInput
     {

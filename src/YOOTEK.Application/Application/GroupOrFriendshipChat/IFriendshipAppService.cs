@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
-using IMAX.Friendships.Dto;
-using IMAX.Users.Dto;
+using Yootek.Friendships.Dto;
+using Yootek.Users.Dto;
 
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
     public interface IFriendshipAppService : IApplicationService
     {

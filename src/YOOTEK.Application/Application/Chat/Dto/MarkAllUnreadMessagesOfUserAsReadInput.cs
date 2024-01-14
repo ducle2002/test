@@ -1,6 +1,6 @@
 ﻿using Abp;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
     public class MarkAllUnreadMessagesOfUserAsReadInput
     {

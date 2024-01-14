@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.ApbCore.Data
+namespace Yootek.ApbCore.Data
 {
     public interface ISqlExecuter
     {

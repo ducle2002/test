@@ -3,7 +3,7 @@ using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using Abp.MultiTenancy;
 
-namespace IMAX.MultiTenancy.Dto
+namespace Yootek.MultiTenancy.Dto
 {
     [AutoMapTo(typeof(Tenant))]
     public class CreateTenantDto

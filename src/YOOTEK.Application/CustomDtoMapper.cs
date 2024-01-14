@@ -1,18 +1,34 @@
 using AutoMapper;
-using IMAX.Authorization.Permissions.Dto;
-using IMAX.EntityDb;
-using IMAX.IMAX.EntityDb.SmartCommunity.Apartment;
-using IMAX.IMAX.EntityDb.SmartCommunity.Phidichvu;
-using IMAX.IMAX.Services.IMAX.SmartCommunity.Building.Dto;
-using IMAX.IMAX.Services.IMAX.SmartCommunity.CitizenFee.Dto;
-using IMAX.Organizations;
-using IMAX.Services;
-using IMAX.Services.Dto;
+using Yootek.Authorization.Permissions.Dto;
+using Yootek.EntityDb;
+using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
+using Yootek.Yootek.EntityDb.SmartCommunity.Phidichvu;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.Building.Dto;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
+using Yootek.Organizations;
+using Yootek.Services;
+using Yootek.Services.Dto;
 using System.Collections;
 using System.Collections.Generic;
+using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum;
+using Yootek.Authorization.Users;
+using Yootek.Common.Enum;
+using Yootek.Yootek.EntityDb.Clb.Enterprise;
+using Yootek.Yootek.EntityDb.Clb.Event;
+using Yootek.Yootek.EntityDb.Clb.Jobs;
+using Yootek.Yootek.EntityDb.Clb.Projects;
+using Yootek.Yootek.EntityDb.Forum;
+using Yootek.Yootek.Services.Yootek.Clb.Dto;
+using Yootek.Service;
 using Permission = Abp.Authorization.Permission;
+using System.Reflection;
+using System;
+using AutoMapper.Internal;
+using AutoMapper.Configuration;
+using System.Linq;
 
-namespace IMAX
+namespace Yootek
 {
     internal static class CustomDtoMapper
     {
@@ -157,18 +173,22 @@ namespace IMAX
             
             mapper.CreateMap<CreateMeterTypeByUserInput, MeterType>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
-            
+
             mapper.CreateMap<UpdateMeterTypeInput, MeterType>()
                 .ForMember(dest => dest.Name,
                     opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
                 .ForMember(dest => dest.Description,
+                    opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
+                .ForMember(dest => dest.BillType,
                     opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
-            
+                
             mapper.CreateMap<UpdateMeterTypeByUserInput, MeterType>()
                 .ForMember(dest => dest.Name,
                     opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
                 .ForMember(dest => dest.Description,
-                    opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+                    opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
+                .ForMember(dest => dest.BillType,
+                opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
 
             // Meter
             mapper.CreateMap<CreateMeterInput, Meter>()
@@ -232,7 +252,93 @@ namespace IMAX
                 .ForMember(dest => dest.Value,
                     opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
 
+            mapper.CreateMap<CreateForumPostDto, ForumPost>()
+                .ForMember(dest => dest.State,
+                        opt => opt.MapFrom( src => CommonENumForum.FORUM_STATE.NEW));
+            
+            mapper.CreateMap<UpdateForumPostDto, ForumPost>()
+                .ForMember(dest=> dest.State,
+                    opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
+                .ForMember(dest=>dest.Type ,
+                    opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)))
+                .ForAllOtherMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
 
+            mapper.CreateMap<CreateForumCommentDto, ForumComment>()
+                .ForAllOtherMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateForumCommentDto, ForumComment>()
+                .ForAllOtherMembers(opt => opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateMemberByUserDto, Member>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateMemberByUserDto, Member>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateMemberByAdminDto, Member>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateMemberByAdminDto, Member>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateJobDto, Jobs>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateJobDto, Jobs>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+
+            mapper.CreateMap<CreateProjectDto, Projects>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateProjectDto, Projects>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<Projects, ProjectDto>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<User, ShortenedUserDto>();
+            
+            mapper.CreateMap<CreateReactionDto, ForumPostReaction>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateReactionDto, ForumPostReaction>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateEnterpriseDto, Enterprises>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateEnterpriseDto, Enterprises>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateClbEvent, ClbEvent>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateClbEvent, ClbEvent>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<ClbEvent, ClbEventDto>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<CreateClbEventCommentDto, ClbEventComment>()
+                .ForMember(x=>x.IsLike, opt => opt.MapFrom(src => false))
+                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateClbEventCommentDto, ClbEventComment>()
+                .ForMember(x=>x.IsLike, opt =>opt.Ignore())
+                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<CreateClbEventFollowDto, ClbEventComment>()
+                .ForMember(x => x.Comment, opt => opt.Ignore())
+                .ForMember(x=>x.IsLike, opt => opt.MapFrom(src => true))
+                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateClbEventFollowDto, ClbEventComment>()
+                .ForMember(x=>x.IsLike, opt =>opt.Ignore())
+                .ForAllOtherMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateEnterpriseDto, Enterprises>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateEnterpriseDto, Enterprises>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<CreateBusinessFieldDto, BusinessField>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateBusinessFieldDto, BusinessField>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateEmployeeDto, EmployeeDto>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            mapper.CreateMap<CreateForumTopicDto, ForumTopic>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            mapper.CreateMap<UpdateForumTopicDto, ForumTopic>()
+                .ForAllMembers(opt=> opt.Condition((src, dest, srcMember) => IsNotNullOrDefault(srcMember)));
+            
+            // Ecofarm
+            mapper.CreateMap<User, UserInfoDto>();
         }
 
         #region method helpers 
@@ -245,5 +351,30 @@ namespace IMAX
             return srcMember != null && !EqualityComparer<T>.Default.Equals(srcMember, default);
         }
         #endregion
+    }
+
+    public static class AutoMapperExtensions
+    {
+        private static readonly PropertyInfo TypeMapActionsProperty = typeof(TypeMapConfiguration).GetProperty("TypeMapActions", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        // not needed in AutoMapper 12.0.1
+        private static readonly PropertyInfo DestinationTypeDetailsProperty = typeof(TypeMap).GetProperty("DestinationTypeDetails", BindingFlags.NonPublic | BindingFlags.Instance);
+
+        public static void ForAllOtherMembers<TSource, TDestination>(this IMappingExpression<TSource, TDestination> expression, Action<IMemberConfigurationExpression<TSource, TDestination, object>> memberOptions)
+        {
+            var typeMapConfiguration = (TypeMapConfiguration)expression;
+
+            var typeMapActions = (List<Action<TypeMap>>)TypeMapActionsProperty.GetValue(typeMapConfiguration);
+
+            typeMapActions.Add(typeMap =>
+            {
+                var destinationTypeDetails = (TypeDetails)DestinationTypeDetailsProperty.GetValue(typeMap);
+
+                foreach (var accessor in destinationTypeDetails.WriteAccessors.Where(m => typeMapConfiguration.GetDestinationMemberConfiguration(m) == null))
+                {
+                    expression.ForMember(accessor.Name, memberOptions);
+                }
+            });
+        }
     }
 }

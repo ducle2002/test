@@ -7,14 +7,14 @@ using Abp.Dependency;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Zero.Configuration;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.MultiTenancy;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.MultiTenancy;
 using System.Threading.Tasks;
 using System;
 using Abp.Extensions;
 
-namespace IMAX.Authorization
+namespace Yootek.Authorization
 {
     public class LogInManager : AbpLogInManager<Tenant, Role, User>
     {

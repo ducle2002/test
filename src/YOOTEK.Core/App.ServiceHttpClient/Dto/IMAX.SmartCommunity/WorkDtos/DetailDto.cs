@@ -1,7 +1,7 @@
-using IMAX.Common;
+using Yootek.Common;
 using System;
 
-namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
+namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
 {
     public class DetailWorkDto
     {
@@ -31,7 +31,23 @@ namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
         public string? StartDate { get; set; }
         public string? EndDate { get; set; }
     }
-
+    public class GetWorkStatisticGeneralDto
+    {
+        public int? UserId { get; set; }
+        public int? Year { get; set; }
+        public int? Month { get; set; }
+        public QueryCaseWorkStatistics QueryCase { get; set; }
+        public int? Status { get; set; }
+    }
+    public enum QueryCaseWorkStatistics
+    {
+        ByYear = 1,
+        ByMonth = 2,
+        ByWeek = 3,
+        ByDay = 4,
+        ByHours = 5,
+        ByStar = 6,
+    }
     public class WorkDetainInCreateWorkTypeDto
     {
         public string Name { get; set; }

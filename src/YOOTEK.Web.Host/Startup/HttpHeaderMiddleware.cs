@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public class HttpHeaderMiddleware
     {
@@ -25,7 +25,6 @@ namespace IMAX.Web.Host.Startup
         {
             try
             {
-
                 var userId = _appSession.UserId > 0 ? _appSession.UserId.ToString() : "";
                 var tenantId = _appSession.TenantId > 0 ? _appSession.TenantId.ToString() : "";
                 httpContext.Request.Headers.Add("userId", userId);

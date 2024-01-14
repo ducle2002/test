@@ -1,12 +1,12 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Organizations;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using JetBrains.Annotations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public enum STATUS_VOTE
     {
@@ -29,6 +29,7 @@ namespace IMAX.EntityDb
         public STATUS_VOTE? Status { get; set; }
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
+        public bool? IsOptionOther { get; set; }
     }
 
 }

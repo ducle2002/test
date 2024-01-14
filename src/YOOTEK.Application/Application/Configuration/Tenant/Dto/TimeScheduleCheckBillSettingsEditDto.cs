@@ -1,12 +1,16 @@
-﻿namespace IMAX.Application.Configuration.Tenant.Dto
+﻿namespace Yootek.Application.Configuration.Tenant.Dto
 {
     public class TimeScheduleCheckBillSettingsEditDto
     {
-        public int HeadPeriodDay { get; set; }
-        public int EndPeriodDay { get; set; }
+        public bool IsEnableCreateE {  get; set; }
+        public bool IsEnableCreateW { get; set; }
+        public bool IsEnableCreateP { get; set; }
+        public bool IsEnableCreateM { get; set; }
+
         public int ElectricHeadPeriodDay { get; set; }
         public int ElectricEndPeriodDay { get; set; }
         public int ParkingCreateDay { get; set; }
+        public int ManagerCreateDay { get; set; }
         public int WaterHeadPeriodDay { get; set; }
         public int WaterEndPeriodDay { get; set; }
         public int BillNotificationTime1 { get; set; }

@@ -4,15 +4,15 @@ using Abp.EntityFrameworkCore;
 using Abp.Extensions;
 using Microsoft.EntityFrameworkCore;
 
-namespace IMAX.EntityFrameworkCore
+namespace Yootek.EntityFrameworkCore
 {
     public class DatabaseCheckHelper : ITransientDependency
     {
-        private readonly IDbContextProvider<IMAXDbContext> _dbContextProvider;
+        private readonly IDbContextProvider<YootekDbContext> _dbContextProvider;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         public DatabaseCheckHelper(
-            IDbContextProvider<IMAXDbContext> dbContextProvider,
+            IDbContextProvider<YootekDbContext> dbContextProvider,
             IUnitOfWorkManager unitOfWorkManager
         )
         {

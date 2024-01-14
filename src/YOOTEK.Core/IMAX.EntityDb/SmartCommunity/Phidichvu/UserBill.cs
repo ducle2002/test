@@ -1,15 +1,15 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Organizations;
-using IMAX.Common.Enum;
-using IMAX.Organizations.Interface;
+using Yootek.Common.Enum;
+using Yootek.Organizations.Interface;
 using JetBrains.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public enum UserBillStateView
     {
@@ -43,7 +43,7 @@ namespace IMAX.EntityDb
     }
 
     [Table("UserBills")]
-    public class UserBill : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit, IMayHaveBuilding, IMayHaveUrban
+    public class UserBill : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveBuilding, IMayHaveUrban
     {
         [CanBeNull] public string Code { get; set; }
         public DateTime? Period { get; set; }
@@ -56,15 +56,10 @@ namespace IMAX.EntityDb
         public UserBillStatus Status { get; set; }
         public int? TenantId { get; set; }
         public DateTime? DueDate { get; set; }
-        [NotMapped] public UserBillSurcharge[]? Surcharges { get; set; }
-        [NotMapped] public Dictionary<string, double>? Discounts { get; set; }
-        [NotMapped] public double? Cost { get; set; }
         public double? LastCost { get; set; }
         public decimal? DebtTotal { get; set; }
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
-        public long? OrganizationUnitId { get; set; }
-        public bool IsDraft { get; set; }
         public long? CitizenTempId { get; set; }
         public int? CarNumber { get; set; }
         public int? MotorbikeNumber { get; set; }
@@ -73,7 +68,7 @@ namespace IMAX.EntityDb
         public decimal? IndexEndPeriod { get; set; }
         public decimal? IndexHeadPeriod { get; set; }
         public decimal? TotalIndex { get; set; }
-        [CanBeNull] public UserBillPaymentMethod? paymentMethod { get; set; }
-       
+        public bool? IsPaymentPending { get; set; }
+        public bool? IsPrepayment { get; set; }
     }
 }

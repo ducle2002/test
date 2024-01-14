@@ -1,9 +1,9 @@
 ﻿using Abp.Dependency;
 using Abp.Extensions;
-using IMAX.Configuration;
+using Yootek.Configuration;
 using Microsoft.Extensions.Configuration;
 
-namespace IMAX.Net.Sms
+namespace Yootek.Net.Sms
 {
     public class TwilioSmsSenderConfiguration : ITransientDependency
     {

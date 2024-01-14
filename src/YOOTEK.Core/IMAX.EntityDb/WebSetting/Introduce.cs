@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("Introduce")]
     public class Introduce : Entity<long>, IMayHaveTenant

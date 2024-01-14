@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.MultiTenancy
+namespace Yootek.MultiTenancy
 {
     public class MobileConfig
     {

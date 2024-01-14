@@ -5,11 +5,13 @@ using Abp.Extensions;
 using Abp.Notifications;
 using Abp.Timing;
 using Abp.Web.Security.AntiForgery;
-using IMAX.Controllers;
+using Yootek.Controllers;
+using Abp.Auditing;
 
-namespace IMAX.Web.Host.Controllers
+namespace Yootek.Web.Host.Controllers
 {
-    public class HomeController : IMAXControllerBase
+    [DisableAuditing]
+    public class HomeController : YootekControllerBase
     {
         private readonly INotificationPublisher _notificationPublisher;
 

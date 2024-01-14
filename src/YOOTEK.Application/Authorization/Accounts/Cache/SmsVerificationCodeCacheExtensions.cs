@@ -1,6 +1,6 @@
 using Abp.Runtime.Caching;
 
-namespace IMAX.Account.Cache
+namespace Yootek.Account.Cache
 {
     public static class SmsVerificationCodeCacheExtensions
     {

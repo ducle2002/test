@@ -5,15 +5,18 @@ using Abp.Authorization.Users;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Extensions;
+using Abp.IdentityFramework;
 using Abp.Linq.Extensions;
 using Abp.Organizations;
 using Abp.UI;
-using IMAX.Authorization.Roles;
-using IMAX.Common.DataResult;
-using IMAX.EntityDb;
-using IMAX.Organizations;
-using IMAX.Organizations.Dto;
-using IMAX.Organizations.OrganizationStructure;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Common.DataResult;
+using Yootek.EntityDb;
+using Yootek.Organizations;
+using Yootek.Organizations.Dto;
+using Yootek.Organizations.OrganizationStructure;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -21,7 +24,7 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 
-namespace IMAX.Service
+namespace Yootek.Service
 {
     public interface IOrganizationUnitAppService : IApplicationService
     {
@@ -52,13 +55,14 @@ namespace IMAX.Service
     }
 
     [AbpAuthorize]
-    public class OrganizationUnitAppService : IMAXAppServiceBase, IOrganizationUnitAppService
+    public class OrganizationUnitAppService : YootekAppServiceBase, IOrganizationUnitAppService
     {
         private readonly AppOrganizationUnitManager _organizationUnitManager;
         private readonly IRepository<AppOrganizationUnit, long> _organizationUnitRepository;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
         private readonly IRepository<OrganizationUnitRole, long> _organizationUnitRoleRepository;
         private readonly RoleManager _roleManager;
+        private readonly UserManager _userManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
         private readonly IRepository<Position, long> _positionRepository;
         private readonly IRepository<Staff, long> _staffRepository;
@@ -70,6 +74,7 @@ namespace IMAX.Service
             IRepository<AppOrganizationUnit, long> organizationUnitRepository,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
             RoleManager roleManager,
+            UserManager userManager,
             IRepository<OrganizationUnitRole, long> organizationUnitRoleRepository,
             IUnitOfWorkManager unitOfWorkManager,
             IRepository<Position, long> positionRepository,
@@ -86,6 +91,7 @@ namespace IMAX.Service
             _positionRepository = positionRepository;
             _staffRepository = staffRepository;
             _departUnitRepository = departUnitRepository;
+            _userManager = userManager;
 
 
         }
@@ -110,7 +116,7 @@ namespace IMAX.Service
 
                 }).ToDictionaryAsync(x => x.organizationUnitId, y => y.count);
 
-                var ouChargeCounts = await _organizationUnitRepository.GetAll().Where(ou => ou.ParentId != null && ou.Type != APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && ou.Type != 0 && ou.Type != APP_ORGANIZATION_TYPE.BUILDING && ou.Type != APP_ORGANIZATION_TYPE.URBAN)
+                var ouChargeCounts = await _organizationUnitRepository.GetAll().Where(ou => ou.ParentId != null && ou.Type != APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && ou.Type != 0 && ou.Type != APP_ORGANIZATION_TYPE.BUILDING && ou.Type != APP_ORGANIZATION_TYPE.URBAN && ou.Type != APP_ORGANIZATION_TYPE.NONE)
                     .GroupBy(x => x.ParentId)
                     .Select(groupedCharge => new
                     {
@@ -148,7 +154,7 @@ namespace IMAX.Service
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -186,7 +192,7 @@ namespace IMAX.Service
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -223,7 +229,7 @@ namespace IMAX.Service
         //    }
         //    catch (Exception e)
         //    {
-        //        throw new UserFriendlyException(e.Message);
+        //        throw;
         //    }
         //}
 
@@ -297,7 +303,8 @@ namespace IMAX.Service
                         organizationUnit.ProjectCode = input.ProjectCode;
                         await _organizationUnitManager.CreateAsync(organizationUnit);
                     }
-                }else
+                }
+                else
                 {
                     var organizationUnit = new AppOrganizationUnit(AbpSession.TenantId, input.DisplayName, id, APP_ORGANIZATION_TYPE.NONE, input.IsManager);
                     organizationUnit.ImageUrl = input.ImageUrl;
@@ -311,7 +318,7 @@ namespace IMAX.Service
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -388,12 +395,18 @@ namespace IMAX.Service
         }
 
 
+        public async Task DeleteFeature(EntityDto<long> input)
+        {
+            await _organizationUnitRepository.DeleteAsync(input.Id);
+        }
+
         public async Task DeleteOrganizationUnit(EntityDto<long> input)
         {
             await _userOrganizationUnitRepository.DeleteAsync(x => x.OrganizationUnitId == input.Id);
             await _organizationUnitRoleRepository.DeleteAsync(x => x.OrganizationUnitId == input.Id);
             await _organizationUnitManager.DeleteAsync(input.Id);
         }
+
 
 
 
@@ -406,18 +419,68 @@ namespace IMAX.Service
         public async Task RemoveRoleFromOrganizationUnit(RoleToOrganizationUnitInput input)
         {
             await _roleManager.RemoveFromOrganizationUnitAsync(input.RoleId, input.OrganizationUnitId);
+            var organizationUnit = _organizationUnitRepository.FirstOrDefault(x => x.Id == input.OrganizationUnitId);
+            var role = _roleManager.Roles.FirstOrDefault(x => x.Id == input.RoleId);
+
+            var users = await _userManager.GetUsersInOrganizationUnitAsync(organizationUnit, true);
+            if (users.Count > 0)
+            {
+                foreach (var us in users)
+                {
+                    await _userManager.RemoveFromRoleAsync(us, role.NormalizedName);
+                }
+            }
+
         }
 
         public async Task AddUsersToOrganizationUnit(UsersToOrganizationUnitInput input)
         {
+            var organizationUnit = _organizationUnitRepository.FirstOrDefault(x => x.Id == input.OrganizationUnitId);
+
+            var roles = await _roleManager.GetRolesInOrganizationUnit(organizationUnit, true);
+
+            var roleNames = roles
+                .SelectMany(role => _roleManager.Roles.Where(r => r.Id == role.Id))
+                .Select(role => role.NormalizedName)
+                .ToArray();
+
             foreach (var userId in input.UserIds)
             {
                 await UserManager.AddToOrganizationUnitAsync(userId, input.OrganizationUnitId);
+                var user = UserManager.GetUserById(userId);
+                await _userManager.AddToRolesAsync(user, roleNames);
             }
         }
 
         public async Task AddRolesToOrganizationUnit(RolesToOrganizationUnitInput input)
         {
+            var users = (
+                from ouUser in _userOrganizationUnitRepository.GetAll()
+                join ou in _organizationUnitRepository.GetAll() on ouUser.OrganizationUnitId equals ou.Id
+                join user in UserManager.Users on ouUser.UserId equals user.Id
+                join staff in _staffRepository.GetAll() on user.Id equals staff.UserId into tb_staff
+                from staff in tb_staff.DefaultIfEmpty()
+                where ouUser.OrganizationUnitId == input.OrganizationUnitId
+                select new
+                {
+                    user
+                }
+            ).ToList();
+
+            var roleIds = input.RoleIds;
+            var roleNames = _roleManager.Roles
+                .Where(role => roleIds.Contains(role.Id))
+                .Select(role => role.NormalizedName)
+                .ToArray();
+
+            if (users != null)
+            {
+                foreach (var us in users)
+                {
+                    var user = us.user;
+                    await _userManager.AddToRolesAsync(user, roleNames);
+                }
+            }
             foreach (var roleId in input.RoleIds)
             {
                 await _roleManager.AddToOrganizationUnitAsync(roleId, input.OrganizationUnitId, AbpSession.TenantId);
@@ -632,7 +695,7 @@ namespace IMAX.Service
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
 
         }
@@ -671,7 +734,7 @@ namespace IMAX.Service
             catch (Exception e)
             {
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
         public DataResult GetOrganizationUnitByParentIdNotPaging(OrganizationUnitByParentNotPagingInput input)
@@ -704,7 +767,7 @@ namespace IMAX.Service
             catch (Exception e)
             {
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
         public async Task<OrganizationUnitDto> CreateUnitCharge(CreateOrganizationUnitInput input)
@@ -725,7 +788,7 @@ namespace IMAX.Service
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 

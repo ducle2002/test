@@ -1,13 +1,13 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Business
 {
     public class CreateItemAttributeDto
     {

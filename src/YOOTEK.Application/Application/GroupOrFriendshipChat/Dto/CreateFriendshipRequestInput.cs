@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     public class CreateFriendshipRequestInput
     {

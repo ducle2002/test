@@ -12,11 +12,11 @@ using System.Collections.Generic;
 using Abp.AspNetZeroCore.Net;
 using Abp.Collections.Extensions;
 using Abp.Dependency;
-using IMAX.Dto;
-using IMAX.Storage;
+using Yootek.Dto;
+using Yootek.Storage;
 using OfficeOpenXml;
 
-namespace IMAX.DataExporting.Excel.EpPlus
+namespace Yootek.DataExporting.Excel.EpPlus
 {
     public abstract class EpPlusExcelExporterBase : AbpZeroTemplateServiceBase, ITransientDependency
     {

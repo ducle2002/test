@@ -1,4 +1,4 @@
-﻿namespace IMAX.Authorization.Accounts.Dto
+﻿namespace Yootek.Authorization.Accounts.Dto
 {
     public enum TenantAvailabilityState
     {

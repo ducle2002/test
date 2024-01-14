@@ -3,7 +3,7 @@ using Abp.Application.Features;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 
-namespace IMAX.Editions
+namespace Yootek.Editions
 {
     public class EditionManager : AbpEditionManager
     {

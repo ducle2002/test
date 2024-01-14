@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
-using IMAX.Authorization.Accounts.Dto;
+using Yootek.Authorization.Accounts.Dto;
 
-namespace IMAX.Authorization.Accounts
+namespace Yootek.Authorization.Accounts
 {
     public interface IAccountAppService : IApplicationService
     {

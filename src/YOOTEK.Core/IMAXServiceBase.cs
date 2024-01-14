@@ -1,13 +1,13 @@
 ﻿using Abp;
 using System;
 
-namespace IMAX
+namespace Yootek
 {
-    public abstract class IMAXServiceBase : AbpServiceBase
+    public abstract class YootekServiceBase : AbpServiceBase
     {
-        protected IMAXServiceBase()
+        protected YootekServiceBase()
         {
-            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+            LocalizationSourceName = YootekConsts.LocalizationSourceName;
         }
         public class FieldNameAttribute : Attribute
         {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using IMAX.Authorization.Permissions.Dto;
+using Yootek.Authorization.Permissions.Dto;
 
-namespace IMAX.Roles.Dto
+namespace Yootek.Roles.Dto
 {
     public class GetRoleForEditOutput
     {

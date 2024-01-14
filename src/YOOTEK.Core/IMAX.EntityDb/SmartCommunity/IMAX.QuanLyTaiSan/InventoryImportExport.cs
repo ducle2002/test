@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("MaterialImportExports")]
     public class InventoryImportExport: FullAuditedEntity<long>, IMayHaveTenant

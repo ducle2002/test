@@ -1,13 +1,13 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.Runtime.Session;
-using IMAX.App.ServiceHttpClient.Dto;
-using IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity;
+using Yootek.App.ServiceHttpClient.Dto;
+using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace IMAX.App.ServiceHttpClient
+namespace Yootek.App.ServiceHttpClient
 {
     public interface IHttpQRCodeService
     {
@@ -76,7 +76,7 @@ namespace IMAX.App.ServiceHttpClient
 
         public async Task<MicroserviceResultDto<bool>> UpdateQRObject(UpdateQRObjectDto input)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Put, $"/api​/v1​/qrcode​/update-qrobject");
+            using var request = new HttpRequestMessage(HttpMethod.Put, $"/api/v1/qrcode/update-qrobject");
 
             request.HandlePutAsJson(input, _session);
             var response = await _client.SendAsync(request);
@@ -85,7 +85,7 @@ namespace IMAX.App.ServiceHttpClient
 
         public async Task<MicroserviceResultDto<bool>> DeleteQRObject(DeleteQRObjectDto input)
         {
-            using var request = new HttpRequestMessage(HttpMethod.Delete, $"​/api​/v1​/qrcode​/delete-qrobject");
+            using var request = new HttpRequestMessage(HttpMethod.Delete, $"/api/v1/qrcode/delete-qrobject");
 
             request.HandleDeleteAsJson<DeleteQRObjectDto>(input, _session);
             var response = await _client.SendAsync(request);

@@ -1,10 +1,10 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.IMAX.EntityDb.SmartCommunity.Phidichvu
+namespace Yootek.Yootek.EntityDb.SmartCommunity.Phidichvu
 {
     [Table("TemplateBills")]
     public class TemplateBill : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveUrban, IMayHaveBuilding
@@ -16,6 +16,7 @@ namespace IMAX.IMAX.EntityDb.SmartCommunity.Phidichvu
         public string Name { get; set; }
         public string Content { get; set; }
         public ETemplateBillType Type { get; set; }
+        public string Code { get; set; }
     }
 
     public enum ETemplateBillType

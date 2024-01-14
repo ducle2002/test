@@ -1,6 +1,6 @@
 ﻿// ReSharper disable All
 
-namespace IMAX.Authorization
+namespace Yootek.Authorization
 {
     public static class PermissionNames
     {
@@ -9,8 +9,17 @@ namespace IMAX.Authorization
         // Quyền xem toàn bộ dữ liệu
         public const string Data_Admin = "Data.Admin";
 
-        public const string Pages = "Pages";    
+       
+        public const string Pages = "Pages";
         // [Begin] Tenant -> Khu đô thị, Tòa nhà, Block, Tầng, Căn hộ, Loại mặt bằng, Trạng thái mặt bằng
+
+        // Quyền Smart social
+        public const string Pages_SmartSocial = "Pages.SmartSocial";
+
+        public const string Pages_SmartSocial_Setting = "Pages.SmartSocial.Setting";
+        public const string Pages_SmartSocial_AppFeedback = "Pages.SmartSocial.AppFeedback";
+        public const string Pages_SmartSocial_VerifyProvider = "Pages.SmartSocial.VerifyProvider";
+        public const string Pages_SmartSocial_Notification = "Pages.SmartSocial.Notification";
 
         public const string Pages_TenantName = "Pages.TenantName";
      
@@ -90,6 +99,29 @@ namespace IMAX.Authorization
         public const string Pages_Citizens_Verifications_Approve = "Pages.Citizen.Verifications.Approve";
         public const string Pages_Citizens_Verifications_Request = "Pages.Citizen.Verifications.Request";
         public const string Pages_Citizens_Verifications_Decline = "Pages.Citizen.Verifications.Decline";
+
+        // [End]
+
+        // [Begin] Quản lý công dân (Chính phủ số)
+
+        //public const string Pages_Citizens = "Pages.Citizens";
+
+        //public const string Pages_Citizens_List = "Pages.Citizens.List";
+        //public const string Pages_Citizens_List_GetAll = "Pages.Citizens.List.GetAll";
+        //public const string Pages_Citizens_List_GetDetail = "Pages.Citizens.List.GetDetail";
+        //public const string Pages_Citizens_List_Create = "Pages.Citizens.List.Create";
+        //public const string Pages_Citizens_List_Edit = "Pages.Citizens.List.Edit";
+        //public const string Pages_Citizens_List_Delete = "Pages.Citizens.List.Delete";
+
+        //public const string Pages_Citizens_Verifications = "Pages.Citizen.Verifications";
+        //public const string Pages_Citizens_Verifications_GetAll = "Pages.Citizen.Verifications.GetAll";
+        //public const string Pages_Citizens_Verifications_GetDetail = "Pages.Citizen.Verifications.GetDetail";
+        //public const string Pages_Citizens_Verifications_Create = "Pages.Citizen.Verifications.Create";
+        //public const string Pages_Citizens_Verifications_Edit = "Pages.Citizen.Verifications.Edit";
+        //public const string Pages_Citizens_Verifications_Delete = "Pages.Citizen.Verifications.Delete";
+        //public const string Pages_Citizens_Verifications_Approve = "Pages.Citizen.Verifications.Approve";
+        //public const string Pages_Citizens_Verifications_Request = "Pages.Citizen.Verifications.Request";
+        //public const string Pages_Citizens_Verifications_Decline = "Pages.Citizen.Verifications.Decline";
 
         // [End]
 
@@ -176,6 +208,16 @@ namespace IMAX.Authorization
 
         public const string Pages_AdministrationService_Configurations_Delete =
             "Pages.AdministrationService.Configurations.Delete";
+
+        public const string Pages_AdministrationService_Register_Vehicles = "Pages.AdministrationService.Register.Vehicles";
+        public const string Pages_AdministrationService_Register_Vehicles_GetAll = "Pages.AdministrationService.Register.Vehicles.GetAll";
+
+        public const string Pages_AdministrationService_Register_Vehicles_GetDetail =
+            "Pages.AdministrationService.Register.Vehicles.GetDetail";
+
+        public const string Pages_AdministrationService_Register_Vehicles_Create = "Pages.AdministrationService.Register.Vehicles.Create";
+        public const string Pages_AdministrationService_Register_Vehicles_Edit = "Pages.AdministrationService.Register.Vehicles.Edit";
+        public const string Pages_AdministrationService_Register_Vehicles_Delete = "Pages.AdministrationService.Register.Vehicles.Delete";
 
         public const string Pages_AdministrationService_Vehicles = "Pages.AdministrationService.Vehicles";
         public const string Pages_AdministrationService_Vehicles_GetAll = "Pages.AdministrationService.Vehicles.GetAll";
@@ -369,22 +411,22 @@ namespace IMAX.Authorization
         //[Begin] Đồng hồ đo điện nước
         public const string Pages_MeterManagement = "Pages.Meter";
         public const string Pages_MeterManagement_List = "Pages.Meter.List";
-        public const string Pages_MeterManagement_List_GETALL = "Pages.Meter.List.GetAll";
-        public const string Pages_MeterManagement_List_EDIT = "Pages.Meter.List.Edit";
-        public const string Pages_MeterManagement_List_DELETE = "Pages.Meter.List.Delete";
-        public const string Pages_MeterManagement_List_CREATE = "Pages.Meter.List.Create";
+        public const string Pages_MeterManagement_List_GetAll = "Pages.Meter.List.GetAll";
+        public const string Pages_MeterManagement_List_Edit = "Pages.Meter.List.Edit";
+        public const string Pages_MeterManagement_List_Delete = "Pages.Meter.List.Delete";
+        public const string Pages_MeterManagement_List_Create = "Pages.Meter.List.Create";
 
         public const string Pages_MeterManagement_Type = "Pages.Meter.Type";
-        public const string Pages_MeterManagement_Type_GETALL = "Pages.Meter.Type.GetAll";
-        public const string Pages_MeterManagement_Type_CREATE = "Pages.Meter.Type.Create";
-        public const string Pages_MeterManagement_Type_EDIT = "Pages.Meter.Type.Edit";
-        public const string Pages_MeterManagement_Type_DELETE = "Pages.Meter.Type.Delete";
+        public const string Pages_MeterManagement_Type_GetAll = "Pages.Meter.Type.GetAll";
+        public const string Pages_MeterManagement_Type_Create = "Pages.Meter.Type.Create";
+        public const string Pages_MeterManagement_Type_Edit = "Pages.Meter.Type.Edit";
+        public const string Pages_MeterManagement_Type_Delete = "Pages.Meter.Type.Delete";
 
         public const string Pages_MeterManagement_Monthly = "Pages.Meter.Monthly";
-        public const string Pages_MeterManagement_Monthly_GETALL = "Pages.Meter.Monthly.GetAll";
-        public const string Pages_MeterManagement_Monthly_CREATE = "Pages.Meter.Monthly.Create";
-        public const string Pages_MeterManagement_Monthly_EDIT = "Pages.Meter.Monthly.Edit";
-        public const string Pages_MeterManagement_Monthly_DELETE = "Pages.Meter.Monthly.Delete";
+        public const string Pages_MeterManagement_Monthly_GetAll = "Pages.Meter.Monthly.GetAll";
+        public const string Pages_MeterManagement_Monthly_Create = "Pages.Meter.Monthly.Create";
+        public const string Pages_MeterManagement_Monthly_Edit = "Pages.Meter.Monthly.Edit";
+        public const string Pages_MeterManagement_Monthly_Delete = "Pages.Meter.Monthly.Delete";
         //[End]
         
         
@@ -421,6 +463,19 @@ namespace IMAX.Authorization
         // [Begin] Báo cáo/Thống kê
 
         public const string Pages_Reporting = "Pages.Reporting";
+
+        public static string Pages_Reporting_Overview = "Pages.Reporting.Overview";
+        public static string Pages_Reporting_Overview_CitizenReflect = "Pages.Reporting.Overview.CitizenReflect";
+        public static string Pages_Reporting_Overview_CitizenChat = "Pages.Reporting.Overview.CitizenChat";
+        public static string Pages_Reporting_Overview_CitizenVote = "Pages.Reporting.Overview.CitizenVote";
+        public static string Pages_Reporting_Overview_CitizenUseApp = "Pages.Reporting.Overview.CitizenUseApp";
+        public static string Pages_Reporting_Overview_Account = "Pages.Reporting.Overview.Account";
+
+        public static string Pages_Reporting_Invoice = "Pages.Reporting.Invoice";
+        public static string Pages_Reporting_Asset = "Pages.Reporting.Asset";
+        public static string Pages_Reporting_CitizenReflect = "Pages.Reporting.CitizenReflect";
+        public static string Pages_Reporting_Citizen = "Pages.Reporting.Citizen";
+        public static string Pages_Reporting_WorkManagement = "Pages.Reporting.WorkManagement";
 
         // [End]
 
@@ -503,6 +558,11 @@ namespace IMAX.Authorization
 
         public const string Pages_Settings = "Pages.Settings";
         public const string Pages_Settings_Images = "Pages.Settings.Images";
+        public const string Pages_Settings_Images_GetAll = "Pages.Settings.Images.GetAll";
+        public const string Pages_Settings_Images_GetDetail = "Pages.Settings.Images.GetDetail";
+        public const string Pages_Settings_Images_Create = "Pages.Settings.Images.Create";
+        public const string Pages_Settings_Images_Edit = "Pages.Settings.Images.Edit";
+        public const string Pages_Settings_Images_Delete = "Pages.Settings.Images.Delete";
 
 
         //UI

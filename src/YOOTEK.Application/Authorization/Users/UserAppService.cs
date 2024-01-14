@@ -24,23 +24,23 @@ using Abp.MultiTenancy;
 using Abp.Notifications;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Authorization;
-using IMAX.Authorization.Accounts;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Common.DataResult;
-using IMAX.EntityDb;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
-using IMAX.Friendships.Dto;
-using IMAX.Notifications;
-using IMAX.Roles.Dto;
-using IMAX.Storage;
-using IMAX.Users.Dto;
+using Yootek.Authorization;
+using Yootek.Authorization.Accounts;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Common.DataResult;
+using Yootek.EntityDb;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
+using Yootek.Friendships.Dto;
+using Yootek.Notifications;
+using Yootek.Roles.Dto;
+using Yootek.Storage;
+using Yootek.Users.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace IMAX.Users
+namespace Yootek.Users
 {
    // [AbpAuthorize(PermissionNames.Pages_Users, PermissionNames.Pages_Users_Activation)]
     public class UserAppService : AsyncCrudAppService<User, UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>
@@ -493,7 +493,7 @@ namespace IMAX.Users
             {
                 var data = DataResult.ResultError(e.ToString(), "Có lỗi");
                 Logger.Fatal(e.Message, e);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 

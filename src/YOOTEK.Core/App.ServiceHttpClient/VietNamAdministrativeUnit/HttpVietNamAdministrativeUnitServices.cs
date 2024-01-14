@@ -3,12 +3,12 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
-using IMAX.App.ServiceHttpClient.Dto;
+using Yootek.App.ServiceHttpClient.Dto;
 using System.Collections.Generic;
-using IMAX.App.ServiceHttpClient.Dto.VietNamAdministrativeUnit;
+using Yootek.App.ServiceHttpClient.Dto.VietNamAdministrativeUnit;
 using Microsoft.AspNetCore.Http;
 
-namespace IMAX.App.ServiceHttpClient
+namespace Yootek.App.ServiceHttpClient
 {
     public interface IVietNamAdministrativeUnitService
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.SignalR.Chat.GroupChat
+namespace Yootek.Web.Host.SignalR.Chat.GroupChat
 {
     public class RecallMessageInput
     {

@@ -1,4 +1,4 @@
-﻿namespace IMAX.Web.Host.UrlHelper
+﻿namespace Yootek.Web.Host.UrlHelper
 {
     public static class UrlHelper
     {

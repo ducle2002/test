@@ -4,7 +4,7 @@ using Abp.Organizations;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("TypeAdministrative")]
     public class TypeAdministrative : Entity<long>, IMayHaveTenant, IMayHaveOrganizationUnit

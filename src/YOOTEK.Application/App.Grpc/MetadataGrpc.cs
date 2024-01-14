@@ -1,7 +1,7 @@
 ﻿using Abp.Runtime.Session;
 using Grpc.Core;
 
-namespace IMAX.App.Grpc
+namespace Yootek.App.Grpc
 {
     public static class MetadataGrpc 
     {

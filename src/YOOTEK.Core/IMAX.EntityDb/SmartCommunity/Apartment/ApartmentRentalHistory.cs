@@ -3,7 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.IMAX.EntityDb.SmartCommunity.Apartment
+namespace Yootek.Yootek.EntityDb.SmartCommunity.Apartment
 {
     [Table("ApartmentRentalHistories")]
     public class ApartmentRentalHistory : FullAuditedEntity<long>, IMayHaveTenant

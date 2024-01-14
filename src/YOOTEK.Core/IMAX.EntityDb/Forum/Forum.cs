@@ -1,10 +1,10 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("ClbForums")]
     public class Forum : FullAuditedEntity<long>, IMayHaveTenant

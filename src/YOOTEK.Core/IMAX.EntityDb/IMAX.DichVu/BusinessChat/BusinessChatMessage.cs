@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat.BusinessChat
+namespace Yootek.Chat.BusinessChat
 {
     [Table("Business.ChatMessages")]
     public class BusinessChatMessage : Entity<long>, IHasCreationTime, IMayHaveTenant

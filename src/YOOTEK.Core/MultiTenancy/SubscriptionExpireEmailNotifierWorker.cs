@@ -8,10 +8,10 @@
 //using Abp.Threading.BackgroundWorkers;
 //using Abp.Threading.Timers;
 //using Abp.Timing;
-//using IMAX.Authorization.Users;
+//using Yootek.Authorization.Users;
 
 
-//namespace IMAX.MultiTenancy
+//namespace Yootek.MultiTenancy
 //{
 //    public class SubscriptionExpireEmailNotifierWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
 //    {
@@ -34,7 +34,7 @@
 //            Timer.Period = CheckPeriodAsMilliseconds;
 //            Timer.RunOnStart = true;
 
-//            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+//            LocalizationSourceName = YootekConsts.LocalizationSourceName;
 //        }
 
 //        protected override void DoWork()
@@ -76,10 +76,10 @@
 //using Abp.Threading.BackgroundWorkers;
 //using Abp.Threading.Timers;
 //using Abp.Timing;
-//using IMAX.Authorization.Users;
+//using Yootek.Authorization.Users;
 
 
-//namespace IMAX.MultiTenancy
+//namespace Yootek.MultiTenancy
 //{
 //    public class SubscriptionExpireEmailNotifierWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
 //    {
@@ -102,7 +102,7 @@
 //            Timer.Period = CheckPeriodAsMilliseconds;
 //            Timer.RunOnStart = true;
 
-//            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+//            LocalizationSourceName = YootekConsts.LocalizationSourceName;
 //        }
 
 //        protected override void DoWork()

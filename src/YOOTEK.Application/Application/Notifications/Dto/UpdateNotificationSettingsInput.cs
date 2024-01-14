@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IMAX.Notifications.Dto
+namespace Yootek.Notifications.Dto
 {
     public class UpdateNotificationSettingsInput
     {

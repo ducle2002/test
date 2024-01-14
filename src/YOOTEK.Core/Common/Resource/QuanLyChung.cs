@@ -1,6 +1,6 @@
 ﻿
 
-namespace IMAX.Common.Resource
+namespace Yootek.Common.Resource
 {
     public class QuanLyChung
     {

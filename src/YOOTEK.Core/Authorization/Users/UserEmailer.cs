@@ -4,26 +4,26 @@ using Abp.Domain.Uow;
 using Abp.Extensions;
 using Abp.Net.Mail;
 using Abp.Runtime.Security;
-using IMAX.Chat;
-using IMAX.MultiTenancy;
-using IMAX.Web;
-using IMAX.Emailing;
+using Yootek.Chat;
+using Yootek.MultiTenancy;
+using Yootek.Web;
+using Yootek.Emailing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Configuration;
-using IMAX.Editions;
+using Yootek.Editions;
 using Abp.Runtime.Session;
 using Abp.Localization;
 using System.Web;
 using Abp.UI;
 using System.Net.Mail;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
-    public class UserEmailer : IMAXServiceBase, IUserEmailer, ITransientDependency
+    public class UserEmailer : YootekServiceBase, IUserEmailer, ITransientDependency
     {
         private readonly IEmailTemplateProvider _emailTemplateProvider;
         private readonly IEmailSender _emailSender;

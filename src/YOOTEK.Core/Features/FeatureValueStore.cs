@@ -3,10 +3,10 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.MultiTenancy;
 using Abp.Runtime.Caching;
-using IMAX.Authorization.Users;
-using IMAX.MultiTenancy;
+using Yootek.Authorization.Users;
+using Yootek.MultiTenancy;
 
-namespace IMAX.Features
+namespace Yootek.Features
 {
     public class FeatureValueStore : AbpFeatureValueStore<Tenant, User>
     {

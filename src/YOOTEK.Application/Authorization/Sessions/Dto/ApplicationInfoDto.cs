@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IMAX.Sessions.Dto
+namespace Yootek.Sessions.Dto
 {
     public class ApplicationInfoDto
     {

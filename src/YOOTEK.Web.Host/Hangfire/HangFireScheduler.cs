@@ -1,10 +1,11 @@
 ﻿using Abp.Dependency;
 using Castle.Core.Logging;
-using IMAX.IMAX.Services.IMAX.DichVu.Payment;
-using IMAX.Services;
-using IMAX.Users;
+using Yootek.Yootek.Services.Yootek.DichVu.Payment;
+using Yootek.Notifications;
+using Yootek.Services;
+using Yootek.Users;
 
-namespace IMAX.Web.Host
+namespace Yootek.Web.Host
 {
     public class HangFireScheduler : ISingletonDependency
     {
@@ -18,6 +19,12 @@ namespace IMAX.Web.Host
         private static object _syncObj = new object();
         private static object _syncObjBillDebt = new object();
         private static object _syncObjNoti = new object();
+        private static object _syncPaymentMonthly = new object();
+        private static object _syncBillMonthly = new object();
+
+        private static object _syncNotiDay = new object();
+        private static object _syncNotiMonth = new object();
+        private static object _syncNotiYear = new object();
 
         public void HangFireReminderNotify()
         {
@@ -55,7 +62,7 @@ namespace IMAX.Web.Host
             }
         }
 
-        public void HangFireBillPaymentReminder()
+        public void HangFireBillPaymentReminders()
         {
             lock (_syncObjBillDebt)
             {
@@ -66,5 +73,66 @@ namespace IMAX.Web.Host
                 }
             }
         }
+
+        public void HangFireStatisticPaymentMonthly()
+        {
+            lock (_syncPaymentMonthly)
+            {
+                using (var scope = IocManager.Instance.CreateScope())
+                {
+                    var service = scope.Resolve<IStatisticBillAppService>();
+                    service.ReportUserBillPaymentMonthlyScheduler();
+                }
+            }
+        }
+
+        public void SchedulerAutomaticCreateUserBillMonthly()
+        {
+            lock (_syncBillMonthly)
+            {
+                using (var scope = IocManager.Instance.CreateScope())
+                {
+                    var service = scope.Resolve<IBillUtilAppService>();
+                    service.SchedulerCreateBillMonthly();
+                }
+            }
+        }
+
+        public void SchedulerDayCreateNotification()
+        {
+            lock (_syncNotiDay)
+            {
+                using (var scope = IocManager.Instance.CreateScope())
+                {
+                    var service = scope.Resolve<IAdminNotificationAppService>();
+                    service.SchedulerDayCreateNotificationAsync();
+                }
+            }
+        }
+
+        public void SchedulerMonthCreateNotification()
+        {
+            lock (_syncNotiDay)
+            {
+                using (var scope = IocManager.Instance.CreateScope())
+                {
+                    var service = scope.Resolve<IAdminNotificationAppService>();
+                    service.SchedulerMonthCreateNotificationAsync();
+                }
+            }
+        }
+
+        public void SchedulerYearCreateNotification()
+        {
+            lock (_syncNotiDay)
+            {
+                using (var scope = IocManager.Instance.CreateScope())
+                {
+                    var service = scope.Resolve<IAdminNotificationAppService>();
+                    service.SchedulerYearCreateNotificationAsync();
+                }
+            }
+        }
     }
+
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Common.Enum
+namespace Yootek.Common.Enum
 {
     public enum FORM_CASE_ROOM
     {

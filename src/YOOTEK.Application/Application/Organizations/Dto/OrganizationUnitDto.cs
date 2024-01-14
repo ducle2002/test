@@ -1,9 +1,9 @@
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Common;
+using Yootek.Common;
 using System;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     [AutoMap(typeof(AppOrganizationUnit), typeof(CreateOrganizationUnitInput))]
     public class OrganizationUnitDto : AuditedEntityDto<long>

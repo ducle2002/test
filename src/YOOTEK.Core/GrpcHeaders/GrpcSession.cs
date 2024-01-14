@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.GrpcHeaders
+namespace Yootek.GrpcHeaders
 {
     public interface IGrpcSession
     {

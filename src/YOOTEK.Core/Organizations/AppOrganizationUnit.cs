@@ -4,7 +4,7 @@ using Abp.Organizations;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Organizations
+namespace Yootek.Organizations
 {
     public enum APP_ORGANIZATION_TYPE
     {

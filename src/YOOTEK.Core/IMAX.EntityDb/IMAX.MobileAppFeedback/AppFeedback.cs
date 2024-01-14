@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.IMAX.EntityDb.IMAX.MobileAppFeedback
+namespace Yootek.Yootek.EntityDb.Yootek.MobileAppFeedback
 {
     [Table("MobileAppFeedback")]
     public class AppFeedback : FullAuditedEntity<long>

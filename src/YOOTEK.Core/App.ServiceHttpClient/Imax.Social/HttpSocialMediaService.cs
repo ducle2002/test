@@ -2,11 +2,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.Runtime.Session;
-using IMAX.App.ServiceHttpClient.Dto;
-using IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum;
-using IMAX.Common.Enum;
+using Yootek.App.ServiceHttpClient.Dto;
+using Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum;
+using Yootek.Common.Enum;
 
-namespace IMAX.App.ServiceHttpClient.Imax.Social
+namespace Yootek.App.ServiceHttpClient.Imax.Social
 {
     public interface IHttpSocialMediaService
     {
@@ -14,6 +14,7 @@ namespace IMAX.App.ServiceHttpClient.Imax.Social
         Task<MicroserviceResultDto<PagedResultDto<InviteDto>>> GetListInvite(GetListInviteDto input);
         Task<MicroserviceResultDto<bool>> CreateInvite(CreateInviteDto input);
         Task<MicroserviceResultDto<bool>> UpdateInvite(UpdateInviteDto input);
+        Task<MicroserviceResultDto<bool>> Delete(DeleteInviteDto input);
         #endregion
         #region iFanpage
         Task<MicroserviceResultDto<PagedResultDto<FanpageDto>>> GetListFanpageByUser(GetListFanpageByUserDto input);
@@ -26,7 +27,9 @@ namespace IMAX.App.ServiceHttpClient.Imax.Social
         #endregion
         #region iGroup
         Task<MicroserviceResultDto<PagedResultDto<GroupDto>>> GetListGroupByUser(GetListGroupByUserDto input);
-        Task<MicroserviceResultDto<PagedResultDto<long>>> GetListMemberOfGroup(GetListMemberOfGroupDto input);
+        Task<MicroserviceResultDto<PagedResultDto<GroupMemberDto>>> GetListMemberOfGroup(GetListMemberOfGroupDto input);
+        Task<MicroserviceResultDto<GroupDto>> GetById(GetGroupByIdDto input);
+        Task<MicroserviceResultDto<PagedResultDto<UserToGroupDto>>> GetListUser(GetSocialMediaUserDto input);
         Task<MicroserviceResultDto<bool>> CreateGroup(CreateGroupByAdminDto input);
         Task<MicroserviceResultDto<bool>> UpdateGroup(UpdateGroupByAdminDto input);
         Task<MicroserviceResultDto<bool>> UpdateMemberOfGroup(UpdateMemberOfGroupDto input);
@@ -41,6 +44,7 @@ namespace IMAX.App.ServiceHttpClient.Imax.Social
         Task<MicroserviceResultDto<PagedResultDto<PostDto>>> GetListPostOfFanpage(GetListPostOfFanpageDto input);
         Task<MicroserviceResultDto<PagedResultDto<PostDto>>> GetListPostOfGroup(GetListPostOfGroupDto input);
         Task<MicroserviceResultDto<bool>> CreatePost(CreatePostDto input);
+        Task<MicroserviceResultDto<bool>> VerifyPost(VerifyPostDto input);
         Task<MicroserviceResultDto<bool>> UpdatePost(UpdatePostDto input);
         Task<MicroserviceResultDto<bool>> DeletePost(DeletePostDto input);
         #endregion
@@ -104,6 +108,15 @@ namespace IMAX.App.ServiceHttpClient.Imax.Social
         {
             using var request = new HttpRequestMessage(HttpMethod.Put, $"/api/Invite/UpdateInvite");
             request.HandlePutAsJson(input, _session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+        }
+
+        public async Task<MicroserviceResultDto<bool>> Delete(DeleteInviteDto input)
+        {
+            var query = "/api/Invite/Delete" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Delete, query);
+            request.HandleDelete(input, _session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<bool>>();
         }
@@ -188,14 +201,35 @@ namespace IMAX.App.ServiceHttpClient.Imax.Social
             return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<GroupDto>>>();
         }
 
-        public async Task<MicroserviceResultDto<PagedResultDto<long>>> GetListMemberOfGroup(
+        public async Task<MicroserviceResultDto<PagedResultDto<GroupMemberDto>>> GetListMemberOfGroup(
             GetListMemberOfGroupDto input)
         {
             var query = "/api/Group/GetListMemberOfGroup" + input.GetStringQueryUri();
             using var request = new HttpRequestMessage(HttpMethod.Get, query);
             request.HandleGet(_session);
             var response = await _client.SendAsync(request);
-            return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<long>>>();
+            return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<GroupMemberDto>>>();
+        }
+        
+        public async Task<MicroserviceResultDto<GroupDto>> GetById(GetGroupByIdDto input)
+        {
+            var query = "/api/Group/GetById" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            var result = await response.ReadContentAs<MicroserviceResultDto<GroupDto>>();
+            return result;
+        }
+
+        public async Task<MicroserviceResultDto<PagedResultDto<UserToGroupDto>>> GetListUser(
+            GetSocialMediaUserDto input)
+        {
+            var query = "/api/Group/GetListUser" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            var result = await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<UserToGroupDto>>>();
+            return result;
         }
 
         public async Task<MicroserviceResultDto<bool>> CreateGroup(CreateGroupByAdminDto input)
@@ -307,6 +341,16 @@ namespace IMAX.App.ServiceHttpClient.Imax.Social
             request.HandlePostAsJson(input, _session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+        }
+        
+        public async Task<MicroserviceResultDto<bool>> VerifyPost(VerifyPostDto input)
+        {
+            var query = "/api/Post/VerifyPost";
+            using var request = new HttpRequestMessage(HttpMethod.Post, query);
+            request.HandlePostAsJson(input, _session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+
         }
 
         public async Task<MicroserviceResultDto<bool>> UpdatePost(UpdatePostDto input)

@@ -1,6 +1,6 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.GroupChats
+namespace Yootek.GroupChats
 {
     [Table("AppUserGroupChats")]
     public class UserGroupChat : Entity<long>, IHasCreationTime, IMayHaveTenant

@@ -1,10 +1,11 @@
 ﻿#nullable enable
+using Abp.Application.Services.Dto;
 using Abp.Domain.Entities;
-using IMAX.Common;
+using Yootek.Common;
 using System;
 using System.Collections.Generic;
 
-namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
+namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
 {
     public class WorkLogTimeDto : Entity<long>
     {
@@ -27,6 +28,33 @@ namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
         public long? WorkId { get; set; }
         public long? WorkTurnId { get; set; }
         public long? UserId { get; set; }
+    }
+    public class GetAllWorkTimeSheetQuery
+    {
+        public int? UserId { get; set; }
+        public int? Year { get; set; }
+        public int? Month { get; set; }
+        public QueryCaseWorkTimeSheet QueryCase { get; set; }
+        public string? StartDate { get; set; }
+    }
+    public enum QueryCaseWorkTimeSheet
+    {
+        ByYear = 1,
+        ByMonth = 2,
+        ByWeek = 3,
+    }
+    public class GetWorkTimeSheetDto : Entity<long>
+    {
+        public string? TitleWorkDetail { get; set; }
+        public string? TitleWork { get; set; }
+        public List<WorkTimeSheetValue>? WorkTimeSheetValues { get; set; }
+    }
+    public class WorkTimeSheetValue
+    {
+        public int key { get; set; }
+        public string? value { get; set; }
+        public long CreatorUserId { get; set; }
+        public string? FullName { get; set; }
     }
     public class GetWorkLogTimeByIdDto : Entity<long>
     {
@@ -69,6 +97,17 @@ namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
         public UpdateStatusActionType ActionType { get; set; }
     }
     public enum UpdateStatusActionType
+    {
+        RECEIVER_COMPLETE = 1,
+        SUPERVISOR_COMPLETE = 2,
+        SUPERVISOR_DECLINE = 3,
+    }
+    public class UpdateStatusLogTimeDto
+    {
+        public long Id { get; set; }
+        public UpdateStatusLogActionType ActionType { get; set; }
+    }
+    public enum UpdateStatusLogActionType
     {
         RECEIVER_COMPLETE = 1,
         SUPERVISOR_COMPLETE = 2,

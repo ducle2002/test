@@ -3,7 +3,7 @@ using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using JetBrains.Annotations;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("GuestForms")]
     public class GuestForm : FullAuditedEntity<long>, IMustHaveTenant

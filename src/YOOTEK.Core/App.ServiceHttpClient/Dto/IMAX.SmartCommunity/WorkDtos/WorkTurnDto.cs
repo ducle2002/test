@@ -1,11 +1,11 @@
 ﻿#nullable enable
 using Abp.Domain.Entities;
-using IMAX.Common;
+using Yootek.Common;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos
+namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
 {
     public class WorkTurnDto : Entity<long>
     {

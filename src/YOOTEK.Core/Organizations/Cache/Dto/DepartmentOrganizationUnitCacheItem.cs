@@ -1,12 +1,12 @@
 ﻿using Abp.AutoMapper;
-using IMAX.Organizations.OrganizationStructure;
+using Yootek.Organizations.OrganizationStructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Cache.Dto
+namespace Yootek.Organizations.Cache.Dto
 {
     [AutoMap(typeof(DepartmentOrganizationUnit))]
     public class DepartmentOrganizationUnitCacheItem

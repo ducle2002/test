@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Abp.Application.Services.Dto;
 using Castle.Components.DictionaryAdapter;
-using IMAX.Dto.Interface;
-using IMAX.Friendships.Dto;
+using Yootek.Dto.Interface;
+using Yootek.Friendships.Dto;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
     public class GetUserChatFriendsWithSettingsOutput
     {

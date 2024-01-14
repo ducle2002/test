@@ -2,10 +2,10 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Abp.Runtime.Session;
-using IMAX.App.ServiceHttpClient.Dto;
-using IMAX.App.ServiceHttpClient.Dto.Imax.Business;
+using Yootek.App.ServiceHttpClient.Dto;
+using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
 
-namespace IMAX.App.ServiceHttpClient.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Imax.Business
 {
     public interface IHttpPaymentService
     {

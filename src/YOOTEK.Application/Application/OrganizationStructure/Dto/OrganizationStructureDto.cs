@@ -1,13 +1,13 @@
 ﻿using Abp.AutoMapper;
 using Abp.Domain.Entities;
-using IMAX.Common;
-using IMAX.Organizations.OrganizationStructure;
+using Yootek.Common;
+using Yootek.Organizations.OrganizationStructure;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 
-namespace IMAX.Application.OrganizationStructure.Dto
+namespace Yootek.Application.OrganizationStructure.Dto
 {
     public class OrganizationStructureDto
     {

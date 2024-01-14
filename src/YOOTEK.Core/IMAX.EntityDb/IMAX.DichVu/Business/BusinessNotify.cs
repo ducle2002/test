@@ -2,7 +2,7 @@
 using Abp.Domain.Entities.Auditing;
 
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public class BusinessNotify : FullAuditedEntity<long>, IMayHaveTenant
     {

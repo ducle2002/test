@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net;
 using Microsoft.Extensions.Configuration;
 
-namespace IMAX
+namespace Yootek
 {
     public interface IIpBlockingService
     {

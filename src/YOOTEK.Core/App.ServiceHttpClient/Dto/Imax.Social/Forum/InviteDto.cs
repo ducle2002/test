@@ -2,9 +2,9 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum
 {
     public enum InviteState
     {
@@ -20,6 +20,16 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         RequestJoinGroup = 3,
     }
 
+    public class ShortenedInviteDto
+    {
+        public long Id { get; set; }
+        public int? TenantId { get; set; }
+        public long RequestToId { get; set; }
+        public long RequestById { get; set; }
+        public InviteType Type { get; set; }
+        public InviteState State { get; set; }
+    }
+    
     public class InviteDto
     {
         public long Id { get; set; }
@@ -30,6 +40,7 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public InviteState State { get; set; }
     
         public ShortenedUserDto? Sender { get; set; }
+        public ShortenedUserDto? Receiver { get; set; }
         public GroupOrFanpageDto? GroupOrFanpage { get; set; }
         public DateTime? CreationTime { get; set; }
         public long? CreatorUserId { get; set; }
@@ -65,5 +76,10 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     {
         public long Id { get; set; }
         public InviteState State { get; set; }
+    }
+    
+    public class DeleteInviteDto
+    {
+        public long Id { get; set; }
     }
 }

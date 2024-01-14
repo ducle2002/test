@@ -1,8 +1,8 @@
 ﻿
 
-using IMAX.Configuration.Dto;
+using Yootek.Configuration.Dto;
 
-namespace IMAX.UiCustomization.Dto
+namespace Yootek.UiCustomization.Dto
 {
     public class UiCustomizationSettingsDto
     {

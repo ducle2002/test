@@ -1,7 +1,7 @@
 ﻿using System;
 using Abp.Runtime.Caching;
 
-namespace IMAX.Storage
+namespace Yootek.Storage
 {
     public class TempFileCacheManager : ITempFileCacheManager
     {

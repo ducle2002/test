@@ -2,7 +2,7 @@
 
 using Newtonsoft.Json;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
     public class RocketChatReponseDto
     {

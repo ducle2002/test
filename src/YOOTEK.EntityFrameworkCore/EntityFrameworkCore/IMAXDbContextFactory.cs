@@ -1,22 +1,22 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
-using IMAX.Configuration;
-using IMAX.Web;
+using Yootek.Configuration;
+using Yootek.Web;
 
-namespace IMAX.EntityFrameworkCore
+namespace Yootek.EntityFrameworkCore
 {
     /* This class is needed to run "dotnet ef ..." commands from command line on development. Not used anywhere else */
-    public class IMAXDbContextFactory : IDesignTimeDbContextFactory<IMAXDbContext>
+    public class YootekDbContextFactory : IDesignTimeDbContextFactory<YootekDbContext>
     {
-        public IMAXDbContext CreateDbContext(string[] args)
+        public YootekDbContext CreateDbContext(string[] args)
         {
-            var builder = new DbContextOptionsBuilder<IMAXDbContext>();
+            var builder = new DbContextOptionsBuilder<YootekDbContext>();
             var configuration = AppConfigurations.Get(WebContentDirectoryFinder.CalculateContentRootFolder());
 
-            IMAXDbContextConfigurer.Configure(builder, configuration.GetConnectionString(IMAXConsts.ConnectionStringName));
+            YootekDbContextConfigurer.Configure(builder, configuration.GetConnectionString(YootekConsts.ConnectionStringName));
 
-            return new IMAXDbContext(builder.Options);
+            return new YootekDbContext(builder.Options);
         }
     }
 }

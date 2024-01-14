@@ -1,10 +1,10 @@
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 using JetBrains.Annotations;
 using System.Collections.Generic;
 
-namespace IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity
+namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity
 {
     public enum QRCodeType
     {

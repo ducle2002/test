@@ -6,7 +6,7 @@ using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using JetBrains.Annotations;
 
-namespace IMAX.IMAX.EntityDb.SmartCommunity.Apartment
+namespace Yootek.Yootek.EntityDb.SmartCommunity.Apartment
 {
     [Table("ApartmentHistories")]
     public class ApartmentHistory : FullAuditedEntity<long>, IMayHaveTenant
@@ -40,6 +40,8 @@ namespace IMAX.IMAX.EntityDb.SmartCommunity.Apartment
         Violation = 4,
         LostAsset = 5,
         HandoverProperty = 6,
-        Other = 7
+        Other = 7,
+        Vehicle = 8,
+        Service = 9
     }
 }

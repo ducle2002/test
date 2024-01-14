@@ -2,7 +2,7 @@ using Abp.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Authorization.Permissions
+namespace Yootek.Authorization.Permissions
 {
     [Table("PermissionsTenants")]
     public class PermissionTenant : Entity<long>

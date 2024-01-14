@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 
 
-namespace IMAX.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public static class AuthConfigurer
     {

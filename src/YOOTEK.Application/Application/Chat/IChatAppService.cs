@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using IMAX.Application.Chat.Dto;
-using IMAX.Chat.Dto;
-using IMAX.Common.DataResult;
+using Yootek.Application.Chat.Dto;
+using Yootek.Chat.Dto;
+using Yootek.Common.DataResult;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
     public interface IChatAppService : IApplicationService
     {

@@ -1,4 +1,4 @@
-﻿namespace IMAX.Common.Enum
+﻿namespace Yootek.Common.Enum
 {
     public static partial class CommonENum
     {
@@ -58,7 +58,8 @@
         {
             NEW = 1,
             ACCEPT = 2,
-            DISABLE = 3
+            DISABLE = 3,
+            CLOSE = 4
         }
     }
 }

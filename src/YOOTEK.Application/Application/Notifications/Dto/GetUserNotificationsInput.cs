@@ -1,8 +1,8 @@
 ﻿using Abp.Notifications;
-using IMAX.Common;
+using Yootek.Common;
 using System;
 
-namespace IMAX.Notifications.Dto
+namespace Yootek.Notifications.Dto
 {
     public class GetUserNotificationsInput : CommonInputDto
     {

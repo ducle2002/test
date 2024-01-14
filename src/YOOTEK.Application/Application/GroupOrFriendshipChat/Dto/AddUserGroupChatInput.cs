@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     public class AddUserGroupChatInput
     {

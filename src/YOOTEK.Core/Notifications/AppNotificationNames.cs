@@ -1,4 +1,4 @@
-﻿namespace IMAX.Notifications
+﻿namespace Yootek.Notifications
 {
     /// <summary>
     /// Constants for notification names used in this application.
@@ -6,7 +6,7 @@
     public static class AppNotificationNames
     {
         public const string SimpleMessage = "Thông báo mới !";
-        public const string WelcomeToTheApplication = "App.WelcomeToTheApplication";
+        public const string WelcomeToTheApplication = "Chào mừng bạn đến với Yoolife !";
         public const string NewUserRegistered = "App.NewUserRegistered";
         public const string NewTenantRegistered = "App.NewTenantRegistered";
         public const string GdprDataPrepared = "App.GdprDataPrepared";
@@ -20,6 +20,10 @@
 
     public static class AppNotificationAction
     {
+        public const string UserWelcomeApp = "UserWelcomeApp";
+
+        public const string AdminSendNotification = "AdminSendNotification";
+
         public const string StateVerifyCitizen = "App.StateVerifyCitizen";
         public const string StateReflectCitizen = "App.StateReflectCitizen";
 
@@ -68,6 +72,9 @@
 
     public static class AppNotificationIcon
     {
+        public const string UserWelcomeApp = "UserWelcomeApp";
+        public const string AdminSendNotification = "AdminSendNotification";
+
         public const string StateVerifyCitizenSuccess = "App.StateVerifyCitizen.Accepted";
         public const string StateVerifyCitizenRefuse = "App.StateVerifyCitizen.Refuse";
         public const string StateVerifyCitizenDenied = "App.StateVerifyCitizen.Denied";

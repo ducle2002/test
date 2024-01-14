@@ -1,13 +1,13 @@
 ﻿using Abp.Application.Services;
 using Abp.Authorization;
-using IMAX.Authorization.Accounts;
+using Yootek.Authorization.Accounts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Authorization
+namespace Yootek.Authorization
 {
     public interface ICheckTokenAppService : IApplicationService
     {
@@ -15,7 +15,7 @@ namespace IMAX.Authorization
     }
 
     [AbpAuthorize]
-    public class CheckTokenAppService : IMAXAppServiceBase, ICheckTokenAppService
+    public class CheckTokenAppService : YootekAppServiceBase, ICheckTokenAppService
     {
         public CheckTokenAppService() { }
 

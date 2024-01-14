@@ -3,7 +3,7 @@
   <texts>
     <text name="HomePage" value="خانه" />
     <text name="About" value="درباره" />
-    <text name="WelcomeMessage" value="به IMAX خوش آمدید!" />
+    <text name="WelcomeMessage" value="به Yootek خوش آمدید!" />
     <text name="FormIsNotValidMessage" value="مقادیر فرم معتبر نمی‌باشند. لطفا مقادیر وارد شده را بررسی نمایید." />
     <text name="TenantNameCanNotBeEmpty" value="نام Tenant نمی‌تواند خالی باشد." />
     <text name="InvalidUserNameOrPassword" value="نام کاربری یا رمز عبور نامعتبر است." />

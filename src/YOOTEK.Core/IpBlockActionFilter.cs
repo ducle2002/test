@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace IMAX
+namespace Yootek
 {
     public class IpBlockActionFilter : ActionFilterAttribute
     {

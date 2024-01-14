@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IMAX.Authentication.External
+namespace Yootek.Authentication.External
 {
     public class ExternalLoginProviderInfo
     {

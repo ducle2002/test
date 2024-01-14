@@ -4,7 +4,7 @@ using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using JetBrains.Annotations;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public enum GuestVehicle
     {

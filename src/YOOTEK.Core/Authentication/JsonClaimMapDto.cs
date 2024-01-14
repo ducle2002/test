@@ -1,4 +1,4 @@
-﻿namespace IMAX.Authentication
+﻿namespace Yootek.Authentication
 {
     public class JsonClaimMapDto
     {

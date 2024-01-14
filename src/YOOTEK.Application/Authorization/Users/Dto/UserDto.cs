@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.Authorization.Users;
 using Abp.AutoMapper;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 using Newtonsoft.Json;
 
-namespace IMAX.Users.Dto
+namespace Yootek.Users.Dto
 {
     [AutoMapFrom(typeof(User))]
     public class UserDto : EntityDto<long>

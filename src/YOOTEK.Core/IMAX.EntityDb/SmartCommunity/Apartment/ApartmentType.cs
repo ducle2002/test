@@ -4,7 +4,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public class ApartmentType: Entity<long>, ICreationAudited, IHasCreationTime, IMayHaveTenant
     {

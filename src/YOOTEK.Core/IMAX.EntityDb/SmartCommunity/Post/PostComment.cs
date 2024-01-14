@@ -2,7 +2,7 @@
 using Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("PostComment")]
     public class PostComment : FullAuditedEntity<long>, IMayHaveTenant

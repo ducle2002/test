@@ -1,23 +1,25 @@
 ﻿using Abp;
 using Abp.Application.Services.Dto;
 using Abp.Runtime.Session;
-using IMAX.App.ServiceHttpClient.Dto;
-using IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos;
-using IMAX.Notifications;
+using Yootek.App.ServiceHttpClient.Dto;
+using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos;
+using Yootek.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
+namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
 {
     public interface IHttpWorkAssignmentService
     {
         #region IWorkService
         Task<MicroserviceResultDto<WorkStatisticDto>> GetWorkStatistic(GetWorkStatisticDto input);
+        Task<MicroserviceResultDto<Dictionary<string, int>>> GetWorkStatisticGeneral(GetWorkStatisticGeneralDto input);
         Task<MicroserviceResultDto<PagedResultDto<WorkDto>>> AdminGetListWork(GetListWorkDto input);
         Task<MicroserviceResultDto<WorkDetailDto>> AdminGetWorkById(long id);
         Task<MicroserviceResultDto<PagedResultDto<WorkDto>>> GetListWork(GetListWorkDto input);
+        Task<MicroserviceResultDto<PagedResultDto<GetAllWorksPlanDto>>> GetListWorkPlan(GetAllWorksPlanQuery input);
         Task<MicroserviceResultDto<List<WorkDto>>> GetAllWorkByRelatedId(GetListWorkByRelatedIdDto input);
         Task<MicroserviceResultDto<WorkDetailDto>> GetWorkById(long id);
         Task<MicroserviceResultDto<WorkDetailDto>> GetWorkByQrCode(string qrCode);
@@ -27,6 +29,7 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
         Task<MicroserviceResultDto<List<UpdateStateRelateDto>>> UpdateStateWork(UpdateStateWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteWork(DeleteWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteManyWork(DeleteManyWorkDto input);
+        Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input);
         #endregion
 
         #region IWorkTypeService
@@ -48,12 +51,14 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
 
         #region IWorkLogTime 
         Task<MicroserviceResultDto<PagedResultDto<WorkLogTimeDto>>> GetListWorkLogTime(GetAllWorkLogTimeDto input);
+        Task<MicroserviceResultDto<PagedResultDto<GetWorkTimeSheetDto>>> GetListWorkLogTimeSheet(GetAllWorkTimeSheetQuery input);
         Task<MicroserviceResultDto<WorkLogTimeDto>> GetWorkLogTimeById(GetWorkLogTimeByIdDto input);
         Task<MicroserviceResultDto<bool>> CreateWorkLogTime(CreateWorkLogTimeDto input);
         Task<MicroserviceResultDto<bool>> CreateManyWorkLogTime(CreateManyWorkLogTimeDto input);
         Task<MicroserviceResultDto<bool>> UpdateManyWorkLogTime(UpdateManyWorkLogTimeDto input);
         Task<MicroserviceResultDto<bool>> UpdateWorkLogTime(UpdateWorkLogTimeDto input);
         Task<MicroserviceResultDto<bool>> UpdateStatusWorkLogTime(UpdateStatusWorkLogTimeDto input);
+        Task<MicroserviceResultDto<bool>> UpdateStatusLogTime(UpdateStatusLogTimeDto input);
         Task<MicroserviceResultDto<bool>> DeleteWorkLogTime(DeleteWorkLogTimeDto input);
         #endregion
 
@@ -107,6 +112,15 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<WorkStatisticDto>>();
         }
+        public async Task<MicroserviceResultDto<Dictionary<string, int>>> GetWorkStatisticGeneral(GetWorkStatisticGeneralDto input)
+        {
+            var query = "api/v1/work/admin/get-work-statistic-general" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<Dictionary<string, int>>>();
+        }
         public async Task<MicroserviceResultDto<PagedResultDto<WorkDto>>> AdminGetListWork(GetListWorkDto input)
         {
             var query = "api/v1/work/admin/get-list-work" + input.GetStringQueryUri();
@@ -115,6 +129,15 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
             request.HandleGet(_session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<WorkDto>>>();
+        }
+        public async Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input)
+        {
+            var query = "api/v1/work/get-list-work-notify" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>>();
         }
         public async Task<MicroserviceResultDto<WorkDetailDto>> AdminGetWorkById(long id)
         {
@@ -133,6 +156,15 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
             request.HandleGet(_session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<WorkDto>>>();
+        }
+        public async Task<MicroserviceResultDto<PagedResultDto<GetAllWorksPlanDto>>> GetListWorkPlan(GetAllWorksPlanQuery input)
+        {
+            var query = "api/v1/work/get-work-plan" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<GetAllWorksPlanDto>>>();
         }
         public async Task<MicroserviceResultDto<List<WorkDto>>> GetAllWorkByRelatedId(GetListWorkByRelatedIdDto input)
         {
@@ -353,6 +385,15 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<WorkLogTimeDto>>>();
         }
+        public async Task<MicroserviceResultDto<PagedResultDto<GetWorkTimeSheetDto>>> GetListWorkLogTimeSheet(GetAllWorkTimeSheetQuery input)
+        {
+            var query = "api/v1/WorkLogTime/get-list-work-time-sheet" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<GetWorkTimeSheetDto>>>();
+        }
         public async Task<MicroserviceResultDto<WorkLogTimeDto>> GetWorkLogTimeById(GetWorkLogTimeByIdDto input)
         {
             var query = "api/v1/WorkLogTime/get-work-logtime-detail" + input.GetStringQueryUri();
@@ -389,6 +430,14 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
         public async Task<MicroserviceResultDto<bool>> UpdateStatusWorkLogTime(UpdateStatusWorkLogTimeDto input)
         {
             using var request = new HttpRequestMessage(HttpMethod.Put, $"/api/v1/WorkLogTime/update-status-work-logtime");
+
+            request.HandlePutAsJson(input, _session);
+            var response = await _client.SendAsync(request);
+            return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+        }
+        public async Task<MicroserviceResultDto<bool>> UpdateStatusLogTime(UpdateStatusLogTimeDto input)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Put, $"/api/v1/WorkLogTime/update-status-logtime");
 
             request.HandlePutAsJson(input, _session);
             var response = await _client.SendAsync(request);
@@ -598,12 +647,12 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
                 detailUrlWA,
                 "",
                 ""
-                
+
             );
 
             foreach (var userId in recipientIds)
             {
-                
+
                 var recipients = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
                 await _appNotifier.SendUserMessageNotifyFireBaseAsync(
                     message,
@@ -628,7 +677,6 @@ namespace IMAX.App.ServiceHttpClient.IMAX.SmartCommunity
                 );
             }
         }
-        
         #endregion
     }
 }

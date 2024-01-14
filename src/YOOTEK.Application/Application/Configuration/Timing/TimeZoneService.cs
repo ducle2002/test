@@ -5,7 +5,7 @@ using Abp.Dependency;
 using Abp.Timing;
 using Abp.Extensions;
 
-namespace IMAX.Timing
+namespace Yootek.Timing
 {
     public class TimeZoneService : ITimeZoneService, ITransientDependency
     {

@@ -1,23 +1,26 @@
 ﻿using Abp.Modules;
+using Abp.Quartz;
 using Abp.Reflection.Extensions;
 using Hangfire;
 using Hangfire.Common;
-using IMAX.Configuration;
+using Yootek.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
 
-namespace IMAX.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     [DependsOn(
-        typeof(IMAXWebCoreModule))
+        typeof(YootekWebCoreModule),
+        typeof(AbpQuartzModule)
+        )
         ]
-    public class IMAXWebHostModule : AbpModule
+    public class YootekWebHostModule : AbpModule
     {
         private readonly IWebHostEnvironment _env;
         private readonly IConfigurationRoot _appConfiguration;
 
-        public IMAXWebHostModule(IWebHostEnvironment env)
+        public YootekWebHostModule(IWebHostEnvironment env)
         {
             _env = env;
             _appConfiguration = env.GetAppConfiguration();
@@ -26,13 +29,12 @@ namespace IMAX.Web.Host.Startup
         public override void PreInitialize()
         {
             // Configuration.BackgroundJobs.UseHangfire();
-            Configuration.Auditing.IsEnabled = false;
         }
 
 
         public override void Initialize()
         {
-            IocManager.RegisterAssemblyByConvention(typeof(IMAXWebHostModule).GetAssembly());
+            IocManager.RegisterAssemblyByConvention(typeof(YootekWebHostModule).GetAssembly());
         }
 
         public override void PostInitialize()
@@ -40,35 +42,9 @@ namespace IMAX.Web.Host.Startup
             var appFolders = IocManager.Resolve<AppFolders>();
             appFolders.TempFileDownloadFolder = "C://Download";
 
-            try
-            {
-                #region Hangfire
-
-                var manager = new RecurringJobManager();
-                //manager.AddOrUpdate("HangFileReminderNotify"
-                //    , Job.FromExpression(() => new HangFireScheduler().HangFireReminderNotify())
-                //    , Cron.Minutely());
-
-                manager.AddOrUpdate("HangFireDeleteAccount"
-                    , Job.FromExpression(() => new HangFireScheduler().HangFireDeleteAccount())
-                    , Cron.Hourly());
-
-                manager.AddOrUpdate("ScheduleCheckAllUserBillDebt"
-                    , Job.FromExpression(() => new HangFireScheduler().HangFireBillPaymentReminder())
-                    , Cron.Daily(6));
-
-                //manager.AddOrUpdate("HangFireReminderBillDebt"
-                //    , Job.FromExpression(() => new HangFireScheduler().HangfireReminderBillDebt())
-                //    , Cron.Daily(7));
-
-                #endregion
-
-                //DirectoryHelper.CreateIfNotExists(appFolders.TempFileDownloadFolder);
-            }
-            catch (Exception ex)
-            {
-                Logger.Fatal(ex.Message + "hangfire exception");
-            }
+            // Quartz scheduler
+            var _quartzScheduler = IocManager.Resolve<IQuartzScheduler>();
+            _quartzScheduler.Init();
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Abp.Dependency;
 
-namespace IMAX.Storage
+namespace Yootek.Storage
 {
     public interface ITempFileCacheManager : ITransientDependency
     {

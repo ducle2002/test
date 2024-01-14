@@ -3,9 +3,9 @@ using Abp.AutoMapper;
 using Abp.Dependency;
 using Abp.Events.Bus.Entities;
 using Abp.Events.Bus.Handlers;
-using IMAX.Chat;
+using Yootek.Chat;
 
-namespace IMAX.Friendships.Cache
+namespace Yootek.Friendships.Cache
 {
     public class UserFriendCacheSyncronizer :
         IEventHandler<EntityCreatedEventData<Friendship>>,

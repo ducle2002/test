@@ -1,20 +1,20 @@
 ﻿using Abp.Application.Features;
 using Abp.UI;
-using IMAX.Features;
+using Yootek.Features;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
     public interface IChatFeatureChecker
     {
         void CheckChatFeatures(int? sourceTenantId, int? targetTenantId);
     }
 
-    public class ChatFeatureChecker : IMAXDomainServiceBase, IChatFeatureChecker
+    public class ChatFeatureChecker : YootekDomainServiceBase, IChatFeatureChecker
     {
         private readonly IFeatureChecker _featureChecker;
 

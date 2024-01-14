@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class GetOrganizationUnitInput
     {

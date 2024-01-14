@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.IMAX.EntityDb.IMAX.DichVu.BusinessReg
+namespace Yootek.Yootek.EntityDb.Yootek.DichVu.BusinessReg
 {
     [Table("BusinessUnit")]
     public class BusinessUnit : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit

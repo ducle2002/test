@@ -5,9 +5,9 @@ using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.UI;
 
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
-    public class FriendshipManager : IMAXDomainServiceBase, IFriendshipManager
+    public class FriendshipManager : YootekDomainServiceBase, IFriendshipManager
     {
         private readonly IRepository<Friendship, long> _friendshipRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;

@@ -1,6 +1,6 @@
-﻿using static IMAX.Common.Enum.CommonENum;
+﻿using static Yootek.Common.Enum.CommonENum;
 
-namespace IMAX.Common
+namespace Yootek.Common
 {
     public interface ISortedInputDto
     {

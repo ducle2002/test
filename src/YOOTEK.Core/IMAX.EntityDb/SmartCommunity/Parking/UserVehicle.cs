@@ -3,7 +3,7 @@ using Abp.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public enum VehicleType
     {
@@ -11,6 +11,9 @@ namespace IMAX.EntityDb
         Car = 1,
         Motorbike = 2,
         Bicycle = 3,
+        ElectricCar = 4,
+        ElectricMotor = 5,
+        ElectricBike = 6
     }
 
     [Table("UserVehicle")]

@@ -7,16 +7,16 @@ using Abp.Authorization;
 using Abp.Authorization.Users;
 using Abp.Configuration;
 using Abp.Domain.Uow;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.MultiTenancy;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.MultiTenancy;
 using Abp.Runtime.Session;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-using IMAX.Configuration;
+using Yootek.Configuration;
 
-namespace IMAX.Identity
+namespace Yootek.Identity
 {
     public class SignInManager : AbpSignInManager<Tenant, Role, User>
     {

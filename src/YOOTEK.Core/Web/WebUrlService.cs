@@ -3,10 +3,10 @@ using System.Configuration;
 using System.Linq;
 using Abp.Dependency;
 using Abp.Extensions;
-using IMAX.Configuration;
+using Yootek.Configuration;
 using Microsoft.Extensions.Configuration;
 
-namespace IMAX.Web
+namespace Yootek.Web
 {
     public class WebUrlService : IWebUrlService, ITransientDependency
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
-using IMAX.Common;
+using Yootek.Common;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Business
 {
     public class CreatePaymentDto
     {
@@ -83,6 +83,6 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
         SHOPPING = 1,
         BOOKING = 2,
         BILL = 3,
-        INVESTMENT = 4,
+        ECOFARM = 4,
     }
 }

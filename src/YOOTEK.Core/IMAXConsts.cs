@@ -1,8 +1,8 @@
-﻿namespace IMAX
+﻿namespace Yootek
 {
-    public class IMAXConsts
+    public class YootekConsts
     {
-        public const string LocalizationSourceName = "IMAX";
+        public const string LocalizationSourceName = "Yootek";
 
         public const string ConnectionStringName = "Default";
 

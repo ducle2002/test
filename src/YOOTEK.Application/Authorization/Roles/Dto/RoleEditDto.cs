@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Abp.Authorization.Roles;
-using IMAX.Authorization.Roles;
+using Yootek.Authorization.Roles;
 
-namespace IMAX.Roles.Dto
+namespace Yootek.Roles.Dto
 {
     public class RoleEditDto : EntityDto<int>
     {

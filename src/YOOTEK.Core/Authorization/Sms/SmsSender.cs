@@ -2,7 +2,7 @@
 //using Abp.Dependency;
 //using Castle.Core.Logging;
 
-//namespace IMAX.Net.Sms
+//namespace Yootek.Net.Sms
 //{
 //    public class SmsSender : ISmsSender, ITransientDependency
 //    {

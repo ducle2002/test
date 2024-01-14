@@ -1,7 +1,7 @@
 ﻿using Abp.AspNetZeroCore.Web.Authentication.External;
 using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
-namespace IMAX.Web.Startup.ExternalLoginInfoProviders
+namespace Yootek.Web.Startup.ExternalLoginInfoProviders
 {
     public abstract class TenantBasedExternalLoginInfoProviderBase : IExternalLoginInfoProvider
     {

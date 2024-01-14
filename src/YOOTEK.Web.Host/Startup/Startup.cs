@@ -1,51 +1,45 @@
+using Abp.AspNetCore;
+using Abp.AspNetCore.Mvc.Antiforgery;
+using Abp.AspNetCore.SignalR.Hubs;
+using Abp.Castle.Logging.Log4Net;
+using Abp.Dependency;
+using Abp.Extensions;
+using Abp.Json;
+using Castle.Facilities.Logging;
+using CorePush.Apple;
+using CorePush.Google;
+using Yootek.App.ServiceHttpClient;
+using Yootek.Application.Protos.Business.Bookings;
+using Yootek.Application.Protos.Business.Items;
+using Yootek.Application.Protos.Business.Orders;
+using Yootek.Application.Protos.Business.Providers;
+using Yootek.Application.Protos.Business.Rates;
+using Yootek.Application.Protos.Business.Vouchers;
+using Yootek.Authorization;
+using Yootek.Configuration;
+using Yootek.Identity;
+using Yootek.Notifications;
+using Yootek.Services.Notifications;
+using Yootek.Web.Host.Chat;
+using ImaxFileUploaderServer.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Castle.Facilities.Logging;
-using Abp.AspNetCore;
-using Abp.AspNetCore.Mvc.Antiforgery;
-using Abp.Castle.Logging.Log4Net;
-using Abp.Extensions;
-using Abp.AspNetCore.SignalR.Hubs;
-using Abp.Dependency;
-using Abp.Json;
-using Microsoft.Extensions.Hosting;
-using Microsoft.OpenApi.Models;
-using Newtonsoft.Json.Serialization;
-using System.IO;
-using IMAX.Identity;
-using IMAX.Web.Host.Startup;
-using IMAX.Configuration;
-using CorePush.Apple;
-using CorePush.Google;
-using Hangfire;
-using IMAX.Application.Protos.Business.Bookings;
-using IMAX.Application.Protos.Business.Items;
-using IMAX.Application.Protos.Business.Orders;
-using IMAX.Application.Protos.Business.Providers;
-using IMAX.Application.Protos.Business.Rates;
-using IMAX.Application.Protos.Business.Vouchers;
-using IMAX.Notifications;
-using IMAX.Services.Notifications;
-using IMAX;
-using ImaxFileUploaderServer.Services;
-using Microsoft.AspNetCore.Identity;
-using Hangfire.PostgreSql;
-using IMAX.App.ServiceHttpClient;
-using Abp.Hangfire;
-using IMAX.Authorization;
-using IMAX.Web.Host.Chat;
 
-
-namespace YOOTEK.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public class Startup
     {
+        private string _token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6IjEwMjA2IiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZSI6ImFkbWluIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvZW1haWxhZGRyZXNzIjoia2VhbmduYW1AZ21haWwuY29tIiwiQXNwTmV0LklkZW50aXR5LlNlY3VyaXR5U3RhbXAiOiJQNUpGTUhUNlNTTjdUMkxMUEVGT1AzWkI0R05KTjVBRSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6WyJBZG1pbiIsIkNpdGl6ZW5NYW5hZ2VyIiwiQmFuIHF14bqjbiBsw70iLCJBZG1pbktlYW5nbmFtIl0sImh0dHA6Ly93d3cuYXNwbmV0Ym9pbGVycGxhdGUuY29tL2lkZW50aXR5L2NsYWltcy90ZW5hbnRJZCI6IjI1Iiwic3ViIjoiMTAyMDYiLCJqdGkiOiJkMDc4NWI2Zi04MTAwLTQ5MTktOWJlOC1hODUzNjBhODUwYzIiLCJpYXQiOjE2NzgwNzc2NjYsInRva2VuX3ZhbGlkaXR5X2tleSI6ImEwMGNlZDJkLWFmZjYtNGU1ZS1hZjcxLWFjNTBlM2Q1YmMwNiIsInVzZXJfaWRlbnRpZmllciI6IjEwMjA2QDI1IiwidG9rZW5fdHlwZSI6IjAiLCJyZWZyZXNoX3Rva2VuX3ZhbGlkaXR5X2tleSI6ImI3ZDlmNTI2LWVlZjAtNGZjNy05NjIyLTJmZWMzOTIwZjUyZSIsIm5iZiI6MTY3ODA3NzY2NiwiZXhwIjoxNjc4MjUwNDY2LCJpc3MiOiJNSFBRIiwiYXVkIjoiTUhQUSJ9.7SoF_bFNdNJo28DYVdjoizGJRRT0isByag8JBjg3dU0";
         private const string _defaultCorsPolicyName = "localhost";
 
         private const string _apiVersion = "v1";
@@ -59,17 +53,18 @@ namespace YOOTEK.Web.Host.Startup
             _appConfiguration = env.GetAppConfiguration();
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         {
+            //MVC
             services.AddControllersWithViews(
-              options => { options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute()); }
+                options => { options.Filters.Add(new AbpAutoValidateAntiforgeryTokenAttribute()); }
             ).AddNewtonsoftJson(options =>
             {
-               options.SerializerSettings.ContractResolver = new AbpMvcContractResolver(IocManager.Instance);
-               options.SerializerSettings.ContractResolver = new AbpMvcContractResolver(IocManager.Instance)
-               {
-                  NamingStrategy = new CamelCaseNamingStrategy()
-               };
+                options.SerializerSettings.ContractResolver = new AbpMvcContractResolver(IocManager.Instance);
+                options.SerializerSettings.ContractResolver = new AbpMvcContractResolver(IocManager.Instance)
+                {
+                    NamingStrategy = new CamelCaseNamingStrategy()
+                };
             });
             services.AddTransient<IIpBlockingService, IpBlockingService>();
             services.AddScoped<IpBlockActionFilter>();
@@ -78,7 +73,7 @@ namespace YOOTEK.Web.Host.Startup
 
             IdentityRegistrar.Register(services);
             AuthConfigurer.Configure(services, _appConfiguration);
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             services.AddSignalR(e =>
             {
                 e.MaximumReceiveMessageSize = 204800000;
@@ -113,14 +108,44 @@ namespace YOOTEK.Web.Host.Startup
             services.Configure<FcmNotificationSetting>(appSettingsSection);
 
             services.Configure<FcmNotificationDojilandSetting>(_appConfiguration.GetSection("FcmDojiNotification"));
-
+            //services.Configure<AbpMailKitOptions>(options =>
+            //{
+            //    options.SecureSocketOption = SecureSocketOptions.SslOnConnect;
+            //});
 
             services.ConfigureServiceHttpClient(_appConfiguration);
 
-            services.AddHangfire(config =>
+            services.AddSwaggerGen(options =>
             {
-                // config.UseSqlServerStorage(_appConfiguration.GetConnectionString("Default"));
-                config.UsePostgreSqlStorage(_appConfiguration.GetConnectionString("Default"));
+                options.SwaggerDoc(_apiVersion, new OpenApiInfo
+                {
+                    Version = _apiVersion,
+                    Title = "Yootek API",
+                    Description = "Yootek",
+                    // uncomment if needed TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Yootek",
+                        Email = string.Empty,
+                        Url = new Uri("https://twitter.com/aspboilerplate"),
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "MIT License",
+                        Url = new Uri("https://github.com/aspnetboilerplate/aspnetboilerplate/blob/dev/LICENSE"),
+                    }
+                });
+                options.DocInclusionPredicate((docName, description) => true);
+
+                // Define the BearerAuth scheme that's in use
+                options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
+                {
+                    Description =
+                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey
+                });
             });
 
             //service Session
@@ -172,30 +197,8 @@ namespace YOOTEK.Web.Host.Startup
             {
                 o.Address = new Uri(_appConfiguration["ServiceAddress:BookingProtoGrpc"]);
             });
-
-           
-            services.AddCors(
-                options => options.AddPolicy(
-                    _defaultCorsPolicyName,
-                    builder => builder
-                        .WithOrigins(
-                            // App:CorsOrigins in appsettings.json can contain more than one address separated by comma.
-                            _appConfiguration["App:CorsOrigins"]
-                                .Split(",", StringSplitOptions.RemoveEmptyEntries)
-                                .Select(o => o.RemovePostFix("/"))
-                                .ToArray()
-                        )
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials()
-                )
-            );
-
-            // Swagger - Enable this line and the related lines in Configure method to enable swagger UI
-            ConfigureSwagger(services);
-
             // Configure Abp and Dependency Injection
-            services.AddAbpWithoutCreatingServiceProvider<IMAXWebHostModule>(
+            return services.AddAbp<YootekWebHostModule>(
                 // Configure Log4Net logging
                 options => options.IocManager.IocContainer.AddFacility<LoggingFacility>(
                     f => f.UseAbpLog4Net().WithConfig(_hostingEnvironment.IsDevelopment()
@@ -206,20 +209,31 @@ namespace YOOTEK.Web.Host.Startup
             );
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IBackgroundJobClient backgroundJobs, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app,
+            ILoggerFactory loggerFactory)
         {
-            app.UseAbp(options => { options.UseAbpRequestLocalization = false; }); // Initializes ABP framework.
-
+            app.UseAbp(options => { options.UseAbpRequestLocalization = true; }); // 
+            //app.UseHsts();
+            //app.UseHttpsRedirection();
             app.UseCors(_defaultCorsPolicyName); // Enable CORS!
-
             app.UseStaticFiles();
 
+            /**
+             * UseStaticFiles
+             * Cấu hình static file trên máy chủ IIS
+             * build sang máy chủ khác cần comment lại
+             */
+            //app.UseStaticFiles(new StaticFileOptions
+            //{
+            //    FileProvider = new PhysicalFileProvider(_appConfiguration["PathStaticFile1"])
+            //});
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseAbpRequestLocalization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {
@@ -239,72 +253,13 @@ namespace YOOTEK.Web.Host.Startup
             app.UseSwaggerUI(options =>
             {
                 // specifying the Swagger JSON endpoint.
-                options.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"YOOTEK API {_apiVersion}");
+                options.SwaggerEndpoint($"/swagger/{_apiVersion}/swagger.json", $"Yootek API {_apiVersion}");
                 options.IndexStream = () => Assembly.GetExecutingAssembly()
-                    .GetManifestResourceStream("YOOTEK.Web.Host.wwwroot.swagger.ui.index.html");
+                    .GetManifestResourceStream("Yootek.Web.Host.wwwroot.swagger.ui.index.html");
                 options.DisplayRequestDuration(); // Controls the display of the request duration (in milliseconds) for "Try it out" requests.  
             }); // URL: /swagger
-          
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[]
-                    { new AbpHangfireAuthorizationFilter(PermissionNames.Pages_Administration_HangfireDashboard) }
-            });
-            backgroundJobs.Enqueue(() => Console.WriteLine("Hello world from Hangfire!"));
-            app.UseHangfireServer();
-        }
 
-        private void ConfigureSwagger(IServiceCollection services)
-        {
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc(_apiVersion, new OpenApiInfo
-                {
-                    Version = _apiVersion,
-                    Title = "YOOTEK API",
-                    Description = "YOOTEK",
-                    // uncomment if needed TermsOfService = new Uri("https://example.com/terms"),
-                    Contact = new OpenApiContact
-                    {
-                        Name = "YOOTEK",
-                        Email = string.Empty,
-                        Url = new Uri("https://twitter.com/aspboilerplate"),
-                    },
-                    License = new OpenApiLicense
-                    {
-                        Name = "MIT License",
-                        Url = new Uri("https://github.com/aspnetboilerplate/aspnetboilerplate/blob/dev/LICENSE"),
-                    }
-                });
-                options.DocInclusionPredicate((docName, description) => true);
-
-                // Define the BearerAuth scheme that's in use
-                options.AddSecurityDefinition("bearerAuth", new OpenApiSecurityScheme()
-                {
-                    Description =
-                        "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                    Name = "Authorization",
-                    In = ParameterLocation.Header,
-                    Type = SecuritySchemeType.ApiKey
-                });
-
-                //add summaries to swagger
-                bool canShowSummaries = _appConfiguration.GetValue<bool>("Swagger:ShowSummaries");
-                if (canShowSummaries)
-                {
-                    var hostXmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                    var hostXmlPath = Path.Combine(AppContext.BaseDirectory, hostXmlFile);
-                    options.IncludeXmlComments(hostXmlPath);
-
-                    var applicationXml = $"IMAX.Application.xml";
-                    var applicationXmlPath = Path.Combine(AppContext.BaseDirectory, applicationXml);
-                    options.IncludeXmlComments(applicationXmlPath);
-
-                    var webCoreXmlFile = $"IMAX.Web.Core.xml";
-                    var webCoreXmlPath = Path.Combine(AppContext.BaseDirectory, webCoreXmlFile);
-                    options.IncludeXmlComments(webCoreXmlPath);
-                }
-            });
+            //app.MapSignalR();
         }
     }
 }

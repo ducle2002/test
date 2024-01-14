@@ -5,7 +5,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.Chat.BusinessChat
+namespace Yootek.Chat.BusinessChat
 {
     [Table("Business.UserProviderFriendship")]
     public class UserProviderFriendship : Entity<long>, IHasCreationTime, IMayHaveTenant

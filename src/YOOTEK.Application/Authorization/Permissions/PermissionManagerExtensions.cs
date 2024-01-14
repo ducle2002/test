@@ -4,7 +4,7 @@ using System.Linq;
 using Abp.Authorization;
 using Abp.Runtime.Validation;
 
-namespace IMAX.Authorization.Permissions
+namespace Yootek.Authorization.Permissions
 {
     public static class PermissionManagerExtensions
     {

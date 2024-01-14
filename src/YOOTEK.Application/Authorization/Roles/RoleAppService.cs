@@ -9,16 +9,16 @@ using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.IdentityFramework;
 using Abp.Linq.Extensions;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Roles.Dto;
-using IMAX.Authorization.Permissions;
-using IMAX.Authorization.Permissions.Dto;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Roles.Dto;
+using Yootek.Authorization.Permissions;
+using Yootek.Authorization.Permissions.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace IMAX.Roles
+namespace Yootek.Roles
 {
     // [AbpAuthorize(PermissionNames.Pages_Roles, PermissionNames.Pages_Admin, PermissionNames.Pages_SystemAdministration_Roles)]
     public class RoleAppService :

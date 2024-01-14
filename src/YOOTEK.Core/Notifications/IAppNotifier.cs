@@ -1,19 +1,29 @@
 ﻿using Abp;
 using Abp.Localization;
 using Abp.Notifications;
-using IMAX.Authorization.Users;
-using IMAX.EntityDb;
-using IMAX.MultiTenancy;
-using System;
-using System.Collections.Generic;
+using Yootek.Authorization.Users;
+using Yootek.EntityDb;
 using System.Threading.Tasks;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public interface IAppNotifier
     {
+        Task WelcomeToTheApplicationAsync(User user);
+        Task SendMessageNotificationInternalAsync(
+            string notificationName, 
+            string fireBaseMessage,
+            string detailUrlApp,
+            string detailUrlWA,
+            UserIdentifier[] users,
+            NotificationData messageData,
+            AppType appType = AppType.ALL,
+            bool isOnlyFirebase = false,
+            bool isSendGroup = false,
+            string groupName = "",
+            NotificationSeverity severity = NotificationSeverity.Info
+            );
 
-        Task NewTenantRegisteredAsync(Tenant tenant);
 
         Task MultiSendMessageAsync(string typeMessage, UserIdentifier[] users, string message, bool isRealtimeMessage = false, bool isCloudMessage = false, bool isSendAll = false, NotificationSeverity severity = NotificationSeverity.Info);
         //Gửi thông báo Firebase
@@ -62,5 +72,8 @@ namespace IMAX.Notifications
         Task SendCommentPostMessageNotifyAsync(Post post, PostComment comment, User userReact);
 
         Task SendLikePostMessageNotifyAsync(Post post, LikePost react, User userReact);
+
+        Task SendUserMessageNotifyToAllUserSocialAsync(string notificationName, string fireBaseMessage, UserMessageNotificationDataBase messageNotification, string detailUrlApp, string detailUrlWA);
+
     }
 }

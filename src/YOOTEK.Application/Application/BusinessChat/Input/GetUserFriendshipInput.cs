@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.BusinessChat.Input
+namespace Yootek.Application.BusinessChat.Input
 {
     public class GetUserFriendshipInput
     {

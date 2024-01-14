@@ -2,7 +2,7 @@
 
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Web.Host.SignalR
+namespace Yootek.Web.Host.SignalR
 {
     public class ProviderSendMessageUserInput
     {

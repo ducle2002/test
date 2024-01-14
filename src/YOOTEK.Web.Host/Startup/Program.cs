@@ -1,24 +1,31 @@
-﻿using Abp.AspNetCore.Dependency;
-using Abp.Dependency;
+﻿using Yootek.BackgroundJob;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
-namespace YOOTEK.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public class Program
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            BuildWebHost(args).Run();
         }
 
-        internal static IHostBuilder CreateHostBuilder(string[] args) =>
-            Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            return WebHost.CreateDefaultBuilder(args)
+                .ConfigureServices(services =>
                 {
-                    webBuilder.UseStartup<Startup>();
+                    //services.AddHostedService<TimedHostedService>();
+                    services.AddHostedService<QueuedHostedService>();
                 })
-                .UseCastleWindsor(IocManager.Instance.IocContainer);
-       
+                .UseStartup<Startup>()
+                .Build();
+        }
+
     }
 }

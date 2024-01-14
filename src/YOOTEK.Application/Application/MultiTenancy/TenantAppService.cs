@@ -12,16 +12,16 @@ using Abp.IdentityFramework;
 using Abp.Linq.Extensions;
 using Abp.MultiTenancy;
 using Abp.Runtime.Security;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Configuration;
-using IMAX.Editions;
-using IMAX.MultiTenancy.Dto;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Configuration;
+using Yootek.Editions;
+using Yootek.MultiTenancy.Dto;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
-namespace IMAX.MultiTenancy
+namespace Yootek.MultiTenancy
 {
     /// <summary>
     /// [AbpAuthorize(PermissionNames.Pages_Tenants)]

@@ -3,12 +3,12 @@
 using Abp.Dependency;
 using Abp.RealTime;
 using Castle.Core.Logging;
-using IMAX.Notifications;
-using IMAX.Web.Host.Chat;
+using Yootek.Notifications;
+using Yootek.Web.Host.Chat;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 
-namespace IMAX.Web.Host.SignalR
+namespace Yootek.Web.Host.SignalR
 {
     public class SmarthomeCommunicator : ISmarthomeCommunicator, ITransientDependency
     {

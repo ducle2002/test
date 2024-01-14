@@ -5,11 +5,11 @@ using Abp.Domain.Uow;
 using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.UI;
-using IMAX.Authorization.Users;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
-using IMAX.Organizations;
-using IMAX.Organizations.Cache;
+using Yootek.Authorization.Users;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
+using Yootek.Organizations;
+using Yootek.Organizations.Cache;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
-    internal class OrganizationUnitChatManager : IMAXDomainServiceBase, IOrganizationUnitChatManager
+    internal class OrganizationUnitChatManager : YootekDomainServiceBase, IOrganizationUnitChatManager
     {
         private readonly IFriendshipManager _friendshipManager;
         private readonly IChatCommunicator _chatCommunicator;

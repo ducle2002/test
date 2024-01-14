@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Abp.Authorization.Users;
 
-namespace IMAX.Models.TokenAuth
+namespace Yootek.Models.TokenAuth
 {
     public class ExternalAuthenticateModel
     {

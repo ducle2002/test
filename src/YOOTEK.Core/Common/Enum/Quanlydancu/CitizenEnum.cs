@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Common.Enum.Quanlydancu
+namespace Yootek.Common.Enum.Quanlydancu
 {
 
     public enum GET_CITIZEN_FORMID

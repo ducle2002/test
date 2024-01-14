@@ -1,8 +1,8 @@
 ﻿using Abp.AutoMapper;
-using IMAX.Authentication.External;
+using Yootek.Authentication.External;
 using System.Collections.Generic;
 
-namespace IMAX.Models.TokenAuth
+namespace Yootek.Models.TokenAuth
 {
     [AutoMapFrom(typeof(ExternalLoginProviderInfo))]
     public class ExternalLoginProviderInfoModel

@@ -3,7 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     public class ObjectType : FullAuditedEntity<long>, IMayHaveTenant
     {

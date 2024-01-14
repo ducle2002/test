@@ -3,9 +3,9 @@ using Abp.EntityFrameworkCore;
 using Abp.MultiTenancy;
 using Abp.Zero.EntityFrameworkCore;
 
-namespace IMAX.EntityFrameworkCore
+namespace Yootek.EntityFrameworkCore
 {
-    public class AbpZeroDbMigrator : AbpZeroDbMigrator<IMAXDbContext>
+    public class AbpZeroDbMigrator : AbpZeroDbMigrator<YootekDbContext>
     {
         public AbpZeroDbMigrator(
             IUnitOfWorkManager unitOfWorkManager,

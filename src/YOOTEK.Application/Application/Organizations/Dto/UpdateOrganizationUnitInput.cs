@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Organizations;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class UpdateOrganizationUnitInput
     {

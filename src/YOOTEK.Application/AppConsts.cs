@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IMAX
+namespace Yootek
 {
     public class AppConsts
     {
@@ -57,7 +57,7 @@ namespace IMAX
         public const string Theme10 = "theme10";
         public const string Theme11 = "theme11";
 
-        public static TimeSpan AccessTokenExpiration = TimeSpan.FromDays(2);
+        public static TimeSpan AccessTokenExpiration = TimeSpan.FromDays(31);
         public static TimeSpan RefreshTokenExpiration = TimeSpan.FromDays(365);
 
         public const string DateTimeOffsetFormat = "yyyy-MM-ddTHH:mm:sszzz";

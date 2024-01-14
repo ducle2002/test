@@ -5,17 +5,17 @@ using Abp.EntityFrameworkCore.Repositories;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace IMAX.EntityFrameworkCore.Repositories
+namespace Yootek.EntityFrameworkCore.Repositories
 {
     /// <summary>
     /// Base class for custom repositories of the application.
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
     /// <typeparam name="TPrimaryKey">Primary key type of the entity</typeparam>
-    public abstract class IMAXRepositoryBase<TEntity, TPrimaryKey> : EfCoreRepositoryBase<IMAXDbContext, TEntity, TPrimaryKey>
+    public abstract class YootekRepositoryBase<TEntity, TPrimaryKey> : EfCoreRepositoryBase<YootekDbContext, TEntity, TPrimaryKey>
         where TEntity : class, IEntity<TPrimaryKey>
     {
-        protected IMAXRepositoryBase(IDbContextProvider<IMAXDbContext> dbContextProvider)
+        protected YootekRepositoryBase(IDbContextProvider<YootekDbContext> dbContextProvider)
             : base(dbContextProvider)
         {
         }
@@ -43,13 +43,13 @@ namespace IMAX.EntityFrameworkCore.Repositories
 
     /// <summary>
     /// Base class for custom repositories of the application.
-    /// This is a shortcut of <see cref="IMAXRepositoryBase{TEntity,TPrimaryKey}"/> for <see cref="int"/> primary key.
+    /// This is a shortcut of <see cref="YootekRepositoryBase{TEntity,TPrimaryKey}"/> for <see cref="int"/> primary key.
     /// </summary>
     /// <typeparam name="TEntity">Entity type</typeparam>
-    public abstract class IMAXRepositoryBase<TEntity> : IMAXRepositoryBase<TEntity, int>, IRepository<TEntity>
+    public abstract class YootekRepositoryBase<TEntity> : YootekRepositoryBase<TEntity, int>, IRepository<TEntity>
         where TEntity : class, IEntity<int>
     {
-        protected IMAXRepositoryBase(IDbContextProvider<IMAXDbContext> dbContextProvider)
+        protected YootekRepositoryBase(IDbContextProvider<YootekDbContext> dbContextProvider)
             : base(dbContextProvider)
         {
         }

@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.IMAX.EntityDb.IMAX.Metrics
+namespace Yootek.Yootek.EntityDb.Yootek.Metrics
 {
     [Table("HomeMeters")]
     public class HomeMeter : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit

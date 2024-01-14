@@ -4,7 +4,7 @@ using Abp.Domain.Entities.Auditing;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("UserParking")]
     public class UserParking : FullAuditedEntity<long>, IMayHaveTenant

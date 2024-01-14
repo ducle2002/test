@@ -2,14 +2,14 @@ using Abp.AspNetCore.Mvc.Controllers;
 using Abp.IdentityFramework;
 using Microsoft.AspNetCore.Identity;
 
-namespace IMAX.Controllers
+namespace Yootek.Controllers
 {
-    public abstract class IMAXControllerBase : AbpController
+    public abstract class YootekControllerBase : AbpController
     {
         public static Benchmark mb = new Benchmark();
-        protected IMAXControllerBase()
+        protected YootekControllerBase()
         {
-            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+            LocalizationSourceName = YootekConsts.LocalizationSourceName;
         }
 
 

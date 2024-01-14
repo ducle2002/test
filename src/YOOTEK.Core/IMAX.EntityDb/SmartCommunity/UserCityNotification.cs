@@ -3,7 +3,7 @@ using Abp.Domain.Entities.Auditing;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
 
     [Table("UserCityNotification")]

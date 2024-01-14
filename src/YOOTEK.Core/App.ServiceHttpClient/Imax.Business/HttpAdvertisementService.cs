@@ -1,87 +1,73 @@
 ﻿using Abp.Runtime.Session;
-using IMAX.App.ServiceHttpClient.Dto;
-using IMAX.App.ServiceHttpClient.Dto.Imax.Business;
-using System.Collections.Generic;
+using Yootek.App.ServiceHttpClient.Dto.Imax.Business;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
+using Yootek.Common.DataResult;
+using Yootek.Services.SmartSocial.Ecofarm;
+using Microsoft.Extensions.Configuration;
 
-namespace IMAX.App.ServiceHttpClient.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Imax.Business
 {
     public interface IHttpAdvertisementService
     {
-        Task<MicroserviceResultDto<List<Advertisement>>> GetAllAdvertisementsByAdmin(GetAllAdvertisementsDto input);
-        Task<MicroserviceResultDto<List<Advertisement>>> GetAllAdvertisementsByPartner(GetAllAdvertisementsDto input);
-        Task<MicroserviceResultDto<List<Advertisement>>> GetAllAdvertisementsByUser(GetAllAdvertisementsDto input);
-        Task<MicroserviceResultDto<bool>> CreateAdvertisement(CreateAdvertisementDto input);
-        Task<MicroserviceResultDto<bool>> DeleteAdvertisement(DeleteAdvertisementDto input);
-        Task<MicroserviceResultDto<bool>> ApprovalAdvertisement(ApprovalAdvertisementDto input);
+        Task<IDataResultT<PagedResultDto<AdvertisementDto>>> GetListByAdminAsync(GetAllAdvertisementsDto input);
+        Task<IDataResultT<PagedResultDto<AdvertisementDto>>> GetListByPartnerAsync(GetAllAdvertisementsDto input);
+        Task<IDataResultT<PagedResultDto<AdvertisementDto>>> GetListByUserAsync(GetAllAdvertisementsDto input);
+        Task<IDataResultT<AdvertisementDto>> GetByIdAsync(GetAdvertisementByIdDto input);
+        Task<object> CreateAsync(CreateAdvertisementDto input);
+        Task<object> UpdateAsync(UpdateAdvertisementDto input);
+        Task<object> DeleteAsync(DeleteAdvertisementDto input);
+        Task<object> UpdateStatusAsync(UpdateStatusAdvertisementDto input);
     }
     public class HttpAdvertisementService : IHttpAdvertisementService
     {
-        private readonly HttpClient _client;
-        private readonly IAbpSession _session;
-        public HttpAdvertisementService(HttpClient client, IAbpSession session)
+        private readonly BaseHttpClient _advertisementClient;
+        public HttpAdvertisementService(IAbpSession session, IConfiguration configuration)
         {
-            _client = client;
-            _session = session;
+            _advertisementClient = new BaseHttpClient(session, configuration["ApiSettings:Business.Advertisement"]);
         }
-        public async Task<MicroserviceResultDto<List<Advertisement>>> GetAllAdvertisementsByAdmin(GetAllAdvertisementsDto input)
+        public async Task<IDataResultT<PagedResultDto<AdvertisementDto>>> GetListByAdminAsync(GetAllAdvertisementsDto input)
         {
-            var query = input.GetStringQueryUri();
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/advertisement/admin{query}"))
-            {
-                request.HandleGet(_session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<List<Advertisement>>>();
-            }
+            var result = await _advertisementClient.SendSync<PagedResultDto<AdvertisementDto>>("/api/v1/advertisements/admin/get-list", HttpMethod.Get, input);
+            return result;
         }
-        public async Task<MicroserviceResultDto<List<Advertisement>>> GetAllAdvertisementsByPartner(GetAllAdvertisementsDto input)
+        public async Task<IDataResultT<PagedResultDto<AdvertisementDto>>> GetListByPartnerAsync(GetAllAdvertisementsDto input)
         {
-            var query = input.GetStringQueryUri();
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/advertisement/partner{query}"))
-            {
-                request.HandleGet(_session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<List<Advertisement>>>();
-            }
+            var result = await _advertisementClient.SendSync<PagedResultDto<AdvertisementDto>>("/api/v1/advertisements/partner/get-list", HttpMethod.Get, input);
+            return result;
         }
-        public async Task<MicroserviceResultDto<List<Advertisement>>> GetAllAdvertisementsByUser(GetAllAdvertisementsDto input)
+        public async Task<IDataResultT<PagedResultDto<AdvertisementDto>>> GetListByUserAsync(GetAllAdvertisementsDto input)
         {
-            var query = input.GetStringQueryUri();
-            using (var request = new HttpRequestMessage(HttpMethod.Get, $"/api/v1/advertisement/user{query}"))
-            {
-                request.HandleGet(_session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<List<Advertisement>>>();
-            }
+            var result = await _advertisementClient.SendSync<PagedResultDto<AdvertisementDto>>("/api/v1/advertisements/user/get-list", HttpMethod.Get, input);
+            return result;
+        }
+        public async Task<IDataResultT<AdvertisementDto>> GetByIdAsync(GetAdvertisementByIdDto input)
+        {
+            var result = await _advertisementClient.SendSync<AdvertisementDto>("/api/v1/advertisements/get-detail", HttpMethod.Get, input);
+            return result;
         }
 
-        public async Task<MicroserviceResultDto<bool>> CreateAdvertisement(CreateAdvertisementDto input)
+        public async Task<object> CreateAsync(CreateAdvertisementDto input)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Post, $"api/v1/advertisement"))
-            {
-                request.HandlePostAsJson<CreateAdvertisementDto>(input, _session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<bool>>();
-            }
+            var result = await _advertisementClient.SendSync<bool>("/api/v1/advertisements/create", HttpMethod.Post, input);
+            return result;
         }
-        public async Task<MicroserviceResultDto<bool>> DeleteAdvertisement(DeleteAdvertisementDto input)
+        
+        public async Task<object> UpdateAsync(UpdateAdvertisementDto input)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Delete, $"api/v1/advertisement/delete-advertisement"))
-            {
-                request.HandleDeleteAsJson<DeleteAdvertisementDto>(input, _session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<bool>>();
-            }
+            var result = await _advertisementClient.SendSync<bool>("/api/v1/advertisements/update", HttpMethod.Put, input);
+            return result;
         }
-        public async Task<MicroserviceResultDto<bool>> ApprovalAdvertisement(ApprovalAdvertisementDto input)
+        public async Task<object> DeleteAsync(DeleteAdvertisementDto input)
         {
-            using (var request = new HttpRequestMessage(HttpMethod.Post, $"api/v1/advertisement/update-status"))
-            {
-                request.HandlePostAsJson<ApprovalAdvertisementDto>(input, _session);
-                var response = await _client.SendAsync(request);
-                return await response.ReadContentAs<MicroserviceResultDto<bool>>();
-            }
+            var result = await _advertisementClient.SendSync<bool>("/api/v1/advertisements/delete", HttpMethod.Delete, input);
+            return result;
+        }
+        public async Task<object> UpdateStatusAsync(UpdateStatusAdvertisementDto input)
+        {
+            var result = await _advertisementClient.SendSync<bool>("/api/v1/advertisements/update-status", HttpMethod.Put, input);
+            return result;
         }
     }
 }

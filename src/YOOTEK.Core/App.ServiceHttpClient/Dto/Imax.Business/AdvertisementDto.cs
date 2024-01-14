@@ -1,13 +1,13 @@
-﻿using Abp.Domain.Entities;
+﻿using System;
+using Abp.Application.Services.Dto;
+using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
-using System;
+using Yootek.Common;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Business
 {
     public class Advertisement : FullAuditedEntity<long>, IMayHaveTenant
     {
-        public int? TenantId { get; set; }
         public int Status { get; set; }
         public string Link { get; set; }
         public string ImageUrl { get; set; }
@@ -17,7 +17,25 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
         public long? ItemId { get; set; }
         public long? CategoryId { get; set; }
         public long? TypeBusiness { get; set; }
+        public int? TenantId { get; set; }
     }
+
+    public class AdvertisementDto : EntityDto<long>
+    {
+        public string Link { get; set; }
+        public string ImageUrl { get; set; }
+        public string? Descriptions { get; set; }
+        public long PartnerId { get; set; }
+        public long? ProviderId { get; set; }
+        public long? ItemId { get; set; }
+        public long? CategoryId { get; set; }
+        public long? TypeBusiness { get; set; }
+        public int Status { get; set; }
+        public int? TenantId { get; set; }
+        public long? CreatorUserId { get; set; }
+        public DateTime CreationTime { get; set; }
+    }
+
     public class GetAllAdvertisementsDto : CommonInputDto
     {
         public long? PartnerId { get; set; }
@@ -29,6 +47,11 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
         public long? CategoryId { get; set; }
         public long? TypeBusiness { get; set; }
     }
+
+    public class GetAdvertisementByIdDto : EntityDto<long>
+    {
+    }
+    
     public class CreateAdvertisementDto
     {
         public int? TenantId { get; set; }
@@ -41,13 +64,30 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Business
         public long? CategoryId { get; set; }
         public long? TypeBusiness { get; set; }
     }
-    public class DeleteAdvertisementDto
+
+    public class UpdateAdvertisementDto : EntityDto<long>
     {
-        public long Id { get; set; }
+        public string? Link { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? Descriptions { get; set; }
+        public long? PartnerId { get; set; }
+        public long? ProviderId { get; set; }
+        public long? ItemId { get; set; }
+        public long? CategoryId { get; set; }
+        public long? TypeBusiness { get; set; }
     }
-    public class ApprovalAdvertisementDto
+
+    public class UpdateStatusAdvertisementDto : EntityDto<long>
     {
-        public long Id { get; set; }
-        public int UpdateStatus { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class DeleteAdvertisementDto : EntityDto<long>
+    {
+    }
+
+    public class ApprovalAdvertisementDto : EntityDto<long>
+    {
+        public int Status { get; set; }
     }
 }

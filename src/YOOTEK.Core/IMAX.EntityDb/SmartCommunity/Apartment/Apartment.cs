@@ -1,10 +1,10 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("Apartments")]
     public class Apartment : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveUrban, IMayHaveBuilding
@@ -32,6 +32,7 @@ namespace IMAX.EntityDb
         [StringLength(100)]
         public string WardCode { get; set; }
         public string? Address { get; set; }
+        public long[]? BillConfigId { get; set; }
     }
 
     public enum StatusApartment

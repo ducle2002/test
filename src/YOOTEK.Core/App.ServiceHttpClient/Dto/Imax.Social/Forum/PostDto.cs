@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Common;
+using Yootek.Common;
 
-namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
+namespace Yootek.App.ServiceHttpClient.Dto.Imax.Social.Forum
 {
     #region enum
     public enum TypeOfPost
@@ -29,6 +29,7 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     {
         NotVerified = 1,
         Verified = 2,
+        Refused = 3
     }
     public enum EPostPrivacy
     {
@@ -67,8 +68,22 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public ShortenedUserDto? User { get; set; }
         public int? CountComment { get; set; }
         public int? CountReact { get; set; }
-        public ReactState? UserReact { get; set; }
+        public int? UserReact { get; set; }
+        public GroupShortenedDto Group { get; set; }
+        public FanpageShortenedDto FanPage { get; set; }
         public BlackListAction? BlackListAction { get; set; }
+    }
+    
+    public class GroupShortenedDto
+    {
+        public string? Avatar { get; set; }
+        public string Name { get; set; }
+    }
+
+    public class FanpageShortenedDto
+    {
+        public string? Avatar { get; set; }
+        public string Name { get; set; }
     }
     
     public class UserInfo : ShortenedUserDto
@@ -95,13 +110,13 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public ShortenedUserDto? User { get; set; }
         public long CountChildComment { get; set; }
         public long CountReact { get; set; }
-        public ReactState? UserReact { get; set; }
+        public int? UserReact { get; set; }
     }
     
     public class PostReactDto
     {
         public long Id { get; set; }
-        public ReactState? ReactState { get; set; }
+        public int? ReactState { get; set; }
         public long? CommentId { get; set; }
         public long? PostId { get; set; }
         public DateTime? CreationTime { get; set; }
@@ -118,11 +133,32 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public EPostPrivacy? Privacy { get; set; }
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
+        public long? ForeignId { get; set; }
+        public EOrderByPost? OrderBy { get; set; }
+    }
+    
+    public enum EOrderByPost
+    {
+        [YootekServiceBase.FieldName("CreationTime")]
+        CreationTime = 1,
+        [YootekServiceBase.FieldName("LastModificationTime")]
+        LastModificationTime = 2
     }
 
     public class GetUserWallDto : CommonInputDto
     {
         public long UserId { get; set; }
+    }
+    
+    public class GetListPostByAdminDto: CommonInputDto
+    {
+        public long? UserId { get; set; }
+        public TypeOfPost? TypeOfPost { get; set; }
+        public StateOfPost? StateOfPost { get; set; }
+        public EPostPrivacy? Privacy { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
+        public long? ForeignId { get; set; }
     }
     
     public class GetListPostOfFanpageDto : CommonInputDto
@@ -145,7 +181,7 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     {
         public long PostId { get; set; }
         public long? CommentId { get; set; }	
-        public ReactState? ReactState { get; set; }
+        public int? ReactState { get; set; }
     }
     
     public class GetListCommentDto: CommonInputDto
@@ -157,13 +193,11 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     public class CreatePostDto
     {
         public long ForeignId { get; set; }
-        [Range(1,3, ErrorMessage = "Type of post must be 1, 2 or 3")]
         public List<string>? ImageUrls { get; set; }
         public List<string>? VideoUrls { get; set; }
         public string? ContentPost { get; set; }
         public List<long>? TagFriendIds { get; set; }
         public int? Type { get; set; }
-        // public long? FeedbackId { get; set; }
         public bool IsShared { get; set; } = false;
         public long? SharedPostId { get; set; }
         public EPostPrivacy? Privacy { get; set; }
@@ -173,8 +207,7 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     
     public class CreatePostReactDto
     {
-        [Range(-1, 6, ErrorMessage = "ReactState must be between -1 and 6")]
-        public ReactState? ReactState { get; set; }
+        public int? ReactState { get; set; }
         public long? CommentId { get; set; }
         public long? PostId { get; set; }
     }
@@ -190,6 +223,7 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     {
         public long Id { get; set; }
         public List<string>? ImageUrls { get; set; }
+        public List<string>? VideoUrls { get; set; }
         public string? ContentPost { get; set; }
         public List<long>? TagFriendIds { get; set; }
         public StateOfPost? State { get; set; }
@@ -198,6 +232,12 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
         public EPostPrivacy? Privacy { get; set; }
         public int? BackgroundId { get; set; }
         public int? EmotionId { get; set; }
+    }
+    
+    public class VerifyPostDto
+    {
+        public List<long> Ids { get; set; }
+        public StateOfPost State { get; set; }
     }
     
     public class UpdatePostCommentDto
@@ -210,7 +250,7 @@ namespace IMAX.App.ServiceHttpClient.Dto.Imax.Social.Forum
     {
         public long PostId { get; set; }
         public long? CommentId { get; set; }
-        public ReactState? ReactState { get; set; }
+        public int? ReactState { get; set; }
     }
     
     public class DeletePostDto

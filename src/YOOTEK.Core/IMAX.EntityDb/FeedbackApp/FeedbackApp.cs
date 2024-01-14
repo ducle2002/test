@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("FeedbackApp")]
     public class FeedbackApp : FullAuditedEntity<long>, IMayHaveTenant

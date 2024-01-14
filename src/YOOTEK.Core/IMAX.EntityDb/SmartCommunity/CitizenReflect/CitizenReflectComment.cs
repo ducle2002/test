@@ -1,11 +1,11 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Organizations;
-using IMAX.Common.Enum;
+using Yootek.Common.Enum;
 using System.ComponentModel.DataAnnotations.Schema;
-using static IMAX.Common.Enum.UserFeedbackCommentEnum;
+using static Yootek.Common.Enum.UserFeedbackCommentEnum;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("UserFeedbackComments")]
     public class CitizenReflectComment : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit

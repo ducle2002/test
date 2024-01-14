@@ -1,4 +1,4 @@
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
     public enum FriendshipState
     {

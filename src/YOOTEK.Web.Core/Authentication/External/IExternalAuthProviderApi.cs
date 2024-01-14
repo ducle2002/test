@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IMAX.Authentication.External
+namespace Yootek.Authentication.External
 {
     public interface IExternalAuthProviderApi
     {

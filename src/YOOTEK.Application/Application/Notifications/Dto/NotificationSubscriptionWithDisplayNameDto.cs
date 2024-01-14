@@ -1,7 +1,7 @@
 using Abp.AutoMapper;
 using Abp.Notifications;
 
-namespace IMAX.Notifications.Dto
+namespace Yootek.Notifications.Dto
 {
     [AutoMapFrom(typeof(NotificationDefinition))]
     public class NotificationSubscriptionWithDisplayNameDto : NotificationSubscriptionDto

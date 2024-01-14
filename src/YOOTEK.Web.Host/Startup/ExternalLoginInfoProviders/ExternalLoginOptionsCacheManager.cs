@@ -7,9 +7,9 @@ using Abp.AspNetZeroCore.Web.Authentication.External.WsFederation;
 using Abp.Dependency;
 using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
-using IMAX.Configuration;
+using Yootek.Configuration;
 
-namespace IMAX.Web.Startup.ExternalLoginInfoProviders
+namespace Yootek.Web.Startup.ExternalLoginInfoProviders
 {
     public class ExternalLoginOptionsCacheManager : IExternalLoginOptionsCacheManager, ITransientDependency
     {

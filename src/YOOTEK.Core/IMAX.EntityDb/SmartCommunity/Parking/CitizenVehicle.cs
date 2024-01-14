@@ -1,20 +1,22 @@
 ﻿using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
-using IMAX.Organizations.Interface;
+using Yootek.Organizations.Interface;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace IMAX.EntityDb
+namespace Yootek.EntityDb
 {
     [Table("CitizenVehicles")]
     public class CitizenVehicle : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveUrban, IMayHaveBuilding
-    {
+    {   
+        //public long Id { get; set; }
+      
         [StringLength(256)]
         public string VehicleName { get; set; }
         public VehicleType VehicleType { get; set; }
         [StringLength(256)]
-        public string VehicleCode { get; set; }
+        public string? VehicleCode { get; set; }
         [StringLength(256)]
         public string ApartmentCode { get; set; }
         [StringLength(1000)]
@@ -29,6 +31,11 @@ namespace IMAX.EntityDb
         public string OwnerName { get; set; }
         public DateTime? RegistrationDate { get; set; }
         public DateTime? ExpirationDate { get; set; }
+        public int? Level { get; set; }
+        public double? Cost { get; set; }
+        public long? BillConfigId { get; set; }
+        public string? ImageUrl { get; set; }
+
     }
 
     public enum CitizenVehicleState

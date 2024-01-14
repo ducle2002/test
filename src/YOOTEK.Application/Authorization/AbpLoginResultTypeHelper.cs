@@ -4,13 +4,13 @@ using Abp.Authorization;
 using Abp.Dependency;
 using Abp.UI;
 
-namespace IMAX.Authorization
+namespace Yootek.Authorization
 {
     public class AbpLoginResultTypeHelper : AbpServiceBase, ITransientDependency
     {
         public AbpLoginResultTypeHelper()
         {
-            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+            LocalizationSourceName = YootekConsts.LocalizationSourceName;
         }
 
         public Exception CreateExceptionForFailedLoginAttempt(AbpLoginResultType result, string usernameOrEmailAddress, string tenancyName)

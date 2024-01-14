@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.IMAX.EntityDb.IMAX.DichVu.CheckingObj
+namespace Yootek.Yootek.EntityDb.Yootek.DichVu.CheckingObj
 {
     [Table("CheckingObject")]
     public class CheckingObject : FullAuditedEntity<long>, IMayHaveTenant
