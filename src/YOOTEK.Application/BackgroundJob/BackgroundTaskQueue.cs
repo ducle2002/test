@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IMAX.BackgroundJob
+namespace Yootek.BackgroundJob
 {
     public interface IBackgroundTaskQueue
     {

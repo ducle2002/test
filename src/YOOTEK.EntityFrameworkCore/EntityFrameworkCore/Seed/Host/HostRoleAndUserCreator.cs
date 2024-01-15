@@ -2,21 +2,21 @@ using Abp.Authorization;
 using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
 using Abp.MultiTenancy;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Linq;
 
-namespace IMAX.EntityFrameworkCore.Seed.Host
+namespace Yootek.EntityFrameworkCore.Seed.Host
 {
     public class HostRoleAndUserCreator
     {
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
 
-        public HostRoleAndUserCreator(IMAXDbContext context)
+        public HostRoleAndUserCreator(YootekDbContext context)
         {
             _context = context;
         }
@@ -93,7 +93,7 @@ namespace IMAX.EntityFrameworkCore.Seed.Host
                 .ToList();
 
             var permissions = PermissionFinder
-                .GetAllPermissions(new IMAXAuthorizationProvider())
+                .GetAllPermissions(new YootekAuthorizationProvider())
                 .Where(p => p.MultiTenancySides.HasFlag(MultiTenancySides.Host) &&
                             !grantedPermissions.Contains(p.Name))
                 .ToList();

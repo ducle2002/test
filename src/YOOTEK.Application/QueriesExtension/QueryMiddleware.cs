@@ -5,10 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using static IMAX.Common.Enum.CommonENum;
-using static IMAX.IMAXServiceBase;
+using static Yootek.Common.Enum.CommonENum;
+using static Yootek.YootekServiceBase;
 
-namespace IMAX.Application
+namespace Yootek.Application
 {
     public static class QueryMiddleware
     {
@@ -54,15 +54,12 @@ namespace IMAX.Application
                 MethodInfo containsMethod = typeof(string).GetMethod("Contains", new[] { typeof(string) })!;
                 MethodInfo toLowerMethod = typeof(string).GetMethod("ToLower", Type.EmptyTypes)!;
 
-                foreach (string key in keywords)
+                foreach (var field in fields)
                 {
-                    foreach (var field in fields)
-                    {
-                        InvocationExpression property = Expression.Invoke(Expression.Constant(field), parameter);
-                        MethodCallExpression toLowerExpression = Expression.Call(property, toLowerMethod);
-                        MethodCallExpression searchExpression = Expression.Call(toLowerExpression, containsMethod, Expression.Constant(key));
-                        body = Expression.OrElse(body, searchExpression);
-                    }
+                    InvocationExpression property = Expression.Invoke(Expression.Constant(field), parameter);
+                    MethodCallExpression toLowerExpression = Expression.Call(property, toLowerMethod);
+                    MethodCallExpression searchExpression = Expression.Call(toLowerExpression, containsMethod, Expression.Constant(keyword));
+                    body = Expression.OrElse(body, searchExpression);
                 }
 
                 Expression<Func<T, bool>> lambdaExpression = Expression.Lambda<Func<T, bool>>(body, parameter);

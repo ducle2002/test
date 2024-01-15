@@ -1,7 +1,7 @@
 ﻿using System;
 using Abp.AutoMapper;
 
-namespace IMAX.Friendships.Cache
+namespace Yootek.Friendships.Cache
 {
     [AutoMapFrom(typeof(Friendship))]
     public class FriendCacheItem

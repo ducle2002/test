@@ -1,13 +1,13 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Chat;
+using Yootek.Chat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Abp.Application.Chat.OrganizationUnitChat.Dto
+namespace Yootek.Abp.Application.Chat.OrganizationUnitChat.Dto
 {
     [AutoMapFrom(typeof(ChatMessage))]
     public class OrgChatMessageDto : EntityDto

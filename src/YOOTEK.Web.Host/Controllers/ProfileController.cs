@@ -6,12 +6,12 @@ using Abp.IO.Extensions;
 using Abp.Runtime.Session;
 using Abp.UI;
 using Abp.Web.Models;
-using IMAX.Authorization.Users;
-using IMAX.Controllers;
-using IMAX.Friendships;
-using IMAX.Net.MimeTypes;
-using IMAX.Storage;
-using IMAX.Web.Host.Controllers.ModelView;
+using Yootek.Authorization.Users;
+using Yootek.Controllers;
+using Yootek.Friendships;
+using Yootek.Net.MimeTypes;
+using Yootek.Storage;
+using Yootek.Web.Host.Controllers.ModelView;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +23,10 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Controllers
+namespace Yootek.Web.Host.Controllers
 {
-    public class ProfileController : IMAXControllerBase
+    [DisableAuditing]
+    public class ProfileController : YootekControllerBase
     {
 
         private readonly UserManager _userManager;

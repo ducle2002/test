@@ -1,6 +1,6 @@
 ﻿using Abp.Application.Services.Dto;
 
-namespace IMAX.MultiTenancy.Dto
+namespace Yootek.MultiTenancy.Dto
 {
     public class PagedTenantResultRequestDto : PagedResultRequestDto
     {

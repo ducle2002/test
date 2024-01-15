@@ -1,15 +1,15 @@
 ﻿using Abp.Dependency;
 using Abp.RealTime;
 using Castle.Core.Logging;
-using IMAX.EntityDb;
-using IMAX.Forums;
-using IMAX.Notifications;
-using IMAX.Services.Dto;
-using IMAX.Web.Host.Chat;
+using Yootek.EntityDb;
+using Yootek.Forums;
+using Yootek.Notifications;
+using Yootek.Services.Dto;
+using Yootek.Web.Host.Chat;
 using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 
-namespace IMAX.Web.Host.SignalR
+namespace Yootek.Web.Host.SignalR
 {
     public class ForumCommunicator : IForumCommunicator, ITransientDependency
     {

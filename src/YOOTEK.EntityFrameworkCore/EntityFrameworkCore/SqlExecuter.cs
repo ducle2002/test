@@ -1,6 +1,6 @@
 ﻿using Abp.Dependency;
 using Abp.EntityFrameworkCore;
-using IMAX.ApbCore.Data;
+using Yootek.ApbCore.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,14 +8,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.EntityFrameworkCore
+namespace Yootek.EntityFrameworkCore
 {
 
 
     public class SqlExecuter : ISqlExecuter, ITransientDependency
     {
-        private readonly IDbContextProvider<IMAXDbContext> _dbContextProvider;
-        public SqlExecuter(IDbContextProvider<IMAXDbContext> dbContextProvider)
+        private readonly IDbContextProvider<YootekDbContext> _dbContextProvider;
+        public SqlExecuter(IDbContextProvider<YootekDbContext> dbContextProvider)
         {
             _dbContextProvider = dbContextProvider;
         }

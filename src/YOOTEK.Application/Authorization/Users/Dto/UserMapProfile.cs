@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Users.Dto
+namespace Yootek.Users.Dto
 {
     public class UserMapProfile : Profile
     {

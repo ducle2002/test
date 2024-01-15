@@ -1,9 +1,9 @@
 using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Chat;
+using Yootek.Chat;
 
-namespace IMAX.Chat.Dto
+namespace Yootek.Chat.Dto
 {
     [AutoMapFrom(typeof(ChatMessage))]
     public class ChatMessageDto : EntityDto

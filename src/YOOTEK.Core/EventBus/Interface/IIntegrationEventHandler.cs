@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace IMAX.Core.EventBus
+namespace Yootek.Core.EventBus
 {
     public interface IIntegrationEventHandler<in TIntegrationEvent> : IIntegrationEventHandler
     where TIntegrationEvent : IntegrationEvent

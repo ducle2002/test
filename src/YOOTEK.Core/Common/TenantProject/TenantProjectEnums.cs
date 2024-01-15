@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Common
+namespace Yootek.Common
 {
     public enum TENANT_PROJECT_TYPE
     {

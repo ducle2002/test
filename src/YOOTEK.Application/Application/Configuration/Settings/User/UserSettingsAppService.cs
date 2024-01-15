@@ -4,24 +4,24 @@ using Abp.Configuration;
 using Abp.Net.Mail;
 using Abp.Runtime.Session;
 using Abp.Timing;
-using IMAX.App.ServiceHttpClient;
-using IMAX.Application.Configuration.Settings.User.Dto;
-using IMAX.Application.Configuration.Tenant.Dto;
-using IMAX.Configuration;
+using Yootek.App.ServiceHttpClient;
+using Yootek.Application.Configuration.Settings.User.Dto;
+using Yootek.Application.Configuration.Tenant.Dto;
+using Yootek.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Configuration.Settings.User
+namespace Yootek.Application.Configuration.Settings.User
 {
     public interface IUserSettingsAppService : IApplicationService
     {
 
     }
 
-    public class UserSettingsAppService : IMAXAppServiceBase, IUserSettingsAppService
+    public class UserSettingsAppService : YootekAppServiceBase, IUserSettingsAppService
     {
         private readonly IVietNamAdministrativeUnitService _vietNamAdministrativeUnitService;
         public UserSettingsAppService(

@@ -12,15 +12,15 @@ using Abp.Linq;
 using Abp.Runtime.Caching;
 using Abp.UI;
 using Abp.Zero;
-using IMAX.Authorization.Users;
-using IMAX.Organizations;
-using IMAX.Organizations.Cache;
-using IMAX.Organizations.Cache.Dto;
-using IMAX.Organizations.Dto;
-using IMAX.Organizations.OrganizationStructure;
+using Yootek.Authorization.Users;
+using Yootek.Organizations;
+using Yootek.Organizations.Cache;
+using Yootek.Organizations.Cache.Dto;
+using Yootek.Organizations.Dto;
+using Yootek.Organizations.OrganizationStructure;
 using Microsoft.EntityFrameworkCore;
 
-namespace IMAX.Organizations
+namespace Yootek.Organizations
 {
     /// <summary>
     /// Performs domain logic for Organization Units.

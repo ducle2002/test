@@ -1,11 +1,11 @@
 ﻿using Abp.Application.Services.Dto;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Core.Dto
+namespace Yootek.Core.Dto
 {
     public class PagedAndFilteredInputDto : IPagedResultRequest
     {
-        [Range(1, IMAXConsts.MaxPageSize)]
+        [Range(1, YootekConsts.MaxPageSize)]
         public int MaxResultCount { get; set; }
 
         [Range(0, int.MaxValue)]
@@ -15,7 +15,7 @@ namespace IMAX.Core.Dto
 
         public PagedAndFilteredInputDto()
         {
-            MaxResultCount = IMAXConsts.DefaultPageSize;
+            MaxResultCount = YootekConsts.DefaultPageSize;
         }
     }
 }

@@ -2,10 +2,10 @@ using System.Linq;
 using AutoMapper;
 using Abp.Authorization;
 using Abp.Authorization.Roles;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Permissions.Dto;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Permissions.Dto;
 
-namespace IMAX.Roles.Dto
+namespace Yootek.Roles.Dto
 {
     public class RoleMapProfile : Profile
     {

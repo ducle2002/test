@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     public class UnblockUserInput
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Cache.Dto
+namespace Yootek.Organizations.Cache.Dto
 {
     public class OrganizationUnitCacheItem
     {

@@ -2,13 +2,13 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Abp.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.MultiTenancy;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.MultiTenancy;
 using Microsoft.Extensions.Logging;
 using Abp.Domain.Uow;
 
-namespace IMAX.Identity
+namespace Yootek.Identity
 {
     public class SecurityStampValidator : AbpSecurityStampValidator<Tenant, Role, User>
     {

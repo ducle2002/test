@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Abp.Notifications;
 
-namespace IMAX.Notifications.Dto
+namespace Yootek.Notifications.Dto
 {
     public class NotificationSubscriptionDto
     {

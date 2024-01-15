@@ -1,11 +1,11 @@
-﻿using IMAX.Chat;
+﻿using Yootek.Chat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
 
     public interface IUserEmailer

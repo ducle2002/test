@@ -1,6 +1,6 @@
 ﻿syntax = "proto3";
 
-option csharp_namespace = "IMAX.Application.Protos.Business.Vouchers";
+option csharp_namespace = "Yootek.Application.Protos.Business.Vouchers";
 
 package Vouchers;
 

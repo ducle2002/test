@@ -2,7 +2,7 @@
 using Abp.Domain.Services;
 using System.Threading.Tasks;
 
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
     public interface IFriendshipManager : IDomainService
     {

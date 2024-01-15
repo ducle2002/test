@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Application.Editions;
 
-namespace IMAX.Editions
+namespace Yootek.Editions
 {
     public enum PaymentPeriodType
     {

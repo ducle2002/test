@@ -1,5 +1,5 @@
 ﻿
-namespace IMAX.Common.Enum
+namespace Yootek.Common.Enum
 {
     public enum BillType
     {
@@ -9,7 +9,7 @@ namespace IMAX.Common.Enum
         Lighting = 4,
         Manager = 5,
         Residence = 6,
-        Orther = 7,
+        Other = 7,
         Monthly = 8,
     }
 }

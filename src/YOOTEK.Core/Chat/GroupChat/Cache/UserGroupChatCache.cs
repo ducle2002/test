@@ -1,16 +1,16 @@
 ﻿using Abp;
 using Abp.Dependency;
 using Abp.Domain.Repositories;
-using IMAX.Friendships;
-using IMAX.Friendships.Cache;
-using IMAX.GroupChats;
+using Yootek.Friendships;
+using Yootek.Friendships.Cache;
+using Yootek.GroupChats;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat.Cache
+namespace Yootek.Chat.Cache
 {
     public class UserGroupChatCache : IGroupChatCache, ISingletonDependency
     {

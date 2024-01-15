@@ -6,18 +6,18 @@ using Abp.Authorization;
 using Abp.Authorization.Roles;
 using Abp.Authorization.Users;
 using Abp.MultiTenancy;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
 
-namespace IMAX.EntityFrameworkCore.Seed.Tenants
+namespace Yootek.EntityFrameworkCore.Seed.Tenants
 {
     public class TenantRoleAndUserBuilder
     {
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
         private readonly int _tenantId;
 
-        public TenantRoleAndUserBuilder(IMAXDbContext context, int tenantId)
+        public TenantRoleAndUserBuilder(YootekDbContext context, int tenantId)
         {
             _context = context;
             _tenantId = tenantId;
@@ -96,7 +96,7 @@ namespace IMAX.EntityFrameworkCore.Seed.Tenants
                 .ToList();
 
             var permissions = PermissionFinder
-                .GetAllPermissions(new IMAXAuthorizationProvider())
+                .GetAllPermissions(new YootekAuthorizationProvider())
                 .Where(p => p.MultiTenancySides.HasFlag(MultiTenancySides.Tenant) &&
                             !grantedPermissions.Contains(p.Name))
                 .ToList();

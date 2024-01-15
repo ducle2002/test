@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.OrganizationStructure
+namespace Yootek.Organizations.OrganizationStructure
 {
     [Table("DepartmentUsers")]
     public class OrganizationStructureDeptUser : FullAuditedEntity<long>, IMayHaveTenant

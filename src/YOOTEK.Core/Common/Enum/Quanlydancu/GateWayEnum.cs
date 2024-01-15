@@ -1,6 +1,6 @@
 ﻿
 
-namespace IMAX.Common.Enum
+namespace Yootek.Common.Enum
 {
     public enum GATE_WAY_ENUM
     {

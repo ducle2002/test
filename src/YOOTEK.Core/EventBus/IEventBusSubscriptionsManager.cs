@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using static IMAX.Core.EventBus.InMemoryEventBusSubscriptionsManager;
+using static Yootek.Core.EventBus.InMemoryEventBusSubscriptionsManager;
 
-namespace IMAX.Core.EventBus
+namespace Yootek.Core.EventBus
 {
     public interface IEventBusSubscriptionsManager
     {

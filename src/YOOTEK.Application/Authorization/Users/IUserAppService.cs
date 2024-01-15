@@ -1,11 +1,11 @@
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using IMAX.Authorization.Users;
-using IMAX.Roles.Dto;
-using IMAX.Users.Dto;
+using Yootek.Authorization.Users;
+using Yootek.Roles.Dto;
+using Yootek.Users.Dto;
 
-namespace IMAX.Users
+namespace Yootek.Users
 {
     public interface IUserAppService : IAsyncCrudAppService<UserDto, long, PagedUserResultRequestDto, CreateUserDto, UserDto>
     {

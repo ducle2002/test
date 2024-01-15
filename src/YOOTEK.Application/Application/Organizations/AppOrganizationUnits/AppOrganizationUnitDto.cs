@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.AppOrganizationUnits
+namespace Yootek.Organizations.AppOrganizationUnits
 {
     [AutoMap(typeof(AppOrganizationUnit))]
     public class AppOrganizationUnitDto : AppOrganizationUnit

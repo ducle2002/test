@@ -1,13 +1,13 @@
 ﻿using Abp;
 using Abp.RealTime;
-using IMAX.Chat.BusinessChat;
+using Yootek.Chat.BusinessChat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
     public interface IBusinessChatCommunicator
     {

@@ -3,7 +3,7 @@ using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
 using Abp.MultiTenancy;
 
-namespace IMAX.MultiTenancy.Dto
+namespace Yootek.MultiTenancy.Dto
 {
     [AutoMapFrom(typeof(Tenant))]
     public class TenantDto : EntityDto

@@ -1,7 +1,7 @@
 ﻿using Abp.MultiTenancy;
 using Abp.Zero.Configuration;
 
-namespace IMAX.Authorization.Roles
+namespace Yootek.Authorization.Roles
 {
     public static class AppRoleConfig
     {

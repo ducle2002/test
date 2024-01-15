@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Editions;
-using IMAX.MultiTenancy;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Editions;
+using Yootek.MultiTenancy;
 
-namespace IMAX.Identity
+namespace Yootek.Identity
 {
     public static class IdentityRegistrar
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Notifications.Dto
+namespace Yootek.Notifications.Dto
 {
     public class DeleteAllUserNotificationsInput
     {

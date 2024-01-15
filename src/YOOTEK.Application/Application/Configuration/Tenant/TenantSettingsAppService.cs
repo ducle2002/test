@@ -5,23 +5,24 @@ using Abp.Net.Mail;
 using Abp.Runtime.Security;
 using Abp.Timing;
 using Abp.UI;
-using IMAX.Application.Configuration.Tenant.Dto;
-using IMAX.Configuration;
-using IMAX.Editions;
-using IMAX.Timing;
+using Yootek.Application.Configuration.Tenant.Dto;
+using Yootek.Configuration;
+using Yootek.Editions;
+using Yootek.EntityDb;
+using Yootek.Timing;
 using Microsoft.VisualBasic;
 using System;
 using System.Globalization;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Configuration.Tenant
+namespace Yootek.Application.Configuration.Tenant
 {
     public interface ITenantSettingsAppService : IApplicationService
     {
         Task<TenantSettingsEditDto> GetAllSettings();
     }
 
-    public class TenantSettingsAppService : IMAXAppServiceBase, ITenantSettingsAppService
+    public class TenantSettingsAppService : YootekAppServiceBase, ITenantSettingsAppService
     {
         private readonly IEmailSender _emailSender;
         private readonly EditionManager _editionManager;
@@ -47,7 +48,7 @@ namespace IMAX.Application.Configuration.Tenant
             return new TenantSettingsEditDto
             {
                 //General = await GetGeneralSettingsAsync(),
-                //  Email = await GetEmailSettingsAsync(),
+                //Email = await GetEmailSettingsAsync(),
                 TimeScheduleCheckBill = await GetTimeScheduleCheckBill(),
                 UserBillSetting = await GetUserBillSettings(),
                 BankTransferSetting = await GetBankTransfers(),
@@ -74,7 +75,7 @@ namespace IMAX.Application.Configuration.Tenant
             return settings;
         }
 
-        private async Task<EmailSettingsEditDto> GetEmailSettingsAsync()
+        public async Task<EmailSettingsEditDto> GetEmailSettingsAsync()
         {
             try
             {
@@ -83,17 +84,20 @@ namespace IMAX.Application.Configuration.Tenant
                 var result = new EmailSettingsEditDto
                 {
                     DefaultFromAddress =
-                        await SettingManager.GetSettingValueAsync(EmailSettingNames.DefaultFromAddress),
+                        await SettingManager.GetSettingValueForTenantAsync(EmailSettingNames.DefaultFromAddress,
+                        AbpSession.TenantId.Value),
                     DefaultFromDisplayName =
-                        await SettingManager.GetSettingValueAsync(EmailSettingNames.DefaultFromDisplayName),
-                    SmtpHost = await SettingManager.GetSettingValueAsync(EmailSettingNames.Smtp.Host),
-                    SmtpPort = await SettingManager.GetSettingValueAsync<int>(EmailSettingNames.Smtp.Port),
-                    SmtpUserName = await SettingManager.GetSettingValueAsync(EmailSettingNames.Smtp.UserName),
+                        await SettingManager.GetSettingValueForTenantAsync(EmailSettingNames.DefaultFromDisplayName,
+                        AbpSession.TenantId.Value),
+                    SmtpHost = await SettingManager.GetSettingValueForTenantAsync(EmailSettingNames.Smtp.Host,
+                        AbpSession.TenantId.Value),
+                    SmtpPort = await SettingManager.GetSettingValueForTenantAsync<int>(EmailSettingNames.Smtp.Port,
+                        AbpSession.TenantId.Value),
+                    SmtpUserName = await SettingManager.GetSettingValueForTenantAsync(EmailSettingNames.Smtp.UserName,
+                        AbpSession.TenantId.Value),
                     SmtpPassword = SimpleStringCipher.Instance.Decrypt(smtpPassword),
-                    SmtpDomain = await SettingManager.GetSettingValueAsync(EmailSettingNames.Smtp.Domain),
-                    SmtpEnableSsl = await SettingManager.GetSettingValueAsync<bool>(EmailSettingNames.Smtp.EnableSsl),
-                    SmtpUseDefaultCredentials =
-                        await SettingManager.GetSettingValueAsync<bool>(EmailSettingNames.Smtp.UseDefaultCredentials)
+                    SmtpDomain = await SettingManager.GetSettingValueForTenantAsync(EmailSettingNames.Smtp.Domain,
+                        AbpSession.TenantId.Value)
                 };
                 return result;
             }
@@ -112,12 +116,26 @@ namespace IMAX.Application.Configuration.Tenant
                     //EndPeriodDay = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.EndPeriodDay, AbpSession.TenantId.Value),
                     //HeadPeriodDay = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.HeadPeriodDay, AbpSession.TenantId.Value),
 
+                    IsEnableCreateE = await SettingManager.GetSettingValueForTenantAsync<bool>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateE,
+                        AbpSession.TenantId.Value),
+                    IsEnableCreateW = await SettingManager.GetSettingValueForTenantAsync<bool>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateW,
+                        AbpSession.TenantId.Value),
+                    IsEnableCreateP = await SettingManager.GetSettingValueForTenantAsync<bool>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateP,
+                        AbpSession.TenantId.Value),
+                    IsEnableCreateM = await SettingManager.GetSettingValueForTenantAsync<bool>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateM,
+                        AbpSession.TenantId.Value),
+
                     ElectricEndPeriodDay = await SettingManager.GetSettingValueForTenantAsync<int>(
                         AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricEndPeriodDay,
                         AbpSession.TenantId.Value),
                     ElectricHeadPeriodDay = await SettingManager.GetSettingValueForTenantAsync<int>(
                         AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricHeadPeriodDay,
                         AbpSession.TenantId.Value),
+
 
                     WaterEndPeriodDay = await SettingManager.GetSettingValueForTenantAsync<int>(
                         AppSettings.TenantManagement.TimeScheduleCheckBill.WaterEndPeriodDay,
@@ -128,6 +146,8 @@ namespace IMAX.Application.Configuration.Tenant
 
                     ParkingCreateDay = await SettingManager.GetSettingValueForTenantAsync<int>(
                         AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay, AbpSession.TenantId.Value),
+                    ManagerCreateDay = await SettingManager.GetSettingValueForTenantAsync<int>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay, AbpSession.TenantId.Value),
 
                     BillNotificationTime1 = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.BillNotificationTime1, AbpSession.TenantId.Value),
                     BillNotificationTime2 = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.BillNotificationTime2, AbpSession.TenantId.Value),
@@ -141,7 +161,7 @@ namespace IMAX.Application.Configuration.Tenant
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -157,10 +177,23 @@ namespace IMAX.Application.Configuration.Tenant
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
+        public async Task<int> GetParkingPriceType()
+        {
+            try
+            {
+                var data = await SettingManager.GetSettingValueForTenantAsync<int>(
+                          AppSettings.TenantManagement.UserBillConfig.ParkingBillType, AbpSession.TenantId.Value);
+                return data;
 
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
 
         private async Task<UserBillSettingsEditDto> GetUserBillSettings()
         {
@@ -196,7 +229,8 @@ namespace IMAX.Application.Configuration.Tenant
                         AppSettings.TenantManagement.UserBillConfig.DueDateResidence, AbpSession.TenantId.Value),
                     DueMonthResidence = await SettingManager.GetSettingValueForTenantAsync<int>(
                         AppSettings.TenantManagement.UserBillConfig.DueMonthResidence, AbpSession.TenantId.Value),
-
+                    ParkingBillType = await SettingManager.GetSettingValueForTenantAsync<int>(
+                        AppSettings.TenantManagement.UserBillConfig.ParkingBillType, AbpSession.TenantId.Value),
                     // SendUserBillNotificationDay = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.UserBillConfig.SendUserBillNotificationDay, AbpSession.TenantId.Value),
                 };
             }
@@ -265,30 +299,42 @@ namespace IMAX.Application.Configuration.Tenant
             }
         }
 
-        private async Task UpdateEmailSettingsAsync(EmailSettingsEditDto input)
+        public async Task UpdateEmailSettingsAsync(EmailSettingsEditDto input)
         {
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.DefaultFromAddress,
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.DefaultFromAddress,
                 input.DefaultFromAddress);
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.DefaultFromDisplayName,
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.DefaultFromDisplayName,
                 input.DefaultFromDisplayName);
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.Host, input.SmtpHost);
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.Port,
-                input.SmtpPort.ToString(CultureInfo.InvariantCulture));
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.UserName, input.SmtpUserName);
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.Password,
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.Host, input.SmtpHost);
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.Port,
+                input.SmtpPort +"");
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.UserName, input.SmtpUserName);
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.Password,
                 SimpleStringCipher.Instance.Encrypt(input.SmtpPassword));
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.Domain, input.SmtpDomain);
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.EnableSsl,
-                input.SmtpEnableSsl.ToString(CultureInfo.InvariantCulture).ToLower(CultureInfo.InvariantCulture));
-            await SettingManager.ChangeSettingForApplicationAsync(EmailSettingNames.Smtp.UseDefaultCredentials,
-                input.SmtpUseDefaultCredentials.ToString(CultureInfo.InvariantCulture)
-                    .ToLower(CultureInfo.InvariantCulture));
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.Domain, input.SmtpDomain);
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.EnableSsl,
+               "true");
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, EmailSettingNames.Smtp.UseDefaultCredentials,
+                "false");
         }
 
         private async Task UpdateTimeScheduleCheckBill(TimeScheduleCheckBillSettingsEditDto input)
         {
             //await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.HeadPeriodDay, input.HeadPeriodDay.ToString());
             //await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.EndPeriodDay, input.EndPeriodDay.ToString());
+
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+               AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateE,
+               input.IsEnableCreateE.ToString());
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+               AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateW,
+               input.IsEnableCreateW.ToString());
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+              AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateP,
+              input.IsEnableCreateP.ToString());
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+               AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateM,
+               input.IsEnableCreateM.ToString());
 
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
                 AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricHeadPeriodDay,
@@ -307,6 +353,9 @@ namespace IMAX.Application.Configuration.Tenant
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
                 AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay, input.ParkingCreateDay.ToString());
 
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+               AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay, input.ManagerCreateDay.ToString());
+
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.BillDebtNotificationTime1, input.BillDebtNotificationTime1.ToString());
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.BillDebtNotificationTime2, input.BillDebtNotificationTime2.ToString());
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.BillDebtNotificationTime3, input.BillDebtNotificationTime3.ToString());
@@ -323,6 +372,7 @@ namespace IMAX.Application.Configuration.Tenant
 
         private async Task UpdateUserBillSettingsAsync(UserBillSettingsEditDto input)
         {
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.UserBillConfig.ParkingBillType, input.ParkingBillType.ToString());
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.UserBillConfig.DueDate, input.DueDate.ToString());
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.UserBillConfig.DueMonth, input.DueMonth.ToString());
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.UserBillConfig.DueDateElectric, input.DueDateElectric.ToString());

@@ -1,9 +1,10 @@
 ﻿using Abp.Collections.Extensions;
 using Abp.Dependency;
 using DocumentFormat.OpenXml.Spreadsheet;
-using IMAX.Core.Dto;
-using IMAX.Net.MimeTypes;
-using IMAX.Storage;
+using Yootek.Core.Dto;
+using Yootek.Net.MimeTypes;
+using Yootek.Storage;
+using NPOI.SS.Formula.Functions;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
 using NPOI.XSSF.UserModel;
@@ -12,9 +13,9 @@ using System.Collections.Generic;
 using System.IO;
 using IndexedColors = NPOI.SS.UserModel.IndexedColors;
 
-namespace IMAX.DataExporting.Excel.NPOI
+namespace Yootek.DataExporting.Excel.NPOI
 {
-    public abstract class NpoiExcelExporterBase : IMAXServiceBase, ITransientDependency
+    public abstract class NpoiExcelExporterBase : YootekServiceBase, ITransientDependency
     {
         private readonly ITempFileCacheManager _tempFileCacheManager;
 
@@ -149,6 +150,8 @@ namespace IMAX.DataExporting.Excel.NPOI
                 }
             }
         }
+
+
         protected void AddObjectsCol<T>(ISheet sheet, IList<T> items, int colIndex, int rowIndex, params Func<T, object>[] propertySelectors)
         {
             if (items.IsNullOrEmpty() || propertySelectors.IsNullOrEmpty())
@@ -199,6 +202,79 @@ namespace IMAX.DataExporting.Excel.NPOI
             ApplyCellStyle(cell, styleCell);
             cell.SetCellValue(value);
         }
+
+        protected void CreateCellString(IRow row, int col, object value)
+        {
+            var cell = row.CreateCell(col);
+            if (value != null)
+            {
+                cell.SetCellValue(value.ToString());
+            }
+        }
+
+        protected void CreateCellCost(IRow row, int col, decimal value)
+        {
+            var cell = row.CreateCell(col);
+            if (value > 0)
+            {
+                cell.SetCellValue(FormatCost(Math.Round(value, 0)));
+            }
+            else cell.SetCellValue("0");
+        }
+
+        protected void CreateCellCost(IRow row, int col, double value)
+        {
+            var cell = row.CreateCell(col);
+            if (value > 0)
+            {
+                cell.SetCellValue(FormatCost(Math.Round(value, 0)));
+            }
+            else cell.SetCellValue("0");
+        }
+
+        protected void CreateCellMergeHeader(ISheet sheet, IRow aptRow, string value, int firstRow, int lastRow, int firstCol, int lastCol)
+        {
+            ICell cell = aptRow.CreateCell(firstCol);
+           
+            if(!(firstRow == lastRow && lastCol == firstCol))
+            {
+                CellRangeAddress celAptMerge = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+                sheet.AddMergedRegion(celAptMerge);
+            }
+
+            ICellStyle cellStyle = cell.Sheet.Workbook.CreateCellStyle();
+
+            IFont font = cell.Sheet.Workbook.CreateFont();
+            font.IsBold = true;
+            font.FontName = "Times New Roman";
+            cellStyle.SetFont(font);
+            cellStyle.Alignment = HorizontalAlignment.Center;
+           
+            cellStyle.WrapText = true;
+
+            cell.CellStyle = cellStyle;
+            cell.SetCellValue(value);
+        }
+
+        protected void CreateCellHeader(ISheet sheet, IRow aptRow, string value, int firstCol)
+        {
+           
+            ICell cell = aptRow.CreateCell(firstCol);
+          
+            ICellStyle cellStyle = cell.Sheet.Workbook.CreateCellStyle();
+
+            IFont font = cell.Sheet.Workbook.CreateFont();
+            font.IsBold = false;
+            font.FontName = "Times New Roman";
+            cellStyle.SetFont(font);
+            cellStyle.Alignment = HorizontalAlignment.Center;
+
+            cellStyle.WrapText = true;
+
+            cell.CellStyle = cellStyle;
+            cell.SetCellValue(value);
+        }
+
         protected void CreateMultipleRow(ISheet sheet, int firstRow, int lastRow)
         {
             for (int i = firstRow; i <= lastRow; i++)
@@ -292,7 +368,7 @@ namespace IMAX.DataExporting.Excel.NPOI
         {
             cell.SetCellValue(value?.ToString() ?? "");
         }
-        private void ApplyCellStyle(ICell cell, StyleCellDto styleCell)
+        public void ApplyCellStyle(ICell cell, StyleCellDto styleCell)
         {
             ICellStyle cellStyle = cell.Sheet.Workbook.CreateCellStyle();
 
@@ -312,8 +388,7 @@ namespace IMAX.DataExporting.Excel.NPOI
             cellStyle.FillPattern = (FillPattern)styleCell.Pattern;
 
             // border 
-            cellStyle.BorderTop = BorderStyle.Thin;
-
+            cellStyle.BorderBottom = BorderStyle.Thin;
             // wrap
             cellStyle.WrapText = (bool)styleCell.WrapText;
 
@@ -342,6 +417,26 @@ namespace IMAX.DataExporting.Excel.NPOI
             public bool? WrapText { get; set; } = false;
             public FillPattern? Pattern { get; set; } = FillPattern.SolidForeground;
             public BorderDto? Border { get; set; }
+
+            public StyleCellDto()
+            {
+
+            }
+
+            public StyleCellDto(StyleCellDto data)
+            {
+                FontHeightInPoints = data.FontHeightInPoints;
+                HeightInPoints = data.HeightInPoints;
+                IsBold = data.IsBold;
+                Color = data.Color;
+                AlignmentHorizontal = data.AlignmentHorizontal;
+                AlignmentVertical = data.AlignmentVertical;
+                FillForegroundColor = data.FillForegroundColor;
+                ColumnWidth = data.ColumnWidth;
+                WrapText = data.WrapText;
+                Pattern = data.Pattern;
+                Border = data.Border;
+            }
         }
         public class BorderDto
         {

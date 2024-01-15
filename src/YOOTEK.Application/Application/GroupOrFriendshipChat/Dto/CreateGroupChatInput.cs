@@ -1,9 +1,9 @@
 ﻿using Abp.AutoMapper;
-using IMAX.GroupChats;
+using Yootek.GroupChats;
 using System;
 using System.Collections.Generic;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     public class CreateGroupChatInput
     {

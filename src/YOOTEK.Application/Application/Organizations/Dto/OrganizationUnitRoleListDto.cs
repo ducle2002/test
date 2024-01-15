@@ -1,9 +1,9 @@
 ﻿using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.Authorization.Roles;
+using Yootek.Authorization.Roles;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     [AutoMap(typeof(Role))]
     public class OrganizationUnitRoleListDto : EntityDto<long>

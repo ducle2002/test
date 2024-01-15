@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace IMAX.Authentication.JwtBearer
+namespace Yootek.Authentication.JwtBearer
 {
     public interface IJwtSecurityStampHandler
     {

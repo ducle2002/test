@@ -1,6 +1,6 @@
 ﻿using Abp.Domain.Repositories;
-using IMAX.EntityDb;
-using IMAX.Notifications;
+using Yootek.EntityDb;
+using Yootek.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -8,9 +8,9 @@ using Abp.Domain.Uow;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
-namespace IMAX.AppManager.HomeMembers
+namespace Yootek.AppManager.HomeMembers
 {
-    public class HomeMemberManager : IMAXDomainServiceBase, IHomeMemberManager
+    public class HomeMemberManager : YootekDomainServiceBase, IHomeMemberManager
     {
         private readonly IRepository<HomeMember, long> _memberRepos;
         private readonly ICloudMessagingManager _cloudMessagingManager;

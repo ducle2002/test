@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace IMAX.Users.Dto
+namespace Yootek.Users.Dto
 {
     public class UpdateProfilePictureInput
     {

@@ -1,4 +1,4 @@
-﻿namespace IMAX.Configuration
+﻿namespace Yootek.Configuration
 {
     public interface IExternalLoginOptionsCacheManager
     {

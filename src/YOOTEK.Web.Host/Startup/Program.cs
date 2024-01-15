@@ -1,9 +1,10 @@
-﻿using Abp.AspNetCore.Dependency;
-using Abp.Dependency;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using System.IO;
+using Abp.AspNetCore.Dependency;
+using Abp.Dependency;
 
-namespace YOOTEK.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public class Program
     {
@@ -19,6 +20,6 @@ namespace YOOTEK.Web.Host.Startup
                     webBuilder.UseStartup<Startup>();
                 })
                 .UseCastleWindsor(IocManager.Instance.IocContainer);
-       
+
     }
 }

@@ -2,13 +2,13 @@
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.MultiTenancy;
-using IMAX.Authorization.Users;
-using IMAX.Editions;
+using Yootek.Authorization.Users;
+using Yootek.Editions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IMAX.MultiTenancy
+namespace Yootek.MultiTenancy
 {
     public class TenantManager : AbpTenantManager<Tenant, User>
     {

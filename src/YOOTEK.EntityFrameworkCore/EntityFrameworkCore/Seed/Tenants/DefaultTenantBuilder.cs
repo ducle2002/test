@@ -1,16 +1,16 @@
 ﻿using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Abp.MultiTenancy;
-using IMAX.Editions;
-using IMAX.MultiTenancy;
+using Yootek.Editions;
+using Yootek.MultiTenancy;
 
-namespace IMAX.EntityFrameworkCore.Seed.Tenants
+namespace Yootek.EntityFrameworkCore.Seed.Tenants
 {
     public class DefaultTenantBuilder
     {
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
 
-        public DefaultTenantBuilder(IMAXDbContext context)
+        public DefaultTenantBuilder(YootekDbContext context)
         {
             _context = context;
         }

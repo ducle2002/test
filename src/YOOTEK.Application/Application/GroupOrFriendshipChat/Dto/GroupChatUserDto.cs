@@ -1,10 +1,10 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.GroupChats;
+using Yootek.GroupChats;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
 
     [AutoMapFrom(typeof(UserGroupChat))]

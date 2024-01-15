@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace IMAX.Controllers
+namespace Yootek.Controllers
 {
     public static class AppFileHelper
     {

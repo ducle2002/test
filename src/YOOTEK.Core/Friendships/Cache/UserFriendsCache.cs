@@ -5,14 +5,14 @@ using System.Linq;
 using Abp.Dependency;
 using Abp.Domain.Uow;
 using Abp.MultiTenancy;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
-using IMAX.Friendships;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
+using Yootek.Friendships;
 using Abp.Collections.Extensions;
 using Abp.Organizations;
 using Abp.Authorization.Users;
 
-namespace IMAX.Friendships.Cache
+namespace Yootek.Friendships.Cache
 {
     public class UserFriendsCache : IUserFriendsCache, ISingletonDependency
     {

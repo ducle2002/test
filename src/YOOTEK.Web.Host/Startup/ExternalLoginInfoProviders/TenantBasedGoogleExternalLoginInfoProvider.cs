@@ -7,10 +7,10 @@ using Abp.Extensions;
 using Abp.Json;
 using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
-using IMAX.Authentication;
-using IMAX.Configuration;
+using Yootek.Authentication;
+using Yootek.Configuration;
 
-namespace IMAX.Web.Startup.ExternalLoginInfoProviders
+namespace Yootek.Web.Startup.ExternalLoginInfoProviders
 {
     public class TenantBasedGoogleExternalLoginInfoProvider : TenantBasedExternalLoginInfoProviderBase,
         ISingletonDependency

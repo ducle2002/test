@@ -2,7 +2,7 @@
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using CorePush.Google;
-using IMAX.EntityDb;
+using Yootek.EntityDb;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using RestSharp;
@@ -19,9 +19,9 @@ using Microsoft.EntityFrameworkCore;
 using Abp.Runtime.Session;
 using MimeKit;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
-    public class CloudMessagingManager : IMAXDomainServiceBase, ICloudMessagingManager
+    public class CloudMessagingManager : YootekDomainServiceBase, ICloudMessagingManager
     {
         private readonly IRepository<FcmTokens, long> _fcmTokenRepos;
         private readonly IRepository<FcmGroups, long> _fcmGroupRepos;
@@ -358,26 +358,8 @@ namespace IMAX.Notifications
 
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
-        }
-
-        public async Task SubscribeTopic(string topic, List<string> devicesId)
-        {
-            var client = new RestClient();
-            var request = new RestRequest("https://iid.googleapis.com/iid/v1:batchAdd",Method.Post);
-
-            request.AddHeader("Content-Type", "application/json");
-            string authorizationKey = string.Format("key={0}", _fcmNotificationSetting.ServerKey);
-            request.AddHeader("Authorization", authorizationKey);
-
-            var dataSend = new
-            {
-                to = topic,
-                registration_tokens = devicesId
-            };
-            request.AddJsonBody(dataSend);
-            var res = await client.ExecuteAsync(request);
         }
 
         public async Task SendMessagesToTopic(string topic, FcmMultiSendToDeviceInput input)

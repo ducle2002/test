@@ -4,16 +4,16 @@ using Abp.Domain.Uow;
 using Abp.Runtime.Session;
 using Abp.UI;
 using DocumentFormat.OpenXml.Wordprocessing;
-using IMAX.Chat;
-using IMAX.Common.DataResult;
-using IMAX.Configuration;
-using IMAX.Controllers;
-using IMAX.Core.Dto;
-using IMAX.GroupChats;
-using IMAX.Storage;
-using IMAX.Web.Host.Chat;
-using IMAX.Web.Host.Common;
-using IMAX.Web.Host.ModelView;
+using Yootek.Chat;
+using Yootek.Common.DataResult;
+using Yootek.Configuration;
+using Yootek.Controllers;
+using Yootek.Core.Dto;
+using Yootek.GroupChats;
+using Yootek.Storage;
+using Yootek.Web.Host.Chat;
+using Yootek.Web.Host.Common;
+using Yootek.Web.Host.ModelView;
 using ImaxFileUploaderServer.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -32,9 +32,10 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace IMAX.Web.Host.Controllers
+namespace Yootek.Web.Host.Controllers
 {
-    public class FileController : IMAXControllerBase
+    [DisableAuditing]
+    public class FileController : YootekControllerBase
     {
         private readonly IAbpSession _session;
         private static IHubContext<ChatHub> ChatHub;
@@ -95,7 +96,7 @@ namespace IMAX.Web.Host.Controllers
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -155,7 +156,7 @@ namespace IMAX.Web.Host.Controllers
             {
                 Logger.Error(
                     $"{DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")} CheckFilePdfValid {ex.Message} {JsonConvert.SerializeObject(ex)}");
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -220,7 +221,7 @@ namespace IMAX.Web.Host.Controllers
             {
                 Logger.Error(
                     $"{DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")} CheckFilePdfValid {ex.Message} {JsonConvert.SerializeObject(ex)}");
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -252,7 +253,7 @@ namespace IMAX.Web.Host.Controllers
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
         [HttpPost]
@@ -309,7 +310,7 @@ namespace IMAX.Web.Host.Controllers
             {
                 Logger.Error(
                     $"{DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")} CheckFilePdfValid {ex.Message} {JsonConvert.SerializeObject(ex)}");
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -454,31 +455,6 @@ namespace IMAX.Web.Host.Controllers
 
             return new { success = true, data = url };
         }
-  
 
-        private int CheckFilePdfValid(IFormFile input, int sizeLimit, string[] typeExcepted)
-        {
-            try
-            {
-                var fileExtension = Path.GetExtension(input.FileName).ToLower();
-                if (input.Length > sizeLimit)
-                {
-                    return 1;
-                }
-
-                if (!typeExcepted.Any(fileExtension.Contains))
-                {
-                    return 2;
-                }
-
-                return 3;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(
-                    $"{DateTime.Now.ToString("HH:mm:ss dd/MM/yyyy")} CheckFilePdfValid {ex.Message} {JsonConvert.SerializeObject(ex)}");
-                return 0;
-            }
-        }
     }
 }

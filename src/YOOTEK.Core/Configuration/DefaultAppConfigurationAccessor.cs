@@ -2,7 +2,7 @@
 using Abp.Dependency;
 using Microsoft.Extensions.Configuration;
 
-namespace IMAX.Configuration
+namespace Yootek.Configuration
 {
     /* This service is replaced in Web layer and Test project separately */
     public class DefaultAppConfigurationAccessor : IAppConfigurationAccessor, ISingletonDependency

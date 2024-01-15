@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace IMAX.Net.Sms
+namespace Yootek.Net.Sms
 {
     public interface ISmsSender
     {

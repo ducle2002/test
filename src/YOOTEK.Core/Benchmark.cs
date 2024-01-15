@@ -12,7 +12,7 @@ using Castle.Core.Logging;
 using Abp.Application.Services;
 using Castle.Services.Logging.Log4netIntegration;
 
-namespace IMAX
+namespace Yootek
 {
 
     class AtomicLong

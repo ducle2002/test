@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Features
+namespace Yootek.Features
 {
     public static class AppFeatures
     {

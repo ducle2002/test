@@ -1,8 +1,8 @@
 ﻿using Abp.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
 
-namespace IMAX.Authorization
+namespace Yootek.Authorization
 {
     public class PermissionChecker : PermissionChecker<Role, User>
     {

@@ -2,10 +2,10 @@
 using Abp;
 using Abp.Dependency;
 using Abp.RealTime;
-using IMAX.Chat;
-using IMAX.Friendships.Cache;
+using Yootek.Chat;
+using Yootek.Friendships.Cache;
 
-namespace IMAX.Friendships
+namespace Yootek.Friendships
 {
     public class ChatUserStateWatcher : ISingletonDependency
     {

@@ -4,7 +4,7 @@ using Abp.Auditing;
 using Abp.Authorization.Users;
 using Newtonsoft.Json;
 
-namespace IMAX.Models.TokenAuth
+namespace Yootek.Models.TokenAuth
 {
     public class AuthenticateModel
     {

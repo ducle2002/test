@@ -4,12 +4,12 @@
 //using Abp.Authorization.Users;
 //using Abp.Configuration;
 //using Abp.MultiTenancy;
-//using IMAX.Authentication.JwtBearer;
-//using IMAX.Authorization;
-//using IMAX.Authorization.Users;
-//using IMAX.Identity;
-//using IMAX.Models.TokenAuth;
-//using IMAX.MultiTenancy;
+//using Yootek.Authentication.JwtBearer;
+//using Yootek.Authorization;
+//using Yootek.Authorization.Users;
+//using Yootek.Identity;
+//using Yootek.Models.TokenAuth;
+//using Yootek.MultiTenancy;
 //using Microsoft.AspNetCore.Identity;
 //using Microsoft.AspNetCore.Mvc;
 //using Microsoft.Extensions.Options;
@@ -22,7 +22,7 @@
 
 
 
-//namespace IMAX.Web.Host.Controllers
+//namespace Yootek.Web.Host.Controllers
 //{
 //    [Route("api/[controller]/[action]")]
 //    public class AccessTokenController : ControllerBase

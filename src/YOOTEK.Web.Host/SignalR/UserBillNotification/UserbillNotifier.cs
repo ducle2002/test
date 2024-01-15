@@ -2,16 +2,16 @@
 using Abp.Dependency;
 using Abp.RealTime;
 using Castle.Core.Logging;
-using IMAX.EntityDb;
-using IMAX.Notifications.UserBillNotification;
-using IMAX.Web.Host.Chat;
+using Yootek.EntityDb;
+using Yootek.Notifications.UserBillNotification;
+using Yootek.Web.Host.Chat;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.SignalR.UserBillNotification
+namespace Yootek.Web.Host.SignalR.UserBillNotification
 {
     public class UserBillRealtimeNotifier : IUserBillRealtimeNotifier, ITransientDependency
     {

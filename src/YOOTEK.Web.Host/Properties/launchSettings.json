@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "IMAX.Web.Host": {
+    "Yootek.Web.Host": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "http://localhost:21021",

@@ -4,17 +4,17 @@ using Microsoft.EntityFrameworkCore;
 using Abp.Localization;
 using Abp.MultiTenancy;
 
-namespace IMAX.EntityFrameworkCore.Seed.Host
+namespace Yootek.EntityFrameworkCore.Seed.Host
 {
     public class DefaultLanguagesCreator
     {
         public static List<ApplicationLanguage> InitialLanguages => GetInitialLanguages();
 
-        private readonly IMAXDbContext _context;
+        private readonly YootekDbContext _context;
 
         private static List<ApplicationLanguage> GetInitialLanguages()
         {
-            var tenantId = IMAXConsts.MultiTenancyEnabled ? null : (int?)MultiTenancyConsts.DefaultTenantId;
+            var tenantId = YootekConsts.MultiTenancyEnabled ? null : (int?)MultiTenancyConsts.DefaultTenantId;
             return new List<ApplicationLanguage>
             {
                 new ApplicationLanguage(tenantId, "en", "English", "famfamfam-flags us"),
@@ -36,7 +36,7 @@ namespace IMAX.EntityFrameworkCore.Seed.Host
             };
         }
 
-        public DefaultLanguagesCreator(IMAXDbContext context)
+        public DefaultLanguagesCreator(YootekDbContext context)
         {
             _context = context;
         }

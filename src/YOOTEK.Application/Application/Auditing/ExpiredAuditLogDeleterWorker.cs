@@ -11,9 +11,9 @@ using Abp.Threading;
 using Abp.Threading.BackgroundWorkers;
 using Abp.Threading.Timers;
 using Abp.Timing;
-using IMAX.MultiTenancy;
+using Yootek.MultiTenancy;
 
-namespace IMAX.Auditing
+namespace Yootek.Auditing
 {
     public class ExpiredAuditLogDeleterWorker : PeriodicBackgroundWorkerBase, ISingletonDependency
     {
@@ -40,7 +40,7 @@ namespace IMAX.Auditing
             _auditLogRepository = auditLogRepository;
             _tenantRepository = tenantRepository;
 
-            LocalizationSourceName = IMAXConsts.LocalizationSourceName;
+            LocalizationSourceName = YootekConsts.LocalizationSourceName;
 
             Timer.Period = CheckPeriodAsMilliseconds;
             Timer.RunOnStart = true;

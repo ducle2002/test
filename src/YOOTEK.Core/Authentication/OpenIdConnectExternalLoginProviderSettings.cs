@@ -2,7 +2,7 @@
 using Abp.Extensions;
 using Abp.UI;
 
-namespace IMAX.Authentication
+namespace Yootek.Authentication
 {
     public class OpenIdConnectExternalLoginProviderSettings
     {

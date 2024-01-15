@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IMAX.Url
+namespace Yootek.Url
 {
     public class NullAppUrlService : IAppUrlService
     {

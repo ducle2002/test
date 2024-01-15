@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Abp;
+using Abp.Auditing;
 using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Extensions;
@@ -13,22 +14,23 @@ using Abp.Runtime.Caching;
 using Abp.Runtime.Session;
 using Abp.UI;
 using Abp.Zero.Configuration;
-using IMAX.Account.Cache;
-using IMAX.Authorization.Accounts.Dto;
-using IMAX.Authorization.Users;
-using IMAX.Common;
-using IMAX.EntityDb;
-using IMAX.MultiTenancy;
-using IMAX.Net.Sms;
-using IMAX.Notifications;
-using IMAX.Organizations;
-using IMAX.Url;
+using Yootek.Account.Cache;
+using Yootek.Authorization.Accounts.Dto;
+using Yootek.Authorization.Users;
+using Yootek.Common;
+using Yootek.EntityDb;
+using Yootek.MultiTenancy;
+using Yootek.Net.Sms;
+using Yootek.Notifications;
+using Yootek.Organizations;
+using Yootek.Url;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 
-namespace IMAX.Authorization.Accounts
+namespace Yootek.Authorization.Accounts
 {
-    public class AccountAppService : IMAXAppServiceBase, IAccountAppService
+    [Audited]
+    public class AccountAppService : YootekAppServiceBase, IAccountAppService
     {
         public IAppUrlService AppUrlService { get; set; }
 
@@ -88,7 +90,7 @@ namespace IMAX.Authorization.Accounts
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -110,7 +112,7 @@ namespace IMAX.Authorization.Accounts
             }
             catch (Exception ex)
             {
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -169,7 +171,7 @@ namespace IMAX.Authorization.Accounts
                 await SettingManager.GetSettingValueAsync<bool>(AbpZeroSettingNames.UserManagement
                     .IsEmailConfirmationRequiredForLogin);
 
-            //await _appNotifier.WelcomeToTheApplicationAsync(user);   
+            await _appNotifier.WelcomeToTheApplicationAsync(user);   
             return new RegisterOutput
             {
                 CanLogin = user.IsActive && (user.IsEmailConfirmed || !isEmailConfirmationRequiredForLogin),
@@ -201,7 +203,7 @@ namespace IMAX.Authorization.Accounts
             catch (Exception ex)
             {
                 Logger.Info("pass + Email: " + ex.ToString());
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 

@@ -1,8 +1,8 @@
 using Abp.Application.Services.Dto;
-using IMAX.App.ServiceHttpClient.Dto.IMAX.SmartCommunity.WorkDtos;
+using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos;
 using System;
 
-namespace IMAX.App.ServiceHttpClient.Dto
+namespace Yootek.App.ServiceHttpClient.Dto
 {
     public class MicroserviceResultDto<T>
     {

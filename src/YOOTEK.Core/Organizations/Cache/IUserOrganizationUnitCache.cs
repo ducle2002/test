@@ -1,11 +1,11 @@
-﻿using IMAX.Organizations.Cache.Dto;
+﻿using Yootek.Organizations.Cache.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Organizations.Cache
+namespace Yootek.Organizations.Cache
 {
     public interface IUserOrganizationUnitCache
     {

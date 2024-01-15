@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 
-namespace IMAX.Configuration
+namespace Yootek.Configuration
 {
     public static class HostingEnvironmentExtensions
     {

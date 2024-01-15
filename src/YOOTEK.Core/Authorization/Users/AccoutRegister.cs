@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
     public class AccoutRegister
     {

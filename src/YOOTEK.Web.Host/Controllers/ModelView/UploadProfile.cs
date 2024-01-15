@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Controllers.ModelView
+namespace Yootek.Web.Host.Controllers.ModelView
 {
 
     public class UploadProfilePictureOutput : ErrorInfo

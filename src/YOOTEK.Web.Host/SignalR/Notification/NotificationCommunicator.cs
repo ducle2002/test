@@ -1,19 +1,19 @@
 ﻿using Abp.Dependency;
 using Abp.RealTime;
 using Castle.Core.Logging;
-using IMAX.EntityDb;
-using IMAX.Notifications;
-using IMAX.Services;
+using Yootek.EntityDb;
+using Yootek.Notifications;
+using Yootek.Services;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.SignalR;
 using Abp.AutoMapper;
-using IMAX.Web.Host.Chat;
-using IMAX.Authorization.Users;
+using Yootek.Web.Host.Chat;
+using Yootek.Authorization.Users;
 using System.Threading.Tasks;
 using Abp.Notifications;
 using Abp;
 
-namespace IMAX.Web.Host.SignalR
+namespace Yootek.Web.Host.SignalR
 {
     public class NotificationCommunicator : INotificationCommunicator, ITransientDependency
     {

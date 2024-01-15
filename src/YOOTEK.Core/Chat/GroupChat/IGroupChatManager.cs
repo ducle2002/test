@@ -1,11 +1,11 @@
 ﻿using Abp;
 using Abp.Domain.Services;
-using IMAX.Chat;
+using Yootek.Chat;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IMAX.GroupChats
+namespace Yootek.GroupChats
 {
     public interface IGroupChatManager : IDomainService
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using Abp.Extensions;
 
-namespace IMAX.Authentication
+namespace Yootek.Authentication
 {
     public class WsFederationExternalLoginProviderSettings
     {

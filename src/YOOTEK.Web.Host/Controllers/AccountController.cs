@@ -28,22 +28,22 @@
 //using Microsoft.AspNetCore.Mvc;
 //using Microsoft.AspNetCore.Mvc.Rendering;
 //using Microsoft.Extensions.Options;
-//using IMAX.Authorization;
-//using IMAX.Authorization.Accounts;
-//using IMAX.Authorization.Accounts.Dto;
-//using IMAX.Authorization.Users;
-//using IMAX.Configuration;
-//using IMAX.Identity;
-//using IMAX.MultiTenancy;
-//using IMAX.Notifications;
-//using IMAX.Sessions;
+//using Yootek.Authorization;
+//using Yootek.Authorization.Accounts;
+//using Yootek.Authorization.Accounts.Dto;
+//using Yootek.Authorization.Users;
+//using Yootek.Configuration;
+//using Yootek.Identity;
+//using Yootek.MultiTenancy;
+//using Yootek.Notifications;
+//using Yootek.Sessions;
 //using Abp.CachedUniqueKeys;
 //using Abp.AspNetCore.Mvc.Caching;
-//using IMAX.Controllers;
+//using Yootek.Controllers;
 
-//namespace IMAX.Web.Controllers
+//namespace Yootek.Web.Controllers
 //{
-//    public class AccountController :IMAXControllerBase
+//    public class AccountController :YootekControllerBase
 //    {
 //        private readonly UserManager _userManager;
 //        private readonly TenantManager _tenantManager;

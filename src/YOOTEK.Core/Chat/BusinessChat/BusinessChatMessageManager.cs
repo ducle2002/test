@@ -5,10 +5,10 @@ using Abp.Domain.Uow;
 using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.UI;
-using IMAX.Authorization.Users;
-using IMAX.Chat.BusinessChat;
-using IMAX.Friendships;
-using IMAX.Notifications;
+using Yootek.Authorization.Users;
+using Yootek.Chat.BusinessChat;
+using Yootek.Friendships;
+using Yootek.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
     public interface IBusinessChatMessageManager : IDomainService
     {
@@ -24,7 +24,7 @@ namespace IMAX.Chat
         Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId);
     }
 
-    public class BusinessChatMessageManager : IMAXDomainServiceBase, IBusinessChatMessageManager
+    public class BusinessChatMessageManager : YootekDomainServiceBase, IBusinessChatMessageManager
     {
         private readonly IRepository<BusinessChatMessage, long> _businessChatMessageRepos;
         private readonly IRepository<UserProviderFriendship, long> _userProviderFriendshipRepos;

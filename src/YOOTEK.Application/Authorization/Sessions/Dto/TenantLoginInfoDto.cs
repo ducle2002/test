@@ -1,8 +1,8 @@
 ﻿using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
-using IMAX.MultiTenancy;
+using Yootek.MultiTenancy;
 
-namespace IMAX.Sessions.Dto
+namespace Yootek.Sessions.Dto
 {
     [AutoMapFrom(typeof(Tenant))]
     public class TenantLoginInfoDto : EntityDto

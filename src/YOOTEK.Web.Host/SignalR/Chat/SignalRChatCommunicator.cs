@@ -6,15 +6,15 @@ using Abp.Dependency;
 using Abp.ObjectMapping;
 using Abp.RealTime;
 using Castle.Core.Logging;
-using IMAX.Chat;
-using IMAX.Chat.Dto;
-using IMAX.EntityDb;
-using IMAX.Friendships;
-using IMAX.Friendships.Dto;
-using IMAX.Services;
+using Yootek.Chat;
+using Yootek.Chat.Dto;
+using Yootek.EntityDb;
+using Yootek.Friendships;
+using Yootek.Friendships.Dto;
+using Yootek.Services;
 using Microsoft.AspNetCore.SignalR;
 
-namespace IMAX.Web.Host.Chat
+namespace Yootek.Web.Host.Chat
 {
     public class SignalRChatCommunicator : IChatCommunicator, ITransientDependency
     {

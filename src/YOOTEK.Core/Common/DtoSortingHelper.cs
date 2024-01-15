@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IMAX.Common
+namespace Yootek.Common
 {
     public static class DtoSortingHelper
     {

@@ -1,5 +1,5 @@
 ﻿
-namespace IMAX.Application.RoomOrFriendships.Dto
+namespace Yootek.Application.RoomOrFriendships.Dto
 {
     public class MarkAllUnreadGroupMessagesOfUserAsReadInput
     {

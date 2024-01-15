@@ -1,7 +1,7 @@
-using IMAX.Common;
+using Yootek.Common;
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Friendships.Dto
+namespace Yootek.Friendships.Dto
 {
     public class CreateFriendshipRequestByUserNameInput
     {

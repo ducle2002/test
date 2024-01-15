@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
-using IMAX.Authorization.Permissions.Dto;
-using IMAX.Roles.Dto;
+using Yootek.Authorization.Permissions.Dto;
+using Yootek.Roles.Dto;
 
-namespace IMAX.Roles
+namespace Yootek.Roles
 {
     public interface IRoleAppService : IAsyncCrudAppService<RoleDto, int, PagedRoleResultRequestDto, CreateRoleDto, RoleDto>
     {

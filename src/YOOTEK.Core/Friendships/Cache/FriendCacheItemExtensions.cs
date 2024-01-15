@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace IMAX.Friendships.Cache
+namespace Yootek.Friendships.Cache
 {
     public static class FriendCacheItemExtensions
     {

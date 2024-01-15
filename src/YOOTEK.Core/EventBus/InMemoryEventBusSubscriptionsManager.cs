@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IMAX.Core.EventBus
+namespace Yootek.Core.EventBus
 {
 
     public partial class InMemoryEventBusSubscriptionsManager : IEventBusSubscriptionsManager

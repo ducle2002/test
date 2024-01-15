@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Chat
+namespace Yootek.Web.Host.Chat
 {
     public class SendMessageOrganizationInput
     {

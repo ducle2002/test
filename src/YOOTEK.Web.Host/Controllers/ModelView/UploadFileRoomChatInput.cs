@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.ModelView
+namespace Yootek.Web.Host.ModelView
 {
 
     public class UploadFileGroupChatInput

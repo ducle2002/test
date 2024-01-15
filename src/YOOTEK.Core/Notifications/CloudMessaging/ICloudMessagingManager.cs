@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace IMAX.Notifications
+namespace Yootek.Notifications
 {
     public interface ICloudMessagingManager : IDomainService
     {
@@ -17,7 +17,6 @@ namespace IMAX.Notifications
 
         Task SendMessagesToTopic(string topic, FcmMultiSendToDeviceInput input);
 
-        Task SubscribeTopic(string topic, List<string> devicesId);
         Task<List<string>> GetTokensOfUser(long userId, int? tenantId);
         Task<List<long>> GetTokenIdsOfUser(long userId, int? tenantId);
         Task<long> GetTokenIdOfToken(string token, int? tenantId);

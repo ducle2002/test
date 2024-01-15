@@ -6,11 +6,11 @@ using System.Diagnostics.CodeAnalysis;
 using Abp.Authorization.Users;
 using Abp.Extensions;
 using Abp.Timing;
-using IMAX.EntityDb;
-using IMAX.GroupChats;
+using Yootek.EntityDb;
+using Yootek.GroupChats;
 using Newtonsoft.Json;
 
-namespace IMAX.Authorization.Users
+namespace Yootek.Authorization.Users
 {
 
     public class User : AbpUser<User>

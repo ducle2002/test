@@ -1,12 +1,12 @@
-﻿using IMAX.Chat;
-using IMAX.Organizations;
+﻿using Yootek.Chat;
+using Yootek.Organizations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.Chat.Dto
+namespace Yootek.Application.Chat.Dto
 {
     public class TenantProjectChatDto
     {

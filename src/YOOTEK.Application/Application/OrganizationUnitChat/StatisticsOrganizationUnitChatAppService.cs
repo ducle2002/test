@@ -1,24 +1,24 @@
 ﻿using Abp.Application.Services;
 using Abp.Domain.Repositories;
 using Abp.UI;
-using IMAX.Chat;
-using IMAX.Common.DataResult;
-using IMAX.EntityDb;
-using IMAX.Organizations;
-using IMAX.Services.Dto;
+using Yootek.Chat;
+using Yootek.Common.DataResult;
+using Yootek.EntityDb;
+using Yootek.Organizations;
+using Yootek.Services.Dto;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
+namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 {
     public interface IStatisticsOrganizationUnitChatAppService : IApplicationService
     {
     }
 
-    public class StatisticsOrganizationUnitChatAppService : IMAXAppServiceBase, IStatisticsOrganizationUnitChatAppService
+    public class StatisticsOrganizationUnitChatAppService : YootekAppServiceBase, IStatisticsOrganizationUnitChatAppService
     {
         private readonly IRepository<ChatMessage, long> _chatMessageRepository;
         private readonly IRepository<CitizenReflectComment, long> _citizenReflectChatRepos;
@@ -135,7 +135,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             {
                 var data = DataResult.ResultError(ex.ToString(), "Có lỗi");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
         public async Task<object> GetStatisticChatOrganization(GetStatisticOrganizationUnitChatInput input)
@@ -239,7 +239,7 @@ namespace IMAX.Abp.Application.Chat.OrganizationUnitChat
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
     }

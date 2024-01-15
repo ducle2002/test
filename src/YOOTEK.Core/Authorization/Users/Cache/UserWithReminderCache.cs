@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Authorization.Users.Cache
+namespace Yootek.Authorization.Users.Cache
 {
     public class UserWithReminderCacheItem
     {

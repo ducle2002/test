@@ -1,12 +1,14 @@
 using System.Threading.Tasks;
 using Abp.Web.Security.AntiForgery;
 using Microsoft.AspNetCore.Antiforgery;
-using IMAX.Controllers;
+using Yootek.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using Abp.Auditing;
 
-namespace IMAX.Web.Host.Controllers
+namespace Yootek.Web.Host.Controllers
 {
-    public class AntiForgeryController : IMAXControllerBase
+    [DisableAuditing]
+    public class AntiForgeryController : YootekControllerBase
     {
         private readonly IAntiforgery _antiforgery;
         private readonly IAbpAntiForgeryManager _antiForgeryManager;

@@ -10,24 +10,24 @@ using Abp.Linq.Extensions;
 using Abp.RealTime;
 using Abp.Runtime.Session;
 using Abp.Timing;
-using IMAX.Friendships.Cache;
-using IMAX.Chat.Dto;
+using Yootek.Friendships.Cache;
+using Yootek.Chat.Dto;
 using Microsoft.EntityFrameworkCore;
-using IMAX.Friendships.Dto;
-using IMAX.Friendships;
+using Yootek.Friendships.Dto;
+using Yootek.Friendships;
 using System;
-using IMAX.Dto.Interface;
-using IMAX.Chat.Cache;
-using IMAX.Organizations.Cache;
-using IMAX.EntityDb;
-using IMAX.Common.DataResult;
-using IMAX.Application.Chat.Dto;
-using IMAX.Authorization.Users;
+using Yootek.Dto.Interface;
+using Yootek.Chat.Cache;
+using Yootek.Organizations.Cache;
+using Yootek.EntityDb;
+using Yootek.Common.DataResult;
+using Yootek.Application.Chat.Dto;
+using Yootek.Authorization.Users;
 using Abp.UI;
 
-namespace IMAX.Chat
+namespace Yootek.Chat
 {
-    public class ChatAppService : IMAXAppServiceBase, IChatAppService
+    public class ChatAppService : YootekAppServiceBase, IChatAppService
     {
         private readonly IRepository<ChatMessage, long> _chatMessageRepository;
         private readonly IRepository<GroupMessage, long> _roomMessageRepos;
@@ -120,7 +120,7 @@ namespace IMAX.Chat
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 

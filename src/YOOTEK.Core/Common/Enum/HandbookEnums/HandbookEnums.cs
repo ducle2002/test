@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Common.Enum.HandbookEnums
+namespace Yootek.Common.Enum.HandbookEnums
 {
     public static partial class HandbookEnums
     {

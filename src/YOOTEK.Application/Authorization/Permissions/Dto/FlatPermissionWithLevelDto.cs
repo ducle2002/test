@@ -1,4 +1,4 @@
-﻿namespace IMAX.Authorization.Permissions.Dto
+﻿namespace Yootek.Authorization.Permissions.Dto
 {
     public class FlatPermissionWithLevelDto : FlatPermissionDto
     {

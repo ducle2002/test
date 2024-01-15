@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http.Features;
 using System;
 using System.Threading.Tasks;
 
-namespace IMAX.Web.Host.Startup
+namespace Yootek.Web.Host.Startup
 {
     public class GrpcHeaderMiddleware
     {

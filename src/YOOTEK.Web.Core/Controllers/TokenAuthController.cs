@@ -1,4 +1,5 @@
 ﻿using Abp;
+using Abp.Auditing;
 using Abp.Authorization;
 using Abp.Authorization.Users;
 using Abp.Configuration;
@@ -8,16 +9,16 @@ using Abp.Runtime.Caching;
 using Abp.Runtime.Security;
 using Abp.Runtime.Session;
 using Abp.UI;
-using IMAX.Authentication.External;
-using IMAX.Authentication.JwtBearer;
-using IMAX.Authorization;
-using IMAX.Authorization.Roles;
-using IMAX.Authorization.Users;
-using IMAX.Configuration;
-using IMAX.Identity;
-using IMAX.Models.TokenAuth;
-using IMAX.MultiTenancy;
-using IMAX.Web;
+using Yootek.Authentication.External;
+using Yootek.Authentication.JwtBearer;
+using Yootek.Authorization;
+using Yootek.Authorization.Roles;
+using Yootek.Authorization.Users;
+using Yootek.Configuration;
+using Yootek.Identity;
+using Yootek.Models.TokenAuth;
+using Yootek.MultiTenancy;
+using Yootek.Web;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,11 +34,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace IMAX.Controllers
+namespace Yootek.Controllers
 {
 
     [Route("api/[controller]/[action]")]
-    public class TokenAuthController : IMAXControllerBase
+    [Audited]
+    public class TokenAuthController : YootekControllerBase
     {
         private readonly LogInManager _logInManager;
         private readonly UserManager _userManager;
@@ -70,13 +72,13 @@ namespace IMAX.Controllers
             IExternalAuthManager externalAuthManager,
             IOptions<IdentityOptions> identityOptions,
             SignInManager signInManager,
-             IAppConfigurationAccessor configurationAccessor,
+            IAppConfigurationAccessor configurationAccessor,
             ISettingManager settingManager,
             UserRegistrationManager userRegistrationManager,
             IJwtSecurityStampHandler securityStampHandler,
             IOptions<JwtBearerOptions> jwtOptions,
-             AbpUserClaimsPrincipalFactory<User, Role> claimsPrincipalFactory,
-             ICacheManager cacheManager
+            AbpUserClaimsPrincipalFactory<User, Role> claimsPrincipalFactory,
+            ICacheManager cacheManager
             )
         {
             _logInManager = logInManager;
@@ -99,7 +101,7 @@ namespace IMAX.Controllers
             _securityStampHandler = securityStampHandler;
         }
 
-        [HttpPost]
+        [HttpPost]     
         public async Task<AuthenticateResultModel> Authenticate([FromBody] AuthenticateModelTenant model)
         {
             try

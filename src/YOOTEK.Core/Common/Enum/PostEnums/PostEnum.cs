@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IMAX.Common.Enum.PostEnums
+namespace Yootek.Common.Enum.PostEnums
 {
     public enum POST_TYPE_ENUM
     {

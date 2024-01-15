@@ -1,4 +1,4 @@
-﻿namespace IMAX.Emailing
+﻿namespace Yootek.Emailing
 {
     public interface IEmailTemplateProvider
     {

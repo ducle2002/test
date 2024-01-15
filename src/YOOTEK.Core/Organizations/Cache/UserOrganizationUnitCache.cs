@@ -5,23 +5,23 @@ using System.Linq;
 using Abp.Dependency;
 using Abp.Domain.Uow;
 using Abp.MultiTenancy;
-using IMAX.Authorization.Users;
-using IMAX.Chat;
-using IMAX.Friendships;
+using Yootek.Authorization.Users;
+using Yootek.Chat;
+using Yootek.Friendships;
 using Abp.Collections.Extensions;
 using Abp.Organizations;
 using Abp.Authorization.Users;
 using System.Threading.Tasks;
-using IMAX.Organizations.Cache.Dto;
-using IMAX.EntityDb;
-using IMAX.Authorization.Roles;
+using Yootek.Organizations.Cache.Dto;
+using Yootek.EntityDb;
+using Yootek.Authorization.Roles;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System;
-using IMAX.Authorization;
+using Yootek.Authorization;
 using Abp.Authorization;
 
-namespace IMAX.Organizations.Cache
+namespace Yootek.Organizations.Cache
 {
     public class UserOrganizationUnitCache : IUserOrganizationUnitCache, ISingletonDependency
     {

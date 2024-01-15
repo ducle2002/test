@@ -1,6 +1,6 @@
 ﻿using Abp;
 
-namespace IMAX.Friendships.Cache
+namespace Yootek.Friendships.Cache
 {
     public interface IUserFriendsCache
     {

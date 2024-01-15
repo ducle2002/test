@@ -5,13 +5,13 @@ using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
-using IMAX.Application.OrganizationStructure.Dto;
-using IMAX.Authorization.Users;
-using IMAX.Common.DataResult;
-using IMAX.EntityDb;
-using IMAX.Organizations;
-using IMAX.Organizations.OrganizationStructure;
-using IMAX.Services;
+using Yootek.Application.OrganizationStructure.Dto;
+using Yootek.Authorization.Users;
+using Yootek.Common.DataResult;
+using Yootek.EntityDb;
+using Yootek.Organizations;
+using Yootek.Organizations.OrganizationStructure;
+using Yootek.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,14 +19,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace IMAX.Application.OrganizationStructure
+namespace Yootek.Application.OrganizationStructure
 {
     public interface IOrganizationStructureAppService : IApplicationService
     {
         DataResult GetDepartmentStructureAsync();
         Task<DataResult> GetAllAccountAsync(OrganizationStructureDeptUsersDto input);
     }
-    public class OrganizationStructureAppService : IMAXAppServiceBase, IOrganizationStructureAppService
+    public class OrganizationStructureAppService : YootekAppServiceBase, IOrganizationStructureAppService
     {
         private readonly IRepository<OrganizationStructureDept, long> _deptRepo;
         private readonly IRepository<OrganizationStructureDeptUser, long> _deptUserRepo;
@@ -92,7 +92,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -115,7 +115,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -158,7 +158,7 @@ namespace IMAX.Application.OrganizationStructure
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
         public async Task<object> GetAllDepartmentsAsync(OrganizationStructureInputDto input)
@@ -193,7 +193,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
         public async Task<object> GetDeptByIdAsync(long id)
@@ -219,7 +219,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -299,7 +299,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -379,7 +379,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -395,7 +395,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -411,7 +411,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -434,7 +434,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -457,7 +457,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -481,7 +481,7 @@ namespace IMAX.Application.OrganizationStructure
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -536,7 +536,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -566,7 +566,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -586,7 +586,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -613,7 +613,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
 
@@ -643,7 +643,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -663,7 +663,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
-                throw new UserFriendlyException(e.Message);
+                throw;
             }
         }
         public async Task<object> GetAvailableOrganizationUnitDepartmentsAsync(OrganizationStructureFindDepartmentDto input)
@@ -685,7 +685,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -724,7 +724,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
 
@@ -766,7 +766,7 @@ namespace IMAX.Application.OrganizationStructure
             {
                 var data = DataResult.ResultError(ex.Message, "ResultFail");
                 Logger.Fatal(ex.Message, ex);
-                throw new UserFriendlyException(ex.Message);
+                throw;
             }
         }
     }

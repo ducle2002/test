@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace IMAX.Organizations.Dto
+namespace Yootek.Organizations.Dto
 {
     public class RoleToOrganizationUnitInput
     {

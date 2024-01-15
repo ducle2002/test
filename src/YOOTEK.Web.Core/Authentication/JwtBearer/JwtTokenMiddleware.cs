@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 
-namespace IMAX.Authentication.JwtBearer
+namespace Yootek.Authentication.JwtBearer
 {
     public static class JwtTokenMiddleware
     {
