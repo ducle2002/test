@@ -50,6 +50,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
                                      VehicleName = vh.VehicleName,
                                      VehicleType = vh.VehicleType,
                                      TenantId = vh.TenantId,
+                                     State = vh.State,
 
                                  }).AsQueryable();
                     var paginatedData = await query.PageBy(input).ToListAsync();

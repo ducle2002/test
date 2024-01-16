@@ -838,13 +838,22 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                                "",
                                0
                                );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                 $"Thông báo thanh toán hóa đơn !",
-                 $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {string.Format("{0:#,#.##}", amount)} VNĐ",
-                 detailUrlApp,
-                 detailUrlWA,
-                 new UserIdentifier[] { new UserIdentifier(bill.TenantId, userId) },
-                 messageSuccess);
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Thông báo thanh toán hóa đơn !",
+                $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {string.Format("{0:#,#.##}", amount)} VNĐ",
+                detailUrlApp,
+                detailUrlWA,
+                new UserIdentifier[] { new UserIdentifier(bill.TenantId, userId) },
+                messageSuccess,
+                AppType.USER
+                );
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //      $"Thông báo thanh toán hóa đơn !",
+            //      $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {string.Format("{0:#,#.##}", amount)} VNĐ",
+            //      detailUrlApp,
+            //      detailUrlWA,
+            //      new UserIdentifier[] { new UserIdentifier(bill.TenantId, userId) },
+            //      messageSuccess);
         }
 
         private async Task NotifierBillPaymentCancel(UserBillPayment bill)
@@ -862,13 +871,22 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                                    detailUrlApp,
                                    detailUrlWA
                                    );
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                     $"Thông báo thanh toán !",
-                      $"Yêu cầu thanh toán của bạn đã bị từ chối",
-                      detailUrlApp,
-                      detailUrlWA,
-                     new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.CreatorUserId.Value) },
-                     messageSuccess);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    $"Thông báo thanh toán !",
+                    $"Yêu cầu thanh toán của bạn đã bị từ chối",
+                    detailUrlApp,
+                    detailUrlWA,
+                    new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.CreatorUserId.Value) },
+                    messageSuccess,
+                    AppType.USER
+                );
+                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //      $"Thông báo thanh toán !",
+                //       $"Yêu cầu thanh toán của bạn đã bị từ chối",
+                //       detailUrlApp,
+                //       detailUrlWA,
+                //      new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.CreatorUserId.Value) },
+                //      messageSuccess);
             }
             catch { }
         }
