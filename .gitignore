@@ -251,6 +251,15 @@ paket-files/
 .idea/
 *.sln.iml
 
-src/YOOTEK.Web.Mvc/secrets.json
-src/YOOTEK.Web.Host/secrets.json
-src/YOOTEK.Migrator/secrets.json
+# MACOS
+.DS_Store
+
+**/App_Data/*
+**/App_Data/Logs/*
+**/wwwroot/images/*
+/src/IMAX.Web.Host/appsettings.json
+/src/IMAX.Web.Host/appsettings.Development.json
+/src/IMAX.Web.Host/appsettings.Staging.json
+/src/IMAX.Web.Host/appsettings.Production.json
+**/appsettings.json
+**/appsettings.*.json

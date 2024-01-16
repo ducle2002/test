@@ -70,5 +70,6 @@ namespace Yootek.EntityDb
         public decimal? TotalIndex { get; set; }
         public bool? IsPaymentPending { get; set; }
         public bool? IsPrepayment { get; set; }
+        public int? MonthNumber {  get; set; }
     }
 }

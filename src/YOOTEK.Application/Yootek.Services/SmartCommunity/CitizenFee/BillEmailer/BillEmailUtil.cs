@@ -130,7 +130,7 @@ namespace Yootek.Services
                 template =
                    await CreateTemplateNC(apartmentCode, period, AbpSession.TenantId);
             }
-            else if (AbpSession.TenantId == 63)
+            else if (AbpSession.TenantId == 47)
             {
                 template =
                    await CreateTemplateVina22(apartmentCode, period, AbpSession.TenantId);
@@ -190,7 +190,7 @@ namespace Yootek.Services
         {
             try
             {
-                using(CurrentUnitOfWork.SetTenantId(tenantId))
+                using (CurrentUnitOfWork.SetTenantId(tenantId))
                 {
                     if (tim == null) return;
                     var time = tim.Value;
@@ -997,6 +997,12 @@ namespace Yootek.Services
                 BillConfig priceManagementConfig = GetBillConfigPrice(billConfigs, BillType.Manager, BillConfigPricesType.Rapport);
                 BillConfig priceWaterConfig = GetBillConfigPrice(billConfigs, BillType.Water, BillConfigPricesType.Level);
 
+
+                int numberMonthM = GetMonthNumber(managementBill);
+                int numberMonthW = GetMonthNumber(waterBill);
+                int numberMonthE = 0;
+                int numberMonthP = GetMonthNumber(parkingBill);
+
                 double parkingMoneyUnpaid = GetBillCost(parkingBill);
                 double waterMoneyUnpaid = GetBillCost(waterBill);
                 double managementMoneyUnpaid = GetBillCost(managementBill);
@@ -1037,7 +1043,7 @@ namespace Yootek.Services
                 {
                     foreach (var (vehicle, index) in listVehicles.Select((vehicle, index) => (vehicle, index)))
                     {
-                        StringBuilder vehicleRowTemplate = new("<tr>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{INDEX}</td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{APARTMENT_CODE}</td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{VEHICLE_TYPE}</td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{VEHICLE_CODE}</td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\">{COST_PARKING_ELEMENT}</td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\"></td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\"></td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">\r\n                  <span style=\"color: #ef4444\">1,0</span>\r\n              </td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\">{COST_PARKING_ELEMENT}</td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\">{COST_CARD_VEHICLE_ELEMENT}</td>\r\n          </tr>");
+                        StringBuilder vehicleRowTemplate = new("<tr>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{INDEX}</td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{APARTMENT_CODE}</td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{VEHICLE_TYPE}</td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{VEHICLE_CODE}</td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\">{COST_PARKING_ELEMENT}</td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\"></td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\"></td>\r\n              <td style=\"padding: 10px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">\r\n                  <span style=\"color: #ef4444\">{P_MONTH_NUMBER}</span>\r\n              </td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\">{COST_PARKING_ELEMENT}</td>\r\n              <td style=\"padding: 10px; text-align: right; white-space: nowrap; border-width: 1px; border-style: solid;\">{COST_CARD_VEHICLE_ELEMENT}</td>\r\n          </tr>");
                         string vehicleName = GetVehicleName(vehicle);
                         string vehicleCode = vehicle?.vehicleCode ?? "";
                         decimal vehicleCost = vehicle?.cost ?? 0;
@@ -1047,6 +1053,7 @@ namespace Yootek.Services
                             .Replace("{APARTMENT_CODE}", $"{apartmentCode}")
                             .Replace("{VEHICLE_TYPE}", $"{vehicleName}")
                             .Replace("{VEHICLE_CODE}", $"{vehicleCode}")
+                            .Replace("{P_MONTH_NUMBER}", $"{numberMonthP}")
                             .Replace("{COST_PARKING_ELEMENT}", FormatCost((double?)vehicleCost))
                             .Replace("{COST_CARD_VEHICLE_ELEMENT}", $"{0}");
                         listRowVehicles += vehicleRowTemplate.ToString();
@@ -1084,6 +1091,10 @@ namespace Yootek.Services
                     .Replace("{PRE_YEAR_PERIOD}", $"{preMonthPeriod.Year}")
                     .Replace("{CUSTOMER_NAME}", $"{customerName}")
                     .Replace("{APARTMENT_CODE}", $"{apartmentCode}")
+                    .Replace("{M_MONTH_NUMBER}", $"{numberMonthM}")
+                    .Replace("{E_MONTH_NUMBER}", $"{numberMonthE}")
+                    .Replace("{P_MONTH_NUMBER}", $"{numberMonthP}")
+                    .Replace("{W_MONTH_NUMBER}", $"{numberMonthW}")
 
                     // amount 
                     .Replace("{ACREAGE_APARTMENT}", GetStringValue((double?)acreageApartment))
@@ -1145,7 +1156,7 @@ namespace Yootek.Services
                 var head_period = new DateTime(period.Year, period.Month, 1);
                 var end_period = new DateTime(period.Year, period.Month, period_day_end);
                 var w_head_period = new DateTime(preMonthPeriod.Year, preMonthPeriod.Month, 1);
-                var w_end_period = new DateTime(preMonthPeriod.Year, preMonthPeriod.Month, preMonthPeriod.TotalDaysInMonth());   
+                var w_end_period = new DateTime(preMonthPeriod.Year, preMonthPeriod.Month, preMonthPeriod.TotalDaysInMonth());
                 var paymentDay = paymentBill.ToString("dd/MM/yyyy");
                 DateTime paymentDayDateTime = DateTime.ParseExact(paymentDay, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 // await CheckMailSettingsEmptyOrNull();
@@ -4139,7 +4150,7 @@ namespace Yootek.Services
 
                 // total unpaid, debt, pre_payment bill amount 
                 double costTax = waterMoneyBVMT + waterMoneyVAT;
-                double costVaCos = electricMoneyUnpaid*0.08 + electricMoneyUnpaid*0.05;
+                double costVaCos = electricMoneyUnpaid * 0.08 + electricMoneyUnpaid * 0.05;
                 double costUnpaid = parkingMoneyUnpaid + waterMoneyUnpaid + managementMoneyUnpaid + electricMoneyUnpaid + lightMoneyUnpaid + otherMoneyUnpaid;
                 double costDebt = managementMoneyDebt + parkingMoneyDebt + waterMoneyDebt + electricMoneyDebt + lightMoneyDebt + otherMoneyDebt;
                 double costPrepayment = parkingMoneyPrePayment + waterMoneyPrePayment + managementMoneyPrePayment + electricMoneyPrePayment + lightMoneyPrePayment + otherMoneyPrePayment;
@@ -4323,7 +4334,7 @@ namespace Yootek.Services
                     }
 
                     emailTemplate.Replace("{E_TOTAL_AMOUNT}", string.Format("{0:#,#.##}", resultE));
-                    emailTemplate.Replace("{E_VAT}", string.Format("{0:#,#.##}", resultE*e_vat));
+                    emailTemplate.Replace("{E_VAT}", string.Format("{0:#,#.##}", resultE * e_vat));
                     emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE + e_percent));
                 }
 
@@ -4533,7 +4544,7 @@ namespace Yootek.Services
                     .Replace("{COST_FINAL}", FormatCost(totalFeePayable))
                     .Replace("{AMOUNT_FINAL}", FormatCost(totalFinal))
                     .Replace("{TOTAL_MONEY_TEXT}", VietNameseConverter.FormatCurrency((decimal)totalFeePayable))
-                    .Replace("{TOTAL_PRICE_PAYMENT_TEXT}", VietNameseConverter.FormatCurrency((decimal)totalFeeAndDebt))                    ;
+                    .Replace("{TOTAL_PRICE_PAYMENT_TEXT}", VietNameseConverter.FormatCurrency((decimal)totalFeeAndDebt));
 
                 return emailTemplate;
             }
@@ -4605,7 +4616,7 @@ namespace Yootek.Services
                 decimal indexEndWater = GetIndexEnd(waterBill);
                 decimal totalIndexWater = indexEndWater - indexHeadWater;
 
-                
+
 
                 List<CitizenVehiclePas> listVehicles = new();
                 if (parkingBill?.Properties != null)
@@ -4633,7 +4644,7 @@ namespace Yootek.Services
                         listRowVehicles += vehicleRowTemplate.ToString();
                     }
                 }
-                                
+
                 // list vehicle parking
                 int p_money = 0;
                 int priceCar = 0;
@@ -4660,10 +4671,10 @@ namespace Yootek.Services
                 if (billParkingConfigProperties != null && billParkingConfigProperties.Prices.Length == 4)
                 {
 
-                        priceCar = (int)billParkingConfigProperties.Prices[0].Value;
-                        priceMotor = (int)billParkingConfigProperties.Prices[1].Value;
-                        priceBike = (int)billParkingConfigProperties.Prices[2].Value;
-                        priceOther = (int)billParkingConfigProperties.Prices[3].Value;
+                    priceCar = (int)billParkingConfigProperties.Prices[0].Value;
+                    priceMotor = (int)billParkingConfigProperties.Prices[1].Value;
+                    priceBike = (int)billParkingConfigProperties.Prices[2].Value;
+                    priceOther = (int)billParkingConfigProperties.Prices[3].Value;
 
 
                 }
@@ -4883,6 +4894,7 @@ namespace Yootek.Services
 
         #region Helper methods
         private double GetBillCost(UserBill bill) => bill?.LastCost ?? 0;
+        private int GetMonthNumber(UserBill bill) => bill != null? bill.MonthNumber ?? 1: 0;
         private decimal GetAcreageApartment(UserBill bill) => bill?.TotalIndex ?? 0;
         private string GetCustomerName(List<UserBill> userBills, CitizenTemp? citizenTemp)
         {
