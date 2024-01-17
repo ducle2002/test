@@ -871,7 +871,7 @@ namespace Yootek.Services
             const int BUILDING_INDEX = 8;
             const int URBAN_INDEX = 9;
             const int CODE_CONFIG_INDEX = 10;
-
+            const int MONTH_NUMBER = 11;
 
             var listUserBill = new List<UserBill>();
             var countApartmentNull = 0;
@@ -970,7 +970,9 @@ namespace Yootek.Services
                 userBill.IndexHeadPeriod = worksheet.Cells[row, FIRST_INDEX].Text.ToString() != "" ?
                     decimal.Parse(worksheet.Cells[row, FIRST_INDEX].Value.ToString())
                     : 0;
-
+                userBill.MonthNumber = worksheet.Cells[row, MONTH_NUMBER].Text.ToString() != "" ?
+                    int.Parse(worksheet.Cells[row, MONTH_NUMBER].Value.ToString())
+                    : 1;
 
                 //if (userBill.Period != null)
                 //{
@@ -1065,7 +1067,10 @@ namespace Yootek.Services
                     userBill.LastCost = double.Parse(worksheet.Cells[row, LAST_INDEX].Value.ToString());
                 }
 
-
+                if(userBill.MonthNumber > 1)
+                {
+                    userBill.LastCost = userBill.MonthNumber * userBill.LastCost;
+                }
 
                 listUserBill.Add(userBill);
             }
@@ -1362,6 +1367,7 @@ namespace Yootek.Services
             const int BUILDING_INDEX = 11;
             const int URBAN_INDEX = 12;
             const int CODE_CONFIG_INDEX = 13;
+            const int MONTH_NUMBER = 14;
 
             var listUserBill = new List<UserBill>();
 
@@ -1466,6 +1472,9 @@ namespace Yootek.Services
                 userBill.OtherVehicleNumber = worksheet.Cells[row, OTHER_NUMBER_INDEX].Text.ToString() != ""
                     ? int.Parse(worksheet.Cells[row, OTHER_NUMBER_INDEX].Value.ToString())
                     : 0;
+                userBill.MonthNumber = worksheet.Cells[row, MONTH_NUMBER].Text.ToString() != ""
+                   ? int.Parse(worksheet.Cells[row, MONTH_NUMBER].Value.ToString())
+                   : 1;
 
                 var buildingCode = worksheet.Cells[row, BUILDING_INDEX].Text.ToString() != ""
                     ? worksheet.Cells[row, BUILDING_INDEX].Value.ToString().Trim()
@@ -1500,6 +1509,7 @@ namespace Yootek.Services
                     catch { }
 
                 }
+                if (userBill.MonthNumber > 1) userBill.LastCost = userBill.LastCost * userBill.MonthNumber;
                 listUserBill.Add(userBill);
             }
 
@@ -1532,7 +1542,8 @@ namespace Yootek.Services
                         BillType = BillType.Parking,
                         Status = bill.Period >= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1) ? UserBillStatus.Pending : UserBillStatus.Debt,
                         TenantId = AbpSession.TenantId,
-                        Title = $"Hóa đơn xe tháng {bill.Period.Month}/{bill.Period.Year}"
+                        Title = $"Hóa đơn xe tháng {bill.Period.Month}/{bill.Period.Year}",
+                        MonthNumber = bill.Items[0].MonthNumber
                     };
 
                     var properties = new BillParkingProperties()
@@ -1561,6 +1572,7 @@ namespace Yootek.Services
 
                     }
 
+                    if (userbill.MonthNumber > 1) userbill.LastCost = userbill.LastCost * userbill.MonthNumber;
                     userbill.Properties = JsonConvert.SerializeObject(properties);
 
                     userBills.Add(userbill);
@@ -1592,6 +1604,7 @@ namespace Yootek.Services
             const int PARKING_CODE = 11;
             const int DESCRIPTION = 12;
             const int PERIOD = 13;
+            const int MONTH_NUMBER = 14;
 
             var listVehicles = new List<ExcelParkingLevelDto>();
 
@@ -1645,6 +1658,9 @@ namespace Yootek.Services
                 vehicle.Level = worksheet.Cells[row, VEHICLE_LEVEL].Text.ToString() != ""
                     ? int.Parse(worksheet.Cells[row, VEHICLE_LEVEL].Value.ToString().Trim())
                     : 1;
+                vehicle.MonthNumber = worksheet.Cells[row, MONTH_NUMBER].Text.ToString() != ""
+                   ? int.Parse(worksheet.Cells[row, MONTH_NUMBER].Value.ToString().Trim())
+                   : 1;
                 if (worksheet.Cells[row, VEHICLE_TYPE].Value != null)
                     vehicle.VehicleType = GetVehicleTypeNumber(worksheet.Cells[row, VEHICLE_TYPE].Value.ToString().Trim());
 

@@ -63,9 +63,11 @@ namespace Yootek.Configuration
 
                 public static string IsEnableCreateP = "Tenant.TimeScheduleCheckBill.IsEnableCreateP";
                 public static string ParkingCreateDay = "Tenant.TimeScheduleCheckBill.ParkingCreateDay";
+                public static string MonthNumberP = "Tenant.TimeScheduleCheckBill.MonthNumberP";
 
                 public static string IsEnableCreateM = "Tenant.TimeScheduleCheckBill.IsEnableCreateM";
                 public static string ManagerCreateDay = "Tenant.TimeScheduleCheckBill.ManagerCreateDay";
+                public static string MonthNumberM = "Tenant.TimeScheduleCheckBill.MonthNumberM";
 
                 public static string BillNotificationTime1 = "Tenant.TimeScheduleCheckBill.BillNotificationTime1";
                 public static string BillNotificationTime2 = "Tenant.TimeScheduleCheckBill.BillNotificationTime2";

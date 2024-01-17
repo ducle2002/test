@@ -263,3 +263,5 @@ paket-files/
 /src/IMAX.Web.Host/appsettings.Production.json
 **/appsettings.json
 **/appsettings.*.json
+/src/YOOTEK.Web.Host/App_Data/Logs/Logs.txt
+/src/YOOTEK.Web.Host/App_Data/Logs/LogsTps.txt
