@@ -124,7 +124,6 @@ namespace Yootek.Chat
             }
         }
 
-
         [DisableAuditing]
         public async Task<GetUserChatFriendsWithSettingsOutput> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
         {
