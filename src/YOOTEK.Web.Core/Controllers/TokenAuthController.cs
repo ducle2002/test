@@ -144,7 +144,6 @@ namespace Yootek.Controllers
                     EmailAddress = loginResult.User.EmailAddress,
                     TenantId = loginResult.Tenant != null ? loginResult.Tenant.Id : 0,
                     ThirdAccounts = loginResult.User.ThirdAccounts,
-                    IsCitizen = loginResult.User.IsCitizen,
                     MobileConfig = loginResult.Tenant != null ? loginResult.Tenant.MobileConfig : mobileConfig,
                     RefreshToken = refreshToken.token,
                     RefreshTokenExpireInSeconds = (int)_configuration.RefreshTokenExpiration.TotalSeconds,
@@ -156,7 +155,7 @@ namespace Yootek.Controllers
             catch(UserFriendlyException e)
             {
                 Logger.Fatal(e.Message, e);
-                throw e;
+                throw;
             }
         }
 

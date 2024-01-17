@@ -53,6 +53,8 @@ namespace Yootek.Configuration
 
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay] ?? "0", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay] ?? "0", scopes: SettingScopes.Tenant),
+                new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberM, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberM] ?? "1", scopes: SettingScopes.Tenant),
+                new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberP, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberP] ?? "1", scopes: SettingScopes.Tenant),
 
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.WaterHeadPeriodDay, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.WaterHeadPeriodDay] ?? "1", scopes: SettingScopes.Tenant),
                 new SettingDefinition(AppSettings.TenantManagement.TimeScheduleCheckBill.BillNotificationTime1, ConfigurationManager.AppSettings[AppSettings.TenantManagement.TimeScheduleCheckBill.BillNotificationTime1] ?? "0", scopes: SettingScopes.Tenant),
