@@ -136,6 +136,13 @@ namespace Yootek.Application.Configuration.Tenant
                         AppSettings.TenantManagement.TimeScheduleCheckBill.ElectricHeadPeriodDay,
                         AbpSession.TenantId.Value),
 
+                    ManagerMonthNumber = await SettingManager.GetSettingValueForTenantAsync<int>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberM,
+                        AbpSession.TenantId.Value),
+                    ParkingMonthNumber = await SettingManager.GetSettingValueForTenantAsync<int>(
+                        AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberP,
+                        AbpSession.TenantId.Value),
+
 
                     WaterEndPeriodDay = await SettingManager.GetSettingValueForTenantAsync<int>(
                         AppSettings.TenantManagement.TimeScheduleCheckBill.WaterEndPeriodDay,
@@ -355,6 +362,12 @@ namespace Yootek.Application.Configuration.Tenant
 
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
                AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay, input.ManagerCreateDay.ToString());
+
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+              AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberP, input.ParkingMonthNumber.ToString());
+
+            await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value,
+               AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberM, input.ManagerMonthNumber.ToString());
 
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.BillDebtNotificationTime1, input.BillDebtNotificationTime1.ToString());
             await SettingManager.ChangeSettingForTenantAsync(AbpSession.TenantId.Value, AppSettings.TenantManagement.TimeScheduleCheckBill.BillDebtNotificationTime2, input.BillDebtNotificationTime2.ToString());

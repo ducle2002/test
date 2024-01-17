@@ -185,7 +185,6 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
                 throw;
             }
         }
-
         public async Task<DataResult> GetBillInvoiceApartment(PrintBillInvoiceInput input)
         {
             try
@@ -226,7 +225,6 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
                 throw;
             }
         }
-
         // hudlands
         private async Task<StringBuilder> CreateTemplateHTS(PrintBillInvoiceInput input, StringBuilder billInvoiceTemplate)
         {

@@ -14,15 +14,11 @@ using Abp.RealTime;
 using Abp.Domain.Uow;
 using Yootek.MultiTenancy;
 using Yootek.Configuration;
-using Abp.UI;
 using Abp.Configuration;
 using Yootek.Common.Enum;
 using Microsoft.EntityFrameworkCore;
 using Abp.Extensions;
 using Newtonsoft.Json;
-using Abp.Linq.Extensions;
-using DocumentFormat.OpenXml.Bibliography;
-using NUglify.Helpers;
 
 namespace Yootek.Services
 {
@@ -193,7 +189,7 @@ namespace Yootek.Services
         [AbpAllowAnonymous]
         public async Task SchedulerCreateBillMonthly()
         {
-            var period = DateTime.Now;
+            var period =  new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
             var peperiod = period.AddMonths(-1);
             var lastMonth = new DateTime(period.Year, period.Month, period.TotalDaysInMonth());
        
@@ -207,6 +203,7 @@ namespace Yootek.Services
                         var citizens = _citizenTempRepo.GetAll().Where(x => x.IsStayed == true && x.RelationShip == RELATIONSHIP.Contractor).ToList();
                         #region  parking bill
                         var isEnableCreateP = await SettingManager.GetSettingValueForTenantAsync<bool>(AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateP, tenant.Id);
+                        var monthNumberP = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberP, tenant.Id);
                         var parkingType = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.UserBillConfig.ParkingBillType, tenant.Id);
                         var dayCreateP = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.ParkingCreateDay, tenant.Id);
                         if (isEnableCreateP && dayCreateP == DateTime.Now.Day)
@@ -234,6 +231,17 @@ namespace Yootek.Services
                                     foreach (var item in vehicleApartments)
                                     {
                                         //var properties = JsonConvert.DeserializeObject<dynamic>(config.Properties);
+                                        if (monthNumberP > 1)
+                                        {
+                                            var checkBillMonth = await _userBillRepo.FirstOrDefaultAsync(x =>
+                                                    x.ApartmentCode == item.Key.ApartmentCode
+                                                    && x.BuildingId == item.Key.BuildingId
+                                                    && x.UrbanId == item.Key.UrbanId
+                                                    && x.Period.Value.AddMonths(monthNumberP) >= period
+                                                    && x.BillType == BillType.Parking);
+                                            if (checkBillMonth != null) continue;
+                                        };
+
                                         var checkBill = await _userBillRepo.FirstOrDefaultAsync(x =>
                                         x.ApartmentCode == item.Key.ApartmentCode
                                         && x.BuildingId == item.Key.BuildingId
@@ -242,6 +250,7 @@ namespace Yootek.Services
                                         && x.Period.Value.Year == period.Year
                                         && x.BillType == BillType.Parking);
                                         if (checkBill != null) continue;
+                                       
 
                                         var customerName = citizens.Where(x => x.ApartmentCode == item.Key.ApartmentCode).Select(x => x.FullName).FirstOrDefault();
 
@@ -324,6 +333,7 @@ namespace Yootek.Services
                         #region  management bill
 
                         var isEnableCreateM = await SettingManager.GetSettingValueForTenantAsync<bool>(AppSettings.TenantManagement.TimeScheduleCheckBill.IsEnableCreateM, tenant.Id);
+                        var monthNumberM = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.MonthNumberM, tenant.Id);
                         var dayCreateM = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.TimeScheduleCheckBill.ManagerCreateDay, tenant.Id);
                         if (isEnableCreateM && dayCreateM == DateTime.Now.Day)
                         {
@@ -349,6 +359,16 @@ namespace Yootek.Services
 
                                 foreach (var apartment in apartments)
                                 {
+                                    if (monthNumberP > 1)
+                                    {
+                                        var checkBillMonth = await _userBillRepo.FirstOrDefaultAsync(x =>
+                                                x.ApartmentCode == apartment.ApartmentCode
+                                                && x.BuildingId == apartment.BuildingId
+                                                && x.UrbanId == apartment.UrbanId
+                                                && x.BillType == BillType.Manager
+                                                && x.Period.Value.AddMonths(monthNumberM) >= period);
+                                        if (checkBillMonth != null) continue;
+                                    };
                                     var checkBill = await _userBillRepo.FirstOrDefaultAsync(x =>
                                         x.ApartmentCode == apartment.ApartmentCode
                                         && x.BuildingId == apartment.BuildingId

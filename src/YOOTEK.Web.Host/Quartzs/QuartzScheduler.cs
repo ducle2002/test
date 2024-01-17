@@ -28,7 +28,7 @@ namespace Yootek.Web.Host
             BillDebtReminderJobScheduler();
             BillReminderJobScheduler();
             CreateUserBillMonthlyJobScheduler();
-           // DayCreateNotificationJobScheduler();
+            DayCreateNotificationJobScheduler();
             MonthCreateNotificationJobScheduler();
             YearCreateNotificationJobScheduler();
             WorkCreateNotificationJobScheduler();
@@ -70,6 +70,7 @@ namespace Yootek.Web.Host
                 {
                     trigger.StartNow()
                         .WithCronSchedule("0 0 0 1/1 * ? *")
+                        //.WithCronSchedule("0 0/1 * 1/1 * ? *")
                         .Build();
                 });
             return Task.CompletedTask;
