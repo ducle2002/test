@@ -8,7 +8,7 @@ namespace Yootek.Notifications
 {
     public interface INotificationAppService : IApplicationService
     {
-        Task<GetNotificationsOutput> GetUserNotifications(GetUserNotificationsInput input);
+        Task<GetNotificationsOutputOld> GetUserNotifications(GetUserNotificationsInput input);
 
         Task SetAllNotificationsAsRead();
 
