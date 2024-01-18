@@ -49,7 +49,7 @@ namespace Yootek.Notifications
         {
             try
             {
-               var result =  await _httpClient.SendAsync<DataResultT<GetNotificationsOutput>>("/notification/api/services/app/Notification/GetUserNotifications", HttpMethod.Get, input);
+               var result =  await _httpClient.SendAsync<DataResultT<GetNotificationsOutput>>("/api/services/app/Notification/GetUserNotifications", HttpMethod.Get, input);
 
                 //var totalCount = await _userNotificationManager.GetUserNotificationCountAsync(
                 //  AbpSession.ToUserIdentifier(), input.State, input.StartDate, input.EndDate
