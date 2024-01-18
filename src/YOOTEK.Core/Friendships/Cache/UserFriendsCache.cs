@@ -22,7 +22,6 @@ namespace Yootek.Friendships.Cache
         private readonly IRepository<OrganizationUnit, long> _organizationUnitRepository;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
         private readonly ITenantCache _tenantCache;
-        private readonly UserManager _userManager;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
 
         private readonly object _syncObj = new object();
@@ -34,35 +33,32 @@ namespace Yootek.Friendships.Cache
             IRepository<OrganizationUnit, long> organizationUnitRepository,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepository,
             ITenantCache tenantCache,
-            UserManager userManager,
             IUnitOfWorkManager unitOfWorkManager)
         {
             _cacheManager = cacheManager;
             _friendshipRepository = friendshipRepository;
             _chatMessageRepository = chatMessageRepository;
             _tenantCache = tenantCache;
-            _userManager = userManager;
             _unitOfWorkManager = unitOfWorkManager;
             _organizationUnitRepository = organizationUnitRepository;
             _userOrganizationUnitRepository = userOrganizationUnitRepository;
         }
 
-        [UnitOfWork]
-        public virtual UserWithFriendsCacheItem GetCacheItem(UserIdentifier userIdentifier)
+
+        public  UserWithFriendsCacheItem GetCacheItem(UserIdentifier userIdentifier)
         {
             //  var a = _cacheManager.GetCache("").Get()
             return _cacheManager.GetCache<string, UserWithFriendsCacheItem>(FriendCacheItem.CacheName).Get(userIdentifier.ToUserIdentifierString(), f => GetUserFriendsCacheItemInternal(userIdentifier, FriendshipState.Accepted));
         }
 
-        public virtual UserWithFriendsCacheItem GetCacheItemOrNull(UserIdentifier userIdentifier)
+        public  UserWithFriendsCacheItem GetCacheItemOrNull(UserIdentifier userIdentifier)
         {
             return _cacheManager
                 .GetCache<string, UserWithFriendsCacheItem>(FriendCacheItem.CacheName)
                 .GetOrDefault(userIdentifier.ToUserIdentifierString());
         }
 
-        [UnitOfWork]
-        public virtual void ResetUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier friendIdentifier)
+        public  void ResetUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier friendIdentifier)
         {
             var user = GetCacheItemOrNull(userIdentifier);
             if (user == null)
@@ -87,9 +83,7 @@ namespace Yootek.Friendships.Cache
             }
         }
 
-
-        [UnitOfWork]
-        public virtual void IncreaseUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier friendIdentifier, int change)
+        public  void IncreaseUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier friendIdentifier, int change)
         {
             var user = GetCacheItemOrNull(userIdentifier);
             if (user == null)
@@ -174,8 +168,7 @@ namespace Yootek.Friendships.Cache
             }
         }
 
-        [UnitOfWork]
-        public virtual UserWithFriendsCacheItem GetUserFriendsCacheItemInternal(UserIdentifier userIdentifier, FriendshipState friendState, bool? isSender = null)
+        public  UserWithFriendsCacheItem GetUserFriendsCacheItemInternal(UserIdentifier userIdentifier, FriendshipState friendState, bool? isSender = null)
         {
             var tenancyName = userIdentifier.TenantId.HasValue
                 ? _tenantCache.GetOrNull(userIdentifier.TenantId.Value)?.TenancyName
@@ -205,9 +198,6 @@ namespace Yootek.Friendships.Cache
                      .AsQueryable();
 
                 var friendCacheItems = query.ToList();
-
-
-                var user = _userManager.FindByIdAsync(userIdentifier.UserId.ToString());
 
                 return new UserWithFriendsCacheItem
                 {

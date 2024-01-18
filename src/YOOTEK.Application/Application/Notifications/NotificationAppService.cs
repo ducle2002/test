@@ -38,18 +38,26 @@ namespace Yootek.Notifications
         [DisableAuditing]
         public async Task<GetNotificationsOutput> GetUserNotifications(GetUserNotificationsInput input)
         {
-            var totalCount = await _userNotificationManager.GetUserNotificationCountAsync(
-              AbpSession.ToUserIdentifier(), input.State, input.StartDate, input.EndDate
-              );
+            try
+            {
 
-            var unreadCount = await _userNotificationManager.GetUserNotificationCountAsync(
-                AbpSession.ToUserIdentifier(), UserNotificationState.Unread, input.StartDate, input.EndDate
-                );
-            var notifications = await _userNotificationManager.GetUserNotificationsAsync(
-                AbpSession.ToUserIdentifier(), input.State, input.SkipCount, input.MaxResultCount, input.StartDate, input.EndDate
-                );
+                var totalCount = await _userNotificationManager.GetUserNotificationCountAsync(
+                  AbpSession.ToUserIdentifier(), input.State, input.StartDate, input.EndDate
+                  );
 
-            return new GetNotificationsOutput(totalCount, unreadCount, notifications);
+                var unreadCount = await _userNotificationManager.GetUserNotificationCountAsync(
+                    AbpSession.ToUserIdentifier(), UserNotificationState.Unread, input.StartDate, input.EndDate
+                    );
+                var notifications = await _userNotificationManager.GetUserNotificationsAsync(
+                    AbpSession.ToUserIdentifier(), input.State, input.SkipCount, input.MaxResultCount, input.StartDate, input.EndDate
+                    );
+
+                return new GetNotificationsOutput(totalCount, unreadCount, notifications);
+            }
+            catch( Exception ex )
+            {
+                throw;
+            }
         }
 
         public async Task SetAllNotificationsAsRead()
