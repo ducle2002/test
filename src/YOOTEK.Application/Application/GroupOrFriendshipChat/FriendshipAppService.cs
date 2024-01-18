@@ -83,7 +83,8 @@ namespace Yootek.Friendships
                              StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                                     where fr.FriendUserId == AbpSession.UserId
                                                     select fr.State).First(),
-                             LastMessageDate = friendship.CreationTime
+                             LastMessageDate = friendship.CreationTime,
+                             CreationTime = friendship.CreationTime,
                          })
                          .Where(x => x.IsSender == false).AsQueryable();
                     var friends = query.ToList();
