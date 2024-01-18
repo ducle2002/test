@@ -12,6 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Net.Http;
+using Yootek.Lib.CrudBase;
+using Microsoft.Extensions.Configuration;
+using Yootek.Extensions;
+using Yootek.Common.DataResult;
 
 namespace Yootek.Notifications
 {
@@ -22,37 +27,41 @@ namespace Yootek.Notifications
         private readonly IUserNotificationManager _userNotificationManager;
         private readonly INotificationSubscriptionManager _notificationSubscriptionManager;
         private readonly IAppNotifier _appNotifier;
+        private readonly HttpClient _httpClient;
 
         public NotificationAppService(
             INotificationDefinitionManager notificationDefinitionManager,
             IUserNotificationManager userNotificationManager,
             IAppNotifier appNotifier,
-            INotificationSubscriptionManager notificationSubscriptionManager)
+            INotificationSubscriptionManager notificationSubscriptionManager,
+            YootekHttpClient yootekHttpClient,
+            IConfiguration configuration)
         {
             _notificationDefinitionManager = notificationDefinitionManager;
             _userNotificationManager = userNotificationManager;
             _notificationSubscriptionManager = notificationSubscriptionManager;
             _appNotifier = appNotifier;
+            _httpClient = yootekHttpClient.GetHttpClient(configuration["ApiSettings:Yootek.Notification"]);
         }
 
         [DisableAuditing]
-        public async Task<GetNotificationsOutput> GetUserNotifications(GetUserNotificationsInput input)
+        public async Task<GetNotificationsOutputOld> GetUserNotifications(GetUserNotificationsInput input)
         {
             try
             {
+               var result =  await _httpClient.SendAsync<DataResultT<GetNotificationsOutput>>("/notification/api/services/app/Notification/GetUserNotifications", HttpMethod.Get, input);
 
-                var totalCount = await _userNotificationManager.GetUserNotificationCountAsync(
-                  AbpSession.ToUserIdentifier(), input.State, input.StartDate, input.EndDate
-                  );
+                //var totalCount = await _userNotificationManager.GetUserNotificationCountAsync(
+                //  AbpSession.ToUserIdentifier(), input.State, input.StartDate, input.EndDate
+                //  );
 
-                var unreadCount = await _userNotificationManager.GetUserNotificationCountAsync(
-                    AbpSession.ToUserIdentifier(), UserNotificationState.Unread, input.StartDate, input.EndDate
-                    );
-                var notifications = await _userNotificationManager.GetUserNotificationsAsync(
-                    AbpSession.ToUserIdentifier(), input.State, input.SkipCount, input.MaxResultCount, input.StartDate, input.EndDate
-                    );
-
-                return new GetNotificationsOutput(totalCount, unreadCount, notifications);
+                //var unreadCount = await _userNotificationManager.GetUserNotificationCountAsync(
+                //    AbpSession.ToUserIdentifier(), UserNotificationState.Unread, input.StartDate, input.EndDate
+                //    );
+                //var notifications = await _userNotificationManager.GetUserNotificationsAsync(
+                //    AbpSession.ToUserIdentifier(), input.State, input.SkipCount, input.MaxResultCount, input.StartDate, input.EndDate
+                //    );
+                return new GetNotificationsOutputOld(result.Data.Data.TotalRecords, result.Data.Data.UnreadCount, result.Data.Data.Data);
             }
             catch( Exception ex )
             {
