@@ -1,14 +1,11 @@
 ﻿using Abp;
 using Abp.Application.Services;
 using Abp.Authorization;
-using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.Runtime.Session;
-using Abp.Timing;
-using Abp.UI;
 using Yootek.Application;
 using Yootek.Application.RoomOrFriendships.Dto;
 using Yootek.Authorization.Users;
@@ -18,18 +15,11 @@ using Yootek.Common.DataResult;
 using Yootek.Friendships;
 using Yootek.Friendships.Dto;
 using Yootek.GroupChats;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace Yootek.Abp.Application.Friendships
 {
