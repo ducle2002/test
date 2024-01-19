@@ -11,6 +11,36 @@
 	  <UserSecretsId>AbpCompanyName-YOOTEK-56C2EF2F-ABD6-4EFC-AAF2-2E81C34E8FB1</UserSecretsId>
     <RootNamespace>YOOTEK</RootNamespace>
   </PropertyGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\default.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\template.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\mail_default.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\hts.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\htc.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\noxh.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\ncp.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\vina22.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\thanhbinh11no.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\vinasinco-2.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\hiyori.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\mhomes.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\tanphong.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\trungdo.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\ct2b.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\aden.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\aden_payment.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\lathanh.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\common_bill.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+
+
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\default.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\hudland.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\vina22.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\vinasinco.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\aden.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\lathanh.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="Abp.AutoMapper" Version="9.0.0" />
     <PackageReference Include="Abp.MailKit" Version="9.0.0" />

@@ -9,11 +9,8 @@
         public long UserId { get; set; }
         public long TenantId { get; set; }
         public string EmailAddress { get; set; }
-        public bool? IsCitizen { get; set; }
-      //  public bool IsMultiProject { get; set; }
         public string MobileConfig { get; set; }
         public string RefreshToken { get; set; }
-
         public int RefreshTokenExpireInSeconds { get; set; }
     }
 }

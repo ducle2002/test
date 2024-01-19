@@ -161,6 +161,7 @@ namespace Yootek.Services.Dto
         public int? BicycleNumber { get; set; }
         public int? OtherVehicleNumber { get; set; }
         public long? BillConfigId { get; set; }
+        public int? MonthNumber { get; set; }
 
     }
 

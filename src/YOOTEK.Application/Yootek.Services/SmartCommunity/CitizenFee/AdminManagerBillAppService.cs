@@ -1776,6 +1776,7 @@ namespace Yootek.Services
                     userBill1.IndexHeadPeriod = detail.IndexHeadPeriod;
                     userBill1.TotalIndex = detail.TotalIndex;
                     userBill1.BillConfigId = detail.BillConfigId ?? 0;
+                    userBill1.MonthNumber = detail.MonthNumber ?? 1;
                     if (userBill1.BillType == BillType.Parking)
                     {
                         userBill1.CarNumber = detail.CarNumber;
