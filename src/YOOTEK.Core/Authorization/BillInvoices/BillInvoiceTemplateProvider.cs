@@ -48,7 +48,7 @@ namespace Yootek.Authorization.BillInvoices
                     return template;
                 }
             }
-            if (tenantId == 47)
+            if (tenantId == 115)
             {
                 using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.BillInvoices.Templates.aden.html"))
                 {
@@ -70,7 +70,7 @@ namespace Yootek.Authorization.BillInvoices
         public string GetBillPaymentTemplate(int? tenantId)
         {
 
-            if (tenantId == 47)
+            if (tenantId == 115)
             {
                 using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.Emailing.EmailTemplates.aden_payment.html"))
                 {

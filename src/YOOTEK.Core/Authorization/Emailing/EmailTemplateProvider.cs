@@ -81,7 +81,7 @@ namespace Yootek.Emailing
                     return template;
                 }
             }
-            else if (tenantId == 47)
+            else if (tenantId == 63)
             {
                 using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.vina22.html"))
                 {
@@ -144,7 +144,7 @@ namespace Yootek.Emailing
                     return template;
                 }
             }
-            else if (tenantId == 47)
+            else if (tenantId == 115)
             {
                 using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.aden.html"))
                 {

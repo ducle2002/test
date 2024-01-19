@@ -130,7 +130,7 @@ namespace Yootek.Services
                 template =
                    await CreateTemplateNC(apartmentCode, period, AbpSession.TenantId);
             }
-            else if (AbpSession.TenantId == 47)
+            else if (AbpSession.TenantId == 63)
             {
                 template =
                    await CreateTemplateVina22(apartmentCode, period, AbpSession.TenantId);
