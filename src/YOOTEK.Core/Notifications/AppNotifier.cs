@@ -575,7 +575,7 @@ namespace Yootek.Notifications
                 Users = users
             };
 
-            await _httpClient.SendAsync<DataResult>("/notification/api/services/app/InternalNotification/CreateNotification", HttpMethod.Post, request);
+            await _httpClient.SendAsync<DataResult>("/api/services/app/InternalNotification/CreateNotification", HttpMethod.Post, request);
 
         }
 

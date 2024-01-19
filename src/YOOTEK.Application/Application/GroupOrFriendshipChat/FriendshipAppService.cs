@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Dynamic;
 using System.Threading.Tasks;
 using Abp;
 using Abp.Authorization;
 using Abp.AutoMapper;
+using Abp.Domain.Repositories;
 using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.Runtime.Session;
+using Abp.Timing;
 using Abp.UI;
-using Yootek;
+using AutoMapper.Internal;
+using Yootek.Application.Chat.Dto;
 using Yootek.Application.RoomOrFriendships.Dto;
 using Yootek.Authorization.Users;
 using Yootek.Chat;
+using Yootek.Chat.Dto;
+using Yootek.Common.DataResult;
+using Yootek.Dto.Interface;
 using Yootek.Friendships;
 using Yootek.Friendships.Cache;
 using Yootek.Friendships.Dto;
@@ -30,6 +35,8 @@ namespace Yootek.Friendships
         private readonly ITenantCache _tenantCache;
         private readonly IChatFeatureChecker _chatFeatureChecker;
         private readonly IUserFriendsCache _userFriendsCache;
+        private readonly IRepository<User, long> _userRepository;
+        private readonly IRepository<Friendship, long> _friendshipRepository;
 
         public FriendshipAppService(
             IFriendshipManager friendshipManager,
@@ -37,7 +44,10 @@ namespace Yootek.Friendships
             IChatCommunicator chatCommunicator,
             ITenantCache tenantCache,
             IChatFeatureChecker chatFeatureChecker,
-            IUserFriendsCache userFriendsCache)
+            IUserFriendsCache userFriendsCache,
+            IRepository<User, long> userRepository,
+            IRepository<Friendship, long> friendshipRepository
+            )
         {
             _friendshipManager = friendshipManager;
             _onlineClientManager = onlineClientManager;
@@ -45,9 +55,101 @@ namespace Yootek.Friendships
             _tenantCache = tenantCache;
             _chatFeatureChecker = chatFeatureChecker;
             _userFriendsCache = userFriendsCache;
+            _userRepository = userRepository;
+            _friendshipRepository = friendshipRepository;
         }
 
-       [System.Obsolete]
+        public async Task<DataResult> GetFriendRequestingList()
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
+
+                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+                {
+                    var query =
+                        (from friendship in _friendshipRepository.GetAll()
+                         where friendship.UserId == AbpSession.UserId
+                         && friendship.State == FriendshipState.Requesting && friendship.IsOrganizationUnit != true
+                         select new FriendDto
+                         {
+                             FriendUserId = friendship.FriendUserId,
+                             FriendTenantId = friendship.FriendTenantId,
+                             State = friendship.State,
+                             FriendUserName = friendship.FriendUserName,
+                             FriendTenancyName = friendship.FriendTenancyName,
+                             FriendProfilePictureId = friendship.FriendProfilePictureId,
+                             IsSender = friendship.IsSender,
+                             StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
+                                                    where fr.FriendUserId == AbpSession.UserId
+                                                    select fr.State).First(),
+                             LastMessageDate = friendship.CreationTime,
+                             CreationTime = friendship.CreationTime,
+                         })
+                         .Where(x => x.IsSender == false).AsQueryable();
+                    var friends = query.ToList();
+                    foreach (var friend in friends)
+                    {
+                        friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                            new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                        );
+                    }
+                    var listresults = new List<ChatFriendOrRoomDto>();
+                    listresults = listresults.Concat(friends).ToList();
+                    return DataResult.ResultSuccess(listresults, "");
+                }
+
+             
+            }catch (Exception e)
+            {
+                throw;
+            }
+        }
+
+        //public async Task<DataResult> GetUserRequestingList()
+        //{
+        //    try
+        //    {
+        //        var userId = AbpSession.GetUserId();
+
+        //        using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+        //        {
+        //            var query =
+        //                (from friendship in _friendshipRepository.GetAll()
+        //                 where friendship.FriendUserId == AbpSession.UserId
+        //                 && friendship.State == FriendshipState.Requesting && friendship.IsOrganizationUnit != true
+        //                 select new FriendDto
+        //                 {
+        //                     FriendUserId = friendship.FriendUserId,
+        //                     FriendTenantId = friendship.FriendTenantId,
+        //                     State = friendship.State,
+        //                     FriendUserName = friendship.FriendUserName,
+        //                     FriendTenancyName = friendship.FriendTenancyName,
+        //                     FriendProfilePictureId = friendship.FriendProfilePictureId,
+        //                     IsSender = friendship.IsSender,
+        //                     LastMessageDate = friendship.CreationTime
+        //                 })
+        //                 .Where(x => x.IsSender == false).AsQueryable();
+        //            var friends = query.ToList();
+        //            foreach (var friend in friends)
+        //            {
+        //                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+        //                    new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+        //                );
+        //            }
+        //            var listresults = new List<ChatFriendOrRoomDto>();
+        //            listresults = listresults.Concat(friends).ToList();
+        //            return DataResult.ResultSuccess(listresults, "");
+        //        }
+
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        throw;
+        //    }
+        //}
+
         public async Task<FriendDto> CreateFriendshipRequest(CreateFriendshipRequestInput input)
         {
             try
@@ -105,7 +207,6 @@ namespace Yootek.Friendships
             }
         }
 
-        [System.Obsolete]
         public async Task<FriendDto> CreateFriendshipRequestByUserName(CreateFriendshipRequestByUserNameInput input)
         {
             var probableFriend = await GetUserIdentifier(input.TenancyName, input.UserName);
