@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Yootek.EntityDb;
 
 namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
 {
@@ -654,27 +655,46 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
             {
 
                 var recipients = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                
+                await _appNotifier.SendMessageNotificationInternalAsync(
                     message,
                     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
                     detailUrlApp,
                     detailUrlWA,
                     recipients.ToArray(),
-                    notification
+                    notification,
+                    AppType.USER
                 );
+                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //     message,
+                //     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+                //     detailUrlApp,
+                //     detailUrlWA,
+                //     recipients.ToArray(),
+                //     notification
+                // );
             }
 
             foreach (var userId in supervisorIds)
             {
                 var supervisors = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                await _appNotifier.SendMessageNotificationInternalAsync(
                     message,
                     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
                     detailUrlApp,
                     detailUrlWA,
                     supervisors.ToArray(),
-                    notification
+                    notification,
+                    AppType.USER
                 );
+                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //     message,
+                //     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+                //     detailUrlApp,
+                //     detailUrlWA,
+                //     supervisors.ToArray(),
+                //     notification
+                // );
             }
         }
         #endregion

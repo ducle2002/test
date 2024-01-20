@@ -829,9 +829,9 @@ namespace Yootek.Services
                         newHistory.Title = $"Đăng ký xe {vehicle.VehicleName} biển số {vehicle.VehicleCode}";
                         newHistory.Type = EApartmentHistoryType.Vehicle;
                         var user = _userRepos.FirstOrDefault(AbpSession.UserId ?? 0);
-                        newHistory.ExecutorName = user.FullName;
-                        newHistory.DateStart = (DateTime)vehicle.RegistrationDate;
-                        newHistory.DateEnd = vehicle.ExpirationDate;
+                        newHistory.ExecutorName = user.FullName ?? "";
+                        newHistory.DateStart = vehicle.RegistrationDate ?? vehicle.CreationTime;
+                        newHistory.DateEnd = vehicle.ExpirationDate ?? DateTime.Now;
                         newHistory.Cost = (long?)vehicle.Cost ?? 0;
                         newHistory.Description = vehicle.Description;
                         await _apartmentHistoryAppSerivce.CreateApartmentHistoryAsync(newHistory);

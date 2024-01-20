@@ -821,13 +821,22 @@ namespace Yootek.Services
                                 ""
 
                              );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                 "Thông báo khảo sát cư dân!",
-                 $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Thông báo khảo sát cư dân!",
+                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
                  detailUrlApp,
                  "",
                  citizens.ToArray(),
-                 messageDeclined);
+                 messageDeclined,
+                 AppType.USER
+                );
+            //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //     "Thông báo khảo sát cư dân!",
+            //     $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
+            //     detailUrlApp,
+            //     "",
+            //     citizens.ToArray(),
+            //     messageDeclined);
         }
         #endregion
 

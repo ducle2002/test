@@ -151,13 +151,22 @@ namespace Yootek.Services.BillEmailer
                                detailUrlApp,
                                detailUrlWA
                                );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                 $"Thông báo hóa đơn mới!",
-                 $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
-                 detailUrlApp,
-                 detailUrlWA,
-                 users,
-                 messageSuccess);
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Thông báo hóa đơn mới!",
+                $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+                detailUrlApp,
+                detailUrlWA,
+                users,
+                messageSuccess,
+                AppType.USER
+                );
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //      $"Thông báo hóa đơn mới!",
+            //      $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+            //      detailUrlApp,
+            //      detailUrlWA,
+            //      users,
+            //      messageSuccess);
             return;
         }
 
