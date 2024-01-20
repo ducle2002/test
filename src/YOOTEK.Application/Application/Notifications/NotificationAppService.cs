@@ -49,7 +49,7 @@ namespace Yootek.Notifications
         {
             try
             {
-               var result =  await _httpClient.SendAsync<DataResultT<GetNotificationsOutput>>("/notification/api/services/app/Notification/GetUserNotifications", HttpMethod.Get, input);
+               var result =  await _httpClient.SendAsync<GetNotificationsOutput>("/api/services/app/Notification/GetUserNotifications", HttpMethod.Get, input);
 
                 //var totalCount = await _userNotificationManager.GetUserNotificationCountAsync(
                 //  AbpSession.ToUserIdentifier(), input.State, input.StartDate, input.EndDate
@@ -61,7 +61,7 @@ namespace Yootek.Notifications
                 //var notifications = await _userNotificationManager.GetUserNotificationsAsync(
                 //    AbpSession.ToUserIdentifier(), input.State, input.SkipCount, input.MaxResultCount, input.StartDate, input.EndDate
                 //    );
-                return new GetNotificationsOutputOld(result.Data.Data.TotalRecords, result.Data.Data.UnreadCount, result.Data.Data.Data);
+                return new GetNotificationsOutputOld(result.Data.TotalRecords, result.Data.UnreadCount, result.Data.Data);
             }
             catch( Exception ex )
             {
