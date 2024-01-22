@@ -166,16 +166,16 @@ namespace Yootek.Services
                 CitizenTemp owner = GetOwner(apartmentDto.ApartmentCode).FirstOrDefault();
                 apartmentDto.OwnerName = owner?.FullName;
                 apartmentDto.OwnerPhoneNumber = owner?.PhoneNumber;
-                 if (apartment.BillConfigId != null)
+                 if (apartment.BillConfig != null)
                 {
-                    apartmentDto.BillConfigDetail = _billConfigRepo.GetAll()
-                            .Where(x => apartment.BillConfigId.Contains(x.Id))
-                            .Select(x => new GetAllBillConfigDto
-                            {
-                                BillConfigId = x.Id,
-                                BillType = x.BillType
+                    //apartmentDto.BillConfigDetail = _billConfigRepo.GetAll()
+                    //        .Where(x => apartment.BillConfigId.Contains(x.Id))
+                    //        .Select(x => new GetAllBillConfigDto
+                    //        {
+                    //            BillConfigId = x.Id,
+                    //            BillType = x.BillType
 
-                            }).ToList();
+                    //        }).ToList();
                 }
 
                 return DataResult.ResultSuccess(apartmentDto, "Get apartment detail success!");
@@ -194,7 +194,8 @@ namespace Yootek.Services
                 if (apartmentOrg != null) throw new UserFriendlyException(409, "Apartment is exist");
                 Apartment apartment = input.MapTo<Apartment>();
                 apartment.TenantId = AbpSession.TenantId;
-                apartment.BillConfigId = input.ListBillConfig?.Select(x => x.BillConfigId ?? 0).ToArray();
+                //apartment.BillConfig = input.ListBillConfig ?? "";
+                // apartment.BillConfigId = input.ListBillConfig?.Select(x => x.BillConfigId ?? 0).ToArray();
 
                 await _apartmentRepository.InsertAsync(apartment);
                 return DataResult.ResultSuccess(true, "Insert success!");
@@ -218,7 +219,7 @@ namespace Yootek.Services
                     throw new UserFriendlyException("Code is existed!");
                 };
                 ObjectMapper.Map(input, apartmentOrg);
-                apartmentOrg.BillConfigId = input.BillConfigDetail?.Select(x => x.BillConfigId ?? 0).ToArray();
+              //  apartmentOrg.BillConfigId = input.BillConfigDetail?.Select(x => x.BillConfigId ?? 0).ToArray();
 
                 await _apartmentRepository.UpdateAsync(apartmentOrg);
                 return DataResult.ResultSuccess(true, "Update success !");

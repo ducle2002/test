@@ -172,6 +172,8 @@ namespace Yootek.Services
                                                      from meter in tb_mt.DefaultIfEmpty()
                                                      join user in _userRepository.GetAll() on sm.CreatorUserId equals user.Id into tb_u
                                                      from user in tb_u.DefaultIfEmpty()
+                                                     join apartment in _apartmentRepository.GetAll() on meter.ApartmentCode equals apartment.ApartmentCode into tb_apartment
+                                                     from apartment in tb_apartment.DefaultIfEmpty()
                                                      select new MeterMonthlyDto
                                                      {
                                                          Id = sm.Id,
@@ -192,7 +194,9 @@ namespace Yootek.Services
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
                                                          UrbanName = _organizationUnitRepository.GetAll().Where(o => o.Id == meter.UrbanId)
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
-                                                         CreatorUserName = user.FullName
+                                                         CreatorUserName = user.FullName,
+                                                         BillConfig = _apartmentRepository.GetAll().Where(x => x.ApartmentCode == meter.ApartmentCode).Select(x => x.BillConfig).FirstOrDefault()
+
                                                      }).AsQueryable();
 
                 var result = query.FirstOrDefault();

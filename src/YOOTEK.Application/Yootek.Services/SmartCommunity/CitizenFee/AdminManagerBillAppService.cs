@@ -2245,7 +2245,7 @@ namespace Yootek.Services
                         }
                         else userBill.DueDate = DateTime.Now;
 
-                        var listBillConfig = apartment.BillConfigId;
+                        var listBillConfig = apartment.BillConfig;    
                         if (listBillConfig == null)
                         {
 

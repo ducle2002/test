@@ -32,7 +32,7 @@ namespace Yootek.EntityDb
         [StringLength(100)]
         public string WardCode { get; set; }
         public string? Address { get; set; }
-        public long[]? BillConfigId { get; set; }
+        public string? BillConfig { get; set; }
     }
 
     public enum StatusApartment

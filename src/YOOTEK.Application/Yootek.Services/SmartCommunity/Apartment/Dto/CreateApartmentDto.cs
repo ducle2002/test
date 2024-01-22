@@ -2,6 +2,7 @@
 using Yootek.EntityDb;
 using Yootek.Organizations.Interface;
 using System.Collections.Generic;
+using Yootek.Common.Enum;
 
 namespace Yootek.Services.Dto
 {
@@ -25,11 +26,13 @@ namespace Yootek.Services.Dto
         public string? WardCode { get; set; }
         public string? Address { get; set; }
         public long[]? BillConfigId { get; set; }
-        public List<BillConfigProperties>? ListBillConfig { get; set; }
+      //  public string? ListBillConfig { get; set; }
+        public List<BillConfigProperties>? BillConfig { get; set; }
     }
     public class BillConfigProperties
     {
-        public int? BillType { get; set; }
-        public long? BillConfigId { get; set; }
+        public BillType? BillType { get; set; }
+        //public int? LastCost { get; set; }
+        public string? Properties { get; set; }
     }
 }
