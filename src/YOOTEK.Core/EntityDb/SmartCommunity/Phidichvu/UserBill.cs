@@ -71,5 +71,8 @@ namespace Yootek.EntityDb
         public bool? IsPaymentPending { get; set; }
         public bool? IsPrepayment { get; set; }
         public int? MonthNumber {  get; set; }
+        //public int? ECarNumber {  get; set; }
+        //public int? EMotorNumber {  get; set; }
+        //public int? EBikeNumber {  get; set; }
     }
 }

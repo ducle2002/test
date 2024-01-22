@@ -23,5 +23,6 @@ namespace Yootek.Friendships.Dto
         public ChatMessage LastMessage { get; set; }
         public bool? IsOrganizationUnit { get; set; }
         public Citizen FriendInfo { get; set; }
+        public bool? IsSender { get; set; }
     }
 }

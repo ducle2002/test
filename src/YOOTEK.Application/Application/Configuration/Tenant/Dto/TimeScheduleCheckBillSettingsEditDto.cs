@@ -11,6 +11,8 @@
         public int ElectricEndPeriodDay { get; set; }
         public int ParkingCreateDay { get; set; }
         public int ManagerCreateDay { get; set; }
+        public int ParkingMonthNumber { get; set; }
+        public int ManagerMonthNumber { get; set; }
         public int WaterHeadPeriodDay { get; set; }
         public int WaterEndPeriodDay { get; set; }
         public int BillNotificationTime1 { get; set; }

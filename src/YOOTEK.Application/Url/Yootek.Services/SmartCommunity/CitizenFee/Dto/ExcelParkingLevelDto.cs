@@ -20,5 +20,6 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto
         public long? ParkingId { get; set; }
         public string CardNumber { get; set; }
         public string CustomerName { get; set; }
+        public int? MonthNumber { get; set; }
     }
 }
