@@ -11,6 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Yootek.Services;
+using Yootek.App.ServiceHttpClient.Dto.Business;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment;
 
 namespace Yootek.Yootek.Services.Yootek.Payments
 {
@@ -28,17 +31,48 @@ namespace Yootek.Yootek.Services.Yootek.Payments
     public class PaymentAppService : YootekAppServiceBase, IApplicationService
     {
         private readonly BaseHttpClient _httpClient;
+        private readonly IUserBillPaymentAppService _userBillPaymentAppService;
+        private readonly HandlePaymentUtilAppService _handlePaymentUtilAppService;
 
         #region Payment
 
-        public PaymentAppService(IAbpSession abpSession, IConfiguration configuration)
+        public PaymentAppService(
+            IAbpSession abpSession,
+            IConfiguration configuration,
+            IUserBillPaymentAppService userBillPaymentAppService,
+            HandlePaymentUtilAppService handlePaymentUtilAppService
+            )
         {
             _httpClient = new BaseHttpClient(abpSession, configuration["ApiSettings:Payments"]);
+            _userBillPaymentAppService = userBillPaymentAppService;
+            _handlePaymentUtilAppService = handlePaymentUtilAppService;
         }
 
-        public async Task<DataResultT<object>> Create(CreatePaymentDto input)
+        public async Task<DataResultT<PaymentDto>> Create(CreatePaymentDto input)
         {
-            return await _httpClient.SendSync<object>("/api/payments/create", HttpMethod.Post, input);
+           
+            if (input.Type == EPaymentType.BILL)
+            {
+                var paymentBill =  await _userBillPaymentAppService.RequestUserBillPayment(input);
+                input.TransactionId = paymentBill.Id;
+                try
+                {
+                    var response = await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
+                    if (!response.Success) await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(paymentBill);
+                    return response;
+                }
+                catch (Exception e)
+                {
+                    await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(paymentBill);
+                    throw;
+                }
+            }
+            else
+            {
+                return await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
+            }
+           
+           
         }
 
         public async Task<DataResult> GetList(GetListPaymentDto input)
