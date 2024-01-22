@@ -44,6 +44,7 @@ namespace Yootek.Notifications
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<Tenant> _tenantRepository;
         private readonly IRepository<Citizen, long> _citizenRepository;
+        private readonly IRepository<Apartment, long> _apartmentRepository;
         private readonly IRepository<AppOrganizationUnit, long> _organizationUnitRepository;
         private readonly IRepository<SchedulerNotification, long> _schedulerNotificationRepository;
 
@@ -57,7 +58,8 @@ namespace Yootek.Notifications
             IRepository<Tenant> tenantRepository,
             IRepository<Citizen, long> citizenRepository,
             IRepository<AppOrganizationUnit, long> organizationUnitRepository,
-            IRepository<SchedulerNotification, long> schedulerNotificationRepository
+            IRepository<SchedulerNotification, long> schedulerNotificationRepository,
+            IRepository<Apartment, long> apartmentRepository
             )
         {
             _notificationDefinitionManager = notificationDefinitionManager;
@@ -70,6 +72,7 @@ namespace Yootek.Notifications
             _citizenRepository = citizenRepository;
             _organizationUnitRepository = organizationUnitRepository;
             _schedulerNotificationRepository = schedulerNotificationRepository;
+            _apartmentRepository = apartmentRepository;
         }
 
         public async Task<object> GetAllTenantAsync()
@@ -155,7 +158,34 @@ namespace Yootek.Notifications
                 throw;
             }
         }
+        public async Task<object> GetApartmentAsync(GetApartmentInput input)
+        {
+            try
+            {
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                {
+                    var query = _apartmentRepository.GetAll()
+                        .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                        .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                        .Select(x => new ApartmentGetBySocialAdminDto()
+                        {
+                            Id = x.Id,
+                            UrbanId = x.UrbanId,
+                            ApartmentCode = x.ApartmentCode,
+                            BuildingId = x.BuildingId,
+                            TenantId = x.TenantId,
+                        });
 
+                    var result = await query.ToListAsync();
+                    return DataResult.ResultSuccess(result, "Get  success!");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
         public async Task<object> GetAllCitizenAsync(GetAllCitizenInput input)
         {
             try
