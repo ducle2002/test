@@ -34,7 +34,6 @@ namespace Yootek.Yootek.Services.Yootek.Payments
         private readonly IUserBillPaymentAppService _userBillPaymentAppService;
         private readonly HandlePaymentUtilAppService _handlePaymentUtilAppService;
 
-        #region Payment
 
         public PaymentAppService(
             IAbpSession abpSession,
@@ -47,6 +46,8 @@ namespace Yootek.Yootek.Services.Yootek.Payments
             _userBillPaymentAppService = userBillPaymentAppService;
             _handlePaymentUtilAppService = handlePaymentUtilAppService;
         }
+
+        #region Payment
 
         public async Task<DataResultT<PaymentDto>> Create(CreatePaymentDto input)
         {
@@ -128,6 +129,12 @@ namespace Yootek.Yootek.Services.Yootek.Payments
             return await _httpClient.SendSync<object>("/api/momo-tenants/list-of-tenant", HttpMethod.Get);
         }
 
+        [HttpGet]
+        public async Task<DataResultT<object>> AdminGetAllMomoTenants(int? tenantId)
+        {
+            return await _httpClient.SendSync<object>("/api/momo-tenants/admin", HttpMethod.Get, new { tenantId });
+        }
+
         public async Task<DataResultT<object>> GetMomoTenant(int id)
         {
             return await _httpClient.SendSync<object>($"/api/momo-tenants/{id}", HttpMethod.Get);
@@ -152,9 +159,16 @@ namespace Yootek.Yootek.Services.Yootek.Payments
 
         #region Onepay merchant
 
-        public async Task<DataResultT<object>> GetListOnepayMerchant(GetListOnepayMerchant input)
+        [HttpGet]
+        public async Task<DataResultT<object>> AdminGetListOnepayMerchant(GetListOnepayMerchant input)
         {
-            return await _httpClient.SendSync<object>("/api/onepay-merchants/list", HttpMethod.Get, input);
+            // Convert input to camelCase
+            var json = JsonConvert.SerializeObject(input, new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver()
+            });
+            var query = JsonConvert.DeserializeObject<object>(json);
+            return await _httpClient.SendSync<object>("/api/onepay-merchants/admin", HttpMethod.Get, query);
         }
 
         public async Task<DataResultT<object>> GetListOnepayMerchantOfTenant()
