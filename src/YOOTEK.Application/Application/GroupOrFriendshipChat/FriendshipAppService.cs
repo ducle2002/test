@@ -97,7 +97,7 @@ namespace Yootek.Friendships
                     }
                     var listresults = new List<ChatFriendOrRoomDto>();
                     listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "");
+                    return DataResult.ResultSuccess(listresults, "", query.Count());
                 }
 
              
@@ -140,7 +140,7 @@ namespace Yootek.Friendships
                     }
                     var listresults = new List<ChatFriendOrRoomDto>();
                     listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "");
+                    return DataResult.ResultSuccess(listresults, "", query.Count());
                 }
 
 
@@ -157,8 +157,6 @@ namespace Yootek.Friendships
             {
                 var userIdentifier = AbpSession.ToUserIdentifier();
                 var probableFriend = new UserIdentifier(input.TenantId, input.UserId);
-
-                // _chatFeatureChecker.CheckChatFeatures(userIdentifier.TenantId, probableFriend.TenantId);
 
                 if (await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend) != null)
                 {
