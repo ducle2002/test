@@ -160,6 +160,9 @@ namespace Yootek.Services.Dto
         public int? MotorbikeNumber { get; set; }
         public int? BicycleNumber { get; set; }
         public int? OtherVehicleNumber { get; set; }
+        public int? ECarNumber { get; set; }
+        public int? EMotorNumber { get; set; }
+        public int? EBikeNumber { get; set; }
         public long? BillConfigId { get; set; }
         public int? MonthNumber { get; set; }
 

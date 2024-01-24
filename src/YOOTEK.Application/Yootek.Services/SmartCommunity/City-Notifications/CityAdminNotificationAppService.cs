@@ -153,7 +153,7 @@ namespace Yootek.Services
                   .WhereIf(input.ReceiveAll != null, x => input.ReceiveAll == x.ReceiveAll)
                   .WhereIf(input.BuildingId != null, x => input.BuildingId == x.BuildingId)
                   .WhereIf(input.UrbanId != null, x => input.UrbanId == x.UrbanId)
-                    //.WhereIf(input.State.HasValue, x => x.State == input.State)
+                  //.WhereIf(input.State.HasValue, x => x.State == input.State)
                   .ApplySearchFilter(input.Keyword, x => x.Name)
                   .AsQueryable();
 
@@ -602,13 +602,22 @@ namespace Yootek.Services
             {
                 var citizens = (from cz in _citizenRepos.GetAll()
                                 select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                     "Yoolife thông báo số !",
-                     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                     detailUrlApp,
-                     detailUrlWA,
-                     citizens.ToArray(),
-                   messageDeclined);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Yoolife thông báo số !",
+                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    detailUrlWA,
+                    citizens.ToArray(),
+                    messageDeclined,
+                    AppType.USER
+                    );
+                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //     "Yoolife thông báo số !",
+                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                //     detailUrlApp,
+                //     detailUrlWA,
+                //     citizens.ToArray(),
+                //   messageDeclined);
             }
             //khu do thi
             else if (data.ReceiveAll == RECEIVE_TYPE.URBAN_ALL)
@@ -617,13 +626,22 @@ namespace Yootek.Services
                                 join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
                                 where buIds.Contains((long)cz.UrbanId)
                                 select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                     "Yoolife thông báo số !",
-                     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                     detailUrlApp,
-                     detailUrlWA,
-                     citizens.ToArray(),
-                   messageDeclined);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Yoolife thông báo số !",
+                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    detailUrlWA,
+                    citizens.ToArray(),
+                    messageDeclined,
+                    AppType.USER
+                    );
+                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //     "Yoolife thông báo số !",
+                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                //     detailUrlApp,
+                //     detailUrlWA,
+                //     citizens.ToArray(),
+                //   messageDeclined);
             }
             //toa nha
             else if (data.ReceiveAll == RECEIVE_TYPE.BUIDING_ALL)
@@ -633,13 +651,22 @@ namespace Yootek.Services
                                 join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
                                 where cz.OrganizationUnitId == data.BuildingId && buIds.Contains((long)cz.BuildingId)
                                 select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                     "Yoolife thông báo số !",
-                     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                     detailUrlApp,
-                     detailUrlWA,
-                     citizens.ToArray(),
-                   messageDeclined);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Yoolife thông báo số !",
+                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    detailUrlWA,
+                    citizens.ToArray(),
+                    messageDeclined,
+                    AppType.USER
+                    );
+                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //     "Yoolife thông báo số !",
+                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                //     detailUrlApp,
+                //     detailUrlWA,
+                //     citizens.ToArray(),
+                //   messageDeclined);
             }
             //can ho
             else
@@ -649,13 +676,22 @@ namespace Yootek.Services
                                          on cz.ApartmentCode equals sh.ApartmentCode
                                          where cz.State == STATE_CITIZEN.ACCEPTED && data.ReceiverGroupCode.Contains(cz.ApartmentCode) && buIds.Contains((long)cz.UrbanId) && buIds.Contains((long)cz.BuildingId)
                                          select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                     "Yoolife thông báo số !",
-                     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                     detailUrlApp,
-                     detailUrlWA,
-                     citizensApartment.ToArray(),
-                   messageDeclined);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Yoolife thông báo số !",
+                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    detailUrlWA,
+                    citizensApartment.ToArray(),
+                    messageDeclined,
+                    AppType.USER
+                    );
+                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //     "Yoolife thông báo số !",
+                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                //     detailUrlApp,
+                //     detailUrlWA,
+                //     citizensApartment.ToArray(),
+                //   messageDeclined);
             }
         }
 

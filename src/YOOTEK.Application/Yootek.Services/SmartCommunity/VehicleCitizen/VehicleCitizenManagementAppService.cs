@@ -163,24 +163,36 @@ namespace Yootek.Services
                     result.WaitingMotorNumber = await queryWaiting.Where(x => x.VehicleType == VehicleType.Motorbike).CountAsync();
                     result.WaitingBikeNumber = await queryWaiting.Where(x => x.VehicleType == VehicleType.Bicycle).CountAsync();
                     result.WaitingOtherNumber = await queryWaiting.Where(x => x.VehicleType == VehicleType.Other).CountAsync();
+                    result.WaitingECarNumber = await queryWaiting.Where(x => x.VehicleType == VehicleType.ElectricCar).CountAsync();
+                    result.WaitingEMotorNumber = await queryWaiting.Where(x => x.VehicleType == VehicleType.ElectricMotor).CountAsync();
+                    result.WaitingEBikeNumber = await queryWaiting.Where(x => x.VehicleType == VehicleType.ElectricBike).CountAsync();
 
                     var queryActive = query.Where(x => x.State == CitizenVehicleState.ACCEPTED && (x.ExpirationDate == null || x.ExpirationDate.Value >= currentPeriod));
                     result.ActiveCarNumber = await queryActive.Where(x => x.VehicleType == VehicleType.Car).CountAsync();
                     result.ActiveMotorNumber = await queryActive.Where(x => x.VehicleType == VehicleType.Motorbike).CountAsync();
                     result.ActiveBikeNumber = await queryActive.Where(x => x.VehicleType == VehicleType.Bicycle).CountAsync();
                     result.ActiveOtherNumber = await queryActive.Where(x => x.VehicleType == VehicleType.Other).CountAsync();
+                    result.ActiveECarNumber = await queryActive.Where(x => x.VehicleType == VehicleType.ElectricCar).CountAsync();
+                    result.ActiveEMotorNumber = await queryActive.Where(x => x.VehicleType == VehicleType.ElectricMotor).CountAsync();
+                    result.ActiveEBikeNumber = await queryActive.Where(x => x.VehicleType == VehicleType.ElectricBike).CountAsync();
 
                     var queryInactive = query.Where(x => x.State == CitizenVehicleState.REJECTED);
                     result.InactiveCarNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.Car).CountAsync();
                     result.InactiveMotorNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.Motorbike).CountAsync();
                     result.InactiveBikeNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.Bicycle).CountAsync();
                     result.InactiveOtherNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.Other).CountAsync();
+                    result.InactiveECarNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.ElectricCar).CountAsync();
+                    result.InactiveEMotorNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.ElectricMotor).CountAsync();
+                    result.InactiveEBikeNumber = await queryInactive.Where(x => x.VehicleType == VehicleType.ElectricBike).CountAsync();
 
                     var queryExpire = query.Where(x => x.State == CitizenVehicleState.OVERDUE || (x.ExpirationDate.HasValue && x.ExpirationDate.Value < currentPeriod));
                     result.ExpireCarNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.Car).CountAsync();
                     result.ExpireMotorNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.Motorbike).CountAsync();
                     result.ExpireBikeNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.Bicycle).CountAsync();
                     result.ExpireOtherNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.Other).CountAsync();
+                    result.ExpireECarNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.ElectricCar).CountAsync();
+                    result.ExpireEMotorNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.ElectricMotor).CountAsync();
+                    result.ExpireEBikeNumber = await queryExpire.Where(x => x.VehicleType == VehicleType.ElectricBike).CountAsync();
 
                     return DataResult.ResultSuccess(result, "Get success!");
                 }
@@ -817,9 +829,9 @@ namespace Yootek.Services
                         newHistory.Title = $"Đăng ký xe {vehicle.VehicleName} biển số {vehicle.VehicleCode}";
                         newHistory.Type = EApartmentHistoryType.Vehicle;
                         var user = _userRepos.FirstOrDefault(AbpSession.UserId ?? 0);
-                        newHistory.ExecutorName = user.FullName;
-                        newHistory.DateStart = (DateTime)vehicle.RegistrationDate;
-                        newHistory.DateEnd = vehicle.ExpirationDate;
+                        newHistory.ExecutorName = user.FullName ?? "";
+                        newHistory.DateStart = vehicle.RegistrationDate ?? vehicle.CreationTime;
+                        newHistory.DateEnd = vehicle.ExpirationDate ?? DateTime.Now;
                         newHistory.Cost = (long?)vehicle.Cost ?? 0;
                         newHistory.Description = vehicle.Description;
                         await _apartmentHistoryAppSerivce.CreateApartmentHistoryAsync(newHistory);

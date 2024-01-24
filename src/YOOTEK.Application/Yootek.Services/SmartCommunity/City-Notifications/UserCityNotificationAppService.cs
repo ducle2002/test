@@ -483,14 +483,23 @@ namespace Yootek.Services
                 detailUrlApp,
                 detailUrlWA
                 );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                "Bình luận thông báo số!",
-                $"{userComment.UserName} bình luận thông báo của bạn.Nhấn để xem chi tiết !",
-                detailUrlApp,
-                detailUrlWA,
-                creatorNotification.ToArray(),
-                messageDeclined
-            );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Bình luận thông báo số!",
+                    $"{userComment.UserName} bình luận thông báo của bạn.Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    detailUrlWA,
+                    creatorNotification.ToArray(),
+                    messageDeclined,
+                    AppType.USER
+                    );
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //     "Bình luận thông báo số!",
+            //     $"{userComment.UserName} bình luận thông báo của bạn.Nhấn để xem chi tiết !",
+            //     detailUrlApp,
+            //     detailUrlWA,
+            //     creatorNotification.ToArray(),
+            //     messageDeclined
+            // );
         }
         public async Task<object> DeleteFeedback(long id)
         {

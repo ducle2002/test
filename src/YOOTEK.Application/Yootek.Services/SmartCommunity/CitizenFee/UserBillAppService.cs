@@ -35,7 +35,6 @@ namespace Yootek.Services
         Task<object> HandleUserBillDirect(HandlePayUserBillDirectInputDto input);
         Task HandlePaymentForMomo(HandlePayUserBillInputDto input);
         Task HandlePaymentForVNPay(HandlePayUserBillInputDto input);
-        Task<object> RequestPayment(RequestPaymentInputDto input);
     }
 
     [AbpAuthorize]
@@ -568,28 +567,6 @@ namespace Yootek.Services
             }
         }
 
-        public async Task<object> RequestPayment(RequestPaymentInputDto input)
-        {
-            try
-            {
-                if (input.TypePayment == TypePayment.BookingLocalService)
-                {
-                    return await BookingServicePaymentHandle(input.MapTo<MappingRequestPaymentDto>());
-                }
-
-                if (input.TypePayment == TypePayment.DebtBill)
-                {
-                    return await RequestPaymentBillDebt(input.MapTo<MappingRequestPaymentDto>());
-                }
-
-                return RequestPaymentUserBill(input.MapTo<MappingRequestPaymentDto>());
-            }
-            catch (Exception e)
-            {
-                Logger.Fatal(e.Message, e);
-                throw;
-            }
-        }
 
         #region Xu ly hoa don
 
@@ -956,13 +933,24 @@ namespace Yootek.Services
                 detailUrlApp,
                 detailUrlWA
             );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
                 $"Thông báo thanh toán hóa đơn {method}!",
                 $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {bill.Amount} VNĐ",
                 detailUrlApp,
                 detailUrlWA,
                 new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.UserId) },
-                messageSuccess);
+                messageSuccess,
+                AppType.USER
+                );
+
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //     $"Thông báo thanh toán hóa đơn {method}!",
+            //     $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {bill.Amount} VNĐ",
+            //     detailUrlApp,
+            //     detailUrlWA,
+            //     new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.UserId) },
+            //     messageSuccess);
         }
 
         private async Task<object> BookingServicePaymentHandle(MappingRequestPaymentDto input)

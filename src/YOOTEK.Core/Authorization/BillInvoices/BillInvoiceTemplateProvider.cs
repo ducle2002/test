@@ -50,7 +50,7 @@ namespace Yootek.Authorization.BillInvoices
             }
             if (tenantId == 115)
             {
-                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.BillInvoices.Templates.aden.html"))
+                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.BillInvoices.Templates.lathanh.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);

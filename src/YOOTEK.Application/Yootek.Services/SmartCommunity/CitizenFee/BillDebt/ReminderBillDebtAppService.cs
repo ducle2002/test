@@ -138,13 +138,22 @@ namespace Yootek.Services
                                detailUrlApp,
                                detailUrlWA
                                );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                 $"Thông báo hóa đơn công nợ!",
-                 $"Bạn có hóa đơn công nợ tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
-                 detailUrlApp,
-                 detailUrlWA,
-                 users,
-                 messageSuccess);
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Thông báo hóa đơn công nợ!",
+                $"Bạn có hóa đơn công nợ tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+                detailUrlApp,
+                detailUrlWA,
+                users,
+                messageSuccess,
+                AppType.USER
+                );
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //      $"Thông báo hóa đơn công nợ!",
+            //      $"Bạn có hóa đơn công nợ tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+            //      detailUrlApp,
+            //      detailUrlWA,
+            //      users,
+            //      messageSuccess);
             return;
         }
     }

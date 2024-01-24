@@ -153,6 +153,15 @@ namespace Yootek.Emailing
                     return template;
                 }
             }
+            else if (tenantId == 114)
+            {
+                using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.lathanh.html"))
+                {
+                    var bytes = stream.GetAllBytes();
+                    var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
+                    return template;
+                }
+            }
             else
             {
                 using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.common_bill.html"))

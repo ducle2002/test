@@ -169,7 +169,7 @@ namespace Yootek.Services
                    AbpSession.TenantId);
 
             }
-            else if (AbpSession.TenantId == 47)
+            else if (AbpSession.TenantId == 114)
             {
                 template = await CreateTemplateLT(apartmentCode, period,
                    AbpSession.TenantId);
@@ -4550,7 +4550,7 @@ namespace Yootek.Services
             }
         }
 
-        //La Thang
+        //La Thanh
         [RemoteService(false)]
         public async Task<StringBuilder> CreateTemplateLT(string apartmentCode, DateTime period, int? tenantId)
         {
@@ -4591,6 +4591,13 @@ namespace Yootek.Services
                 BillConfig priceParkingConfig = GetBillConfigPrice(billConfigs, BillType.Parking, BillConfigPricesType.Parking);
                 BillConfig priceManagementConfig = GetBillConfigPrice(billConfigs, BillType.Manager, BillConfigPricesType.Rapport);
                 BillConfig priceWaterConfig = GetBillConfigPrice(billConfigs, BillType.Water, BillConfigPricesType.Level);
+                var head_period = new DateTime(period.Year, period.Month, 1);
+                var period_day_end = period.TotalDaysInMonth();
+                var end_period = new DateTime(period.Year, period.Month, period_day_end);
+
+
+
+
 
                 double parkingMoneyUnpaid = GetBillCost(parkingBill);
                 double waterMoneyUnpaid = GetBillCost(waterBill);
@@ -4609,7 +4616,7 @@ namespace Yootek.Services
 
                 double costUnpaid = parkingMoneyUnpaid + waterMoneyUnpaid + managementMoneyUnpaid;
                 double costDebt = managementMoneyDebt + parkingMoneyDebt + waterMoneyDebt;
-                double totalFeeAndDebt = costUnpaid + costDebt + waterMoneyBVMT + waterMoneyVAT;
+                double totalFeeAndDebt = costUnpaid + costDebt;
 
                 decimal? acreageApartment = GetAcreageApartment(managementBill);
                 decimal indexHeadWater = GetIndexHead(waterBill);
@@ -4618,31 +4625,101 @@ namespace Yootek.Services
 
 
 
-                List<CitizenVehiclePas> listVehicles = new();
-                if (parkingBill?.Properties != null)
-                {
-                    string listVehiclesString = JsonConvert.DeserializeObject<dynamic>(parkingBill?.Properties)?.vehicles?.ToString() ?? null;
-                    if (listVehiclesString != null) listVehicles = JsonConvert.DeserializeObject<List<CitizenVehiclePas>>(listVehiclesString);
-                }
-                string listRowVehicles = "";
+                //List<CitizenVehiclePas> listVehicles = new();
+                ////if (parkingBill?.Properties != null)
+                ////{
+                ////    string listVehiclesString = JsonConvert.DeserializeObject<dynamic>(parkingBill?.Properties)?.vehicles?.ToString() ?? null;
+                ////    if (listVehiclesString != null) listVehicles = JsonConvert.DeserializeObject<List<CitizenVehiclePas>>(listVehiclesString);
+                ////}
+                //#region Phí quản lý xe
+                //// list vehicle parking
+                //double? p_money = 0;
+                //if (parkingBill?.Properties != null)
+                //{
+                //    p_money = parkingBill.LastCost;
+                //    string listVehiclesString = JsonConvert.DeserializeObject<dynamic>(parkingBill?.Properties)?.vehicles?.ToString() ?? null;
+                //    if (listVehiclesString != null) listVehicles = JsonConvert.DeserializeObject<List<CitizenVehiclePas>>(listVehiclesString);
+                //}
+                //string listRowVehicleCar = "";
+                //string listRowVehicleBike = "";
+                //string headerTemplatePaking = $"  <tr>\r\n" +
+                //    $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\"></td>\r\n" +
+                //    $"          <td colspan=\"2\" style=\"border-width: 1px; border-style: solid; padding: 6px;\">\r\n" +
+                //    $"           {{HEAD_NAME}}: {string.Format("{0:dd/MM/yyyy}", head_period)} - {string.Format("{0:dd/MM/yyyy}", end_period)}\r\n" +
+                //    $"          </td>\r\n" +
+                //    $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n" +
+                //    $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n " +
+                //    $"         <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n" +
+                //    $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n" +
+                //    $"        </tr>";
+                //if (listVehicles.Count > 0)
+                //{
+                //    foreach (var (vehicle, index) in listVehicles.Select((vehicle, index) => (vehicle, index)))
+                //    {
+                //        string vehicleName = GetVehicleNameVinasinco(vehicle);
+                //        string vehicleCode = vehicle?.vehicleCode ?? "";
+                //        decimal vehicleCost = vehicle?.cost ?? 0;
 
+                //        StringBuilder vehicleRowTemplate = new(
+                //            $"        <tr>\r\n" +
+                //            $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\"></td>\r\n" +
+                //            $"          <td colspan=\"2\" style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">\r\n" +
+                //            $"            {vehicleCode}\r\n" +
+                //            $"          </td>\r\n" +
+                //            $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">1</td>\r\n" +
+                //            $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">{FormatCost(vehicleCost)}</td>\r\n" +
+                //            $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">{FormatCost(vehicleCost)}</td>\r\n" +
+                //            $"          <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n" +
+                //            $"        </tr>");
+
+                //        if (vehicle.vehicleType == VehicleType.Car)
+                //        {
+                //            if (listRowVehicleCar == "")
+                //            {
+                //                listRowVehicleCar += new StringBuilder(headerTemplatePaking).Replace("{HEAD_NAME}", "Phí gửi xe ô tô")
+                //                    .ToString();
+                //            }
+                //            listRowVehicleCar += vehicleRowTemplate.ToString();
+                //        }
+                //        else
+                //        {
+                //            if (listRowVehicleBike == "")
+                //            {
+                //                listRowVehicleBike += new StringBuilder(headerTemplatePaking).Replace("{HEAD_NAME}", "Phí gửi Xe máy/ Xe máy điện/ Xe đạp điện")
+                //                    .ToString();
+                //            }
+                //            listRowVehicleBike += vehicleRowTemplate.ToString();
+                //        }
+
+                //    }
+                //}
+                //#endregion
+
+                string listRowVehicles = "";
+                List<CitizenVehiclePas> listVehicles = new();
                 if (listVehicles.Count > 0)
                 {
                     foreach (var (vehicle, index) in listVehicles.Select((vehicle, index) => (vehicle, index)))
                     {
-                        StringBuilder vehicleRowTemplate = new("<tr>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{VEHICLE_TYPE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{VEHICLE_CODE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">{COST_PARKING_ELEMENT}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">1</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">{COST_PARKING_ELEMENT}</td>\r\n          </tr>");
+                        StringBuilder vehicleRowTemplate = new("<tr>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{VEHICLE_TYPE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{VEHICLE_CODE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{COST_VEHICLE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">{COST_PARKING_ELEMENT}</td>\r\n          </tr>");
                         string vehicleName = GetVehicleName(vehicle);
                         string vehicleCode = vehicle?.vehicleCode ?? "";
                         decimal vehicleCost = vehicle?.cost ?? 0;
-
+                       // var vehicleCount = vehicle?.level ?? 0;
                         vehicleRowTemplate
                             .Replace("{INDEX}", GetStringValue(index + 1))
-                            .Replace("{APARTMENT_CODE}", $"{apartmentCode}")
+                            //.Replace("{APARTMENT_CODE}", $"{apartmentCode}")
                             .Replace("{VEHICLE_TYPE}", $"{vehicleName}")
                             .Replace("{VEHICLE_CODE}", $"{vehicleCode}")
+                           // .Replace("{VEHICLE_COUNT}", $"{vehicleCount}")
+                            .Replace("{COST_VEHICLE}", $"{vehicleCost}")
                             .Replace("{COST_PARKING_ELEMENT}", FormatCost((double?)vehicleCost));
                         listRowVehicles += vehicleRowTemplate.ToString();
                     }
+                }
+                else
+                {
+
                 }
 
                 // list vehicle parking
@@ -4709,6 +4786,18 @@ namespace Yootek.Services
                 emailTemplate.Replace("{MONEY_BIKE}", FormatCost(priceBike * numBike));
                 emailTemplate.Replace("{MONEY_OTHER}", FormatCost(priceOther * numOther));
 
+
+                //var listVehicle = new CitizenVehicleDto();
+                //listVehicle = (CitizenVehicleDto)await GetNameVehicleByApartment(apartmentCode);
+                //if (listVehicle != null && listVehicle.VehicleType == VehicleType.Car)
+                //{
+                //    emailTemplate.Replace("{LIST_CAR}", listVehicle.VehicleCode);
+                //}
+                //if (listVehicle != null && listVehicle.VehicleType == VehicleType.Motorbike)
+                //{
+                //    emailTemplate.Replace("{LIST_MOTORBIKE}", listVehicle.VehicleCode);
+                //}
+
                 string listWaterConsumptions = string.Empty;
                 int dayWater = await GetDayWater(waterBill, currentDate);
 
@@ -4721,11 +4810,11 @@ namespace Yootek.Services
                         int waterConsumptionQuantity;
                         long unitPriceWater;
                         long costWaterUnpaid;
-                        string waterConsumptionContent = $"Nước sạch {FormatNumberToTwoDigits(dayWater)}/{FormatNumberToTwoDigits(period.Month)}/{period.Year} " +
-                            $"- {FormatNumberToTwoDigits(dayWater)}/{FormatNumberToTwoDigits(currentDate.Month)}/{currentDate.Year}";
+                       
                         string utilityWater = "m3";
-                        StringBuilder waterRowTemplate = new("<tr> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px\"> {WATER_CONSUMPTION_RANGE} </td> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{UTILITY}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\"> {WATER_CONSUMPTION_QUANTITY}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\">{UNIT_PRICE_WATER} </td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\">{COST_WATER_UNPAID} </td> </tr>");
-
+                        StringBuilder waterRowTemplate = new("<tr> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px\"> {U_WATER} </td> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{WATER_CONSUMPTION_QUANTITY}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\"> {UNIT_PRICE_WATER}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\">{COST_WATER_UNPAID} </td> </tr>");
+                        string unitWaterName = $"Từ {unitPrice?.From} tới {unitPrice?.To} (m3)" ?? "";
+                        
                         // caculate price for each unit and content
                         if (index == 0 && unitPrice.To < totalIndexWater)
                         {
@@ -4747,15 +4836,14 @@ namespace Yootek.Services
                         }
                         if (index != 0)
                         {
-                            waterConsumptionContent = string.Empty;
                             utilityWater = string.Empty;
                         }
 
                         // complete
                         waterRowTemplate
                             .Replace("{INDEX}", $"{index + 1}")
-                            .Replace("{WATER_CONSUMPTION_RANGE}", waterConsumptionContent)
                             .Replace("{UTILITY}", utilityWater)
+                            .Replace("{U_WATER}", unitWaterName)
                             .Replace("{WATER_CONSUMPTION_QUANTITY}", $"{waterConsumptionQuantity}")
                             .Replace("{UNIT_PRICE_WATER}", FormatCost(unitPriceWater))
                             .Replace("{COST_WATER_UNPAID}", FormatCost(costWaterUnpaid));
@@ -4848,6 +4936,7 @@ namespace Yootek.Services
                     .Replace("{INDEX_HEAD_WATER}", GetStringValue((double?)indexHeadWater))
                     .Replace("{INDEX_END_WATER}", GetStringValue((double?)indexEndWater))
                     .Replace("{TOTAL_INDEX_WATER}", GetStringValue((double?)totalIndexWater))
+                    .Replace("{LIST_WATER}", listWaterConsumptions)
 
                     // unit price
                     .Replace("{UNIT_PRICE_MANAGEMENT}", FormatCost(billManagementConfigProperties?.Prices[0].Value))
@@ -4968,6 +5057,15 @@ namespace Yootek.Services
             string vehicleName = string.Empty;
             switch (vehicle.vehicleType)
             {
+                case VehicleType.ElectricCar:
+                    vehicleName = $"Ô tô điện";
+                    break;
+                case VehicleType.ElectricMotor:
+                    vehicleName = $"Xe máy điện";
+                    break;
+                case VehicleType.ElectricBike:
+                    vehicleName = $"Xe đạp điện";
+                    break;
                 case VehicleType.Car:
                     vehicleName = vehicle.parkingId == null
                         ? $"Ô tô"
@@ -5017,7 +5115,7 @@ namespace Yootek.Services
                     return "<tr style=\"font-style: italic\"> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-style: italic; \" > {INDEX} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: left; \" > Tiền nước HS{INDEX}: </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {WATER_CONSUMPTION_QUANTITY} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" ></td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {UNIT_PRICE_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" ></td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {COST_WATER_UNPAID} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" ></td> </tr>";
                 case 94:  // vinasinco 
                     return "<tr> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {INDEX_HEAD_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {INDEX_END_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {TOTAL_INDEX_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {WATER_UNIT_RANGE} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {UNIT_PRICE_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {COST_WATER_UNPAID} </td> </tr>";
-                case 47:
+                case 114: //lathanh
                     return "<tr> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {INDEX_HEAD_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {INDEX_END_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {TOTAL_INDEX_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {WATER_UNIT_RANGE} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {UNIT_PRICE_WATER} </td> <td style=\" border-width: 1px; border-style: solid; padding: 6px; text-align: right; \" > {COST_WATER_UNPAID} </td> </tr>";
                 default:
                     return "";
@@ -5078,6 +5176,13 @@ namespace Yootek.Services
             var building = _appOrganizationUnitRepository.FirstOrDefault(x => x.Id == buildingId);
             if (building != null) return building.DisplayName;
             return "";
+        }
+        private async Task<object> GetNameVehicleByApartment(string? apartmentCode)
+        {
+            //if (apartmentCode == null) return "";
+            var listNameVehicle = _citizenVehicleRepository.GetAll().Where(x => x.ApartmentCode == apartmentCode && x.State == CitizenVehicleState.ACCEPTED).GroupBy(x => x.VehicleType);
+            return listNameVehicle;
+
         }
         #endregion
     }

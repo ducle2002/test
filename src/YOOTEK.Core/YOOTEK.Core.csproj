@@ -29,7 +29,7 @@
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\ct2b.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\aden.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\aden_payment.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
-		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\lathang.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\lathanh.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\common_bill.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 
@@ -39,6 +39,7 @@
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\vina22.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\vinasinco.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\aden.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\BillInvoices\Templates\lathanh.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 	</ItemGroup>
   <ItemGroup>
     <PackageReference Include="Abp.AutoMapper" Version="9.0.0" />
