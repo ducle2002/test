@@ -63,7 +63,20 @@ namespace Yootek.Friendships
                 }
             });
         }
+        public async Task UnFriendshipAsync(Friendship friendship)
+        {
+            try
+            {
+                await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+                {
+                    await _friendshipRepository.DeleteAsync(x => x.UserId == friendship.UserId && x.TenantId == friendship.TenantId && x.FriendUserId == friendship.FriendUserId);
+                });
+            }
+            catch (Exception e)
+            {
 
+            }
+        }
         public async Task<Friendship> GetFriendshipOrNullAsync(UserIdentifier user, UserIdentifier probableFriend)
         {
             return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>

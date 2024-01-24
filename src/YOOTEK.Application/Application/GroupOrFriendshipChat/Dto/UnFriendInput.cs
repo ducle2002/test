@@ -8,6 +8,8 @@ namespace Yootek.Application.RoomOrFriendships.Dto
 {
     public class UnFriendInput
     {
+        public long UserId { get; set; }
 
+        public int? TenantId { get; set; }
     }
 }

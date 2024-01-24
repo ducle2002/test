@@ -316,6 +316,7 @@ namespace Yootek.Friendships
         public async Task UnFriend(UnFriendInput input)
         {
             var user = AbpSession.ToUserIdentifier();
+           // await _friendshipManager.UpdateFriendshipAsync(sourceFriendship);
         }
     }
 }

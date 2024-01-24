@@ -9,6 +9,7 @@ namespace Yootek.Friendships
         Task CreateFriendshipAsync(Friendship friendship);
 
         Task UpdateFriendshipAsync(Friendship friendship);
+        Task UnFriendshipAsync(Friendship friendship);
 
         Task<Friendship> GetFriendshipOrNullAsync(UserIdentifier user, UserIdentifier probableFriend);
 
