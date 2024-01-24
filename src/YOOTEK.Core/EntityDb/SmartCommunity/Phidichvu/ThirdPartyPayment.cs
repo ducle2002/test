@@ -1,23 +1,86 @@
 ﻿using Abp.Domain.Entities;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace YOOTEK.EntityDb
 {
-    public class ThirdPartyPayment: Entity<long>, IMayHaveTenant
+    [Table("payment", Schema = "payments")]
+    public class Payment : Entity<int>
     {
-        public int? TenantId { get; set; }
-        public string Code { get; set; }
-        public EPaymentStatus Status { get; set; }
-        public EPaymentMethod Method { get; set; }
-        public EPaymentType Type { get;set; }
-        public long TransactionId { get; set; }
-        public string TransactionProperties { get; set; }
-        public float Amount { get; set; }
-        public string Currency {  get; set; }
-        public string Description { get; set; }
-        public string Properties {  get; set; }
-        public DateTime CreateAt { get; set; }
-        public string MerchantId { get; set; }  
+        [Key][Column("id")] public int Id { get; set; }
+
+        [Column("createdAt")] public DateTime CreatedAt { get; set; }
+
+        [Column("createdById")] public int CreatedById { get; set; }
+
+        [Column("updatedAt")] public DateTime UpdatedAt { get; set; }
+
+        [Column("updatedById")] public int UpdatedById { get; set; }
+
+        [Column("deletedAt")] public DateTime? DeletedAt { get; set; }
+
+        [Column("deletedById")] public int? DeletedById { get; set; }
+
+        [Column("tenantId")] public int TenantId { get; set; }
+
+        [Column("code")] public string Code { get; set; }
+
+        [Column("status")] public int Status { get; set; }
+
+        [Column("method")] public int Method { get; set; }
+
+        [Column("type")] public int Type { get; set; }
+
+        [Column("transactionId")] public string TransactionId { get; set; }
+
+        [Column("transactionProperties")] public string TransactionProperties { get; set; }
+
+        [Column("amount")] public double Amount { get; set; }
+
+        [Column("currency")] public string Currency { get; set; }
+
+        [Column("description")] public string Description { get; set; }
+
+        [Column("properties")] public string Properties { get; set; }
+    }
+
+    [Table("payment", Schema = "payments")]
+    public class ThirdPartyPayment: Entity<int>
+    {
+        [Key][Column("id")] public int Id { get; set; }
+
+        [Column("createdAt")] public DateTime CreatedAt { get; set; }
+
+        [Column("createdById")] public int? CreatedById { get; set; }
+
+        [Column("updatedAt")] public DateTime UpdatedAt { get; set; }
+
+        [Column("updatedById")] public int? UpdatedById { get; set; }
+
+        [Column("deletedAt")] public DateTime? DeletedAt { get; set; }
+
+        [Column("deletedById")] public int? DeletedById { get; set; }
+
+        [Column("tenantId")] public int? TenantId { get; set; }
+
+        [Column("status")] public EPaymentStatus Status { get; set; }
+
+        [Column("method")] public EPaymentMethod Method { get; set; }
+
+        [Column("type")] public EPaymentType Type { get; set; }
+
+        [Column("transactionId")] public string TransactionId { get; set; }
+
+        [Column("transactionProperties")] public string TransactionProperties { get; set; }
+
+        [Column("amount")] public double Amount { get; set; }
+
+        [Column("currency")] public string Currency { get; set; }
+
+        [Column("description")] public string Description { get; set; }
+
+        [Column("properties")] public string Properties { get; set; }
     }
 
     public enum EPaymentStatus
