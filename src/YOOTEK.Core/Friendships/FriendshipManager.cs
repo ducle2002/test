@@ -92,6 +92,21 @@ namespace Yootek.Friendships
             });
         }
 
+        public async Task DeleteFriendshipOrNullAsync(UserIdentifier user, UserIdentifier probableFriend)
+        {
+             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+            {
+                using (CurrentUnitOfWork.SetTenantId(user.TenantId))
+                {
+                    await _friendshipRepository.DeleteAsync(friendship =>
+                        friendship.UserId == user.UserId &&
+                        friendship.TenantId == user.TenantId &&
+                        friendship.FriendUserId == probableFriend.UserId &&
+                        friendship.FriendTenantId == probableFriend.TenantId);
+                }
+            });
+        }
+
         public async Task BanFriendAsync(UserIdentifier userIdentifier, UserIdentifier probableFriend)
         {
             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>

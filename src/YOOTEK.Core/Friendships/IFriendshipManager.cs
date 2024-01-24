@@ -16,5 +16,6 @@ namespace Yootek.Friendships
         Task BanFriendAsync(UserIdentifier userIdentifier, UserIdentifier probableFriend);
 
         Task AcceptFriendshipRequestAsync(UserIdentifier userIdentifier, UserIdentifier probableFriend);
+        Task DeleteFriendshipOrNullAsync(UserIdentifier user, UserIdentifier probableFriend);
     }
 }
