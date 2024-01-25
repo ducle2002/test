@@ -221,6 +221,7 @@ namespace Yootek.Friendships
             var userIdentifier = AbpSession.ToUserIdentifier();
             var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
             await _friendshipManager.BanFriendAsync(userIdentifier, friendIdentifier);
+            await _friendshipManager.BanFriendAsync(friendIdentifier, userIdentifier);
 
             var clients = await _onlineClientManager.GetAllByUserIdAsync(userIdentifier);
             if (clients.Any())
@@ -229,18 +230,12 @@ namespace Yootek.Friendships
             }
         }
 
-
         public async Task UnblockUser(UnblockUserInput input)
         {
             var userIdentifier = AbpSession.ToUserIdentifier();
             var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
-            await _friendshipManager.AcceptFriendshipRequestAsync(userIdentifier, friendIdentifier);
-
-            var clients = await _onlineClientManager.GetAllByUserIdAsync(userIdentifier);
-            if (clients.Any())
-            {
-                await _chatCommunicator.SendUserStateChangeToClients(clients, friendIdentifier, FriendshipState.Accepted);
-            }
+            await _friendshipManager.DeleteFriendshipOrNullAsync(userIdentifier, friendIdentifier);
+            await _friendshipManager.DeleteFriendshipOrNullAsync(friendIdentifier, userIdentifier);
         }
 
         public async Task AcceptFriendshipRequest(AcceptFriendshipRequestInput input)
@@ -299,8 +294,7 @@ namespace Yootek.Friendships
                 return user.ToUserIdentifier();
             }
         }
-
-      
+    
         public async Task<List<UserDto>> FindUserToAddFriendByKeyword(FindUserToAddFriendInput input)
         {
             try
