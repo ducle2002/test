@@ -6,6 +6,7 @@ using Abp;
 using Abp.Authorization;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
 using Abp.MultiTenancy;
 using Abp.RealTime;
 using Abp.Runtime.Session;
@@ -96,7 +97,7 @@ namespace Yootek.Friendships
                     }
                     var listresults = new List<ChatFriendOrRoomDto>();
                     listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "");
+                    return DataResult.ResultSuccess(listresults, "", query.Count());
                 }
 
              
@@ -106,49 +107,49 @@ namespace Yootek.Friendships
             }
         }
 
-        //public async Task<DataResult> GetUserRequestingList()
-        //{
-        //    try
-        //    {
-        //        var userId = AbpSession.GetUserId();
+        public async Task<DataResult> GetUserRequestingList()
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
 
-        //        using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
-        //        {
-        //            var query =
-        //                (from friendship in _friendshipRepository.GetAll()
-        //                 where friendship.FriendUserId == AbpSession.UserId
-        //                 && friendship.State == FriendshipState.Requesting && friendship.IsOrganizationUnit != true
-        //                 select new FriendDto
-        //                 {
-        //                     FriendUserId = friendship.FriendUserId,
-        //                     FriendTenantId = friendship.FriendTenantId,
-        //                     State = friendship.State,
-        //                     FriendUserName = friendship.FriendUserName,
-        //                     FriendTenancyName = friendship.FriendTenancyName,
-        //                     FriendProfilePictureId = friendship.FriendProfilePictureId,
-        //                     IsSender = friendship.IsSender,
-        //                     LastMessageDate = friendship.CreationTime
-        //                 })
-        //                 .Where(x => x.IsSender == false).AsQueryable();
-        //            var friends = query.ToList();
-        //            foreach (var friend in friends)
-        //            {
-        //                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-        //                    new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
-        //                );
-        //            }
-        //            var listresults = new List<ChatFriendOrRoomDto>();
-        //            listresults = listresults.Concat(friends).ToList();
-        //            return DataResult.ResultSuccess(listresults, "");
-        //        }
+                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+                {
+                    var query =
+                        (from friendship in _friendshipRepository.GetAll()
+                         where friendship.UserId == AbpSession.UserId
+                         && friendship.State == FriendshipState.Requesting && friendship.IsOrganizationUnit != true
+                         select new FriendDto
+                         {
+                             FriendUserId = friendship.FriendUserId,
+                             FriendTenantId = friendship.FriendTenantId,
+                             State = friendship.State,
+                             FriendUserName = friendship.FriendUserName,
+                             FriendTenancyName = friendship.FriendTenancyName,
+                             FriendProfilePictureId = friendship.FriendProfilePictureId,
+                             IsSender = friendship.IsSender,
+                             LastMessageDate = friendship.CreationTime
+                         })
+                         .Where(x => x.IsSender == true).AsQueryable();
+                    var friends = query.ToList();
+                    foreach (var friend in friends)
+                    {
+                        friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                            new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                        );
+                    }
+                    var listresults = new List<ChatFriendOrRoomDto>();
+                    listresults = listresults.Concat(friends).ToList();
+                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                }
 
 
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw;
-        //    }
-        //}
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
 
         public async Task<FriendDto> CreateFriendshipRequest(CreateFriendshipRequestInput input)
         {
@@ -156,8 +157,6 @@ namespace Yootek.Friendships
             {
                 var userIdentifier = AbpSession.ToUserIdentifier();
                 var probableFriend = new UserIdentifier(input.TenantId, input.UserId);
-
-                // _chatFeatureChecker.CheckChatFeatures(userIdentifier.TenantId, probableFriend.TenantId);
 
                 if (await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend) != null)
                 {
@@ -174,7 +173,7 @@ namespace Yootek.Friendships
                 }
 
                 var friendTenancyName = probableFriend.TenantId.HasValue ? _tenantCache.Get(probableFriend.TenantId.Value).TenancyName : null;
-                var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName, probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Accepted, true);
+                var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName, probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Requesting, true);
                 await _friendshipManager.CreateFriendshipAsync(sourceFriendship);
 
                 //set state is requesting when friend request is not accepted
@@ -222,6 +221,7 @@ namespace Yootek.Friendships
             var userIdentifier = AbpSession.ToUserIdentifier();
             var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
             await _friendshipManager.BanFriendAsync(userIdentifier, friendIdentifier);
+            await _friendshipManager.BanFriendAsync(friendIdentifier, userIdentifier);
 
             var clients = await _onlineClientManager.GetAllByUserIdAsync(userIdentifier);
             if (clients.Any())
@@ -234,13 +234,8 @@ namespace Yootek.Friendships
         {
             var userIdentifier = AbpSession.ToUserIdentifier();
             var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
-            await _friendshipManager.AcceptFriendshipRequestAsync(userIdentifier, friendIdentifier);
-
-            var clients = await _onlineClientManager.GetAllByUserIdAsync(userIdentifier);
-            if (clients.Any())
-            {
-                await _chatCommunicator.SendUserStateChangeToClients(clients, friendIdentifier, FriendshipState.Accepted);
-            }
+            await _friendshipManager.DeleteFriendshipOrNullAsync(userIdentifier, friendIdentifier);
+            await _friendshipManager.DeleteFriendshipOrNullAsync(friendIdentifier, userIdentifier);
         }
 
         public async Task AcceptFriendshipRequest(AcceptFriendshipRequestInput input)
@@ -248,18 +243,27 @@ namespace Yootek.Friendships
             var userIdentifier = AbpSession.ToUserIdentifier();
             var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
             await _friendshipManager.AcceptFriendshipRequestAsync(userIdentifier, friendIdentifier);
-
+            await _friendshipManager.AcceptFriendshipRequestAsync(friendIdentifier, userIdentifier);
             var clients = await _onlineClientManager.GetAllByUserIdAsync(userIdentifier);
             if (clients.Any())
             {
-                await _chatCommunicator.SendUserStateChangeToClients(clients, friendIdentifier, FriendshipState.Blocked);
+                await _chatCommunicator.SendUserStateChangeToClients(clients, friendIdentifier, FriendshipState.Accepted);
             }
 
             var senderClients = await _onlineClientManager.GetAllByUserIdAsync(friendIdentifier);
             if (senderClients.Any())
             {
-                await _chatCommunicator.SendUserStateChangeToClients(senderClients, userIdentifier, FriendshipState.Blocked);
+                await _chatCommunicator.SendUserStateChangeToClients(senderClients, userIdentifier, FriendshipState.Accepted);
             }
+        }
+
+        public async Task DeleteFriendshipRequest(AcceptFriendshipRequestInput input)
+        {
+            var userIdentifier = AbpSession.ToUserIdentifier();
+            var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
+            await _friendshipManager.DeleteFriendshipOrNullAsync(userIdentifier, friendIdentifier);
+            await _friendshipManager.DeleteFriendshipOrNullAsync(friendIdentifier, userIdentifier);
+
         }
 
         private async Task<UserIdentifier> GetUserIdentifier(string tenancyName, string userName)
@@ -290,8 +294,7 @@ namespace Yootek.Friendships
                 return user.ToUserIdentifier();
             }
         }
-
-      
+    
         public async Task<List<UserDto>> FindUserToAddFriendByKeyword(FindUserToAddFriendInput input)
         {
             try
@@ -315,7 +318,10 @@ namespace Yootek.Friendships
 
         public async Task UnFriend(UnFriendInput input)
         {
-            var user = AbpSession.ToUserIdentifier();
+            var userIdentifier = AbpSession.ToUserIdentifier();
+            var friendIdentifier = new UserIdentifier(input.TenantId, input.UserId);
+            await _friendshipManager.DeleteFriendshipOrNullAsync(userIdentifier, friendIdentifier);
+            await _friendshipManager.DeleteFriendshipOrNullAsync(friendIdentifier, userIdentifier);
         }
     }
 }

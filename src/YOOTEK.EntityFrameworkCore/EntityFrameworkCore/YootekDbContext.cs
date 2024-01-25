@@ -31,6 +31,7 @@ using Yootek.Yootek.EntityDb.Yootek.DichVu.BusinessReg;
 using Yootek.Yootek.EntityDb.Yootek.DichVu.CheckingObj;
 using Yootek.Yootek.EntityDb.Yootek.Metrics;
 using Yootek.Yootek.EntityDb.Yootek.MobileAppFeedback;
+using YOOTEK.EntityDb;
 using ClbCityNotificationComment = Yootek.Yootek.EntityDb.Clb.City_Notification.ClbCityNotificationComment;
 
 namespace Yootek.EntityFrameworkCore
@@ -99,6 +100,7 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<CityVote> CityVotes { get; set; }
 
         //fee
+        public virtual DbSet<ThirdPartyPayment> ThirdPartyPayments { get; set; }
         public virtual DbSet<UserBill> UserBills { get; set; }
         public virtual DbSet<UserBillVehicleInfo> UserBillVehicleInfos { get; set; }
         public virtual DbSet<BillConfig> BillConfigs { get; set; }
