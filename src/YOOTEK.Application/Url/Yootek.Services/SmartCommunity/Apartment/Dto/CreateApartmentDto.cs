@@ -32,7 +32,6 @@ namespace Yootek.Services.Dto
     public class BillConfigProperties
     {
         public BillType? BillType { get; set; }
-        //public int? LastCost { get; set; }
         public BillProperites? Properties { get; set; }
     }
 }
