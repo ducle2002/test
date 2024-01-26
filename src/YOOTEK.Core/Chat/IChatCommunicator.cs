@@ -23,6 +23,9 @@ namespace Yootek.Chat
         Task SendUserConnectionChangeToClients(IReadOnlyList<IOnlineClient> clients, UserIdentifier user, bool isConnected);
 
         Task SendUserStateChangeToClients(IReadOnlyList<IOnlineClient> clients, UserIdentifier user, FriendshipState newState);
+        
+        Task SendUserFollowStateChangeToClients(IReadOnlyList<IOnlineClient> clients, UserIdentifier user, FollowState newState);
+
 
         Task SendAllUnreadMessagesOfUserReadToClients(IReadOnlyList<IOnlineClient> clients, UserIdentifier user);
 
