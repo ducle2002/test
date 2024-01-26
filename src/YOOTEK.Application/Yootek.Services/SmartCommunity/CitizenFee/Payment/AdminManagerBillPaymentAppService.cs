@@ -30,6 +30,7 @@ using Yootek.Services.Dto;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Yootek.Common.Enum.CommonENum;
+using Abp.Authorization;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -339,6 +340,39 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 }
 
                 return DataResult.ResultSuccess("Update success");
+            }
+            catch (Exception ex)
+            {
+                var data = DataResult.ResultError(ex.Message, "Error");
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
+
+        [AbpAllowAnonymous]
+        public async Task<object> InternalSetUserBillPaymentStatus(InternalSetBillPaymentStatusInput input)
+        {
+            try
+            {
+                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                {
+                    var userBillPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(input.Id);
+                    switch (input.Status)
+                    {
+                        case UserBillPaymentStatus.Success:
+                            await _handlePaymentUtilAppService.UpdatePaymentSuccess(userBillPayment);
+                            break;
+                        case UserBillPaymentStatus.Fail:
+                            await _handlePaymentUtilAppService.CancelPaymentUserBill(userBillPayment);
+
+                            break;
+                        default:
+                            break;
+
+                    }
+
+                    return DataResult.ResultSuccess("Update success");
+                }
             }
             catch (Exception ex)
             {
