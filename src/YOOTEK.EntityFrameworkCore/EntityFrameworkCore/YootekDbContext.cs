@@ -33,6 +33,7 @@ using Yootek.Storage;
 using Microsoft.EntityFrameworkCore;
 using ClbCityNotificationComment = Yootek.Yootek.EntityDb.Clb.City_Notification.ClbCityNotificationComment;
 using Yootek.Yootek.EntityDb.Yootek.DichVu.Business;
+using YOOTEK.EntityDb;
 
 namespace Yootek.EntityFrameworkCore
 {
@@ -100,6 +101,7 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<CityVote> CityVotes { get; set; }
 
         //fee
+        public virtual DbSet<ThirdPartyPayment> ThirdPartyPayments {  get; set; }
         public virtual DbSet<UserBill> UserBills { get; set; }
         public virtual DbSet<UserBillVehicleInfo> UserBillVehicleInfos { get; set; }
         public virtual DbSet<BillConfig> BillConfigs { get; set; }

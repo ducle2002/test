@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
+using JetBrains.Annotations;
 using Yootek.Common;
 
 namespace Yootek.App.ServiceHttpClient.Dto.Business
@@ -15,6 +16,8 @@ namespace Yootek.App.ServiceHttpClient.Dto.Business
         public EPaymentType Type { get; set; }
         public string? Properties { get; set; }
         public long Amount { get; set; }
+        [CanBeNull] public string TransactionProperties { get; set; }
+        [CanBeNull] public string Unit { get; set; }
     }
     public class DeletePaymentDto : EntityDto<long>
     {
@@ -45,6 +48,8 @@ namespace Yootek.App.ServiceHttpClient.Dto.Business
         public string? Properties { get; set; }
         public long? CreatorUserId { get; set; }
         public DateTime CreationTime { get; set; }
+        [CanBeNull] public string TransactionProperties { get; set; }
+        [CanBeNull] public string Unit { get; set; }
     }
     public class UpdatePaymentDto : EntityDto<long>
     {

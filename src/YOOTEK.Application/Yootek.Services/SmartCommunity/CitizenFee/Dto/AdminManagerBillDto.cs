@@ -314,6 +314,12 @@ namespace Yootek.Services.Dto
         CREATION_TIME = 4,
     }
 
+    public class InternalSetBillPaymentStatusInput
+    {
+        public int TenantId { get; set; }
+        public long Id { get; set; }
+        public UserBillPaymentStatus Status { get; set; }
+    }
 
     public class SetBillPaymentStatusDto
     {

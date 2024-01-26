@@ -105,6 +105,7 @@ namespace Yootek.Chat
                         receiverUser.DisplayName,
                         receiverUser.ImageUrl,
                         friendshipState.Value,
+                        FollowState.Following,
                         true,
                         true
                         )
@@ -190,6 +191,7 @@ namespace Yootek.Chat
                         senderUser.UserName,
                         senderUser.ImageUrl,
                         FriendshipState.Accepted,
+                        FollowState.Following,
                         false,
                         true
                     )

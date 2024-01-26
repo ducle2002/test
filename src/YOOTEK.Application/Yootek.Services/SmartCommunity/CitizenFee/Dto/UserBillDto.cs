@@ -69,12 +69,11 @@ namespace Yootek.Services.Dto
         public long PaymentId { get; set; }
         public int TenantId { get; set; }
         public long[] UserBillIds { get; set; }
-        public long[] UserBillDebtIds { get; set; }
         public double Amount { get; set; }
         public UserBillPaymentMethod PaymentMethod { get; set; }
         public TypePayment TypePayment { get; set; }
         [CanBeNull] public string Properties { get; set; }
-        public long[]? BillDebtIds { get; set; }
+        public long[] BillDebtIds { get; set; }
         public Guid? RequestPaymentId { get; set; }
         public string ApartmentCode { get; set; }
     }
