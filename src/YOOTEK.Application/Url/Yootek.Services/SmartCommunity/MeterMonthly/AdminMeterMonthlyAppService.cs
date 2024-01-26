@@ -24,6 +24,9 @@ using System.Globalization;
 using Yootek.Common.Enum;
 using Yootek.Services.SmartCommunity.ExcelBill.Dto;
 using Newtonsoft.Json;
+using DocumentFormat.OpenXml.Bibliography;
+using Yootek.Services.Dto;
+using Yootek.Application.OrganizationStructure.Dto;
 
 namespace Yootek.Services
 {
@@ -107,6 +110,8 @@ namespace Yootek.Services
                 IQueryable<MeterMonthlyDto> query = (from sm in _meterMonthlyRepository.GetAll()
                                                      join meter in _meterRepository.GetAll() on sm.MeterId equals meter.Id into tb_mt
                                                      from meter in tb_mt.DefaultIfEmpty()
+                                                     join apartment in _apartmentRepository.GetAll() on meter.ApartmentCode equals apartment.ApartmentCode into tb_apartment
+                                                     from apartment in tb_apartment.DefaultIfEmpty()
                                                      select new MeterMonthlyDto
                                                      {
                                                          Id = sm.Id,
@@ -128,7 +133,8 @@ namespace Yootek.Services
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
                                                          FirstValue = sm.FirstValue,
                                                          IsClosed = sm.IsClosed,
-
+                                                         BillConfig = apartment.BillConfig,
+                                                         BillType = _meterTypeRepository.GetAll().Where(m => m.Id == meter.MeterTypeId).Select(m => m.BillType).FirstOrDefault(),
                                                      })
                                                      .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == month && x.Period.Value.Year == year)
                     .WhereIf(input.MeterTypeId != null, x => x.MeterTypeId == input.MeterTypeId)
@@ -153,6 +159,35 @@ namespace Yootek.Services
                 foreach (var item in result)
                 {
                     item.State = CalculateState(item);
+
+                    if (item.BillConfig != null)
+                    {
+                        var billConfigList = JsonConvert.DeserializeObject<List<BillConfigProperties>>(item.BillConfig);
+
+
+                        List<GetAllBillConfigDto> listBillConfig = billConfigList
+                            .Select(billConfig =>
+                                new GetAllBillConfigDto
+                                {
+                                    //Properties = JsonConvert.DeserializeObject<BillProperites>(billConfig.Properties),
+                                    Properties = billConfig.Properties,
+                                    BillType = billConfig.BillType
+                                })
+                            .ToList();
+                        item.ListBillConfig = listBillConfig;
+                    }
+                    var contractorCitizen = _citizenTempRepo
+                        .GetAll()
+                        .Where(x => x.ApartmentCode == item.ApartmentCode && x.IsStayed == true && x.RelationShip == RELATIONSHIP.Contractor)
+                        .OrderByDescending(x => x.OwnerGeneration)
+                        .FirstOrDefault();
+
+                    var normalCitizen = _citizenTempRepo
+                        .GetAll()
+                        .Where(x => x.ApartmentCode == item.ApartmentCode && x.IsStayed == true)
+                        .FirstOrDefault();
+
+                    item.CustomerName = contractorCitizen?.FullName ?? normalCitizen?.FullName ?? "";
                 }
                 return DataResult.ResultSuccess(result, "Get success!", query.Count());
             }
@@ -195,7 +230,7 @@ namespace Yootek.Services
                                                          UrbanName = _organizationUnitRepository.GetAll().Where(o => o.Id == meter.UrbanId)
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
                                                          CreatorUserName = user.FullName,
-                                                         BillConfig = _apartmentRepository.GetAll().Where(x => x.ApartmentCode == meter.ApartmentCode).Select(x => x.BillConfig).FirstOrDefault()
+                                                         
 
                                                      }).AsQueryable();
 
@@ -216,7 +251,7 @@ namespace Yootek.Services
             {
                 MeterMonthly meterMonthly = ObjectMapper.Map<MeterMonthly>(input);
                 meterMonthly.TenantId = AbpSession.TenantId;
-               
+
                 // meterMonthly.FirstValue = input.FirstValue ?? (int?)_userBillRepo.GetAll().Where(u => u.ApartmentCode == input.ApartmentCode && u.Period.Value.Month != input.Period.Value.Month && u.Period.Value.Year != input.Period.Value.Year).Select(u => u.IndexEndPeriod).FirstOrDefault() ?? 0;
 
                 if (input.Period != null)

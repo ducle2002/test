@@ -9,6 +9,7 @@ using Yootek.Organizations.Interface;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using static Yootek.YootekServiceBase;
+using Yootek.Services.SmartCommunity.ExcelBill.Dto;
 
 namespace Yootek.Services.Dto
 {
@@ -424,9 +425,8 @@ namespace Yootek.Services.Dto
 
     public class GetAllBillConfigDto
     {
-        public long? BillConfigId { get; set; }
-        //public string? Title { get; set; }
-        //public long? TenantId { get; set; }
+
         public BillType? BillType { get; set; }
+        public BillProperites? Properties { get; set; }
     }
 }
