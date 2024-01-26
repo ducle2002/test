@@ -19,6 +19,7 @@ namespace Yootek.Friendships.Dto
         public string FriendTenancyName { get; set; }
         public string FriendProfilePictureId { get; set; }
         public FriendshipState State { get; set; }
+        public FollowState? FollowState { get; set; }
         public int StateAddFriend { get; set; }
         public ChatMessage LastMessage { get; set; }
         public bool? IsOrganizationUnit { get; set; }
