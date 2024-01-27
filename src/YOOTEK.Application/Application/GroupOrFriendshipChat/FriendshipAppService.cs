@@ -159,6 +159,104 @@ namespace Yootek.Friendships
             }
         }
         
+        public async Task<DataResult> GetFriendFollowingList()
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
+
+                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+                {
+                    var query =
+                        (from friendship in _friendshipRepository.GetAll()
+                            where friendship.UserId == AbpSession.UserId
+                                  && friendship.FollowState == FollowState.Following &&
+                                  friendship.IsOrganizationUnit != true
+                            select new FriendDto
+                            {
+                                FriendUserId = friendship.FriendUserId,
+                                FriendTenantId = friendship.FriendTenantId,
+                                State = friendship.State,
+                                FollowState = friendship.FollowState,
+                                FriendUserName = friendship.FriendUserName,
+                                FriendTenancyName = friendship.FriendTenancyName,
+                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                IsSender = friendship.IsSender,
+                                StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
+                                    where fr.FriendUserId == AbpSession.UserId
+                                    select fr.State).First(),
+                                LastMessageDate = friendship.CreationTime,
+                                CreationTime = friendship.CreationTime,
+                            })
+                        .Where(x => x.IsSender == false).AsQueryable();
+                    var friends = query.ToList();
+                    foreach (var friend in friends)
+                    {
+                        friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                            new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                        );
+                    }
+
+                    var listresults = new List<ChatFriendOrRoomDto>();
+                    listresults = listresults.Concat(friends).ToList();
+                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+        
+        public async Task<DataResult> GetFollowedList()
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
+
+                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+                {
+                    var query =
+                        (from friendship in _friendshipRepository.GetAll()
+                            where friendship.FriendUserId == AbpSession.UserId
+                                  && friendship.FollowState == FollowState.Following &&
+                                  friendship.IsOrganizationUnit != true
+                            select new FriendDto
+                            {
+                                FriendUserId = friendship.FriendUserId,
+                                FriendTenantId = friendship.FriendTenantId,
+                                State = friendship.State,
+                                FollowState = friendship.FollowState,
+                                FriendUserName = friendship.FriendUserName,
+                                FriendTenancyName = friendship.FriendTenancyName,
+                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                IsSender = friendship.IsSender,
+                                StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
+                                    where fr.FriendUserId == AbpSession.UserId
+                                    select fr.State).First(),
+                                LastMessageDate = friendship.CreationTime,
+                                CreationTime = friendship.CreationTime,
+                            })
+                        .Where(x => x.IsSender == false).AsQueryable();
+                    var friends = query.ToList();
+                    foreach (var friend in friends)
+                    {
+                        friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                            new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                        );
+                    }
+
+                    var listresults = new List<ChatFriendOrRoomDto>();
+                    listresults = listresults.Concat(friends).ToList();
+                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                }
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+        }
+        
         public async Task ChangeFriendShip(UserIdentifier userIdentifier, UserIdentifier probableFriend, FriendshipState friendshipState, FollowState followState)
         {
             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
