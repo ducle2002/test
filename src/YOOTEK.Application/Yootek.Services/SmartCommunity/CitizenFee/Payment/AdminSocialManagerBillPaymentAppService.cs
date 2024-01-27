@@ -20,6 +20,8 @@ using Yootek.Services.Dto;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment;
 using YOOTEK.EntityDb;
 using NPOI.SS.Formula.Functions;
+using Abp.MultiTenancy;
+using Yootek.MultiTenancy;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -37,12 +39,14 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         private readonly IRepository<UserBill, long> _userBillRepo;
         private readonly IRepository<BillDebt, long> _billDebtRepo;
         private readonly IRepository<ThirdPartyPayment, int> _thirdPartyPaymentRepository;
+        private readonly IRepository<Tenant, int> _tenantRepository;
 
         public AdminSocialManagerBillPaymentAppService(
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<User, long> userRepos, IRepository<UserBill, long> userBillRepo,
             IRepository<BillDebt, long> billDebtRepo,
-            IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepository
+            IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepository,
+            IRepository<Tenant, int> tenantRepository
             )
 
         {
@@ -51,6 +55,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             _userBillRepo = userBillRepo;
             _billDebtRepo = billDebtRepo;
             _thirdPartyPaymentRepository = thirdPartyPaymentRepository; 
+            _tenantRepository = tenantRepository;   
         }
 
         protected IQueryable<ThirdPartyPaymentDto> QueryThirdPartyPayment(GetAllPaymentInput input)
@@ -100,8 +105,13 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 using (CurrentUnitOfWork.SetTenantId(null))
                 {
 
+                    var tenants = _tenantRepository.GetAllList();
                     var query = QueryThirdPartyPayment(input);
                     var result = await query.PageBy(input).ToListAsync();
+                    foreach(var item in result)
+                    {
+                        item.TenantName = tenants.Where(x => x.Id == item.TenantId).Select(x => x.Name).FirstOrDefault();
+                    }
                     return DataResult.ResultSuccess(result, "", query.Count());
                 }
                // return;
@@ -121,7 +131,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 var result = new CountThirdPartyPaymentDto()
                 {
                     NumberPayment = query.Count(),
-                    TotalAmount = await query.SumAsync(x => x.Amount)
+                    TotalAmount = await query.SumAsync(x => x.Amount),
+                    TenantName = _tenantRepository.GetAll().Where(x => x.Id == input.TenantId).Select(x => x.Name).FirstOrDefault()
                 };
                 return DataResult.ResultSuccess(result, "");
             }
@@ -189,6 +200,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 .WhereIf(input.Period.HasValue, x => x.CreationTime.Month == input.Period.Value.Month && x.CreationTime.Year == input.Period.Value.Year)
                 .WhereIf(input.Method.HasValue, x => x.Method == input.Method)
                 .WhereIf(!input.ApartmentCode.IsNullOrEmpty(), x => x.ApartmentCode == input.ApartmentCode)
+                .WhereIf(input.TenantId.HasValue, x => x.TenantId == input.TenantId)
                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                 .WhereIf(input.FromDay.HasValue, u => u.CreationTime >= fromDay)
@@ -202,9 +214,9 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         {
             try
             {
-                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                using (CurrentUnitOfWork.SetTenantId(null))
                 {
-                    using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.SoftDelete))
+                    using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.SoftDelete, AbpDataFilters.MayHaveTenant))
                     {
                         var query = QueryUserBillPayments(input);
                         var result = await query.PageBy(input).ToListAsync();
@@ -319,9 +331,9 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         {
             try
             {
-                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                using (CurrentUnitOfWork.SetTenantId(null))
                 {
-                    using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.SoftDelete))
+                    using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.SoftDelete, AbpDataFilters.MayHaveTenant))
                     {
 
                         var query = QueryUserBillPayments(input);
@@ -329,7 +341,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         var result = new CountPaymentSocialResult()
                         {
                             TotalAmount = total ?? 0,
-                            NumberPayment = query.Count()
+                            NumberPayment = query.Count(),
+                            TenantName = _tenantRepository.GetAll().Where(x => x.Id == input.TenantId).Select(x => x.Name).FirstOrDefault()
                         };
                         return DataResult.ResultSuccess(result, "Get success");
                     }

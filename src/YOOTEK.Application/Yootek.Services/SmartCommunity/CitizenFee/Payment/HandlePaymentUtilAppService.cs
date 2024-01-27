@@ -161,7 +161,93 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 throw;
             }
         }
-       
+
+
+        [RemoteService(false)]
+        public async Task<UserBillPayment> RequestThirdPartyPaymentByApartment(PayMonthlyUserBillsInput input)
+        {
+            try
+            {
+                if ((input.UserBills == null || input.UserBills.Count() == 0)
+                    && (input.UserBillDebts == null || input.UserBillDebts.Count() == 0)
+                    && (input.PrepaymentBills == null || input.PrepaymentBills.Count() == 0)) throw new Exception("Input user bill is null");
+                var payment = new UserBillPayment()
+                {
+                    Amount = input.Amount,
+                    ApartmentCode = input.ApartmentCode,
+                    Method = input.Method,
+                    Status = UserBillPaymentStatus.RequestingThirdParty,
+                    TypePayment = TypePayment.Bill,
+                    Period = input.Period,
+                    Title = "Thanh toán hóa đơn tháng " + input.Period.ToString("MM/yyyyy"),
+                    TenantId = AbpSession.TenantId,
+                    Description = input.Description,
+                    BuildingId = input.UserBill.BuildingId,
+                    UrbanId = input.UserBill.UrbanId,
+                    FileUrl = input.FileUrl,
+                    ImageUrl = input.ImageUrl,
+                    CreationTime = input.CreationTime
+                };
+
+                bool isPaymentDebt = true;
+
+                var billPaymentInfo = new BillPaymentInfo();
+
+                // Handle billDebt
+                var listBills = new List<BillPaidInfoDto>();
+
+                if (input.UserBillDebts != null && input.UserBillDebts.Count() > 0)
+                {
+                    var res = await HandlePayUserBillDebts(input.UserBillDebts, payment);
+                    billPaymentInfo.BillListDebt = res.Item1;
+                    listBills.AddRange(res.Item2);
+                    payment.UserBillDebtIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                    isPaymentDebt = true;
+                }
+
+                // Handle Userbill
+                if (input.UserBills != null && input.UserBills.Count() > 0)
+                {
+                    var res = await HandlePayUserBillPendings(input.UserBills, payment);
+                    billPaymentInfo.BillList = res.Item1;
+                    listBills.AddRange(res.Item2);
+                    payment.UserBillIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                    isPaymentDebt = false;
+                }
+
+                // Handle prepayment
+                if (input.PrepaymentBills != null && input.PrepaymentBills.Count > 0)
+                {
+                    var res = await HandlePrepaymentVerifyPayment(input.PrepaymentBills, input.UserBill, payment);
+                    billPaymentInfo.BillListPrepayment = res.Item1;
+                    listBills.AddRange(res.Item2);
+                    payment.UserBillPrepaymentIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                }
+
+                payment.BillPaymentInfo = JsonConvert.SerializeObject(billPaymentInfo);
+                if (!input.UserBill.Properties.IsNullOrEmpty())
+                {
+                    try
+                    {
+                        var obj = JsonConvert.DeserializeObject<dynamic>(input.UserBill.Properties);
+                        payment.CustomerName = obj.customerName;
+                    }
+                    catch { }
+                }
+                if (isPaymentDebt) payment.TypePayment = TypePayment.DebtBill;
+                await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
+
+
+                return payment;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
+
+
+
         [RemoteService(false)]
         public async Task UpdatePaymentSuccess(UserBillPayment payment)
         {
