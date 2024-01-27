@@ -57,7 +57,7 @@ namespace Yootek.Services.Dto
         public long? BlockId { get; set; }
         public string? BlockName { get; set; }
         public long[]? BillConfigId { get; set; }
-        //public List<GetAllBillConfigDto> BillConfigDetail { get; set; }
+        public string? BillConfig { get; set; }
 
     }
 }

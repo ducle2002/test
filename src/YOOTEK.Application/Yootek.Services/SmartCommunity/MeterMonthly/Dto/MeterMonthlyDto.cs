@@ -8,6 +8,7 @@ using JetBrains.Annotations;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Yootek.Common.Enum;
+using Yootek.Services.Dto;
 
 namespace Yootek.Services
 {
@@ -39,6 +40,9 @@ namespace Yootek.Services
         public long? PriceDeviation { get; set; }
         public int? State { get; set; }
         public BillType BillType { get; set; }
+        public string? BillConfig { get; set; }
+        public List<GetAllBillConfigDto>? ListBillConfig { get; set; }
+        public string? CustomerName { get; set; }
     }
 
 
