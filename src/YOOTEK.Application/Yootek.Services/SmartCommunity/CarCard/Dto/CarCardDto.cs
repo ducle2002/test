@@ -13,13 +13,12 @@ namespace Yootek.Services
     public class CreateCarCardDto
     {
         public string VehicleCardCode { get; set; }
-        public CarCardType Status { get; set; }
-        public long? BuildingId { get; set; }
-        public long? UrbanId { get; set; }
+        public long? ParkingId { get; set; }
     }
     public class GetAllCarCard : Entity<long>, IMayHaveUrban, IMayHaveBuilding
     {
-        public CarCardType Status { get; set; }
+        public DateTime CreationTime { get; set; }
+        public CitizenVehicleState? State { get; set; }
         public string VehicleCardCode { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
@@ -42,22 +41,22 @@ namespace Yootek.Services
     {
         public long Id { get; set; }
         [StringLength(1000)][CanBeNull] public string VehicleCardCode { get; set; }
-        public CarCardType Status { get; set; }
-        public long? BuildingId { get; set; }
-        public long? UrbanId { get; set; }
+        public long? ParkingId { get; set; }
 
     }
     public class CarCardInput : CommonInputDto
     {
-        public CarCardType Status { get; set; }
+        public DateTime? ToDay { get; set; }
+        public CitizenVehicleState? State { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
+        public int? Status { get; set; }
     }
 
     public class UpdateStatusCarCardInput
     {
-        public long Id { get; set; }
-        public CarCardType Status { get; set; }
+        public string VehicleCardCode { get; set; }
+        public CitizenVehicleState? State { get; set; }
     }
 
 }
