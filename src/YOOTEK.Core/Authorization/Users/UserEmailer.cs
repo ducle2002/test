@@ -130,59 +130,52 @@ namespace Yootek.Authorization.Users
         /// <param name="link">Reset link</param>
         public async Task SendPasswordResetLinkAsync(User user, string link = null)
         {
-            try
+            await CheckMailSettingsEmptyOrNull();
+
+            if (user.PasswordResetCode.IsNullOrEmpty())
             {
-                await CheckMailSettingsEmptyOrNull();
-
-                if (user.PasswordResetCode.IsNullOrEmpty())
-                {
-                    throw new Exception("PasswordResetCode should be set in order to send password reset link.");
-                }
-
-                var tenancyName = GetTenancyNameOrNull(user.TenantId);
-                var emailTemplate = GetTitleAndSubTitle(user.TenantId, L("PasswordResetEmail_Title"), L("PasswordResetEmail_SubTitle"));
-                var mailMessage = new StringBuilder();
-
-                mailMessage.AppendLine("<b>" + L("NameSurname") + "</b>: " + user.Name + " " + user.Surname + "<br />");
-
-                if (!tenancyName.IsNullOrEmpty())
-                {
-                    mailMessage.AppendLine("<b>" + L("TenancyName") + "</b>: " + tenancyName + "<br />");
-                }
-
-                mailMessage.AppendLine("<b>" + L("UserName") + "</b>: " + user.UserName + "<br />");
-                mailMessage.AppendLine("<b>" + L("ResetCode") + "</b>: " + user.PasswordResetCode + "<br />");
-
-                if (!link.IsNullOrEmpty())
-                {
-                    link = link.Replace("{userId}", user.Id.ToString());
-                    link = link.Replace("{resetCode}", Uri.EscapeDataString(user.PasswordResetCode));
-
-                    if (user.TenantId.HasValue)
-                    {
-                        link = link.Replace("{tenantId}", user.TenantId.ToString());
-                    }
-
-                    link = EncryptQueryParameters(link);
-
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine(L("PasswordResetEmail_ClickTheLinkBelowToResetYourPassword") + "<br /><br />");
-                    mailMessage.AppendLine("<a style=\"" + _emailButtonStyle + "\" bg-color=\"" + _emailButtonColor + "\" href=\"" + link + "\">" + L("Reset") + "</a>");
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine("<span style=\"font-size: 9pt;\">" + L("EmailMessage_CopyTheLinkBelowToYourBrowser") + "</span><br />");
-                    mailMessage.AppendLine("<span style=\"font-size: 8pt;\">" + link + "</span>");
-                }
-
-                await ReplaceBodyAndSend(user.EmailAddress, L("PasswordResetEmail_Subject"), emailTemplate, mailMessage);
-
-
+                throw new Exception("PasswordResetCode should be set in order to send password reset link.");
             }
-            catch (Exception exception)
+
+            var tenancyName = GetTenancyNameOrNull(user.TenantId);
+            var emailTemplate = GetTitleAndSubTitle(user.TenantId, L("PasswordResetEmail_Title"), L("PasswordResetEmail_SubTitle"));
+            var mailMessage = new StringBuilder();
+
+            mailMessage.AppendLine("<b>" + L("NameSurname") + "</b>: " + user.Name + " " + user.Surname + "<br />");
+
+            if (!tenancyName.IsNullOrEmpty())
             {
-                Logger.Error("pass + Email" + exception.Message, exception);
+                mailMessage.AppendLine("<b>" + L("TenancyName") + "</b>: " + tenancyName + "<br />");
             }
+
+            mailMessage.AppendLine("<b>" + L("UserName") + "</b>: " + user.UserName + "<br />");
+            mailMessage.AppendLine("<b>" + L("ResetCode") + "</b>: " + user.PasswordResetCode + "<br />");
+
+            if (!link.IsNullOrEmpty())
+            {
+                link = link.Replace("{userId}", user.Id.ToString());
+                link = link.Replace("{resetCode}", Uri.EscapeDataString(user.PasswordResetCode));
+
+                if (user.TenantId.HasValue)
+                {
+                    link = link.Replace("{tenantId}", user.TenantId.ToString());
+                }
+
+                link = EncryptQueryParameters(link);
+
+                mailMessage.AppendLine("<br />");
+                mailMessage.AppendLine(L("PasswordResetEmail_ClickTheLinkBelowToResetYourPassword") + "<br /><br />");
+                mailMessage.AppendLine("<a style=\"" + _emailButtonStyle + "\" bg-color=\"" + _emailButtonColor + "\" href=\"" + link + "\">" + L("Reset") + "</a>");
+                mailMessage.AppendLine("<br />");
+                mailMessage.AppendLine("<br />");
+                mailMessage.AppendLine("<br />");
+                mailMessage.AppendLine("<span style=\"font-size: 9pt;\">" + L("EmailMessage_CopyTheLinkBelowToYourBrowser") + "</span><br />");
+                mailMessage.AppendLine("<span style=\"font-size: 8pt;\">" + link + "</span>");
+            }
+
+            await ReplaceBodyAndSend(user.EmailAddress, L("PasswordResetEmail_Subject"), emailTemplate, mailMessage);
+
+
         }
 
         public async Task TryToSendChatMessageMail(User user, string senderUsername, string senderTenancyName, ChatMessage chatMessage)
@@ -371,21 +364,14 @@ namespace Yootek.Authorization.Users
 
         private async Task ReplaceBodyAndSend(string emailAddress, string subject, StringBuilder emailTemplate, StringBuilder mailMessage)
         {
-            try
+            emailTemplate.Replace("{EMAIL_BODY}", mailMessage.ToString());
+            await _emailSender.SendAsync(new MailMessage
             {
-                emailTemplate.Replace("{EMAIL_BODY}", mailMessage.ToString());
-                await _emailSender.SendAsync(new MailMessage
-                {
-                    To = { emailAddress },
-                    Subject = subject,
-                    Body = emailTemplate.ToString(),
-                    IsBodyHtml = true
-                });
-            }
-            catch(Exception e)
-            {
-                Logger.Fatal(e.ToJsonString());
-            }
+                To = { emailAddress },
+                Subject = subject,
+                Body = emailTemplate.ToString(),
+                IsBodyHtml = true
+            });
         }
 
         /// <summary>
