@@ -26,6 +26,7 @@ using Yootek.Organizations;
 using Yootek.Url;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
+using Abp.Json;
 
 namespace Yootek.Authorization.Accounts
 {
@@ -203,7 +204,7 @@ namespace Yootek.Authorization.Accounts
             catch (Exception ex)
             {
                 Logger.Info("pass + Email: " + ex.ToString());
-                throw;
+                throw new UserFriendlyException(ex.ToJsonString());
             }
         }
 
