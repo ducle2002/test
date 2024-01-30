@@ -142,7 +142,7 @@ namespace Yootek.Authorization.Users
             emailTemplate.Replace("{CODE}", user.PasswordResetCode);
      
            
-            await ReplaceBodyAndSend(user.EmailAddress, L("PasswordResetEmail_Subject"), emailTemplate, new StringBuilder());
+            await ReplaceBodyAndSend(user.EmailAddress, "Yoolife Reset Password Code", emailTemplate, new StringBuilder());
 
 
         }
