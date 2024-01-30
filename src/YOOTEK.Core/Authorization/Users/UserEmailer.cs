@@ -20,6 +20,7 @@ using Abp.Localization;
 using System.Web;
 using Abp.UI;
 using System.Net.Mail;
+using Abp.Json;
 
 namespace Yootek.Authorization.Users
 {
@@ -370,14 +371,21 @@ namespace Yootek.Authorization.Users
 
         private async Task ReplaceBodyAndSend(string emailAddress, string subject, StringBuilder emailTemplate, StringBuilder mailMessage)
         {
-            emailTemplate.Replace("{EMAIL_BODY}", mailMessage.ToString());
-            await _emailSender.SendAsync(new MailMessage
+            try
             {
-                To = { emailAddress },
-                Subject = subject,
-                Body = emailTemplate.ToString(),
-                IsBodyHtml = true
-            });
+                emailTemplate.Replace("{EMAIL_BODY}", mailMessage.ToString());
+                await _emailSender.SendAsync(new MailMessage
+                {
+                    To = { emailAddress },
+                    Subject = subject,
+                    Body = emailTemplate.ToString(),
+                    IsBodyHtml = true
+                });
+            }catch(Exception ex)
+            {
+                Logger.Fatal("email reset pass:" + ex.ToJsonString());
+                throw;
+            }
         }
 
         /// <summary>
