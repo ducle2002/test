@@ -89,6 +89,15 @@ namespace Yootek.Yootek.Services.Yootek.Payments
             return DataResult.ResultSuccess(result.Data.Items, "success", result.Data.TotalCount);
         }
 
+        [HttpPatch]
+        public async Task<DataResult> UpdateManuallyVerified(UpdateManuallyVerifiedDto input)
+        {
+            var result =
+                await _httpClient.SendSync<PaymentDto>("/api/payments/manually-verified", HttpMethod.Patch, input);
+
+            return DataResult.ResultSuccess(result.Data, "success");
+        }
+
         [DontWrapResult]
         public async Task<object> MomoIpn(MomoIpnInputDto input)
         {
