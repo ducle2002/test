@@ -28,5 +28,7 @@ namespace Yootek.Services.Dto
         public string? Address { get; set; }
         public long[]? BillConfigId { get; set; }
         public List<BillConfigProperties>? BillConfigDetail { get; set; }
+        public List<BillConfigProperties>? ListBillConfig { get; set; }
+
     }
 }

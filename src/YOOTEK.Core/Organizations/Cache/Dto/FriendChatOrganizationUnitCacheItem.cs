@@ -27,7 +27,7 @@ namespace Yootek.Organizations.Cache.Dto
         public int StateAddFriend { get; set; }
 
         public FriendshipState State { get; set; }
-
+        public FollowState? FollowState { get; set; }
         public DateTime LastMessageDate { get; set; }
     }
 }

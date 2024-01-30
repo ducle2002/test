@@ -92,7 +92,7 @@ namespace Yootek.Yootek.Services.Yootek.Payments
         }
 
         [DontWrapResult]
-        public async Task<string> OnepayIpn(MomoIpnInputDto input)
+        public async Task<string> OnepayIpn(OnepayIpnInputDto input)
         {
             try
             {

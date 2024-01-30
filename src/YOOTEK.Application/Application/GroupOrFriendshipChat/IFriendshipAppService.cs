@@ -11,8 +11,8 @@ namespace Yootek.Friendships
         Task<List<UserDto>> FindUserToAddFriendByKeyword(FindUserToAddFriendInput input);
         Task<FriendDto> CreateFriendshipRequest(CreateFriendshipRequestInput input);
         Task<FriendDto> CreateFriendshipRequestByUserName(CreateFriendshipRequestByUserNameInput input);
-        Task BlockUser(BlockUserInput input);
-        Task UnblockUser(UnblockUserInput input);
+        Task<FriendDto> BlockUser(BlockUserInput input);
+        Task<FriendDto> UnblockUser(UnblockUserInput input);
         Task AcceptFriendshipRequest(AcceptFriendshipRequestInput input);
     }
 }

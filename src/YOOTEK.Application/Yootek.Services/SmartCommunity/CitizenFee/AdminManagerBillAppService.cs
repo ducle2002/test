@@ -1794,16 +1794,18 @@ namespace Yootek.Services
 
                 bool isCreate = false;
                 bool isUpdate = false;
-
+                int month = input.Period.HasValue ? input.Period.Value.Month : 0;
+                int year = input.Period.HasValue ? input.Period.Value.Year : 0;
+                int lastDay = DateTime.DaysInMonth(year, month);
                 foreach (CreateOrUpdateUserBillInputDto detail in input.BillDetail)
                 {
                     var userBill1 = detail.MapTo<UserBill>();
-                    userBill1.Title = input.Title;
+                    userBill1.Title = input.Title ?? $"Hoá đơn tháng {month:D2}/{year}";
                     userBill1.UrbanId = input.UrbanId ?? null;
                     userBill1.BuildingId = input.BuildingId ?? null;
                     userBill1.ApartmentCode = input.ApartmentCode;
                     userBill1.Period = input.Period;
-                    userBill1.DueDate = input.DueDate;
+                    userBill1.DueDate = input.DueDate ?? new DateTime(year, month, lastDay);
                     userBill1.TenantId = AbpSession.TenantId;
                     userBill1.CitizenTempId = input.CitizenTempId;
                     userBill1.IndexEndPeriod = detail.IndexEndPeriod;
@@ -1832,6 +1834,7 @@ namespace Yootek.Services
                     {
                         isCreate = true;
                         if (userBill1.DueDate < DateTime.Now) userBill1.Status = UserBillStatus.Debt;
+                        if (userBill1.DueDate > DateTime.Now) userBill1.Status = UserBillStatus.Pending;
                         // var userBill =  await _userBillRepo.InsertAsync(userBill1);
                         var id = await _userBillRepo.InsertAndGetIdAsync(userBill1);
                         userBill1.Code = "HD" + userBill1.Id +
@@ -1858,7 +1861,23 @@ namespace Yootek.Services
                 throw;
             }
         }
+        public async Task<object> CreateListMeterMonthlyUserBills(List<CreateOrUpdateMonthlyInvoice> inputList)
+        {
+            try
+            {
+                foreach (var input in inputList)
+                {
+                    await CreateOrUpdateMonthlyUserBill(input);
+                }
 
+                return DataResult.ResultSuccess("Create success!");
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
         protected async Task CreateBillVehicleInfos(UserBill bill)
         {
             try
@@ -2294,7 +2313,7 @@ namespace Yootek.Services
                         }
                         else userBill.DueDate = DateTime.Now;
 
-                        var listBillConfig = apartment.BillConfigId;
+                        var listBillConfig = apartment.BillConfig;    
                         if (listBillConfig == null)
                         {
 

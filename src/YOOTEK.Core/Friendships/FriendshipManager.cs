@@ -118,6 +118,7 @@ namespace Yootek.Friendships
                 }
 
                 friendship.State = FriendshipState.Blocked;
+                friendship.FollowState = FollowState.UnFollow;
                 await UpdateFriendshipAsync(friendship);
             });
         }
@@ -133,6 +134,7 @@ namespace Yootek.Friendships
                 }
 
                 friendship.State = FriendshipState.Accepted;
+                friendship.FollowState = FollowState.Following;
                 await UpdateFriendshipAsync(friendship);
             });
         }

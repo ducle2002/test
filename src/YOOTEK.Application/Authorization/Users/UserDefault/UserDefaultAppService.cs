@@ -32,6 +32,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Yootek.Users
 {
@@ -256,6 +257,22 @@ namespace Yootek.Users
             }
         }
 
+        public async Task<object> DeleteMultipleReminder([FromBody] List<long> ids)
+        {
+            try
+            {
+                if (ids.Count == 0) return DataResult.ResultError("Error", "Empty input!");
+                await _reminderRepos.DeleteAsync(x => ids.Contains(x.Id));
+                var data = DataResult.ResultSuccess("Deleted successfully!");
+                return data;
+            }
+            catch (Exception e)
+            {
+                var data = DataResult.ResultError(e.ToString(), "Exception !");
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
         #endregion
 
 
