@@ -138,13 +138,11 @@ namespace Yootek.Authorization.Users
             }
 
             var emailTemplate = GetTitleAndSubTitle(user.TenantId, L("PasswordResetEmail_Title"), L("PasswordResetEmail_SubTitle"));
-            var mailMessage = new StringBuilder();
-
-            mailMessage.Replace("{FullName}", user.FullName);
-            mailMessage.Replace("{Code}", user.PasswordResetCode);
+            emailTemplate.Replace("{FullName}", user.FullName);
+            emailTemplate.Replace("{CODE}", user.PasswordResetCode);
      
            
-            await ReplaceBodyAndSend(user.EmailAddress, L("PasswordResetEmail_Subject"), emailTemplate, mailMessage);
+            await ReplaceBodyAndSend(user.EmailAddress, L("PasswordResetEmail_Subject"), emailTemplate, new StringBuilder());
 
 
         }
