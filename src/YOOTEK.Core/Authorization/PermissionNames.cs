@@ -265,6 +265,7 @@ namespace Yootek.Authorization
         public const string Pages_Invoices_Payments_Create = "Pages.Invoices.Payments.Create";
         public const string Pages_Invoices_Payments_Edit = "Pages.Invoices.Payments.Edit";
         public const string Pages_Invoices_Payments_Delete = "Pages.Invoices.Payments.Delete";
+        public const string Pages_Invoices_Payments_Advanced = "Pages.Invoices.Payments.Advanced";
 
         public const string Pages_Invoices_Debt = "Pages.Invoices.Debt";
         public const string Pages_Invoices_Debt_GetAll = "Pages.Invoices.Debt.GetAll";

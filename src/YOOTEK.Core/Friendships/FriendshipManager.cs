@@ -63,7 +63,20 @@ namespace Yootek.Friendships
                 }
             });
         }
+        public async Task UnFriendshipAsync(Friendship friendship)
+        {
+            try
+            {
+                await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+                {
+                    await _friendshipRepository.DeleteAsync(x => x.UserId == friendship.UserId && x.TenantId == friendship.TenantId && x.FriendUserId == friendship.FriendUserId);
+                });
+            }
+            catch (Exception e)
+            {
 
+            }
+        }
         public async Task<Friendship> GetFriendshipOrNullAsync(UserIdentifier user, UserIdentifier probableFriend)
         {
             return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
@@ -71,6 +84,21 @@ namespace Yootek.Friendships
                 using (CurrentUnitOfWork.SetTenantId(user.TenantId))
                 {
                     return await _friendshipRepository.FirstOrDefaultAsync(friendship =>
+                        friendship.UserId == user.UserId &&
+                        friendship.TenantId == user.TenantId &&
+                        friendship.FriendUserId == probableFriend.UserId &&
+                        friendship.FriendTenantId == probableFriend.TenantId);
+                }
+            });
+        }
+
+        public async Task DeleteFriendshipOrNullAsync(UserIdentifier user, UserIdentifier probableFriend)
+        {
+             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+            {
+                using (CurrentUnitOfWork.SetTenantId(user.TenantId))
+                {
+                    await _friendshipRepository.DeleteAsync(friendship =>
                         friendship.UserId == user.UserId &&
                         friendship.TenantId == user.TenantId &&
                         friendship.FriendUserId == probableFriend.UserId &&
@@ -90,6 +118,7 @@ namespace Yootek.Friendships
                 }
 
                 friendship.State = FriendshipState.Blocked;
+                friendship.FollowState = FollowState.UnFollow;
                 await UpdateFriendshipAsync(friendship);
             });
         }
@@ -105,6 +134,7 @@ namespace Yootek.Friendships
                 }
 
                 friendship.State = FriendshipState.Accepted;
+                friendship.FollowState = FollowState.Following;
                 await UpdateFriendshipAsync(friendship);
             });
         }

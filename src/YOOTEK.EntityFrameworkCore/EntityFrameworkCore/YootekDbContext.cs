@@ -1,4 +1,5 @@
 using Abp.Zero.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Yootek.Authorization.Permissions;
 using Yootek.Authorization.Roles;
 using Yootek.Authorization.Users;
@@ -6,33 +7,32 @@ using Yootek.Chat;
 using Yootek.Chat.BusinessChat;
 using Yootek.EntityDb;
 using Yootek.Friendships;
-using Yootek.Yootek.EntityDb.Clb.Hotlines;
-using Yootek.Yootek.EntityDb.Clb.QnA;
-using Yootek.Yootek.EntityDb.Clb.Votes;
-using Yootek.Yootek.EntityDb.Forum;
-using Yootek.Yootek.EntityDb.Yootek.DichVu.BusinessReg;
-using Yootek.Yootek.EntityDb.Yootek.DichVu.CheckingObj;
-using Yootek.Yootek.EntityDb.Yootek.Metrics;
-using Yootek.Yootek.EntityDb.Yootek.MobileAppFeedback;
-using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
-using Yootek.Yootek.EntityDb.SmartCommunity.Phidichvu;
-using Yootek.Yootek.EntityDb.SmartCommunity.QuanLyDanCu.Citizen;
-using Yootek.Yootek.EntityDb.Smarthome.Device;
+using Yootek.GroupChats;
 using Yootek.MultiTenancy;
 using Yootek.Organizations;
 using Yootek.Organizations.OrganizationStructure;
-using Yootek.GroupChats;
+using Yootek.SmartCommunity;
+using Yootek.Storage;
 using Yootek.Yootek.EntityDb;
 using Yootek.Yootek.EntityDb.Clb.City_Notification;
 using Yootek.Yootek.EntityDb.Clb.Enterprise;
 using Yootek.Yootek.EntityDb.Clb.Event;
+using Yootek.Yootek.EntityDb.Clb.Hotlines;
 using Yootek.Yootek.EntityDb.Clb.Jobs;
 using Yootek.Yootek.EntityDb.Clb.Projects;
-using Yootek.SmartCommunity;
-using Yootek.Storage;
-using Microsoft.EntityFrameworkCore;
-using ClbCityNotificationComment = Yootek.Yootek.EntityDb.Clb.City_Notification.ClbCityNotificationComment;
+using Yootek.Yootek.EntityDb.Clb.Votes;
+using Yootek.Yootek.EntityDb.Forum;
+using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
+using Yootek.Yootek.EntityDb.SmartCommunity.Phidichvu;
+using Yootek.Yootek.EntityDb.SmartCommunity.QuanLyDanCu.Citizen;
+using Yootek.Yootek.EntityDb.Smarthome.Device;
 using Yootek.Yootek.EntityDb.Yootek.DichVu.Business;
+using Yootek.Yootek.EntityDb.Yootek.DichVu.BusinessReg;
+using Yootek.Yootek.EntityDb.Yootek.DichVu.CheckingObj;
+using Yootek.Yootek.EntityDb.Yootek.Metrics;
+using Yootek.Yootek.EntityDb.Yootek.MobileAppFeedback;
+using YOOTEK.EntityDb;
+using ClbCityNotificationComment = Yootek.Yootek.EntityDb.Clb.City_Notification.ClbCityNotificationComment;
 
 namespace Yootek.EntityFrameworkCore
 {
@@ -100,6 +100,8 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<CityVote> CityVotes { get; set; }
 
         //fee
+        public virtual DbSet<ThirdPartyPayment> ThirdPartyPayments {  get; set; }
+        public virtual DbSet<UserBillPaymentValidation> UserBillPaymentValidations { get; set; }     
         public virtual DbSet<UserBill> UserBills { get; set; }
         public virtual DbSet<UserBillVehicleInfo> UserBillVehicleInfos { get; set; }
         public virtual DbSet<BillConfig> BillConfigs { get; set; }
@@ -192,6 +194,7 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<Parking> Parkings { get; set; }
         public virtual DbSet<IntegratedParkingCustomer> IntegratedParkingCustomers { get; set; }
         public virtual DbSet<UserParking> UserParkings { get; set; }
+        public virtual DbSet<CarCard> CarCards { get; set; }
         public virtual DbSet<CitizenVehicle> CitizenVehicles { get; set; }
         public virtual DbSet<CitizenParking> CitizenParkings { get; set; }
         public virtual DbSet<UserVehicle> UserVehicles { get; set; }

@@ -99,7 +99,7 @@ namespace Yootek.Authorization.Users
         public virtual Guid? ProfilePictureId { get; set; }
         [StringLength(256)]
         public string ImageUrl { get; set; }
-        public bool? IsCitizen { get; set; }
+        public string CoverImageUrl { get; set; }
         public string ThirdAccounts { get; set; }
         public DateTime? WillBeDeletedDate { get; set; }
     }
