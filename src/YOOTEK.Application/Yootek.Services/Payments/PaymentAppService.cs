@@ -53,25 +53,11 @@ namespace Yootek.Yootek.Services.Yootek.Payments
         {
             if (input.Type == EPaymentType.BILL)
             {
-                var paymentBill = await _userBillPaymentAppService.RequestUserBillPayment(input);
+                var paymentBill = await _userBillPaymentAppService.RequestValidationUserBillPayment(input);
                 input.TransactionId = paymentBill.Id;
-                try
-                {
-                    var response =
-                        await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
-                    if (!response.Success) await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(paymentBill);
-                    return response;
-                }
-                catch (Exception e)
-                {
-                    await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(paymentBill);
-                    throw;
-                }
             }
-            else
-            {
-                return await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
-            }
+
+            return await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
         }
 
         public async Task<DataResult> GetList(GetListPaymentDto input)

@@ -229,7 +229,6 @@ namespace Yootek.Friendships
             }
         }
 
-
         public async Task UnblockUser(UnblockUserInput input)
         {
             var userIdentifier = AbpSession.ToUserIdentifier();
