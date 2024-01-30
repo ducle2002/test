@@ -130,7 +130,7 @@ namespace Yootek.Authorization.Users
         /// <param name="link">Reset link</param>
         public async Task SendPasswordResetLinkAsync(User user, string link = null)
         {
-            await CheckMailSettingsEmptyOrNull();
+          //  await CheckMailSettingsEmptyOrNull();
 
             if (user.PasswordResetCode.IsNullOrEmpty())
             {
