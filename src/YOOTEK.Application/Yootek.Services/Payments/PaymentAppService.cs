@@ -192,5 +192,27 @@ namespace Yootek.Yootek.Services.Yootek.Payments
         }
 
         #endregion
+
+        #region Onepay Verifications
+
+        public async Task<DataResult> GetOnepayVerificationByPaymentId(string paymentId)
+        {
+            try
+            {
+                var result = await _httpClient.SendSync<OnepayVerificationDto>(
+                    $"/api/onepay-verifications/get-by-payment-id/{paymentId}",
+                    HttpMethod.Get
+                );
+
+                return DataResult.ResultSuccess(result.Data, "success");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
+        #endregion
     }
 }
