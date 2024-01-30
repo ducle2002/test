@@ -22,6 +22,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
     public class HandlePaymentUtilAppService : YootekAppServiceBase
     {
         private readonly IRepository<UserBillPayment, long> _userBillPaymentRepo;
+        private readonly IRepository<UserBillPaymentValidation, long> _userBillPaymentValidationRepo;
         private readonly IRepository<User, long> _userRepos;
         private readonly IRepository<UserBill, long> _userBillRepo;
         private readonly IRepository<CitizenTemp, long> _citizenTempRepos;
@@ -35,6 +36,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
 
         public HandlePaymentUtilAppService(
             IRepository<UserBillPayment, long> userBillPaymentRepo,
+            IRepository<UserBillPaymentValidation, long> userBillPaymentValidationRepo,
             IRepository<User, long> userRepos, IRepository<UserBill, long> userBillRepo,
             IRepository<BillDebt, long> billDebtRepo,
             IAppNotifier appNotifier,
@@ -58,120 +60,123 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             _billPaymentHistoryRepos = billPaymentHistoryRepos;
             _apartmentHistoryAppSerivce = apartmentHistoryAppSerivce;
             _apartmentRepos = apartmentRepos;
+            _userBillPaymentValidationRepo = userBillPaymentValidationRepo;
         }
 
         [RemoteService(false)]
         public async Task<UserBillPayment> PayMonthlyUserBillByApartment(PayMonthlyUserBillsInput input)
         {
-            try
+            using(CurrentUnitOfWork.SetTenantId(input.UserBill.TenantId))
             {
-                if ((input.UserBills == null || input.UserBills.Count() == 0)
-                    && (input.UserBillDebts == null || input.UserBillDebts.Count() == 0)
-                    && (input.PrepaymentBills == null || input.PrepaymentBills.Count() == 0)) throw new Exception("Input user bill is null");
-                var payment = new UserBillPayment()
-                {
-                    Amount = input.Amount,
-                    ApartmentCode = input.ApartmentCode,
-                    Method = input.Method,
-                    Status = input.Status ?? UserBillPaymentStatus.Pending,
-                    TypePayment = TypePayment.Bill,
-                    Period = input.Period,
-                    Title = "Thanh toán hóa đơn tháng " + input.Period.ToString("MM/yyyyy"),
-                    TenantId = AbpSession.TenantId,
-                    Description = input.Description,
-                    BuildingId = input.UserBill.BuildingId,
-                    UrbanId = input.UserBill.UrbanId,
-                    FileUrl = input.FileUrl,
-                    ImageUrl = input.ImageUrl,
-                    CreationTime = input.CreationTime
-                };
-
-                bool isPaymentDebt = true;
-
-                var billPaymentInfo = new BillPaymentInfo();
-
-                // Handle billDebt
-                var listBills = new List<BillPaidInfoDto>();
-
-                if (input.UserBillDebts != null && input.UserBillDebts.Count() > 0)
-                {
-                    var res = await HandlePayUserBillDebts(input.UserBillDebts, payment);
-                    billPaymentInfo.BillListDebt = res.Item1;
-                    listBills.AddRange(res.Item2);
-                    payment.UserBillDebtIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
-                    isPaymentDebt = true;
-                }
-
-                // Handle Userbill
-                if (input.UserBills != null && input.UserBills.Count() > 0)
-                {
-                    var res = await HandlePayUserBillPendings(input.UserBills, payment);
-                    billPaymentInfo.BillList = res.Item1;
-                    listBills.AddRange(res.Item2);
-                    payment.UserBillIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
-                    isPaymentDebt = false;
-                }
-
-                // Handle prepayment
-                if (input.PrepaymentBills != null && input.PrepaymentBills.Count > 0)
-                {
-                    var res = await HandlePrepaymentVerifyPayment(input.PrepaymentBills, input.UserBill, payment);
-                    billPaymentInfo.BillListPrepayment = res.Item1;
-                    listBills.AddRange(res.Item2);
-                    payment.UserBillPrepaymentIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
-                }
-
-                payment.BillPaymentInfo = JsonConvert.SerializeObject(billPaymentInfo);
-                if (!input.UserBill.Properties.IsNullOrEmpty())
-                {
-                    try
-                    {
-                        var obj = JsonConvert.DeserializeObject<dynamic>(input.UserBill.Properties);
-                        payment.CustomerName = obj.customerName;
-                    }
-                    catch { }
-                }
-                if (isPaymentDebt) payment.TypePayment = TypePayment.DebtBill;
-                await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
-
-
                 try
                 {
-                    foreach (var item in listBills)
+                    if ((input.UserBills == null || input.UserBills.Count() == 0)
+                        && (input.UserBillDebts == null || input.UserBillDebts.Count() == 0)
+                        && (input.PrepaymentBills == null || input.PrepaymentBills.Count() == 0)) throw new Exception("Input user bill is null");
+                    var payment = new UserBillPayment()
                     {
-                        await CreateBillPaymentHistory(item, payment);
-                    }
-                    if (payment.Status == UserBillPaymentStatus.Success)
-                    {
-                       
-                        await NotifierBillPaymentSuccess(payment, (int)payment.Amount, payment.CreatorUserId.Value);
-                        await CreateApartmentHistory(payment, input.UserBill);
-                    }
-                        
-                }
-                catch
-                {
-                }
+                        Amount = input.Amount,
+                        ApartmentCode = input.ApartmentCode,
+                        Method = input.Method,
+                        Status = input.Status ?? UserBillPaymentStatus.Pending,
+                        TypePayment = TypePayment.Bill,
+                        Period = input.Period,
+                        Title = "Thanh toán hóa đơn tháng " + input.Period.ToString("MM/yyyyy"),
+                        TenantId = AbpSession.TenantId,
+                        Description = input.Description,
+                        BuildingId = input.UserBill.BuildingId,
+                        UrbanId = input.UserBill.UrbanId,
+                        FileUrl = input.FileUrl,
+                        ImageUrl = input.ImageUrl,
+                        CreationTime = input.CreationTime
+                    };
 
-                
-                return payment;
-            }
-            catch (Exception ex)
-            {
-                throw;
+                    bool isPaymentDebt = true;
+
+                    var billPaymentInfo = new BillPaymentInfo();
+
+                    // Handle billDebt
+                    var listBills = new List<BillPaidInfoDto>();
+
+                    if (input.UserBillDebts != null && input.UserBillDebts.Count() > 0)
+                    {
+                        var res = await HandlePayUserBillDebts(input.UserBillDebts, payment);
+                        billPaymentInfo.BillListDebt = res.Item1;
+                        listBills.AddRange(res.Item2);
+                        payment.UserBillDebtIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                        isPaymentDebt = true;
+                    }
+
+                    // Handle Userbill
+                    if (input.UserBills != null && input.UserBills.Count() > 0)
+                    {
+                        var res = await HandlePayUserBillPendings(input.UserBills, payment);
+                        billPaymentInfo.BillList = res.Item1;
+                        listBills.AddRange(res.Item2);
+                        payment.UserBillIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                        isPaymentDebt = false;
+                    }
+
+                    // Handle prepayment
+                    if (input.PrepaymentBills != null && input.PrepaymentBills.Count > 0)
+                    {
+                        var res = await HandlePrepaymentVerifyPayment(input.PrepaymentBills, input.UserBill, payment);
+                        billPaymentInfo.BillListPrepayment = res.Item1;
+                        listBills.AddRange(res.Item2);
+                        payment.UserBillPrepaymentIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                    }
+
+                    payment.BillPaymentInfo = JsonConvert.SerializeObject(billPaymentInfo);
+                    if (!input.UserBill.Properties.IsNullOrEmpty())
+                    {
+                        try
+                        {
+                            var obj = JsonConvert.DeserializeObject<dynamic>(input.UserBill.Properties);
+                            payment.CustomerName = obj.customerName;
+                        }
+                        catch { }
+                    }
+                    if (isPaymentDebt) payment.TypePayment = TypePayment.DebtBill;
+                    await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
+
+
+                    try
+                    {
+                        foreach (var item in listBills)
+                        {
+                            await CreateBillPaymentHistory(item, payment);
+                        }
+                        if (payment.Status == UserBillPaymentStatus.Success)
+                        {
+
+                            await NotifierBillPaymentSuccess(payment, (int)payment.Amount, payment.CreatorUserId.Value);
+                            await CreateApartmentHistory(payment, input.UserBill);
+                        }
+
+                    }
+                    catch
+                    {
+                    }
+
+                    return payment;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }
         }
 
-
         [RemoteService(false)]
-        public async Task<UserBillPayment> RequestThirdPartyPaymentByApartment(PayMonthlyUserBillsInput input)
+        public async Task<UserBillPaymentValidation> RequestValidationPaymentByApartment(string transactionProperties)
         {
             try
             {
+                var input = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(transactionProperties);
                 if ((input.UserBills == null || input.UserBills.Count() == 0)
                     && (input.UserBillDebts == null || input.UserBillDebts.Count() == 0)
                     && (input.PrepaymentBills == null || input.PrepaymentBills.Count() == 0)) throw new Exception("Input user bill is null");
-                var payment = new UserBillPayment()
+                var payment = new UserBillPaymentValidation()
                 {
                     Amount = input.Amount,
                     ApartmentCode = input.ApartmentCode,
@@ -181,12 +186,9 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     Period = input.Period,
                     Title = "Thanh toán hóa đơn tháng " + input.Period.ToString("MM/yyyyy"),
                     TenantId = AbpSession.TenantId,
-                    Description = input.Description,
                     BuildingId = input.UserBill.BuildingId,
                     UrbanId = input.UserBill.UrbanId,
-                    FileUrl = input.FileUrl,
-                    ImageUrl = input.ImageUrl,
-                    CreationTime = input.CreationTime
+                    TransactionProperties = transactionProperties
                 };
 
                 bool isPaymentDebt = true;
@@ -198,7 +200,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
 
                 if (input.UserBillDebts != null && input.UserBillDebts.Count() > 0)
                 {
-                    var res = await HandlePayUserBillDebts(input.UserBillDebts, payment);
+                    var res = await ValidatePayUserBillDebt(input.UserBillDebts);
                     billPaymentInfo.BillListDebt = res.Item1;
                     listBills.AddRange(res.Item2);
                     payment.UserBillDebtIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
@@ -208,45 +210,23 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 // Handle Userbill
                 if (input.UserBills != null && input.UserBills.Count() > 0)
                 {
-                    var res = await HandlePayUserBillPendings(input.UserBills, payment);
+                    var res = await ValidatePayUserBillPendings(input.UserBills);
                     billPaymentInfo.BillList = res.Item1;
                     listBills.AddRange(res.Item2);
                     payment.UserBillIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
                     isPaymentDebt = false;
                 }
 
-                // Handle prepayment
-                if (input.PrepaymentBills != null && input.PrepaymentBills.Count > 0)
-                {
-                    var res = await HandlePrepaymentVerifyPayment(input.PrepaymentBills, input.UserBill, payment);
-                    billPaymentInfo.BillListPrepayment = res.Item1;
-                    listBills.AddRange(res.Item2);
-                    payment.UserBillPrepaymentIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
-                }
-
-                payment.BillPaymentInfo = JsonConvert.SerializeObject(billPaymentInfo);
-                if (!input.UserBill.Properties.IsNullOrEmpty())
-                {
-                    try
-                    {
-                        var obj = JsonConvert.DeserializeObject<dynamic>(input.UserBill.Properties);
-                        payment.CustomerName = obj.customerName;
-                    }
-                    catch { }
-                }
                 if (isPaymentDebt) payment.TypePayment = TypePayment.DebtBill;
-                await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
-
-
+                await _userBillPaymentValidationRepo.InsertAndGetIdAsync(payment);
                 return payment;
+
             }
             catch (Exception ex)
             {
                 throw;
             }
         }
-
-
 
         [RemoteService(false)]
         public async Task UpdatePaymentSuccess(UserBillPayment payment)
@@ -434,6 +414,76 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             await _apartmentHistoryAppSerivce.CreateApartmentHistoryAsync(newHistory);
         }
 
+        private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> ValidatePayUserBillPendings(List<PayUserBillDto> userBills)
+        {
+            var listBills = new List<BillPaidDto>();
+            var bills = new List<BillPaidInfoDto>();
+            foreach (var bd in userBills)
+            {
+                var bill = await _userBillRepo.GetAsync(bd.Id);
+                if (bill == null) throw new Exception("BillDebt is not found !");
+                var billPaid = bill.MapTo<BillPaidDto>();
+                var billInfo = bill.MapTo<BillPaidInfoDto>();
+                billPaid.PayAmount = bd.PayAmount;
+                if ((int)billInfo.LastCost == (int)(bd.PayAmount))
+                {
+                    billInfo.Status = UserBillStatus.Paid;
+                    billInfo.DebtTotal = 0;
+                }
+                else if ((int)billInfo.LastCost > (int)(bd.PayAmount))
+                {
+                    billInfo.DebtTotal = (int)billInfo.LastCost - (int)bd.PayAmount;
+                    billInfo.Status = UserBillStatus.Debt;
+                }
+                else
+                {
+                    throw new Exception("PayAmount is not matching !");
+                }
+  
+                billInfo.PayAmount = billPaid.PayAmount;
+                listBills.Add(billPaid);
+                bills.Add(billInfo);
+            }
+
+            return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>(listBills, bills);
+        }
+
+        private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> ValidatePayUserBillDebt(List<PayUserBillDto> userBills)
+        {
+            var listBills = new List<BillPaidDto>();
+            var bills = new List<BillPaidInfoDto>();
+            foreach (var bd in userBills)
+            {
+                var bill = await _userBillRepo.GetAsync(bd.Id);
+                if (bill == null) throw new Exception("BillDebt is not found !");
+                var billPaid = bill.MapTo<BillPaidDto>();
+                var billInfo = bill.MapTo<BillPaidInfoDto>();
+                billPaid.PayAmount = bd.PayAmount;
+                if (billInfo.DebtTotal == null || billInfo.DebtTotal == 0) billInfo.DebtTotal = (decimal)billInfo.LastCost;
+                if ((int)billInfo.DebtTotal == (int)(bd.PayAmount))
+                {
+                    billInfo.Status = UserBillStatus.Paid;
+                    billInfo.DebtTotal = 0;
+                }
+                else if ((int)billInfo.DebtTotal > (int)(bd.PayAmount))
+                {
+                    billInfo.DebtTotal = (int)billInfo.DebtTotal - (int)bd.PayAmount;
+                    billInfo.Status = UserBillStatus.Debt;
+                }
+                else
+                {
+                    throw new Exception("PayAmount is not matching !");
+                }
+
+             
+                billInfo.PayAmount = billPaid.PayAmount;
+                listBills.Add(billPaid);
+                bills.Add(billInfo);
+            }
+
+            return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>(listBills, bills);
+        }
+
         private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> HandlePayUserBillPendings(List<PayUserBillDto> userBills, UserBillPayment payment)
         {
             var listBills = new List<BillPaidDto>();
@@ -461,8 +511,10 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 if (payment.Status == UserBillPaymentStatus.Pending)
                 {
                     bill.IsPaymentPending = true;
+                }else
+                {
+                    bill.IsPaymentPending = false;
                 }
-
                 var billInfo = bill.MapTo<BillPaidInfoDto>();
                 billInfo.PayAmount = billPaid.PayAmount;
                 listBills.Add(billPaid);
@@ -502,6 +554,10 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 if (payment.Status == UserBillPaymentStatus.Pending)
                 {
                     bill.IsPaymentPending = true;
+                }
+                else
+                {
+                    bill.IsPaymentPending = false;
                 }
                 var billInfo = bill.MapTo<BillPaidInfoDto>();
                 billInfo.PayAmount = billPaid.PayAmount;
