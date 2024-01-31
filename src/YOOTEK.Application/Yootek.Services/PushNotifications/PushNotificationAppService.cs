@@ -232,7 +232,7 @@ namespace Yootek.Services
             }
             catch (Exception e)
             {
-                throw;
+                throw new UserFriendlyException(e.ToJsonString());
             }
         }
 
