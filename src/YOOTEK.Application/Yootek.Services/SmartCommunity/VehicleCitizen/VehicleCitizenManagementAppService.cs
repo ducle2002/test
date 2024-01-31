@@ -1,34 +1,32 @@
 ﻿
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.AutoMapper;
-using Abp.Domain.Repositories;
-using Abp.UI;
-using Yootek.Common.DataResult;
-using Yootek.EntityDb;
-using System.Threading.Tasks;
-using System;
-using Abp.Linq.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
-using System.IO;
-using OfficeOpenXml;
-using Yootek.Organizations;
-using Yootek.Application;
-using Microsoft.AspNetCore.Http;
-using System.Globalization;
-using Yootek.Configuration;
 using Abp.Configuration;
-using Yootek.Common.Enum;
+using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using OfficeOpenXml;
+using Yootek.Application;
+using Yootek.Authorization.Users;
+using Yootek.Common.DataResult;
+using Yootek.Common.Enum;
+using Yootek.Configuration;
+using Yootek.EntityDb;
+using Yootek.Organizations;
 using Yootek.Services.Dto;
 using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
-using Yootek.Authorization.Users;
-using DocumentFormat.OpenXml.Spreadsheet;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
 
 namespace Yootek.Services
 {
@@ -41,7 +39,7 @@ namespace Yootek.Services
     [AbpAuthorize]
     public class VehicleCitizenManagementAppService : YootekAppServiceBase, IVehicleCitizenManagementAppService
     {
-
+        private readonly IRepository<CarCard, long> _carCardRepository;
         private readonly IRepository<CitizenVehicle, long> _citizenVehicleRepos;
         private readonly IRepository<CitizenTemp, long> _citizenTempRepos;
         private readonly ICitizenVehicleExcelExporter _excelExporter;
@@ -55,7 +53,8 @@ namespace Yootek.Services
 
 
         public VehicleCitizenManagementAppService(
-            IRepository<CitizenVehicle, long> citizenVehicleRepos,
+             IRepository<CarCard, long> carCardRepository,
+        IRepository<CitizenVehicle, long> citizenVehicleRepos,
             IRepository<CitizenTemp, long> citizenTempRepos,
             ICitizenVehicleExcelExporter excelExporter,
             IRepository<AppOrganizationUnit, long> appOrganizationUnitRepos,
@@ -66,6 +65,7 @@ namespace Yootek.Services
              ApartmentHistoryAppService apartmentHistoryAppSerivce
             )
         {
+            _carCardRepository = carCardRepository;
             _citizenVehicleRepos = citizenVehicleRepos;
             _citizenTempRepos = citizenTempRepos;
             _excelExporter = excelExporter;
@@ -595,7 +595,7 @@ namespace Yootek.Services
             }
         }
 
-       
+
         public async Task<object> CreateOrUpdateVehicleByApartment(CreateOrUpdateVehicleByApartmentDto input)
         {
             try
@@ -677,7 +677,7 @@ namespace Yootek.Services
                     }
                 }
 
-                
+
                 await CurrentUnitOfWork.SaveChangesAsync();
 
                 return DataResult.ResultSuccess("Cập nhật thành công");
@@ -1550,6 +1550,111 @@ namespace Yootek.Services
                 throw;
             }
         }
+        public async Task<object> GetVehicleById(long id)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+
+                var data = _citizenVehicleRepos.FirstOrDefault(x => x.Id == id);
+                mb.statisticMetris(t1, 0, "GetVehicleById");
+                return DataResult.ResultSuccess(data, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> UpdateVehicleRegistrationApproval(UpdateVehicleApproval input)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+                var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == input.CardNumber);
+                if (checkCarCard == null)
+                {
+
+                    var carCard = new CreateCarCardDto();
+                    carCard.VehicleCardCode = input.CardNumber;
+                    carCard.ParkingId = input.ParkingId;
+                    var carCardNew = carCard.MapTo<CarCard>();
+                    carCardNew.TenantId = AbpSession.TenantId;
+                    await _carCardRepository.InsertAsync(carCardNew);
+                }
+                var data = _citizenVehicleRepos.FirstOrDefault(x => x.Id == input.Id);
+                data.CardNumber = input.CardNumber;
+                data.RegistrationDate = input.RegistrationDate;
+                data.ExpirationDate = input.ExpirationDate;
+                data.State = CitizenVehicleState.ACCEPTED;
+                data.ParkingId = input.ParkingId;
+                data.Cost = input.Cost;
+                data = await _citizenVehicleRepos.UpdateAsync(data);
+                mb.statisticMetris(t1, 0, "UpdateVehicleRegistrationApproval");
+                return DataResult.ResultSuccess(data, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> GetTotalVehiclesApartment(TotalVehiclesApartment input)
+        {
+            try
+            {
+                long startTime = TimeUtils.GetNanoseconds();
+
+                var query = await _citizenVehicleRepos.GetAll()
+                    .Where(x =>
+                        x.ApartmentCode == input.ApartmentCode &&
+                        x.BuildingId == input.BuildingId &&
+                        x.UrbanId == input.UrbanId &&
+                        x.VehicleType == input.VehicleType && x.State == CitizenVehicleState.ACCEPTED)
+                    .ToListAsync();
+
+                var totalVehicles = query.Count + 1;
+
+                mb.statisticMetris(startTime, totalVehicles, "GetTotalVehiclesApartment");
+
+                return DataResult.ResultSuccess(totalVehicles, "Get success");
+
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+
+        public async Task<object> GetAllParkingPrices(GetAllParkingPrices input)
+        {
+            try
+            {
+                long startTime = TimeUtils.GetNanoseconds();
+                var query = _billConfigRepos.GetAll();
+                if (input.ParkingId.HasValue)
+                {
+                    query = query.Where(x => x.ParkingId == input.ParkingId || x.ParkingId == null && x.BillType == BillType.Parking);
+                }
+                else
+                {
+                    query = query.Where(x => x.BillType == BillType.Parking && x.ParkingId == null);
+                }
+
+                var result = await query.ToListAsync();
+                mb.statisticMetris(startTime, 0, "GetTotalVehiclesApartment");
+
+                return DataResult.ResultSuccess(result, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
 
     }
 }
