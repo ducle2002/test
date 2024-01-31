@@ -402,7 +402,7 @@ namespace Yootek.Notifications
         {
             try
             {
-                await SendMessageFireBaseGroup(fireBaseMessage, notificationName, messageNotification.Action, "tenant_", detailUrlApp, detailUrlWA);
+                await SendMessageFireBaseGroup(fireBaseMessage, notificationName, messageNotification.Action, "social", detailUrlApp, detailUrlWA);
             }
             catch (Exception e)
             {
