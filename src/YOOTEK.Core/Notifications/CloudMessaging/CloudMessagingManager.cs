@@ -78,20 +78,20 @@ namespace Yootek.Notifications
         {
             try
             {
-                
-                //FcmSettings settings = new FcmSettings()
-                //{
-                //    SenderId = _fcmNotificationSetting.SenderId,
-                //    ServerKey = _fcmNotificationSetting.ServerKey
-                //};
-                //HttpClient httpClient = new HttpClient();
 
-                //string authorizationKey = string.Format("key={0}", settings.ServerKey);
+                FcmSettings settings = new FcmSettings()
+                {
+                    SenderId = _fcmNotificationSetting.SenderId,
+                    ServerKey = _fcmNotificationSetting.ServerKey
+                };
+                HttpClient httpClient = new HttpClient();
 
-                //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorizationKey);
-                //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("project_id", settings.SenderId);
-                //httpClient.DefaultRequestHeaders.Accept
-                //    .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                string authorizationKey = string.Format("key={0}", settings.ServerKey);
+
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorizationKey);
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("project_id", settings.SenderId);
+                httpClient.DefaultRequestHeaders.Accept
+                    .Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var data = new FcmDeviceGroupDto()
                 {
                     Operation = "add",
@@ -101,7 +101,7 @@ namespace Yootek.Notifications
                 data.RegistrationIds.AddRange(input.Tokens);
                 var json = JsonConvert.SerializeObject(data);
                 var request = new StringContent(json, Encoding.UTF8, "application/json");
-                dynamic response = await _httpClient.PostAsync("https://fcm.googleapis.com/fcm/notification", request);
+                dynamic response = await httpClient.PostAsync("https://fcm.googleapis.com/fcm/notification", request);
                 if (response.IsSuccessStatusCode)
                 {
                     var resJson = await response.Content.ReadAsStringAsync();
@@ -123,19 +123,19 @@ namespace Yootek.Notifications
         {
             try
             {
-                //FcmSettings settings = new FcmSettings()
-                //{
-                //    SenderId = _fcmNotificationSetting.SenderId,
-                //    ServerKey = _fcmNotificationSetting.ServerKey
-                //};
-                //HttpClient httpClient = new HttpClient();
+                FcmSettings settings = new FcmSettings()
+                {
+                    SenderId = _fcmNotificationSetting.SenderId,
+                    ServerKey = _fcmNotificationSetting.ServerKey
+                };
+                HttpClient httpClient = new HttpClient();
 
-                //string authorizationKey = string.Format("key={0}", settings.ServerKey);
+                string authorizationKey = string.Format("key={0}", settings.ServerKey);
 
-                //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorizationKey);
-                //httpClient.DefaultRequestHeaders.TryAddWithoutValidation("project_id", settings.SenderId);
-                //httpClient.DefaultRequestHeaders.Accept
-                //    .Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", authorizationKey);
+                httpClient.DefaultRequestHeaders.TryAddWithoutValidation("project_id", settings.SenderId);
+                httpClient.DefaultRequestHeaders.Accept
+                    .Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 var data = new FcmDeviceGroupDto()
                 {
                     Operation = "remove",
@@ -145,7 +145,7 @@ namespace Yootek.Notifications
                 data.RegistrationIds.AddRange(input.Tokens);
                 var json = JsonConvert.SerializeObject(data);
                 var request = new StringContent(json, Encoding.UTF8, "application/json");
-                dynamic response = await _httpClient.PostAsync("https://fcm.googleapis.com/fcm/notification", request);
+                dynamic response = await httpClient.PostAsync("https://fcm.googleapis.com/fcm/notification", request);
                 if (response.IsSuccessStatusCode)
                 {
                     var resJson = await response.Content.ReadAsStringAsync();
@@ -166,41 +166,48 @@ namespace Yootek.Notifications
         public async Task<string> FcmCreateDeviceGroup(string name, List<string> tokens)
         {
             CancellationToken cancellationToken = default(CancellationToken);
-            FcmSettings settings = new FcmSettings()
+            try
             {
-                SenderId = _fcmNotificationSetting.SenderId,
-                ServerKey = _fcmNotificationSetting.ServerKey
-            };
-            //HttpClient httpClient = new HttpClient();
+                FcmSettings settings = new FcmSettings()
+                {
+                    SenderId = _fcmNotificationSetting.SenderId,
+                    ServerKey = _fcmNotificationSetting.ServerKey
+                };
+                //HttpClient httpClient = new HttpClient();
 
 
-            using HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/notification");
-            httpRequest.Headers.Add("Authorization", "key = " + settings.ServerKey);
-            if (!string.IsNullOrEmpty(settings.SenderId))
-            {
-                httpRequest.Headers.Add("Sender", "id = " + settings.SenderId);
+                using HttpRequestMessage httpRequest = new HttpRequestMessage(HttpMethod.Post, "https://fcm.googleapis.com/fcm/notification");
+                httpRequest.Headers.Add("Authorization", "key = " + settings.ServerKey);
+                if (!string.IsNullOrEmpty(settings.SenderId))
+                {
+                    httpRequest.Headers.Add("Sender", "id = " + settings.SenderId);
+                }
+
+                
+                var data = new FcmDeviceGroupDto()
+                {
+                    Operation = "create",
+                    NotificationKeyName = name
+                };
+                data.RegistrationIds.AddRange(tokens);
+                var json = JsonConvert.SerializeObject(data);
+               // var request = new StringContent(json, Encoding.UTF8, "application/json");
+                httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
+                using HttpResponseMessage response = await _httpClient.SendAsync(httpRequest, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var resJson = await response.Content.ReadAsStringAsync();
+                    dynamic result = JsonConvert.DeserializeObject(resJson);
+                    return result.notification_key;
+                }
+
+                return null;
             }
-
-
-            var data = new FcmDeviceGroupDto()
+            catch (Exception ex)
             {
-                Operation = "create",
-                NotificationKeyName = name
-            };
-            data.RegistrationIds.AddRange(tokens);
-            var json = JsonConvert.SerializeObject(data);
-            // var request = new StringContent(json, Encoding.UTF8, "application/json");
-            httpRequest.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            using HttpResponseMessage response = await _httpClient.SendAsync(httpRequest, cancellationToken);
-
-            if (response.IsSuccessStatusCode)
-            {
-                var resJson = await response.Content.ReadAsStringAsync();
-                dynamic result = JsonConvert.DeserializeObject(resJson);
-                return result.notification_key;
+                return null;
             }
-
-            return null;
         }
 
         public async Task<string> FcmGetGroupNotificationKey(string name)
