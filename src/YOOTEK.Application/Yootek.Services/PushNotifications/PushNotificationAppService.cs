@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Abp;
 using Abp.UI;
+using Abp.Json;
 
 namespace Yootek.Services
 {
@@ -44,6 +45,58 @@ namespace Yootek.Services
             _homeMemberManager = homeMemberManager;
             _cloudMessagingManager = cloudMessagingManager;
         }
+
+        public async Task<object> TestRegisterToTenant(string key)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+                var tenantGroupName = "hieu";
+              
+                var tenantGroup =
+                    await _fcmGroupRepos.FirstOrDefaultAsync(x => x.GroupName == tenantGroupName);
+                var fcmGroupKey = await _cloudMessagingManager.FcmGetGroupNotificationKey(tenantGroupName);
+                
+                if (tenantGroup == null)
+                {
+                    // Add to fcm group
+                    if (fcmGroupKey == null)
+                    {
+                        fcmGroupKey = await _cloudMessagingManager.FcmCreateDeviceGroup(tenantGroupName,
+                            new List<string>() { key });
+                    }
+
+                    // Add to db
+                    var fcmGroup = new FcmGroups()
+                    {
+                        GroupName = tenantGroupName,
+                        NotificationKey = fcmGroupKey,
+                        TenantId = AbpSession.TenantId
+                    };
+                    await _fcmGroupRepos.InsertAsync(fcmGroup);
+                }
+                else
+                {
+                    // Da co group
+                    // Add to fcm
+                    await _cloudMessagingManager.FcmAddDevicesToGroup(new FcmAddDevicesToGroupInput
+                    {
+                        Tokens = new List<string>() { key },
+                        NotificationKey = tenantGroup.NotificationKey,
+                        Name = tenantGroupName
+                    });
+                }
+
+           
+                mb.statisticMetris(t1, 0, "register_CM");
+                return DataResult.ResultSuccess("Register success!");
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException(e.ToJsonString());
+            }
+        }
+
 
         public async Task<object> RegisterToTenant(RegisterToTenantDto input)
         {
