@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using Abp;
 using Abp.UI;
 using Abp.Json;
+using System.Linq;
+using Abp.Domain.Uow;
 
 namespace Yootek.Services
 {
@@ -46,24 +48,28 @@ namespace Yootek.Services
             _cloudMessagingManager = cloudMessagingManager;
         }
 
-        public async Task<object> TestRegisterToTenant(string key)
+        public async Task<object> TestRegisterToTenant()
         {
             try
             {
-                long t1 = TimeUtils.GetNanoseconds();
-                var tenantGroupName = "hieu";
-              
+                var tenantGroupName = "social";
+                var tokens = _fcmTokenRepos.GetAll()
+                    .OrderByDescending(x => x.Id)
+                    .AsEnumerable().GroupBy(x => x.CreatorUserId)
+                    .Select(y => y.FirstOrDefault())
+                    .Select(x => x.Token).ToList();
+
                 var tenantGroup =
                     await _fcmGroupRepos.FirstOrDefaultAsync(x => x.GroupName == tenantGroupName);
                 var fcmGroupKey = await _cloudMessagingManager.FcmGetGroupNotificationKey(tenantGroupName);
-                
+
                 if (tenantGroup == null)
                 {
                     // Add to fcm group
                     if (fcmGroupKey == null)
                     {
                         fcmGroupKey = await _cloudMessagingManager.FcmCreateDeviceGroup(tenantGroupName,
-                            new List<string>() { key });
+                            tokens);
                     }
 
                     // Add to db
@@ -81,14 +87,14 @@ namespace Yootek.Services
                     // Add to fcm
                     await _cloudMessagingManager.FcmAddDevicesToGroup(new FcmAddDevicesToGroupInput
                     {
-                        Tokens = new List<string>() { key },
+                        Tokens = tokens,
                         NotificationKey = tenantGroup.NotificationKey,
                         Name = tenantGroupName
                     });
                 }
 
-           
-                mb.statisticMetris(t1, 0, "register_CM");
+
+                //mb.statisticMetris(t1, 0, "register_CM");
                 return DataResult.ResultSuccess("Register success!");
             }
             catch (Exception e)
