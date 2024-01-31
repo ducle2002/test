@@ -2,6 +2,8 @@
 using Yootek.EntityDb;
 using Yootek.Organizations.Interface;
 using System.Collections.Generic;
+using Yootek.Common.Enum;
+using Yootek.Services.SmartCommunity.ExcelBill.Dto;
 
 namespace Yootek.Services.Dto
 {
@@ -9,11 +11,11 @@ namespace Yootek.Services.Dto
     public class CreateApartmentInput : IMayHaveUrban, IMayHaveBuilding
     {
         public string Name { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public string ApartmentCode { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
-        public string Properties { get; set; }
+        public string? Properties { get; set; }
         public decimal? Area { get; set; }
         public long? BlockId { get; set; }
         public long? FloorId { get; set; }
@@ -29,7 +31,7 @@ namespace Yootek.Services.Dto
     }
     public class BillConfigProperties
     {
-        public int? BillType { get; set; }
-        public long? BillConfigId { get; set; }
+        public BillType? BillType { get; set; }
+        public BillProperites? Properties { get; set; }
     }
 }

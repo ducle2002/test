@@ -27,9 +27,15 @@ namespace Yootek.Services
 
     public class HandPaymentForThirdPartyInput
     {
+        public int Id { get; set; }
         public long PaymentId { get; set; }
         public EPrepaymentStatus Status { get; set; }
         public int? TenantId { get; set; }
+    }
+
+    public class RequestValidationInput
+    {
+        public long TransactionId { get; set; }
     }
 
     public enum EPrepaymentStatus

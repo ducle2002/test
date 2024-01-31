@@ -34,6 +34,12 @@ namespace Yootek.Services.SmartCommunity.ExcelBill.Dto
 
 
     }
+    public class ListBillConfigProperties
+    {
+        public BillProperites? Properties { get; set; }
+        public BillType? BillType { get; set; }
+
+    }
 
     public class BillParkingProperties : BillProperites
     {

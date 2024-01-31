@@ -1,34 +1,32 @@
 ﻿
 
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.AutoMapper;
-using Abp.Domain.Repositories;
-using Abp.UI;
-using Yootek.Common.DataResult;
-using Yootek.EntityDb;
-using System.Threading.Tasks;
-using System;
-using Abp.Linq.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
-using System.IO;
-using OfficeOpenXml;
-using Yootek.Organizations;
-using Yootek.Application;
-using Microsoft.AspNetCore.Http;
-using System.Globalization;
-using Yootek.Configuration;
 using Abp.Configuration;
-using Yootek.Common.Enum;
+using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using OfficeOpenXml;
+using Yootek.Application;
+using Yootek.Authorization.Users;
+using Yootek.Common.DataResult;
+using Yootek.Common.Enum;
+using Yootek.Configuration;
+using Yootek.EntityDb;
+using Yootek.Organizations;
 using Yootek.Services.Dto;
 using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
-using Yootek.Authorization.Users;
-using DocumentFormat.OpenXml.Spreadsheet;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
 
 namespace Yootek.Services
 {
@@ -41,7 +39,7 @@ namespace Yootek.Services
     [AbpAuthorize]
     public class VehicleCitizenManagementAppService : YootekAppServiceBase, IVehicleCitizenManagementAppService
     {
-
+        private readonly IRepository<CarCard, long> _carCardRepository;
         private readonly IRepository<CitizenVehicle, long> _citizenVehicleRepos;
         private readonly IRepository<CitizenTemp, long> _citizenTempRepos;
         private readonly ICitizenVehicleExcelExporter _excelExporter;
@@ -55,7 +53,8 @@ namespace Yootek.Services
 
 
         public VehicleCitizenManagementAppService(
-            IRepository<CitizenVehicle, long> citizenVehicleRepos,
+             IRepository<CarCard, long> carCardRepository,
+        IRepository<CitizenVehicle, long> citizenVehicleRepos,
             IRepository<CitizenTemp, long> citizenTempRepos,
             ICitizenVehicleExcelExporter excelExporter,
             IRepository<AppOrganizationUnit, long> appOrganizationUnitRepos,
@@ -66,6 +65,7 @@ namespace Yootek.Services
              ApartmentHistoryAppService apartmentHistoryAppSerivce
             )
         {
+            _carCardRepository = carCardRepository;
             _citizenVehicleRepos = citizenVehicleRepos;
             _citizenTempRepos = citizenTempRepos;
             _excelExporter = excelExporter;
@@ -595,7 +595,7 @@ namespace Yootek.Services
             }
         }
 
-       
+
         public async Task<object> CreateOrUpdateVehicleByApartment(CreateOrUpdateVehicleByApartmentDto input)
         {
             try
@@ -677,7 +677,7 @@ namespace Yootek.Services
                     }
                 }
 
-                
+
                 await CurrentUnitOfWork.SaveChangesAsync();
 
                 return DataResult.ResultSuccess("Cập nhật thành công");
@@ -942,6 +942,17 @@ namespace Yootek.Services
 
         protected VehicleType GetVehicleTypeNumber(string type)
         {
+            if (type.ToLower().Contains("electric car")
+               || type.ToLower().Contains("ô tô điện")
+               || type.ToLower().Contains("전기차".ToLower())) return VehicleType.ElectricCar;
+            if (type.ToLower().Contains("electric motorcycle")
+                || type.ToLower().Contains("electric motorbike")
+                || type.ToLower().Contains("xe máy điện")
+                || type.ToLower().Contains("전기 오토바이".ToLower())) return VehicleType.ElectricMotor;
+            if (type.ToLower().Contains("Electric Bicycle")
+                || type.ToLower().Contains("electric bike")
+                || type.ToLower().Contains("xe đạp điện")
+                || type.ToLower().Contains("전기 자전거".ToLower())) return VehicleType.ElectricBike;
             if (type.ToLower().Contains("car")
                 || type.ToLower().Contains("ô tô")
                 || type.ToLower().Contains("자동차".ToLower())) return VehicleType.Car;
@@ -1039,7 +1050,7 @@ namespace Yootek.Services
                     if (worksheet.Cells[row, COL_PARKING_LOT_CODE].Value != null)
                     {
                         var parkingIDstr = worksheet.Cells[row, COL_PARKING_LOT_CODE].Value.ToString().Trim();
-                        citizenVehicle.ParkingId = (await _parkingRepos.FirstOrDefaultAsync(x => x.ParkingCode == parkingIDstr))?.Id;
+                        citizenVehicle.ParkingId = (await _parkingRepos.FirstOrDefaultAsync(x => x.ParkingCode == parkingIDstr))?.Id ?? 0;
                     }
 
                     if (worksheet.Cells[row, COL_CARD_NUMBER].Value != null)
@@ -1099,8 +1110,17 @@ namespace Yootek.Services
                                         case VehicleType.Bicycle:
                                             citizenVehicle.Cost = properties.Prices[2].Value;
                                             break;
-                                        case VehicleType.Other:
+                                        case VehicleType.ElectricCar:
                                             citizenVehicle.Cost = properties.Prices[3].Value;
+                                            break;
+                                        case VehicleType.ElectricMotor:
+                                            citizenVehicle.Cost = properties.Prices[4].Value;
+                                            break;
+                                        case VehicleType.ElectricBike:
+                                            citizenVehicle.Cost = properties.Prices[5].Value;
+                                            break;
+                                        case VehicleType.Other:
+                                            citizenVehicle.Cost = properties.Prices[6].Value;
                                             break;
                                         default:
                                             break;
@@ -1167,17 +1187,32 @@ namespace Yootek.Services
                         var bikePrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Bicycle && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
                             priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Bicycle && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
                             priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Bicycle);
+                        var eCarPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricCar && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
+                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricCar && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
+                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricCar);
+                        var eMotorPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricMotor && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
+                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricMotor && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
+                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricMotor);
+                        var eBikePrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricBike && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
+                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricBike && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
+                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricBike);
                         var otherPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Other && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
                             priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Other && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
                             priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Other);
 
                         var carProperties = new BillConfigPropertiesDto();
+                        var eCarProperties = new BillConfigPropertiesDto();
                         var bikeProperties = new BillConfigPropertiesDto();
+                        var eBikeProperties = new BillConfigPropertiesDto();
                         var motorProperties = new BillConfigPropertiesDto();
+                        var eMotorProperties = new BillConfigPropertiesDto();
                         var otherProperties = new BillConfigPropertiesDto();
                         var maxCar = 1;
+                        var maxECar = 1;
                         var maxMotor = 1;
+                        var maxEMotor = 1;
                         var maxBike = 1;
+                        var maxEBike = 1;
                         var maxOther = 1;
 
                         try
@@ -1209,6 +1244,35 @@ namespace Yootek.Services
                         {
                             motorProperties = null;
                         }
+                        try
+                        {
+                            eCarProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(eCarPrice.Properties);
+                            maxECar = eCarProperties.Prices.Max(x => x.From).Value;
+                        }
+                        catch
+                        {
+                            eCarProperties = null;
+                        }
+
+                        try
+                        {
+                            eBikeProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(eBikePrice.Properties);
+                            maxEBike = eBikeProperties.Prices.Max(x => x.From).Value;
+                        }
+                        catch
+                        {
+                            eBikeProperties = null;
+                        }
+
+                        try
+                        {
+                            eMotorProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(eMotorPrice.Properties);
+                            maxEMotor = eMotorProperties.Prices.Max(x => x.From).Value;
+                        }
+                        catch
+                        {
+                            eMotorProperties = null;
+                        }
 
                         try
                         {
@@ -1221,12 +1285,18 @@ namespace Yootek.Services
                         }
 
                         var iCar = 0;
+                        var iECar = 0;
                         var iMotor = 0;
+                        var iEMotor = 0;
                         var iBike = 0;
+                        var iEBike = 0;
                         var iOther = 0;
                         var cCar = 0;
+                        var cECar = 0;
                         var cMotor = 0;
+                        var cEMotor = 0;
                         var cBike = 0;
+                        var cEBike = 0;
                         var cOther = 0;
                         foreach (var vehicle in item.Value)
                         {
@@ -1328,6 +1398,102 @@ namespace Yootek.Services
                                     }
                                     else vehicle.Cost = 0;
                                     break;
+                                case VehicleType.ElectricCar:
+                                    if (eCarProperties != null)
+                                    {
+                                        try
+                                        {
+                                            iECar++;
+                                            var eCarPkgPros = eCarProperties;
+
+                                            if (vehicle.ParkingId > 0)
+                                            {
+                                                var pkgPrice = priceP.Where(x => x.ParkingId == vehicle.ParkingId).FirstOrDefault();
+                                                try
+                                                {
+                                                    eCarPkgPros = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(pkgPrice.Properties);
+                                                    maxECar = eCarPkgPros.Prices.Max(x => x.From).Value;
+                                                }
+                                                catch
+                                                {
+                                                    pkgPrice = null;
+                                                }
+                                            }
+
+
+                                            if (iECar < maxECar)
+                                            {
+                                                var p = eCarPkgPros.Prices.FirstOrDefault(x => x.From == iECar);
+                                                cECar = (int)p.Value;
+
+                                            }
+                                            else
+                                            {
+                                                var p = eCarPkgPros.Prices.FirstOrDefault(x => x.From == maxECar);
+                                                cECar = (int)p.Value;
+                                            }
+
+                                        }
+                                        catch { }
+                                        vehicle.Cost = cECar;
+                                        vehicle.Level = iECar;
+                                    }
+                                    else vehicle.Cost = 0;
+                                    break;
+                                case VehicleType.ElectricMotor:
+                                    if (eMotorProperties != null)
+                                    {
+                                        iEMotor++;
+                                        if (iEMotor < maxEMotor)
+                                        {
+                                            var p = eMotorProperties.Prices.FirstOrDefault(x => x.From == iEMotor);
+                                            if (p != null)
+                                            {
+                                                cEMotor = (int)p.Value;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            var p = eMotorProperties.Prices.FirstOrDefault(x => x.From == maxEMotor);
+                                            if (p != null)
+                                            {
+                                                cEMotor = (int)p.Value;
+                                            }
+                                        }
+
+                                        vehicle.Cost = cEMotor;
+                                        vehicle.Level = iEMotor;
+                                    }
+                                    else vehicle.Cost = 0;
+                                    break;
+                                case VehicleType.ElectricBike:
+                                    if (eBikeProperties != null)
+                                    {
+                                        iEBike++;
+                                        if (iEBike < maxEBike)
+                                        {
+                                            var p = eBikeProperties.Prices.FirstOrDefault(x => x.From == iEBike);
+                                            if (p != null)
+                                            {
+                                                cEBike = (int)p.Value;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            var p = eBikeProperties.Prices.FirstOrDefault(x => x.From == maxEBike);
+                                            if (p != null)
+                                            {
+                                                cEBike = (int)p.Value;
+                                            }
+                                        }
+
+                                        vehicle.Cost = cEBike;
+                                        vehicle.Level = iEBike;
+                                    }
+                                    else vehicle.Cost = 0;
+                                    break;
                                 case VehicleType.Other:
                                     if (otherProperties != null)
                                     {
@@ -1384,6 +1550,111 @@ namespace Yootek.Services
                 throw;
             }
         }
+        public async Task<object> GetVehicleById(long id)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+
+                var data = _citizenVehicleRepos.FirstOrDefault(x => x.Id == id);
+                mb.statisticMetris(t1, 0, "GetVehicleById");
+                return DataResult.ResultSuccess(data, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> UpdateVehicleRegistrationApproval(UpdateVehicleApproval input)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+                var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == input.CardNumber);
+                if (checkCarCard == null)
+                {
+
+                    var carCard = new CreateCarCardDto();
+                    carCard.VehicleCardCode = input.CardNumber;
+                    carCard.ParkingId = input.ParkingId;
+                    var carCardNew = carCard.MapTo<CarCard>();
+                    carCardNew.TenantId = AbpSession.TenantId;
+                    await _carCardRepository.InsertAsync(carCardNew);
+                }
+                var data = _citizenVehicleRepos.FirstOrDefault(x => x.Id == input.Id);
+                data.CardNumber = input.CardNumber;
+                data.RegistrationDate = input.RegistrationDate;
+                data.ExpirationDate = input.ExpirationDate;
+                data.State = CitizenVehicleState.ACCEPTED;
+                data.ParkingId = input.ParkingId;
+                data.Cost = input.Cost;
+                data = await _citizenVehicleRepos.UpdateAsync(data);
+                mb.statisticMetris(t1, 0, "UpdateVehicleRegistrationApproval");
+                return DataResult.ResultSuccess(data, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> GetTotalVehiclesApartment(TotalVehiclesApartment input)
+        {
+            try
+            {
+                long startTime = TimeUtils.GetNanoseconds();
+
+                var query = await _citizenVehicleRepos.GetAll()
+                    .Where(x =>
+                        x.ApartmentCode == input.ApartmentCode &&
+                        x.BuildingId == input.BuildingId &&
+                        x.UrbanId == input.UrbanId &&
+                        x.VehicleType == input.VehicleType && x.State == CitizenVehicleState.ACCEPTED)
+                    .ToListAsync();
+
+                var totalVehicles = query.Count + 1;
+
+                mb.statisticMetris(startTime, totalVehicles, "GetTotalVehiclesApartment");
+
+                return DataResult.ResultSuccess(totalVehicles, "Get success");
+
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+
+        public async Task<object> GetAllParkingPrices(GetAllParkingPrices input)
+        {
+            try
+            {
+                long startTime = TimeUtils.GetNanoseconds();
+                var query = _billConfigRepos.GetAll();
+                if (input.ParkingId.HasValue)
+                {
+                    query = query.Where(x => x.ParkingId == input.ParkingId || x.ParkingId == null && x.BillType == BillType.Parking);
+                }
+                else
+                {
+                    query = query.Where(x => x.BillType == BillType.Parking && x.ParkingId == null);
+                }
+
+                var result = await query.ToListAsync();
+                mb.statisticMetris(startTime, 0, "GetTotalVehiclesApartment");
+
+                return DataResult.ResultSuccess(result, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
 
     }
 }
