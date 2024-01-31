@@ -17,9 +17,6 @@ using System.Threading.Tasks;
 using Abp.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Abp.Runtime.Session;
-using MimeKit;
-using Microsoft.AspNetCore.Http;
-using static System.Net.WebRequestMethods;
 using System.Threading;
 
 namespace Yootek.Notifications
@@ -32,7 +29,6 @@ namespace Yootek.Notifications
         private readonly FcmNotificationDojilandSetting _fcmNotificationDojiSetting;
         private readonly HttpClient _httpClient;
         private IAbpSession _abpSession;
-
 
         public CloudMessagingManager(
             IOptions<FcmNotificationSetting> settings,

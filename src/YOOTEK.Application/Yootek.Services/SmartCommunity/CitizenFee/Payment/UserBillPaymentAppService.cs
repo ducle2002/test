@@ -62,10 +62,10 @@ namespace Yootek.Services
             return payment;
         }
 
-        public async Task RequestValidationUserBillPaymentOnSuccess(long transactionId)
+        public async Task RequestValidationUserBillPaymentOnSuccess(RequestValidationInput input)
         {
             var tenantId = AbpSession.TenantId;
-            var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(transactionId);
+            var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
             if (validate != null && !validate.UserBillIds.IsNullOrEmpty())
             {
                 await UpdatePaymentPendingUserBills(validate.UserBillIds, true, UserBillStatus.Pending, tenantId);

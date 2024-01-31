@@ -33,6 +33,11 @@ namespace Yootek.Services
         public int? TenantId { get; set; }
     }
 
+    public class RequestValidationInput
+    {
+        public long TransactionId { get; set; }
+    }
+
     public enum EPrepaymentStatus
     {
         PENDING = 1,
