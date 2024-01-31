@@ -7,6 +7,7 @@ using Yootek.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
+using Abp.Timing;
 
 namespace Yootek.Web.Host.Startup
 {
@@ -29,6 +30,7 @@ namespace Yootek.Web.Host.Startup
         public override void PreInitialize()
         {
             // Configuration.BackgroundJobs.UseHangfire();
+            Clock.Provider = ClockProviders.Utc;
         }
 
 
