@@ -683,13 +683,23 @@ namespace Yootek.Services
                             detailUrlWA
                             );
 
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                 "Yoolife phản ánh số!",
-                 $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                 detailUrlApp,
-                 detailUrlWA,
-                 admin.ToArray(),
-               messageDeclined);
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife phản ánh số!",
+                $"{creatorName} đã tạo một phản ánh mới. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                admin.ToArray(),
+                messageDeclined,
+                AppType.USER
+                );
+
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //      "Yoolife phản ánh số!",
+            //      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+            //      detailUrlApp,
+            //      detailUrlWA,
+            //      admin.ToArray(),
+            //    messageDeclined);
 
 
         }

@@ -44,13 +44,9 @@ namespace Yootek.Users.Dto
 
         [StringLength(256)]
         public string ImageUrl { get; set; }
-        public long? PhanKhuId { get; set; }
-        public long? HouseId { get; set; }
+        public string CoverImageUrl { get; set; }
 
         public string IdentityNumber { get; set; }
-
-        public string QRCodeBase64 { get; set; }
-        public int StateFriend { get; set; }
     }
 
     public class GetStatisticsUserInput

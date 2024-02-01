@@ -30,6 +30,7 @@ using Yootek.Services.Dto;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Yootek.Common.Enum.CommonENum;
+using Abp.Authorization;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -327,10 +328,10 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 switch (input.Status)
                 {
                     case UserBillPaymentStatus.Success:
-                        await HandlePaymentUserBill(userBillPayment);
+                        await _handlePaymentUtilAppService.UpdatePaymentSuccess(userBillPayment);
                         break;
                     case UserBillPaymentStatus.Fail:
-                        await CancelPaymentUserBill(userBillPayment);
+                        await _handlePaymentUtilAppService.CancelPaymentUserBill(userBillPayment);
 
                         break;
                     default:
@@ -339,6 +340,39 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 }
 
                 return DataResult.ResultSuccess("Update success");
+            }
+            catch (Exception ex)
+            {
+                var data = DataResult.ResultError(ex.Message, "Error");
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
+
+        [AbpAllowAnonymous]
+        public async Task<object> InternalSetUserBillPaymentStatus(InternalSetBillPaymentStatusInput input)
+        {
+            try
+            {
+                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                {
+                    var userBillPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(input.Id);
+                    switch (input.Status)
+                    {
+                        case UserBillPaymentStatus.Success:
+                            await _handlePaymentUtilAppService.UpdatePaymentSuccess(userBillPayment);
+                            break;
+                        case UserBillPaymentStatus.Fail:
+                            await _handlePaymentUtilAppService.CancelPaymentUserBill(userBillPayment);
+
+                            break;
+                        default:
+                            break;
+
+                    }
+
+                    return DataResult.ResultSuccess("Update success");
+                }
             }
             catch (Exception ex)
             {
@@ -515,30 +549,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 throw;
             }
         }
-
-        private bool CheckDebtVerifyPayment(int totalCost, int amount)
-        {
-            return false;
-        }
-
-        private async Task<long[]> HandleUserBillVerifyPayment(long[] userBillDebts)
-        {
-            List<long> ids = new List<long>();
-
-            foreach (var id in userBillDebts)
-            {
-                ids.Add(id);
-                var bill = await _userBillRepo.GetAsync(id);
-                if (bill != null)
-                {
-                    bill.Status = UserBillStatus.Paid;
-
-                }
-            }
-            await CurrentUnitOfWork.SaveChangesAsync();
-            return ids.ToArray();
-        }
-
         private async Task<long[]> HandleBillDebtVerifyPayment(long[] userBillDebts)
         {
             List<long> ids = new List<long>();
@@ -699,7 +709,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 var payment = await _userBillPaymentRepo.GetAsync(id);
                 if (payment == null) return DataResult.ResultSuccess(null, "Delete success");
                 payment.IsRecover = true;
-                await HandleUserBillRecoverPayment(payment);
+                await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(payment);
                 await _userBillPaymentRepo.DeleteAsync(id);
                 var data = DataResult.ResultSuccess(null, "Delete success");
                 return data;
@@ -712,91 +722,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             }
         }
 
-        private async Task HandleUserBillRecoverPayment(UserBillPayment payment)
-        {
-            if (payment.TypePayment == TypePayment.Bill || payment.TypePayment == TypePayment.DebtBill)
-            {
-                var billPaymentInfo = new BillPaymentInfo();
-                if (!payment.BillPaymentInfo.IsNullOrEmpty())
-                {
-                    try
-                    {
-                        billPaymentInfo = JsonConvert.DeserializeObject<BillPaymentInfo>(payment.BillPaymentInfo);
-                    }
-                    catch { }
-                }
-
-
-                if (!payment.UserBillIds.IsNullOrEmpty())
-                {
-
-                    if (billPaymentInfo.BillList != null)
-                    {
-                        foreach (var bill in billPaymentInfo.BillList)
-                        {
-                            var userBill = _userBillRepo.FirstOrDefault(bill.Id);
-                            if (userBill == null) continue;
-                            userBill.Status = bill.Status;
-                            userBill.DebtTotal = bill.DebtTotal;
-                            userBill.IsPaymentPending = false;
-
-                        }
-                    }
-                    else
-                    {
-                        var billIds = payment.UserBillIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
-                        var bills = await _userBillRepo.GetAllListAsync(x => billIds.Contains(x.Id));
-                        foreach (var bill in bills)
-                        {
-                            bill.Status = UserBillStatus.Pending;
-                            bill.IsPaymentPending = false;
-                        }
-                    }
-                }
-
-                if (!payment.UserBillDebtIds.IsNullOrEmpty())
-                {
-                    if (billPaymentInfo.BillListDebt != null)
-                    {
-                        foreach (var bill in billPaymentInfo.BillListDebt)
-                        {
-                            var userBill = _userBillRepo.FirstOrDefault(bill.Id);
-                            if (userBill == null) continue;
-                            userBill.Status = bill.Status;
-                            userBill.DebtTotal = bill.DebtTotal;
-                            userBill.IsPaymentPending = false;
-                        }
-                    }
-                    else
-                    {
-                        var ids = payment.UserBillDebtIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
-                        var debts = await _userBillRepo.GetAllListAsync(x => ids.Contains(x.Id));
-                        foreach (var bill in debts)
-                        {
-                            bill.Status = UserBillStatus.Debt;
-                            bill.IsPaymentPending = false;
-                        }
-                    }
-
-                }
-
-                if (!payment.UserBillPrepaymentIds.IsNullOrEmpty())
-                {
-                    var ids = payment.UserBillPrepaymentIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
-                    await _userBillRepo.DeleteAsync(x => ids.Contains(x.Id));
-
-                }
-
-                try
-                {
-                    await _billPaymentHistoryRepos.DeleteAsync(x => x.PaymentId == payment.Id);
-                }
-                catch { }
-                await CurrentUnitOfWork.SaveChangesAsync();
-
-            }
-
-        }
         protected Task<List<BillPaidDto>> SplitBills(string input)
         {
             var billIds = input.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
@@ -838,13 +763,22 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                                "",
                                0
                                );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                 $"Thông báo thanh toán hóa đơn !",
-                 $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {string.Format("{0:#,#.##}", amount)} VNĐ",
-                 detailUrlApp,
-                 detailUrlWA,
-                 new UserIdentifier[] { new UserIdentifier(bill.TenantId, userId) },
-                 messageSuccess);
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Thông báo thanh toán hóa đơn !",
+                $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {string.Format("{0:#,#.##}", amount)} VNĐ",
+                detailUrlApp,
+                detailUrlWA,
+                new UserIdentifier[] { new UserIdentifier(bill.TenantId, userId) },
+                messageSuccess,
+                AppType.USER
+                );
+            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+            //      $"Thông báo thanh toán hóa đơn !",
+            //      $"Bạn đã thanh toán hóa đơn thành công ! Tổng số tiền đã thanh toán : {string.Format("{0:#,#.##}", amount)} VNĐ",
+            //      detailUrlApp,
+            //      detailUrlWA,
+            //      new UserIdentifier[] { new UserIdentifier(bill.TenantId, userId) },
+            //      messageSuccess);
         }
 
         private async Task NotifierBillPaymentCancel(UserBillPayment bill)
@@ -862,13 +796,22 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                                    detailUrlApp,
                                    detailUrlWA
                                    );
-                await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                     $"Thông báo thanh toán !",
-                      $"Yêu cầu thanh toán của bạn đã bị từ chối",
-                      detailUrlApp,
-                      detailUrlWA,
-                     new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.CreatorUserId.Value) },
-                     messageSuccess);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    $"Thông báo thanh toán !",
+                    $"Yêu cầu thanh toán của bạn đã bị từ chối",
+                    detailUrlApp,
+                    detailUrlWA,
+                    new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.CreatorUserId.Value) },
+                    messageSuccess,
+                    AppType.USER
+                );
+                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
+                //      $"Thông báo thanh toán !",
+                //       $"Yêu cầu thanh toán của bạn đã bị từ chối",
+                //       detailUrlApp,
+                //       detailUrlWA,
+                //      new UserIdentifier[] { new UserIdentifier(bill.TenantId, bill.CreatorUserId.Value) },
+                //      messageSuccess);
             }
             catch { }
         }
@@ -935,164 +878,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
         }
 
-
-        private async Task HandlePaymentUserBill(UserBillPayment payment)
-        {
-
-            var nowTime = DateTime.Now;
-            payment.Status = UserBillPaymentStatus.Success;
-            await _userBillPaymentRepo.UpdateAsync(payment);
-
-            // Handle Userbill
-            if (payment.UserBillIds != null)
-            {
-                var billIds = payment.UserBillIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
-                var userBills = _userBillRepo.GetAll().Where(x => billIds.Contains(x.Id))
-                  .ToList();
-
-                foreach (var userBill in userBills)
-                {
-                    userBill.IsPaymentPending = false;
-                }
-
-                await CurrentUnitOfWork.SaveChangesAsync();
-
-            }
-
-            // Handle billDebt
-
-            if (payment.UserBillDebtIds != null)
-            {
-                var billIds = payment.UserBillDebtIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
-                var userBills = _userBillRepo.GetAll().Where(x => billIds.Contains(x.Id))
-                  .ToList();
-
-                foreach (var userBill in userBills)
-                {
-                    userBill.IsPaymentPending = false;
-                }
-
-                await CurrentUnitOfWork.SaveChangesAsync();
-            }
-
-            //Handle prepayment
-            if (!payment.UserBillPrepaymentIds.IsNullOrEmpty())
-            {
-                var ids = payment.UserBillPrepaymentIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
-                var userBills = _userBillRepo.GetAll().Where(x => ids.Contains(x.Id))
-                  .ToList();
-
-                foreach (var userBill in userBills)
-                {
-                    userBill.IsPaymentPending = false;
-                }
-                await CurrentUnitOfWork.SaveChangesAsync();
-            }
-
-            try
-            {
-                await NotifierBillPaymentSuccess(payment, (int)payment.Amount, payment.CreatorUserId.Value);
-            }
-            catch
-            {
-            }
-        }
-
-
-        private async Task CancelPaymentUserBill(UserBillPayment payment)
-        {
-
-            var nowTime = DateTime.Now;
-            payment.Status = UserBillPaymentStatus.Cancel;
-            await _userBillPaymentRepo.UpdateAsync(payment);
-            await HandleUserBillRecoverPayment(payment);
-
-            try
-            {
-                await NotifierBillPaymentCancel(payment);
-            }
-            catch
-            {
-            }
-
-        }
-
-        private async Task HandleUserBillDebt(List<UserBill> bills, double amount, long paymnentId)
-        {
-            try
-            {
-                var userBillIds = bills.Select(x => x.Id).ToList();
-                if (bills == null || bills.Count == 0) { return; }
-                var totalCost = bills.Sum(x => x.LastCost);
-                if (totalCost == 0) { return; }
-                //paid 100%
-                if (totalCost == amount && userBillIds.Count() == bills.Count())
-                {
-                    return;
-                }
-                else if (totalCost > amount)
-                {
-                    var debt = new BillDebt()
-                    {
-                        ApartmentCode = bills[0].ApartmentCode,
-                        BillPaymentId = paymnentId,
-                        CitizenTempId = bills[0].CitizenTempId,
-                        DebtTotal = totalCost - amount,
-                        UserBillIds = string.Join(",", userBillIds),
-                        PaidAmount = amount,
-                        Period = DateTime.Now,
-                        State = DebtState.DEBT,
-                        TenantId = bills[0].TenantId,
-                        Title = $"Công nợ hóa đơn tháng {DateTime.Now.Month}/{DateTime.Now.Year}",
-                        UrbanId = bills[0].UrbanId,
-                        BuildingId = bills[0].BuildingId
-                    };
-                    await _billDebtRepo.InsertAsync(debt);
-
-                    foreach (var userBill in bills)
-                    {
-                        userBill.Status = UserBillStatus.Debt;
-                    }
-
-                    await CurrentUnitOfWork.SaveChangesAsync();
-                }
-                else if (totalCost < amount)
-                {
-                    var debt = new BillDebt()
-                    {
-                        ApartmentCode = bills[0].ApartmentCode,
-                        BillPaymentId = paymnentId,
-                        CitizenTempId = bills[0].CitizenTempId,
-                        DebtTotal = amount - totalCost,
-                        UserBillIds = string.Join(",", userBillIds),
-                        Period = DateTime.Now,
-                        State = DebtState.REDUNDANT,
-                        TenantId = bills[0].TenantId,
-                        PaidAmount = amount,
-                        Title = $"Công nợ hóa đơn tháng {DateTime.Now.Month}/{DateTime.Now.Year}",
-                        UrbanId = bills[0].UrbanId,
-                        BuildingId = bills[0].BuildingId
-                    };
-                    await _billDebtRepo.InsertAsync(debt);
-
-                    foreach (var userBill in bills)
-                    {
-                        userBill.Status = UserBillStatus.Paid;
-                    }
-
-                    await CurrentUnitOfWork.SaveChangesAsync();
-                }
-                //var ids = new List<long>();
-
-                //if (!string.IsNullOrEmpty(userBillIds)) ids = JsonConvert.DeserializeObject<List<long>>(userBillIds);
-
-                //var billnotPaids = bills.Where(x => !ids.Contains(x.Id)).ToList();
-            }
-            catch (Exception e)
-            {
-
-            }
-        }
 
         private async Task<string> UpdatePaymentCode(AdminUserBillPaymentOutputDto pm)
         {

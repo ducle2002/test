@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using Abp.Application.Services;
 using Abp.AutoMapper;
 using Abp.Collections.Extensions;
@@ -18,11 +18,16 @@ using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Yootek.Common.Enum;
+using Yootek.Services.SmartCommunity.ExcelBill.Dto;
+using DocumentFormat.OpenXml.Vml;
+using System.IO;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace Yootek.Services
 {
@@ -101,7 +106,8 @@ namespace Yootek.Services
                                                             BlockName = _blockRepository.GetAll().Where(x => x.Id == apartment.BlockId).Select(x => x.DisplayName).FirstOrDefault(),
                                                             FloorId = apartment.FloorId,
                                                             FloorName = _floorRepository.GetAll().Where(x => x.Id == apartment.FloorId).Select(x => x.DisplayName).FirstOrDefault(),
-                                                            // BillConfigId = _billConfigRepo.GetAll().Where(x => apartment.BillConfigId.Contains(x.Id)).Select(x => x.Id).ToArray()
+                                                            BillConfig = apartment.BillConfig,
+                                                            
                                                         })
                          .WhereIf(input.StatusId.HasValue, x => x.StatusId == input.StatusId)
                          .WhereIf(input.TypeId.HasValue, x => x.TypeId == input.TypeId)
@@ -166,17 +172,23 @@ namespace Yootek.Services
                 CitizenTemp owner = GetOwner(apartmentDto.ApartmentCode).FirstOrDefault();
                 apartmentDto.OwnerName = owner?.FullName;
                 apartmentDto.OwnerPhoneNumber = owner?.PhoneNumber;
-                 if (apartment.BillConfigId != null)
-                {
-                    apartmentDto.BillConfigDetail = _billConfigRepo.GetAll()
-                            .Where(x => apartment.BillConfigId.Contains(x.Id))
-                            .Select(x => new GetAllBillConfigDto
-                            {
-                                BillConfigId = x.Id,
-                                BillType = x.BillType
 
-                            }).ToList();
+                if (apartment.BillConfig != null)
+                {
+                    var billConfigList = JsonConvert.DeserializeObject<List<BillConfigProperties>>(apartment.BillConfig);
+
+                    List<GetAllBillConfigDto> listBillConfig = billConfigList
+                        .Select(billConfig =>
+                            new GetAllBillConfigDto
+                            {
+                                BillType = billConfig.BillType,
+                                Properties = billConfig.Properties,
+                            })
+                        .ToList();
+
+                    apartmentDto.ListBillConfig = listBillConfig;
                 }
+
 
                 return DataResult.ResultSuccess(apartmentDto, "Get apartment detail success!");
             }
@@ -186,16 +198,20 @@ namespace Yootek.Services
                 throw;
             }
         }
+
+
         public async Task<DataResult> CreateApartment(CreateApartmentInput input)
         {
             try
             {
                 Apartment? apartmentOrg = await _apartmentRepository.FirstOrDefaultAsync(x => x.ApartmentCode == input.ApartmentCode);
                 if (apartmentOrg != null) throw new UserFriendlyException(409, "Apartment is exist");
+                string? billConfigJson = input.ListBillConfig != null ? JsonConvert.SerializeObject(input.ListBillConfig) : null;
                 Apartment apartment = input.MapTo<Apartment>();
                 apartment.TenantId = AbpSession.TenantId;
-                apartment.BillConfigId = input.ListBillConfig?.Select(x => x.BillConfigId ?? 0).ToArray();
+                apartment.BillConfig = billConfigJson;
 
+                
                 await _apartmentRepository.InsertAsync(apartment);
                 return DataResult.ResultSuccess(true, "Insert success!");
             }
@@ -217,8 +233,13 @@ namespace Yootek.Services
                 {
                     throw new UserFriendlyException("Code is existed!");
                 };
+                string billConfigJson = JsonConvert.SerializeObject(input.ListBillConfig);
+                apartmentOrg.BillConfig = billConfigJson;
+
+
+                
                 ObjectMapper.Map(input, apartmentOrg);
-                apartmentOrg.BillConfigId = input.BillConfigDetail?.Select(x => x.BillConfigId ?? 0).ToArray();
+                //  apartmentOrg.BillConfigId = input.BillConfigDetail?.Select(x => x.BillConfigId ?? 0).ToArray();
 
                 await _apartmentRepository.UpdateAsync(apartmentOrg);
                 return DataResult.ResultSuccess(true, "Update success !");
@@ -319,12 +340,12 @@ namespace Yootek.Services
                 {
                     IFormFile file = input.File;
                     string fileName = file.FileName;
-                    string fileExt = Path.GetExtension(fileName);
+                    string fileExt = System.IO.Path.GetExtension(fileName);
                     if (!IsFileExtensionSupported(fileExt))
                     {
                         return DataResult.ResultError("File not support", "Error");
                     }
-                    string filePath = Path.GetRandomFileName() + fileExt;
+                    string filePath = System.IO.Path.GetRandomFileName() + fileExt;
                     FileStream stream = File.Create(filePath);
                     await file.CopyToAsync(stream, cancellationToken);
                     ExcelPackage package = new(stream);
@@ -347,6 +368,7 @@ namespace Yootek.Services
                         const int STATUS_INDEX = 9;
                         const int CLASSIFY_APARTMENT_INDEX = 10;
                         const int ADDRESS_INDEX = 11;
+                        const int BILL_CONFIG_CODE_INDEX = 12;
 
                         for (int row = 2; row <= rowCount; row++)
                         {
@@ -361,6 +383,7 @@ namespace Yootek.Services
                             string blockCode = GetCellValue<string>(worksheet, row, BLOCK_INDEX);
                             string floorCode = GetCellValue<string>(worksheet, row, FLOOR_INDEX);
                             string address = GetCellValue<string>(worksheet, row, ADDRESS_INDEX);
+                            string billConfigCode = GetCellValue<string>(worksheet, row, BILL_CONFIG_CODE_INDEX);
 
                             Apartment? apartment = await _apartmentRepository.FirstOrDefaultAsync(x => x.ApartmentCode == apartmentCode);
                             if (apartment != null) throw new UserFriendlyException($"Error at row {row}: ApartmentCode is existed.");
@@ -368,6 +391,50 @@ namespace Yootek.Services
                             if (listApartmentImports.Select(x => x.ApartmentCode).Contains(apartmentCode))
                             {
                                 throw new UserFriendlyException($"Error at row {row}: ApartmentCode cannot be duplicated");
+                            }
+
+
+                            List<GetAllBillConfigDto> billConfigsList = null;
+
+                            if (!string.IsNullOrEmpty(billConfigCode))
+                            {
+                                billConfigsList = new List<GetAllBillConfigDto>();
+                                var billConfigsElectric = _billConfigRepo.GetAll()
+                                    .Where(x => (x.BillType == BillType.Electric) && billConfigCode.Contains(x.Code))
+                                    .ToList();
+                                if (billConfigsElectric.Any())
+                                {
+                                    var billConfig = new GetAllBillConfigDto
+                                    {
+                                        BillType = BillType.Electric,
+                                        Properties = new BillProperites()
+                                        {
+                                            //customerName = customer,
+                                            formulas = billConfigsElectric.Select(x => x.Id).ToArray(),
+                                            formulaDetails = billConfigsElectric.ToArray()
+                                        },
+                                        // Properties = JsonConvert.DeserializeObject<BillProperites?>(config.Properties)
+                                    };
+                                    billConfigsList.Add(billConfig);
+                                }
+                                var billConfigsWater = _billConfigRepo.GetAll()
+                                    .Where(x => (x.BillType == BillType.Water) && billConfigCode.Contains(x.Code))
+                                    .ToList();
+                                if (billConfigsWater.Any())
+                                {
+                                    var billConfig = new GetAllBillConfigDto
+                                    {
+                                        BillType = BillType.Water,
+                                        Properties = new BillProperites()
+                                        {
+                                            formulas = billConfigsWater.Select(x => x.Id).ToArray(),
+                                            formulaDetails = billConfigsWater.ToArray()
+                                        },
+                                    };
+                                    billConfigsList.Add(billConfig);
+                                }
+
+                                
                             }
 
                             listApartmentImports.Add(new Apartment()
@@ -387,6 +454,7 @@ namespace Yootek.Services
                                 ProvinceCode = GetProvinceCode(urbanCode, buildingCode),
                                 DistrictCode = GetDistrictCode(urbanCode, buildingCode),
                                 WardCode = GetWardCode(urbanCode, buildingCode),
+                                BillConfig = billConfigsList != null ? JsonConvert.SerializeObject(billConfigsList) : null
                             });
                         }
 
@@ -479,7 +547,6 @@ namespace Yootek.Services
                 ?? _organizationUnit.FirstOrDefault(x => x.ProjectCode == urbanCode)?.WardCode
                 ?? "";
         }
-        #endregion
 
         public async Task<object> GetAllApartmentTenantPaging(GetAllApartmentInput input)
         {
@@ -593,5 +660,6 @@ namespace Yootek.Services
                 throw;
             }
         }
+        #endregion
     }
 }

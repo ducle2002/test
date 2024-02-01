@@ -146,7 +146,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> GetAllOtherBillConfigs()
         {
             try
@@ -230,6 +229,7 @@ namespace Yootek.Services
                     }
 
                 }
+
                 result = result.Concat(others.MapTo<List<BillConfigDto>>()).ToList();
 
                 var data = DataResult.ResultSuccess(result, "Get success");
@@ -1363,6 +1363,12 @@ namespace Yootek.Services
             const int MOTORBIKE_NUMBER_INDEX = 7;
             const int BICYCLE_NUMBER_INDEX = 8;
             const int OTHER_NUMBER_INDEX = 9;
+
+            //const int ECAR_NUMBER_INDEX = 10;
+            //const int EMOTOR_NUMBER_INDEX = 11;
+            //const int EBIKE_NUMBER_INDEX = 12;
+
+
             const int LAST_COST_INDEX = 10;
             const int BUILDING_INDEX = 11;
             const int URBAN_INDEX = 12;
@@ -1469,6 +1475,15 @@ namespace Yootek.Services
                 userBill.BicycleNumber = worksheet.Cells[row, BICYCLE_NUMBER_INDEX].Text.ToString() != ""
                     ? int.Parse(worksheet.Cells[row, BICYCLE_NUMBER_INDEX].Value.ToString())
                     : 0;
+                //userBill.ECarNumber = worksheet.Cells[row, ECAR_NUMBER_INDEX].Text.ToString() != ""
+                //   ? int.Parse(worksheet.Cells[row, ECAR_NUMBER_INDEX].Value.ToString())
+                //   : 0;
+                //userBill.EMotorNumber = worksheet.Cells[row, EMOTOR_NUMBER_INDEX].Text.ToString() != ""
+                //    ? int.Parse(worksheet.Cells[row, EMOTOR_NUMBER_INDEX].Value.ToString())
+                //    : 0;
+                //userBill.EBikeNumber = worksheet.Cells[row, EBIKE_NUMBER_INDEX].Text.ToString() != ""
+                //    ? int.Parse(worksheet.Cells[row, EBIKE_NUMBER_INDEX].Value.ToString())
+                //    : 0;
                 userBill.OtherVehicleNumber = worksheet.Cells[row, OTHER_NUMBER_INDEX].Text.ToString() != ""
                     ? int.Parse(worksheet.Cells[row, OTHER_NUMBER_INDEX].Value.ToString())
                     : 0;
@@ -1504,6 +1519,9 @@ namespace Yootek.Services
                         userBill.LastCost = (userBill.CarNumber ?? 0) * billConfigProperties.Prices[0].Value
                             + (userBill.MotorbikeNumber ?? 0) * billConfigProperties.Prices[1].Value
                              + (userBill.BicycleNumber ?? 0) * billConfigProperties.Prices[2].Value
+                             //+ (userBill.ECarNumber ?? 0) * billConfigProperties.Prices[3].Value
+                             //+ (userBill.EMotorNumber ?? 0) * billConfigProperties.Prices[4].Value
+                             //+ (userBill.EBikeNumber ?? 0) * billConfigProperties.Prices[5].Value
                               + (userBill.OtherVehicleNumber ?? 0) * billConfigProperties.Prices[3].Value;
                     }
                     catch { }
@@ -1776,16 +1794,18 @@ namespace Yootek.Services
 
                 bool isCreate = false;
                 bool isUpdate = false;
-
+                int month = input.Period.HasValue ? input.Period.Value.Month : 0;
+                int year = input.Period.HasValue ? input.Period.Value.Year : 0;
+                int lastDay = DateTime.DaysInMonth(year, month);
                 foreach (CreateOrUpdateUserBillInputDto detail in input.BillDetail)
                 {
                     var userBill1 = detail.MapTo<UserBill>();
-                    userBill1.Title = input.Title;
+                    userBill1.Title = input.Title ?? $"Hoá đơn tháng {month:D2}/{year}";
                     userBill1.UrbanId = input.UrbanId ?? null;
                     userBill1.BuildingId = input.BuildingId ?? null;
                     userBill1.ApartmentCode = input.ApartmentCode;
                     userBill1.Period = input.Period;
-                    userBill1.DueDate = input.DueDate;
+                    userBill1.DueDate = input.DueDate ?? new DateTime(year, month, lastDay);
                     userBill1.TenantId = AbpSession.TenantId;
                     userBill1.CitizenTempId = input.CitizenTempId;
                     userBill1.IndexEndPeriod = detail.IndexEndPeriod;
@@ -1799,6 +1819,9 @@ namespace Yootek.Services
                         userBill1.MotorbikeNumber = detail.MotorbikeNumber;
                         userBill1.BicycleNumber = detail.BicycleNumber;
                         userBill1.OtherVehicleNumber = detail.OtherVehicleNumber;
+                        //userBill1.ECarNumber = detail.ECarNumber;
+                        //userBill1.EMotorNumber = detail.EMotorNumber;
+                        //userBill1.EBikeNumber = detail.EBikeNumber;
                     }
 
                     // userBill1.OrganizationUnitId = _smartHomeRepo.GetAll().Where(x => x.ApartmentCode == input.ApartmentCode).Select(x => x.OrganizationUnitId).FirstOrDefault();
@@ -1811,6 +1834,7 @@ namespace Yootek.Services
                     {
                         isCreate = true;
                         if (userBill1.DueDate < DateTime.Now) userBill1.Status = UserBillStatus.Debt;
+                        if (userBill1.DueDate > DateTime.Now) userBill1.Status = UserBillStatus.Pending;
                         // var userBill =  await _userBillRepo.InsertAsync(userBill1);
                         var id = await _userBillRepo.InsertAndGetIdAsync(userBill1);
                         userBill1.Code = "HD" + userBill1.Id +
@@ -1837,7 +1861,23 @@ namespace Yootek.Services
                 throw;
             }
         }
+        public async Task<object> CreateListMeterMonthlyUserBills(List<CreateOrUpdateMonthlyInvoice> inputList)
+        {
+            try
+            {
+                foreach (var input in inputList)
+                {
+                    await CreateOrUpdateMonthlyUserBill(input);
+                }
 
+                return DataResult.ResultSuccess("Create success!");
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
         protected async Task CreateBillVehicleInfos(UserBill bill)
         {
             try
@@ -1992,6 +2032,17 @@ namespace Yootek.Services
 
         protected VehicleType GetVehicleTypeNumber(string type)
         {
+            if (type.ToLower().Contains("electric car")
+                || type.ToLower().Contains("ô tô điện")
+                || type.ToLower().Contains("전기차".ToLower())) return VehicleType.ElectricCar;
+            if (type.ToLower().Contains("electric motorcycle")
+                || type.ToLower().Contains("electric motorbike")
+                || type.ToLower().Contains("xe máy điện")
+                || type.ToLower().Contains("전기 오토바이".ToLower())) return VehicleType.ElectricMotor;
+            if (type.ToLower().Contains("Electric Bicycle")
+                || type.ToLower().Contains("electric bike")
+                || type.ToLower().Contains("xe đạp điện")
+                || type.ToLower().Contains("전기 자전거".ToLower())) return VehicleType.ElectricBike;
             if (type.ToLower().Contains("car")
                 || type.ToLower().Contains("ô tô")
                 || type.ToLower().Contains("자동차".ToLower())) return VehicleType.Car;
@@ -2003,6 +2054,7 @@ namespace Yootek.Services
                 || type.ToLower().Contains("bike")
                 || type.ToLower().Contains("xe đạp")
                 || type.ToLower().Contains("자전거".ToLower())) return VehicleType.Bicycle;
+            
             return VehicleType.Other;
         }
 
@@ -2261,7 +2313,7 @@ namespace Yootek.Services
                         }
                         else userBill.DueDate = DateTime.Now;
 
-                        var listBillConfig = apartment.BillConfigId;
+                        var listBillConfig = apartment.BillConfig;    
                         if (listBillConfig == null)
                         {
 

@@ -25,7 +25,8 @@ namespace Yootek.EntityDb
         Pending = 1,  // chờ thanh toán
         Paid = 2,  // đã thanh toán
         Debt = 3,  // nợ
-        WaitForConfirm = 4  // hiện không dùng
+        WaitForConfirm = 4 ,
+        WaitForHandle = 5
     }
 
     public enum UserBillFormId
@@ -71,5 +72,8 @@ namespace Yootek.EntityDb
         public bool? IsPaymentPending { get; set; }
         public bool? IsPrepayment { get; set; }
         public int? MonthNumber {  get; set; }
+        //public int? ECarNumber {  get; set; }
+        //public int? EMotorNumber {  get; set; }
+        //public int? EBikeNumber {  get; set; }
     }
 }

@@ -116,6 +116,20 @@ namespace Yootek.Web.Host.Chat
                 await signalRClient.SendAsync("getUserStateChange", user, newState);
             }
         }
+        
+        public async Task SendUserFollowStateChangeToClients(IReadOnlyList<IOnlineClient> clients, UserIdentifier user, FollowState newState)
+        {
+            foreach (var client in clients)
+            {
+                var signalRClient = GetSignalRClientOrNull(client);
+                if (signalRClient == null)
+                {
+                    continue;
+                }
+
+                await signalRClient.SendAsync("getUserStateChange", user, newState);
+            }
+        }
 
         public async Task SendAllUnreadMessagesOfUserReadToClients(IReadOnlyList<IOnlineClient> clients, UserIdentifier user)
         {

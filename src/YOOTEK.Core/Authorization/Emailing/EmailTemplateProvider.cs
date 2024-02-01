@@ -81,15 +81,15 @@ namespace Yootek.Emailing
                     return template;
                 }
             }
-            else if (tenantId == 47)
-            {
-                using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.vina22.html"))
-                {
-                    var bytes = stream.GetAllBytes();
-                    var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
-                    return template;
-                }
-            }
+            //else if (tenantId == 47)
+            //{
+            //    using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.vina22.html"))
+            //    {
+            //        var bytes = stream.GetAllBytes();
+            //        var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
+            //        return template;
+            //    }
+            //}
             else if (tenantId == 80)
             {
                 using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.thanhbinh11no.html"))
@@ -146,7 +146,7 @@ namespace Yootek.Emailing
             }
             else if (tenantId == 47)
             {
-                using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.aden.html"))
+                using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.lathanh.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);

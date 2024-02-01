@@ -9,6 +9,7 @@ using Yootek.Organizations.Interface;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Http;
 using static Yootek.YootekServiceBase;
+using Yootek.Services.SmartCommunity.ExcelBill.Dto;
 
 namespace Yootek.Services.Dto
 {
@@ -160,6 +161,9 @@ namespace Yootek.Services.Dto
         public int? MotorbikeNumber { get; set; }
         public int? BicycleNumber { get; set; }
         public int? OtherVehicleNumber { get; set; }
+        public int? ECarNumber { get; set; }
+        public int? EMotorNumber { get; set; }
+        public int? EBikeNumber { get; set; }
         public long? BillConfigId { get; set; }
         public int? MonthNumber { get; set; }
 
@@ -310,6 +314,12 @@ namespace Yootek.Services.Dto
         CREATION_TIME = 4,
     }
 
+    public class InternalSetBillPaymentStatusInput
+    {
+        public int TenantId { get; set; }
+        public long Id { get; set; }
+        public UserBillPaymentStatus Status { get; set; }
+    }
 
     public class SetBillPaymentStatusDto
     {
@@ -421,9 +431,8 @@ namespace Yootek.Services.Dto
 
     public class GetAllBillConfigDto
     {
-        public long? BillConfigId { get; set; }
-        //public string? Title { get; set; }
-        //public long? TenantId { get; set; }
+
         public BillType? BillType { get; set; }
+        public BillProperites? Properties { get; set; }
     }
 }

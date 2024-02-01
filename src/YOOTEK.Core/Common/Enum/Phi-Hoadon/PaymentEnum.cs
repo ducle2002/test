@@ -16,7 +16,8 @@ namespace Yootek.Common.Enum
         Pending = 1,
         Success = 2,
         Fail = 3,
-        Cancel = 4
+        Cancel = 4,
+        RequestingThirdParty = 5
     }
 
 }
