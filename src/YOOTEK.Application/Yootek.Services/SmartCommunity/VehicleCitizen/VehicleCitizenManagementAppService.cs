@@ -1247,6 +1247,15 @@ namespace Yootek.Services
                         case VehicleType.Bicycle:
                             vh.Cost = (double)carProperties.Prices[2].Value;
                             break;
+                        case VehicleType.ElectricCar:
+                            vh.Cost = (double)carProperties.Prices[2].Value;
+                            break;
+                        case VehicleType.ElectricMotor:
+                            vh.Cost = (double)carProperties.Prices[2].Value;
+                            break;
+                        case VehicleType.ElectricBike:
+                            vh.Cost = (double)carProperties.Prices[2].Value;
+                            break;
                         case VehicleType.Other:
                             vh.Cost = (double)carProperties.Prices[3].Value;
                             break;
