@@ -1182,8 +1182,8 @@ namespace Yootek.Services
                 {
                     return;
                 }
-                var groupedVehicles = input.GroupBy(v => new { v.ApartmentCode, v.BuildingId, v.UrbanId })
-                                    .ToDictionary(g => $"{g.Key.ApartmentCode}/{g.Key.BuildingId}/{g.Key.UrbanId}", g => g.ToList());
+                var groupedVehicles = input.GroupBy(v => new { v.ApartmentCode, v.BuildingId, v.UrbanId, v.BillConfigId })
+                                    .ToDictionary(g => $"{g.Key.ApartmentCode}/{g.Key.BuildingId}/{g.Key.UrbanId}/{g.Key.BillConfigId}", g => g.ToList());
                 foreach (var group in groupedVehicles)
                 {
 
@@ -1193,6 +1193,7 @@ namespace Yootek.Services
              x.BuildingId == group.Value[0].BuildingId &&
              x.UrbanId == group.Value[0].UrbanId &&
              x.VehicleType == group.Value[0].VehicleType &&
+              x.BillConfigId == group.Value[0].BillConfigId &&
              x.State == CitizenVehicleState.ACCEPTED);
 
                     foreach (var vehicle in group.Value)
