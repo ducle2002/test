@@ -25,6 +25,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Yootek.Extensions;
 using Yootek.Lib.CrudBase;
+using static Yootek.Notifications.AppNotifier;
+using FirebaseAdmin.Messaging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Yootek.Notifications
 {
@@ -400,14 +403,7 @@ namespace Yootek.Notifications
 
         public async Task SendUserMessageNotifyToAllUserSocialAsync(string notificationName, string fireBaseMessage, UserMessageNotificationDataBase messageNotification, string detailUrlApp, string detailUrlWA)
         {
-            try
-            {
-                await SendMessageFireBaseGroup(fireBaseMessage, notificationName, messageNotification.Action, "social", detailUrlApp, detailUrlWA);
-            }
-            catch (Exception e)
-            {
-
-            }
+            await SendMessageFirebaseAllUser(notificationName, fireBaseMessage, detailUrlApp, detailUrlWA, messageNotification);
         }
 
         private Task SendMessageFireBaseNotify(string message, string title, string action, UserIdentifier[] users, string detailUrlApp, string detailUrlWA, int appType = 0)
@@ -461,6 +457,38 @@ namespace Yootek.Notifications
                 GroupName = groupName,
             });
 
+        }
+
+        private async Task SendMessageFirebaseAllUser(string notificationName, string fireBaseMessage, string detailUrlApp, string detailUrlWA,  UserMessageNotificationDataBase messageNotification, NotificationSeverity severity = NotificationSeverity.Info)
+        {
+            using(CurrentUnitOfWork.SetTenantId(null))
+            {
+                var fcmtokens = await _fcmTokenRepos.GetAll()
+                   .OrderByDescending(x => x.Id)
+                   .Where(x => x.CreatorUserId.HasValue && x.CreationTime > DateTime.Now.AddYears(-1)).ToListAsync();
+                var tokens = fcmtokens.Select(x => x.Token).Distinct().ToList();
+                var users = fcmtokens.Where(us => us.CreatorUserId.HasValue).Select(x => new UserIdentifier(x.TenantId, x.CreatorUserId.Value)).Distinct().ToArray();
+               
+                await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
+                {
+                    Title = notificationName,
+                    Body = fireBaseMessage,
+                    Data = JsonConvert.SerializeObject(new
+                    {
+                        action = messageNotification.Action,
+                        detailUrlApp,
+                        detailUrlWA
+                    }),
+                    Tokens = tokens
+                });
+
+                await PublishAsync(
+                   notificationName,
+                   messageNotification,
+                   severity: severity,
+                   userIds: users
+                   );
+            }
         }
 
 

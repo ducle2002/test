@@ -7,7 +7,7 @@ using static Yootek.Notifications.AppNotifier;
 namespace Yootek.EntityDb
 {
     [Table("FcmTokens")]
-    public class FcmTokens : FullAuditedEntity<long>, IMayHaveTenant
+    public class FcmTokens : FullAuditedEntity<long>
     {
         public string Token { get; set; }
         [CanBeNull] public string DeviceId { get; set; }
