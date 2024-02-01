@@ -469,18 +469,42 @@ namespace Yootek.Notifications
                 var tokens = fcmtokens.Select(x => x.Token).Distinct().ToList();
                 var users = fcmtokens.Where(us => us.CreatorUserId.HasValue).Select(x => new UserIdentifier(x.TenantId, x.CreatorUserId.Value)).Distinct().ToArray();
                
-                await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
+
+                if(tokens.Count() > 999)
                 {
-                    Title = notificationName,
-                    Body = fireBaseMessage,
-                    Data = JsonConvert.SerializeObject(new
+                    var count = tokens.Count() / 1000 + 1;
+                    for(var i = 0; i < count; i ++)
                     {
-                        action = messageNotification.Action,
-                        detailUrlApp,
-                        detailUrlWA
-                    }),
-                    Tokens = tokens
-                });
+                        var token2s = tokens.Skip(i *1000).Take(1000).ToList();
+                        await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
+                        {
+                            Title = notificationName,
+                            Body = fireBaseMessage,
+                            Data = JsonConvert.SerializeObject(new
+                            {
+                                action = messageNotification.Action,
+                                detailUrlApp,
+                                detailUrlWA
+                            }),
+                            Tokens = token2s
+                        });
+                    }
+
+                }else
+                {
+                    await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
+                    {
+                        Title = notificationName,
+                        Body = fireBaseMessage,
+                        Data = JsonConvert.SerializeObject(new
+                        {
+                            action = messageNotification.Action,
+                            detailUrlApp,
+                            detailUrlWA
+                        }),
+                        Tokens = tokens
+                    });
+                }
 
                 await PublishAsync(
                    notificationName,
