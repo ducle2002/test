@@ -1,6 +1,7 @@
-﻿using Abp.AutoMapper;
+﻿using System.ComponentModel.DataAnnotations;
+using Abp.AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Yootek.EntityDb;
-using System.ComponentModel.DataAnnotations;
 
 namespace Yootek.Services
 {
@@ -24,5 +25,10 @@ namespace Yootek.Services
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
         public string? ApartmentCode { get; set; }
+    }
+    public class ImportCreateMeterInput
+    {
+        public IFormFile File { get; set; }
+
     }
 }

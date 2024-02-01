@@ -17,98 +17,119 @@ using Microsoft.EntityFrameworkCore;
 using Yootek.App.ServiceHttpClient.Dto.Business;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
 using Yootek.Common.DataResult;
+using YOOTEK.EntityDb;
+using Abp.Extensions;
+using System.ComponentModel.DataAnnotations;
+using Abp.Json;
+using Abp.Domain.Uow;
 
 namespace Yootek.Services
 {
     public interface IUserBillPaymentAppService : IApplicationService
     {
-        Task HandlePaymentForThirdParty(HandPaymentForThirdPartyInput input);
-        Task<UserBillPayment> RequestUserBillPayment(CreatePaymentDto input);
+        Task<DataResult> HandlePaymentForThirdParty(HandPaymentForThirdPartyInput input);
+        Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto input);
     }
 
     public class UserBillPaymentAppService : YootekAppServiceBase, IUserBillPaymentAppService
     {
-        private readonly IRepository<UserBill, long> _userBillRepo;
-        private readonly IRepository<BillEmailHistory, long> _billEmailRepos;
-        private readonly IRepository<Booking, long> _bookingRepos;
-        private readonly IRepository<BillConfig, long> _billConfigRepo;
         private readonly IRepository<UserBillPayment, long> _userBillPaymentRepo;
-        private readonly IRepository<Citizen, long> _citizenRepo;
-        private readonly IRepository<BillDebt, long> _billDebtRepo;
-        private readonly BillUtilAppService _billUtilAppService;
-        private readonly IUserBillRealtimeNotifier _userBillRealtimeNotifier;
-        private readonly IOnlineClientManager _onlineClientManager;
-        private readonly IBillEmailUtil _billEmailUtil;
-        private readonly IAppNotifier _appNotifier;
+        private readonly IRepository<UserBill, long> _userBillRepository;
+        private readonly IRepository<UserBillPaymentValidation, long> _userBillPaymentValidationRepo;
+        private readonly IRepository<ThirdPartyPayment, int> _thirdPartyPaymentRepo;
         private readonly HandlePaymentUtilAppService _handlePaymentUtilAppService;
 
         public UserBillPaymentAppService(
-            IBillEmailUtil billEmailUtil,
-            IRepository<UserBill, long> userBillRepo,
-            IRepository<Booking, long> bookingRepo,
-            IRepository<BillConfig, long> billConfigRepo,
             IRepository<UserBillPayment, long> userBillPaymentRepo,
-            IRepository<Citizen, long> citizenRepo,
-            IRepository<BillDebt, long> billDebtRepo,
-            IRepository<BillEmailHistory, long> billEmailRepos,
-            BillUtilAppService billUtilAppService,
-            IUserBillRealtimeNotifier userBillRealtimeNotifier,
-            IOnlineClientManager onlineClientManager,
-            IAppNotifier appNotifier,
+            IRepository<UserBill, long> userBillRepository,
+            IRepository<UserBillPaymentValidation, long> userBillPaymentValidationRepo,
+            IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepo,
             HandlePaymentUtilAppService handlePaymentUtilAppService
         )
         {
-            _billEmailUtil = billEmailUtil;
-            _userBillRepo = userBillRepo;
-            _bookingRepos = bookingRepo;
-            _billConfigRepo = billConfigRepo;
             _userBillPaymentRepo = userBillPaymentRepo;
-            _citizenRepo = citizenRepo;
-            _billUtilAppService = billUtilAppService;
-            _userBillRealtimeNotifier = userBillRealtimeNotifier;
-            _onlineClientManager = onlineClientManager;
-            _appNotifier = appNotifier;
-            _billDebtRepo = billDebtRepo;
-            _billEmailRepos = billEmailRepos;
+            _userBillRepository = userBillRepository;
             _handlePaymentUtilAppService = handlePaymentUtilAppService;
+            _userBillPaymentValidationRepo = userBillPaymentValidationRepo;
+            _thirdPartyPaymentRepo = thirdPartyPaymentRepo;
         }
 
         [RemoteService(false)]
-        public async Task<UserBillPayment> RequestUserBillPayment(CreatePaymentDto request)
+        public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto request)
         {
-            var input = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(request.TransactionProperties);
-            input.Status = UserBillPaymentStatus.Pending;
-            var payment = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
+           
+            var payment = await _handlePaymentUtilAppService.RequestValidationPaymentByApartment(request.TransactionProperties);
             return payment;
         }
 
-        public async Task HandlePaymentForThirdParty(HandPaymentForThirdPartyInput input)
+        public async Task RequestValidationUserBillPaymentOnSuccess(RequestValidationInput input)
+        {
+            var tenantId = AbpSession.TenantId;
+            var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
+            if (validate != null && !validate.UserBillIds.IsNullOrEmpty())
+            {
+                await UpdatePaymentPendingUserBills(validate.UserBillIds, true, UserBillStatus.Pending, tenantId);
+            }
+
+            if (validate != null && !validate.UserBillDebtIds.IsNullOrEmpty())
+            {
+                await UpdatePaymentPendingUserBills(validate.UserBillDebtIds, true, UserBillStatus.Debt, tenantId);
+            }
+
+        }
+
+        public async Task<DataResult> HandlePaymentForThirdParty(HandPaymentForThirdPartyInput input)
         {
             try
             {
-                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                var paymentTransaction = _thirdPartyPaymentRepo.FirstOrDefault(x => x.Id == input.Id);
+                if (paymentTransaction == null) throw new Exception();
+                var transaction = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(JsonConvert.DeserializeObject<string>(paymentTransaction.TransactionProperties));
+                switch (input.Status)
                 {
-                    var userBillPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(input.PaymentId);
-                    switch (input.Status)
-                    {
-                        case EPrepaymentStatus.SUCCESS:
-                            await _handlePaymentUtilAppService.UpdatePaymentSuccess(userBillPayment);
-                            break;
-                        case EPrepaymentStatus.FAILED:
-                            await _handlePaymentUtilAppService.CancelPaymentUserBill(userBillPayment);
+                    case EPrepaymentStatus.SUCCESS:
+                        var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);
+                       
+                        return DataResult.ResultSuccess(pm.Id, "");
+                    case EPrepaymentStatus.FAILED:
+                        if (transaction.UserBills != null)
+                        {
+                            var ids = string.Join(",", transaction.UserBills.Select(x => x.Id).OrderBy(x => x));
+                            await UpdatePaymentPendingUserBills(ids, false, UserBillStatus.Pending, input.TenantId);
+                        }
 
-                            break;
-                        default:
-                            break;
-
-                    }
-
+                        if (transaction.UserBillDebts != null)
+                        {
+                            var ids = string.Join(",", transaction.UserBillDebts.Select(x => x.Id).OrderBy(x => x));
+                            await UpdatePaymentPendingUserBills(ids, false, UserBillStatus.Debt, input.TenantId);
+                        }
+                        break;
+                    default:
+                        throw new Exception();
                 }
+
+                return DataResult.ResultSuccess("");
             }
             catch (Exception ex)
             {
+                Logger.Fatal(ex.ToJsonString());
                 throw;
             }
+        }
+
+        private async Task UpdatePaymentPendingUserBills(string billIds, bool isPaymentPending, UserBillStatus status, int? tenantId)
+        {
+            using(CurrentUnitOfWork.SetTenantId(tenantId))
+            {
+                var ids = billIds.Split(",").Select(x => Convert.ToInt64(x)).ToArray();
+                var bills = await _userBillRepository.GetAll().Where(x => ids.Contains(x.Id) && x.Status == status).ToListAsync();
+                foreach (var bill in bills)
+                {
+                    bill.IsPaymentPending = isPaymentPending;
+                }
+                await CurrentUnitOfWork.SaveChangesAsync();
+            }
+
         }
 
     }

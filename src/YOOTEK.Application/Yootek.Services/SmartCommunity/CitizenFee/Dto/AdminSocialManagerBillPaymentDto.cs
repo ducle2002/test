@@ -50,6 +50,7 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public string Description { get; set; }
         public string Properties { get; set; }
         public DateTime CreatedAt { get; set; }
+        public string TenantName { get; set; }
     }
 
     public class CountThirdPartyPaymentDto

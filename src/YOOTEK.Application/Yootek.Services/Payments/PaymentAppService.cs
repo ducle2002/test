@@ -53,25 +53,11 @@ namespace Yootek.Yootek.Services.Yootek.Payments
         {
             if (input.Type == EPaymentType.BILL)
             {
-                var paymentBill = await _userBillPaymentAppService.RequestUserBillPayment(input);
+                var paymentBill = await _userBillPaymentAppService.RequestValidationUserBillPayment(input);
                 input.TransactionId = paymentBill.Id;
-                try
-                {
-                    var response =
-                        await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
-                    if (!response.Success) await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(paymentBill);
-                    return response;
-                }
-                catch (Exception e)
-                {
-                    await _handlePaymentUtilAppService.HandleUserBillRecoverPayment(paymentBill);
-                    throw;
-                }
             }
-            else
-            {
-                return await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
-            }
+
+            return await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
         }
 
         public async Task<DataResult> GetList(GetListPaymentDto input)
@@ -87,6 +73,15 @@ namespace Yootek.Yootek.Services.Yootek.Payments
                 await _httpClient.SendSync<GetListPaymentListResultDto>("/api/payments/list", HttpMethod.Get, x);
 
             return DataResult.ResultSuccess(result.Data.Items, "success", result.Data.TotalCount);
+        }
+
+        [HttpPut]
+        public async Task<DataResult> UpdateManuallyVerified(UpdateManuallyVerifiedDto input)
+        {
+            var result =
+                await _httpClient.SendSync<PaymentDto>("/api/payments/manually-verified", HttpMethod.Put, input);
+
+            return DataResult.ResultSuccess(result.Data, "success");
         }
 
         [DontWrapResult]
@@ -194,6 +189,28 @@ namespace Yootek.Yootek.Services.Yootek.Payments
         public async Task<DataResultT<object>> DeleteOnepayMerchant(int id)
         {
             return await _httpClient.SendSync<object>($"/api/onepay-merchants/{id}", HttpMethod.Delete);
+        }
+
+        #endregion
+
+        #region Onepay Verifications
+
+        public async Task<DataResult> GetOnepayVerificationByPaymentId(string paymentId)
+        {
+            try
+            {
+                var result = await _httpClient.SendSync<OnepayVerificationDto>(
+                    $"/api/onepay-verifications/get-by-payment-id/{paymentId}",
+                    HttpMethod.Get
+                );
+
+                return DataResult.ResultSuccess(result.Data, "success");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         #endregion

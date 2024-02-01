@@ -322,7 +322,6 @@ namespace Yootek.Service
             }
         }
 
-
         public async Task<OrganizationUnitDto> UpdateOrganizationUnit(UpdateOrganizationUnitInput input)
         {
             var organizationUnit = await _organizationUnitRepository.GetAsync(input.Id);

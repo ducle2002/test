@@ -35,7 +35,7 @@ namespace Yootek.Services.Dto
         public string OwnerName { get; set; }
         public string OwnerPhoneNumber { get; set; }
         public List<MemberOfApartmentDto> Members { get; set; }
-        public List<GetAllBillConfigDto>? BillConfigDetail { get; set; }
+        public List<GetAllBillConfigDto>? ListBillConfig { get; set; }
 
     }
 
