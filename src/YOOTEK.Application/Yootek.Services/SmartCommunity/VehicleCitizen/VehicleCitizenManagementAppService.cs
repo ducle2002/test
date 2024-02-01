@@ -986,10 +986,6 @@ namespace Yootek.Services
             const int COL_BILLCONFIG_CODE = 15;
 
             var file = input.Form;
-
-            var parkingType = await SettingManager.GetSettingValueForTenantAsync<int>(AppSettings.TenantManagement.UserBillConfig.ParkingBillType, AbpSession.TenantId.Value);
-            var billConfigs = _billConfigRepos.GetAllList(x => x.BillType == BillType.Parking && (x.PricesType == (BillConfigPricesType)parkingType || x.PricesType == BillConfigPricesType.Normal));
-
             var fileName = file.FileName;
             var fileExt = Path.GetExtension(fileName);
             if (fileExt != ".xlsx" && fileExt != ".xls")
@@ -1008,7 +1004,6 @@ namespace Yootek.Services
 
                 var rowCount = worksheet.Dimension.End.Row;
                 var colCount = worksheet.Dimension.End.Column;
-                bool isCalculate = true;
                 var listVehicles = new List<CitizenVehicle>();
 
                 for (var row = 2; row <= rowCount; row++)
@@ -1024,25 +1019,40 @@ namespace Yootek.Services
                     {
                         citizenVehicle.ApartmentCode = worksheet.Cells[row, COL_APARTMENT_CODE].Value.ToString().Trim();
                     }
-                    else continue;
+                    else
+                    {
+                        continue;
+                    }
 
                     if (worksheet.Cells[row, COL_URBAN_CODE].Value != null)
                     {
                         var ubIDstr = worksheet.Cells[row, COL_URBAN_CODE].Value.ToString().Trim();
                         var ubObj = await _appOrganizationUnitRepos.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == ubIDstr.ToLower());
-                        if (ubObj != null) citizenVehicle.UrbanId = ubObj.Id;
+                        if (ubObj != null) { citizenVehicle.UrbanId = ubObj.Id; }
+                        else
+                        {
+                            continue;
+                        }
                     }
+                    else continue;
 
                     if (worksheet.Cells[row, COL_BUILDING_CODE].Value != null)
                     {
                         var buildIDStr = worksheet.Cells[row, COL_BUILDING_CODE].Value.ToString().Trim();
                         var buildObj = await _appOrganizationUnitRepos.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == buildIDStr.ToLower() && x.ParentId != null);
-                        if (buildObj != null) citizenVehicle.BuildingId = buildObj.Id;
+                        if (buildObj != null)
+                        {
+                            citizenVehicle.BuildingId = buildObj.Id;
+                        }
+                        else continue;
                     }
+                    else continue;
 
                     if (worksheet.Cells[row, COL_VEHICLE_NAME].Value != null)
+                    {
                         citizenVehicle.VehicleName = worksheet.Cells[row, COL_VEHICLE_NAME].Value.ToString().Trim();
-
+                    }
+                    else continue;
                     if (worksheet.Cells[row, COL_VEHICLE_TYPE].Value != null)
                         citizenVehicle.VehicleType = GetVehicleTypeNumber(worksheet.Cells[row, COL_VEHICLE_TYPE].Value.ToString().Trim());
                     else citizenVehicle.VehicleType = VehicleType.Other;
@@ -1050,87 +1060,95 @@ namespace Yootek.Services
                     if (worksheet.Cells[row, COL_PARKING_LOT_CODE].Value != null)
                     {
                         var parkingIDstr = worksheet.Cells[row, COL_PARKING_LOT_CODE].Value.ToString().Trim();
-                        citizenVehicle.ParkingId = (await _parkingRepos.FirstOrDefaultAsync(x => x.ParkingCode == parkingIDstr))?.Id ?? 0;
+
+                        var checkParkingId = (await _parkingRepos.FirstOrDefaultAsync(x => x.ParkingCode == parkingIDstr));
+                        if (checkParkingId != null)
+                        {
+                            citizenVehicle.ParkingId = checkParkingId.Id;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
+                    else continue;
 
                     if (worksheet.Cells[row, COL_CARD_NUMBER].Value != null)
-                        citizenVehicle.CardNumber = worksheet.Cells[row, COL_CARD_NUMBER].Value.ToString().Trim();
+                    {
+                        var cardNumber = worksheet.Cells[row, COL_CARD_NUMBER].Value.ToString().Trim();
+
+                        var checkCarCard = await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.CardNumber.ToLower() == cardNumber.ToLower());
+
+
+                        if (checkCarCard != null)
+                        {
+                            continue;
+                        }
+
+                        citizenVehicle.CardNumber = cardNumber;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+
 
                     if (worksheet.Cells[row, COL_CUSTOMER_NAME].Value != null)
+                    {
                         citizenVehicle.OwnerName = worksheet.Cells[row, COL_CUSTOMER_NAME].Value.ToString().Trim();
+                    }
 
                     if (worksheet.Cells[row, COL_DESCRIPTION].Value != null)
                         citizenVehicle.Description = worksheet.Cells[row, COL_DESCRIPTION].Value.ToString().Trim();
 
                     if (worksheet.Cells[row, COL_LEVEL].Value != null)
+                    {
                         citizenVehicle.Level = int.Parse(worksheet.Cells[row, COL_LEVEL].Value.ToString().Trim());
+                    }
+                    else continue;
 
                     if (worksheet.Cells[row, COL_COST].Value != null)
                     {
                         citizenVehicle.Cost = double.Parse(worksheet.Cells[row, COL_COST].Value.ToString().Trim());
-                        if (citizenVehicle.Cost > 0) isCalculate = false;
+                    }
+                    else
+                    {
+                        citizenVehicle.Cost = 0;
                     }
 
                     if (worksheet.Cells[row, COL_REGISTER].Value != null)
+                    {
+
+
                         citizenVehicle.RegistrationDate = DateTime.ParseExact(worksheet.Cells[row, COL_REGISTER].Value.ToString().Trim(), "dd/MM/yyyy",
                               CultureInfo.InvariantCulture);
-
+                    }
+                    else continue;
                     if (worksheet.Cells[row, COL_EXPIRES].Value != null)
+                    {
                         citizenVehicle.ExpirationDate = DateTime.ParseExact(worksheet.Cells[row, COL_EXPIRES].Value.ToString().Trim(), "dd/MM/yyyy",
                               CultureInfo.InvariantCulture);
+                    }
+                    else continue;
 
                     citizenVehicle.State = CitizenVehicleState.ACCEPTED;
                     citizenVehicle.TenantId = AbpSession.TenantId;
 
-                    if (worksheet.Cells[row, COL_BILLCONFIG_CODE].Value != null && (citizenVehicle.Cost == null || citizenVehicle.Cost == 0))
+                    if (worksheet.Cells[row, COL_BILLCONFIG_CODE].Value != null)
                     {
                         var code = worksheet.Cells[row, COL_BILLCONFIG_CODE].Value.ToString().Trim();
-                        var config = billConfigs.FirstOrDefault(x => x.Code == code);
+
+                        var config = await _billConfigRepos.FirstOrDefaultAsync(x => x.Code == code && x.BillType == BillType.Parking && (x.PricesType == BillConfigPricesType.ParkingLevel || x.PricesType == BillConfigPricesType.Parking));
+
                         if (config != null)
                         {
                             citizenVehicle.BillConfigId = config.Id;
-                            try
-                            {
-                                var properties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(config.Properties);
-                                if (config.PricesType == BillConfigPricesType.Normal)
-                                {
-                                    citizenVehicle.Cost = properties.Prices[0].Value;
-
-                                }
-                                else if (config.PricesType == BillConfigPricesType.Parking)
-                                {
-                                    switch (citizenVehicle.VehicleType)
-                                    {
-                                        case VehicleType.Car:
-                                            citizenVehicle.Cost = properties.Prices[0].Value;
-                                            break;
-                                        case VehicleType.Motorbike:
-                                            citizenVehicle.Cost = properties.Prices[1].Value;
-                                            break;
-                                        case VehicleType.Bicycle:
-                                            citizenVehicle.Cost = properties.Prices[2].Value;
-                                            break;
-                                        case VehicleType.ElectricCar:
-                                            citizenVehicle.Cost = properties.Prices[3].Value;
-                                            break;
-                                        case VehicleType.ElectricMotor:
-                                            citizenVehicle.Cost = properties.Prices[4].Value;
-                                            break;
-                                        case VehicleType.ElectricBike:
-                                            citizenVehicle.Cost = properties.Prices[5].Value;
-                                            break;
-                                        case VehicleType.Other:
-                                            citizenVehicle.Cost = properties.Prices[6].Value;
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-
-                            }
-                            catch { }
                         }
-
+                        else
+                        {
+                            citizenVehicle.BillConfigId = null;
+                        }
 
 
                     }
@@ -1139,12 +1157,12 @@ namespace Yootek.Services
 
                 }
 
-                await CreateListVehicleAsync(listVehicles, parkingType, billConfigs, isCalculate);
+                await CreateListVehicleAsync(listVehicles);
                 await stream.DisposeAsync();
                 stream.Close();
                 File.Delete(filePath);
 
-                return DataResult.ResultSuccess("Success");
+                return DataResult.ResultSuccess(listVehicles, "Success");
             }
             catch (Exception e)
             {
@@ -1156,7 +1174,7 @@ namespace Yootek.Services
             }
         }
 
-        private async Task CreateListVehicleAsync(List<CitizenVehicle> input, int parkingType, List<BillConfig> priceP, bool isCalculate)
+        private async Task CreateListVehicleAsync(List<CitizenVehicle> input)
         {
             try
             {
@@ -1164,391 +1182,96 @@ namespace Yootek.Services
                 {
                     return;
                 }
-                var dirs = input.GroupBy(x => new { x.ApartmentCode, x.BuildingId, x.UrbanId })
-                    .Select(x => new
-                    {
-                        Key = x.Key,
-                        Vehicles = x.ToList()
-                    }).ToDictionary(x => x.Key, y => y.Vehicles);
-
-                List<CitizenVehicle> listVehicles = new List<CitizenVehicle>();
-
-                if (parkingType == (int)BillConfigPricesType.ParkingLevel && isCalculate)
+                var groupedVehicles = input.GroupBy(v => new { v.ApartmentCode, v.BuildingId, v.UrbanId })
+                                    .ToDictionary(g => $"{g.Key.ApartmentCode}/{g.Key.BuildingId}/{g.Key.UrbanId}", g => g.ToList());
+                foreach (var group in groupedVehicles)
                 {
-                    foreach (var item in dirs)
+
+
+                    var totalVehicles = await _citizenVehicleRepos.CountAsync(x =>
+             x.ApartmentCode == group.Value[0].ApartmentCode &&
+             x.BuildingId == group.Value[0].BuildingId &&
+             x.UrbanId == group.Value[0].UrbanId &&
+             x.VehicleType == group.Value[0].VehicleType &&
+             x.State == CitizenVehicleState.ACCEPTED);
+
+                    foreach (var vehicle in group.Value)
                     {
-
-                        var carPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Car && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Car && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Car);
-                        var motorPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Motorbike && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Motorbike && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Motorbike);
-                        var bikePrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Bicycle && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Bicycle && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Bicycle);
-                        var eCarPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricCar && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricCar && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricCar);
-                        var eMotorPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricMotor && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricMotor && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricMotor);
-                        var eBikePrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricBike && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricBike && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.ElectricBike);
-                        var otherPrice = priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Other && x.BuildingId == item.Key.BuildingId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Other && x.UrbanId == item.Key.UrbanId && x.IsPrivate == true) ??
-                            priceP.FirstOrDefault(x => x.VehicleType == VehicleType.Other);
-
-                        var carProperties = new BillConfigPropertiesDto();
-                        var eCarProperties = new BillConfigPropertiesDto();
-                        var bikeProperties = new BillConfigPropertiesDto();
-                        var eBikeProperties = new BillConfigPropertiesDto();
-                        var motorProperties = new BillConfigPropertiesDto();
-                        var eMotorProperties = new BillConfigPropertiesDto();
-                        var otherProperties = new BillConfigPropertiesDto();
-                        var maxCar = 1;
-                        var maxECar = 1;
-                        var maxMotor = 1;
-                        var maxEMotor = 1;
-                        var maxBike = 1;
-                        var maxEBike = 1;
-                        var maxOther = 1;
-
-                        try
-                        {
-                            carProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(carPrice.Properties);
-                            maxCar = carProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            carProperties = null;
-                        }
-
-                        try
-                        {
-                            bikeProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(bikePrice.Properties);
-                            maxBike = bikeProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            bikeProperties = null;
-                        }
-
-                        try
-                        {
-                            motorProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(motorPrice.Properties);
-                            maxMotor = motorProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            motorProperties = null;
-                        }
-                        try
-                        {
-                            eCarProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(eCarPrice.Properties);
-                            maxECar = eCarProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            eCarProperties = null;
-                        }
-
-                        try
-                        {
-                            eBikeProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(eBikePrice.Properties);
-                            maxEBike = eBikeProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            eBikeProperties = null;
-                        }
-
-                        try
-                        {
-                            eMotorProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(eMotorPrice.Properties);
-                            maxEMotor = eMotorProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            eMotorProperties = null;
-                        }
-
-                        try
-                        {
-                            otherProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(otherPrice.Properties);
-                            maxOther = otherProperties.Prices.Max(x => x.From).Value;
-                        }
-                        catch
-                        {
-                            otherProperties = null;
-                        }
-
-                        var iCar = 0;
-                        var iECar = 0;
-                        var iMotor = 0;
-                        var iEMotor = 0;
-                        var iBike = 0;
-                        var iEBike = 0;
-                        var iOther = 0;
-                        var cCar = 0;
-                        var cECar = 0;
-                        var cMotor = 0;
-                        var cEMotor = 0;
-                        var cBike = 0;
-                        var cEBike = 0;
-                        var cOther = 0;
-                        foreach (var vehicle in item.Value)
-                        {
-                            switch (vehicle.VehicleType)
-                            {
-                                case VehicleType.Car:
-                                    if (carProperties != null)
-                                    {
-                                        try
-                                        {
-                                            iCar++;
-                                            var carPkgPros = carProperties;
-
-                                            if (vehicle.ParkingId > 0)
-                                            {
-                                                var pkgPrice = priceP.Where(x => x.ParkingId == vehicle.ParkingId).FirstOrDefault();
-                                                try
-                                                {
-                                                    carPkgPros = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(pkgPrice.Properties);
-                                                    maxCar = carPkgPros.Prices.Max(x => x.From).Value;
-                                                }
-                                                catch
-                                                {
-                                                    pkgPrice = null;
-                                                }
-                                            }
-
-
-                                            if (iCar < maxCar)
-                                            {
-                                                var p = carPkgPros.Prices.FirstOrDefault(x => x.From == iCar);
-                                                cCar = (int)p.Value;
-
-                                            }
-                                            else
-                                            {
-                                                var p = carPkgPros.Prices.FirstOrDefault(x => x.From == maxCar);
-                                                cCar = (int)p.Value;
-                                            }
-
-                                        }
-                                        catch { }
-                                        vehicle.Cost = cCar;
-                                        vehicle.Level = iCar;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                case VehicleType.Motorbike:
-                                    if (motorProperties != null)
-                                    {
-                                        iMotor++;
-                                        if (iMotor < maxMotor)
-                                        {
-                                            var p = motorProperties.Prices.FirstOrDefault(x => x.From == iMotor);
-                                            if (p != null)
-                                            {
-                                                cMotor = (int)p.Value;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            var p = motorProperties.Prices.FirstOrDefault(x => x.From == maxMotor);
-                                            if (p != null)
-                                            {
-                                                cMotor = (int)p.Value;
-                                            }
-                                        }
-
-                                        vehicle.Cost = cMotor;
-                                        vehicle.Level = iMotor;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                case VehicleType.Bicycle:
-                                    if (bikeProperties != null)
-                                    {
-                                        iBike++;
-                                        if (iBike < maxBike)
-                                        {
-                                            var p = bikeProperties.Prices.FirstOrDefault(x => x.From == iBike);
-                                            if (p != null)
-                                            {
-                                                cBike = (int)p.Value;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            var p = bikeProperties.Prices.FirstOrDefault(x => x.From == maxBike);
-                                            if (p != null)
-                                            {
-                                                cBike = (int)p.Value;
-                                            }
-                                        }
-
-                                        vehicle.Cost = cBike;
-                                        vehicle.Level = iBike;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                case VehicleType.ElectricCar:
-                                    if (eCarProperties != null)
-                                    {
-                                        try
-                                        {
-                                            iECar++;
-                                            var eCarPkgPros = eCarProperties;
-
-                                            if (vehicle.ParkingId > 0)
-                                            {
-                                                var pkgPrice = priceP.Where(x => x.ParkingId == vehicle.ParkingId).FirstOrDefault();
-                                                try
-                                                {
-                                                    eCarPkgPros = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(pkgPrice.Properties);
-                                                    maxECar = eCarPkgPros.Prices.Max(x => x.From).Value;
-                                                }
-                                                catch
-                                                {
-                                                    pkgPrice = null;
-                                                }
-                                            }
-
-
-                                            if (iECar < maxECar)
-                                            {
-                                                var p = eCarPkgPros.Prices.FirstOrDefault(x => x.From == iECar);
-                                                cECar = (int)p.Value;
-
-                                            }
-                                            else
-                                            {
-                                                var p = eCarPkgPros.Prices.FirstOrDefault(x => x.From == maxECar);
-                                                cECar = (int)p.Value;
-                                            }
-
-                                        }
-                                        catch { }
-                                        vehicle.Cost = cECar;
-                                        vehicle.Level = iECar;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                case VehicleType.ElectricMotor:
-                                    if (eMotorProperties != null)
-                                    {
-                                        iEMotor++;
-                                        if (iEMotor < maxEMotor)
-                                        {
-                                            var p = eMotorProperties.Prices.FirstOrDefault(x => x.From == iEMotor);
-                                            if (p != null)
-                                            {
-                                                cEMotor = (int)p.Value;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            var p = eMotorProperties.Prices.FirstOrDefault(x => x.From == maxEMotor);
-                                            if (p != null)
-                                            {
-                                                cEMotor = (int)p.Value;
-                                            }
-                                        }
-
-                                        vehicle.Cost = cEMotor;
-                                        vehicle.Level = iEMotor;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                case VehicleType.ElectricBike:
-                                    if (eBikeProperties != null)
-                                    {
-                                        iEBike++;
-                                        if (iEBike < maxEBike)
-                                        {
-                                            var p = eBikeProperties.Prices.FirstOrDefault(x => x.From == iEBike);
-                                            if (p != null)
-                                            {
-                                                cEBike = (int)p.Value;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            var p = eBikeProperties.Prices.FirstOrDefault(x => x.From == maxEBike);
-                                            if (p != null)
-                                            {
-                                                cEBike = (int)p.Value;
-                                            }
-                                        }
-
-                                        vehicle.Cost = cEBike;
-                                        vehicle.Level = iEBike;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                case VehicleType.Other:
-                                    if (otherProperties != null)
-                                    {
-                                        iOther++;
-                                        if (iOther < maxOther)
-                                        {
-                                            var p = otherProperties.Prices.FirstOrDefault(x => x.From == iOther);
-                                            if (p != null)
-                                            {
-                                                cOther = (int)p.Value;
-                                            }
-
-                                        }
-                                        else
-                                        {
-                                            var p = otherProperties.Prices.FirstOrDefault(x => x.From == maxOther);
-                                            if (p != null)
-                                            {
-                                                cOther = (int)p.Value;
-                                            }
-                                        }
-
-                                        vehicle.Cost = cOther;
-                                        vehicle.Level = iOther;
-                                    }
-                                    else vehicle.Cost = 0;
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            listVehicles.Add(vehicle);
-                        }
-
-
+                        totalVehicles++;
+                        await ProcessVehicleAsync(vehicle, totalVehicles);
                     }
                 }
-                else
-                {
-                    listVehicles = input;
-                }
 
-                foreach (var vh in listVehicles)
-                {
-                    long id = await _citizenVehicleRepos.InsertAndGetIdAsync(vh);
-                    vh.Id = id;
 
-                }
-                await CurrentUnitOfWork.SaveChangesAsync();
             }
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
                 throw;
             }
+        }
+        public async Task ProcessVehicleAsync(CitizenVehicle vh, int totalVehicles)
+        {
+
+            var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == vh.CardNumber);
+            if (checkCarCard == null)
+            {
+                var carCard = new CreateCarCardDto();
+                carCard.VehicleCardCode = vh.CardNumber;
+                carCard.ParkingId = vh.ParkingId;
+                var carCardNew = carCard.MapTo<CarCard>();
+                carCardNew.TenantId = AbpSession.TenantId;
+                await _carCardRepository.InsertAsync(carCardNew);
+            }
+            if (vh.BillConfigId == null)
+            {
+
+                await _citizenVehicleRepos.InsertAsync(vh);
+            }
+            else
+            {
+
+                var carPropertiesInput = _billConfigRepos.FirstOrDefault(x => x.Id == vh.BillConfigId);
+                var carProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(carPropertiesInput.Properties);
+                if (carPropertiesInput.PricesType == BillConfigPricesType.Parking)
+                {
+                    switch (vh.VehicleType)
+                    {
+                        case VehicleType.Car:
+                            vh.Cost = (double)carProperties.Prices[0].Value;
+                            break;
+                        case VehicleType.Motorbike:
+                            vh.Cost = (double)carProperties.Prices[1].Value;
+                            break;
+                        case VehicleType.Bicycle:
+                            vh.Cost = (double)carProperties.Prices[2].Value;
+                            break;
+                        case VehicleType.Other:
+                            vh.Cost = (double)carProperties.Prices[3].Value;
+                            break;
+                        default:
+                            break;
+                    }
+                    await _citizenVehicleRepos.InsertAsync(vh);
+                }
+                else
+                {
+                    foreach (var price in carProperties.Prices)
+                    {
+                        if (price.From == totalVehicles)
+                        {
+                            vh.Cost = price.Value;
+                        }
+                        else if (price.From < totalVehicles)
+                        {
+                            vh.Cost = price.Value;
+                        }
+                    }
+                    await _citizenVehicleRepos.InsertAsync(vh);
+                }
+
+            }
+
         }
         public async Task<object> GetVehicleById(long id)
         {
