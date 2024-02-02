@@ -1214,7 +1214,7 @@ namespace Yootek.Services
         public async Task ProcessVehicleAsync(CitizenVehicle vh, int totalVehicles)
         {
 
-            var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == vh.CardNumber);
+            var checkCarCard = await _carCardRepository.FirstOrDefaultAsync(x => x.VehicleCardCode == vh.CardNumber);
             if (checkCarCard == null)
             {
                 var carCard = new CreateCarCardDto();
@@ -1304,7 +1304,7 @@ namespace Yootek.Services
             try
             {
                 long t1 = TimeUtils.GetNanoseconds();
-                var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == input.CardNumber);
+                var checkCarCard = await _carCardRepository.FirstOrDefaultAsync(x => x.VehicleCardCode == input.CardNumber);
                 if (checkCarCard == null)
                 {
 
