@@ -181,6 +181,10 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                 DigitalServiceOrder item = dto.MapTo<DigitalServiceOrderCrearteDto>();
                 if (dto.ArrServiceDetails != null)
                     item.ServiceDetails = JsonConvert.SerializeObject(dto.ArrServiceDetails);
+                if (item.UrbanId == 0 && item.ServiceId > 0) {
+                    var services = await _digitalServicesRepository.FirstOrDefaultAsync(item.ServiceId);
+                    item.UrbanId = services.UrbanId;
+                }
                 item.TenantId = AbpSession.TenantId;
                 await _repository.InsertAsync(item);
                 return DataResult.ResultSuccess(Common.Resource.QuanLyChung.InsertSuccess);
