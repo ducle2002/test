@@ -1343,7 +1343,7 @@ namespace Yootek.Services
                         x.ApartmentCode == input.ApartmentCode &&
                         x.BuildingId == input.BuildingId &&
                         x.UrbanId == input.UrbanId &&
-                        x.VehicleType == input.VehicleType && x.State == CitizenVehicleState.ACCEPTED)
+                        x.VehicleType == input.VehicleType && x.BillConfigId == input.BillConfigId && x.State == CitizenVehicleState.ACCEPTED)
                     .ToListAsync();
 
                 var totalVehicles = query.Count + 1;
