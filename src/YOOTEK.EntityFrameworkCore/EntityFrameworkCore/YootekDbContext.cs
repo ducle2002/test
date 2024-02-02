@@ -100,7 +100,8 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<CityVote> CityVotes { get; set; }
 
         //fee
-        public virtual DbSet<ThirdPartyPayment> ThirdPartyPayments { get; set; }
+        public virtual DbSet<ThirdPartyPayment> ThirdPartyPayments {  get; set; }
+        public virtual DbSet<UserBillPaymentValidation> UserBillPaymentValidations { get; set; }     
         public virtual DbSet<UserBill> UserBills { get; set; }
         public virtual DbSet<UserBillVehicleInfo> UserBillVehicleInfos { get; set; }
         public virtual DbSet<BillConfig> BillConfigs { get; set; }

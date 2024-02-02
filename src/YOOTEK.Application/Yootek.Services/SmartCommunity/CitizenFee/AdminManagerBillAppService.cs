@@ -146,7 +146,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> GetAllOtherBillConfigs()
         {
             try
@@ -232,6 +231,7 @@ namespace Yootek.Services
                     }
 
                 }
+
                 result = result.Concat(others.MapTo<List<BillConfigDto>>()).ToList();
 
                 var data = DataResult.ResultSuccess(result, "Get success");

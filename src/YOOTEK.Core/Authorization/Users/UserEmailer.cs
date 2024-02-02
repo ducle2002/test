@@ -20,6 +20,7 @@ using Abp.Localization;
 using System.Web;
 using Abp.UI;
 using System.Net.Mail;
+using Abp.Json;
 
 namespace Yootek.Authorization.Users
 {
@@ -74,7 +75,7 @@ namespace Yootek.Authorization.Users
         {
             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
             {
-                await CheckMailSettingsEmptyOrNull();
+              //  await CheckMailSettingsEmptyOrNull();
 
                 if (user.EmailConfirmationCode.IsNullOrEmpty())
                 {
@@ -129,66 +130,28 @@ namespace Yootek.Authorization.Users
         /// <param name="link">Reset link</param>
         public async Task SendPasswordResetLinkAsync(User user, string link = null)
         {
-            try
+          //  await CheckMailSettingsEmptyOrNull();
+
+            if (user.PasswordResetCode.IsNullOrEmpty())
             {
-                await CheckMailSettingsEmptyOrNull();
-
-                if (user.PasswordResetCode.IsNullOrEmpty())
-                {
-                    throw new Exception("PasswordResetCode should be set in order to send password reset link.");
-                }
-
-                var tenancyName = GetTenancyNameOrNull(user.TenantId);
-                var emailTemplate = GetTitleAndSubTitle(user.TenantId, L("PasswordResetEmail_Title"), L("PasswordResetEmail_SubTitle"));
-                var mailMessage = new StringBuilder();
-
-                mailMessage.AppendLine("<b>" + L("NameSurname") + "</b>: " + user.Name + " " + user.Surname + "<br />");
-
-                if (!tenancyName.IsNullOrEmpty())
-                {
-                    mailMessage.AppendLine("<b>" + L("TenancyName") + "</b>: " + tenancyName + "<br />");
-                }
-
-                mailMessage.AppendLine("<b>" + L("UserName") + "</b>: " + user.UserName + "<br />");
-                mailMessage.AppendLine("<b>" + L("ResetCode") + "</b>: " + user.PasswordResetCode + "<br />");
-
-                if (!link.IsNullOrEmpty())
-                {
-                    link = link.Replace("{userId}", user.Id.ToString());
-                    link = link.Replace("{resetCode}", Uri.EscapeDataString(user.PasswordResetCode));
-
-                    if (user.TenantId.HasValue)
-                    {
-                        link = link.Replace("{tenantId}", user.TenantId.ToString());
-                    }
-
-                    link = EncryptQueryParameters(link);
-
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine(L("PasswordResetEmail_ClickTheLinkBelowToResetYourPassword") + "<br /><br />");
-                    mailMessage.AppendLine("<a style=\"" + _emailButtonStyle + "\" bg-color=\"" + _emailButtonColor + "\" href=\"" + link + "\">" + L("Reset") + "</a>");
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine("<br />");
-                    mailMessage.AppendLine("<span style=\"font-size: 9pt;\">" + L("EmailMessage_CopyTheLinkBelowToYourBrowser") + "</span><br />");
-                    mailMessage.AppendLine("<span style=\"font-size: 8pt;\">" + link + "</span>");
-                }
-
-                await ReplaceBodyAndSend(user.EmailAddress, L("PasswordResetEmail_Subject"), emailTemplate, mailMessage);
-
-
+                throw new Exception("PasswordResetCode should be set in order to send password reset link.");
             }
-            catch (Exception exception)
-            {
-                Logger.Error("pass + Email" + exception.Message, exception);
-            }
+
+            var emailTemplate = GetTitleAndSubTitle(user.TenantId, L("PasswordResetEmail_Title"), L("PasswordResetEmail_SubTitle"));
+            emailTemplate.Replace("{FullName}", user.FullName);
+            emailTemplate.Replace("{CODE}", user.PasswordResetCode);
+     
+           
+            await ReplaceBodyAndSend(user.EmailAddress, "Yoolife Reset Password Code", emailTemplate, new StringBuilder());
+
+
         }
 
         public async Task TryToSendChatMessageMail(User user, string senderUsername, string senderTenancyName, ChatMessage chatMessage)
         {
             try
             {
-                await CheckMailSettingsEmptyOrNull();
+               // await CheckMailSettingsEmptyOrNull();
 
                 var emailTemplate = GetTitleAndSubTitle(user.TenantId, L("NewChatMessageEmail_Title"), L("NewChatMessageEmail_SubTitle"));
                 var mailMessage = new StringBuilder();
@@ -214,7 +177,7 @@ namespace Yootek.Authorization.Users
                 {
                     using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                     {
-                        await CheckMailSettingsEmptyOrNull();
+                       // await CheckMailSettingsEmptyOrNull();
 
                         //var tenantAdmin = await _userManager.GetAdminAsync();
                         //if (tenantAdmin == null || string.IsNullOrEmpty(tenantAdmin.EmailAddress))
@@ -248,7 +211,7 @@ namespace Yootek.Authorization.Users
                 {
                     using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                     {
-                        await CheckMailSettingsEmptyOrNull();
+                       // await CheckMailSettingsEmptyOrNull();
 
                         //var tenantAdmin = await _userManager.GetAdminAsync();
                         //if (tenantAdmin == null || string.IsNullOrEmpty(tenantAdmin.EmailAddress))
@@ -279,7 +242,7 @@ namespace Yootek.Authorization.Users
         {
             try
             {
-                await CheckMailSettingsEmptyOrNull();
+                // await CheckMailSettingsEmptyOrNull();
 
                 //var hostAdmin = await _userManager.GetAdminAsync();
                 //if (hostAdmin == null || string.IsNullOrEmpty(hostAdmin.EmailAddress))
@@ -311,7 +274,7 @@ namespace Yootek.Authorization.Users
                 {
                     using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                     {
-                        await CheckMailSettingsEmptyOrNull();
+                       // await CheckMailSettingsEmptyOrNull();
 
                         //var tenantAdmin = await _userManager.GetAdminAsync();
                         //if (tenantAdmin == null || string.IsNullOrEmpty(tenantAdmin.EmailAddress))
@@ -356,8 +319,6 @@ namespace Yootek.Authorization.Users
             try
             {
                 var emailTemplate = new StringBuilder(_emailTemplateProvider.GetDefaultTemplate(tenantId));
-                emailTemplate.Replace("{EMAIL_TITLE}", title);
-                emailTemplate.Replace("{EMAIL_SUB_TITLE}", subTitle);
 
                 return emailTemplate;
 
@@ -397,33 +358,6 @@ namespace Yootek.Authorization.Users
             var query = link.Substring(link.IndexOf('?')).TrimStart('?');
 
             return basePath + "?" + encrptedParameterName + "=" + HttpUtility.UrlEncode(SimpleStringCipher.Instance.Encrypt(query));
-        }
-
-        private async Task CheckMailSettingsEmptyOrNull()
-        {
-#if DEBUG
-            return;
-#endif
-            if (
-                (await _settingManager.GetSettingValueAsync(EmailSettingNames.DefaultFromAddress)).IsNullOrEmpty() ||
-                (await _settingManager.GetSettingValueAsync(EmailSettingNames.Smtp.Host)).IsNullOrEmpty()
-            )
-            {
-                throw new UserFriendlyException(L("SMTPSettingsNotProvidedWarningText"));
-            }
-
-            if ((await _settingManager.GetSettingValueAsync<bool>(EmailSettingNames.Smtp.UseDefaultCredentials)))
-            {
-                return;
-            }
-
-            if (
-                (await _settingManager.GetSettingValueAsync(EmailSettingNames.Smtp.UserName)).IsNullOrEmpty() ||
-                (await _settingManager.GetSettingValueAsync(EmailSettingNames.Smtp.Password)).IsNullOrEmpty()
-            )
-            {
-                throw new UserFriendlyException(L("SMTPSettingsNotProvidedWarningText"));
-            }
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿
+using System;
+using System.Collections.Generic;
 using Abp.AutoMapper;
+using JetBrains.Annotations;
+using Microsoft.AspNetCore.Http;
 using Yootek.Common;
 using Yootek.EntityDb;
 using Yootek.Organizations.Interface;
-using JetBrains.Annotations;
-using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
 using static Yootek.YootekServiceBase;
 
 namespace Yootek.Services
@@ -126,5 +126,25 @@ namespace Yootek.Services
         public long? UrbanId { get; set; }
         public long? BillConfigId { get; set; }
     }
+    public class UpdateVehicleApproval
+    {
+        public string CardNumber { get; set; }
+        public long? ParkingId { get; set; }
+        public long? Id { get; set; }
+        public DateTime? RegistrationDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
+        public double? Cost { get; set; }
+    }
 
+    public class TotalVehiclesApartment
+    {
+        public string ApartmentCode { get; set; }
+        public long? BuildingId { get; set; }
+        public long? UrbanId { get; set; }
+        public VehicleType? VehicleType { get; set; }
+    }
+    public class GetAllParkingPrices
+    {
+        public long? ParkingId { get; set; }
+    }
 }
