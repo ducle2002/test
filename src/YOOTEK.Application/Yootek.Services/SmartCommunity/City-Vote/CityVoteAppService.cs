@@ -530,13 +530,18 @@ namespace Yootek.Services
         #region Statistics
         private IQueryable<CityVoteDto> QueryGetAllCityVote()
         {
+            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = (from vt in _cityVoteRepos.GetAll()
                          select new CityVoteDto()
                          {
                              Id = vt.Id,
                              CreationTime = vt.CreationTime,
-                             OrganizationUnitId = vt.OrganizationUnitId
-                         }).AsQueryable();
+                             OrganizationUnitId = vt.OrganizationUnitId,
+                             UrbanId = _organizationRepos.GetAll().Where(u => u.Id == vt.OrganizationUnitId && u.ParentId == null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
+                             BuildingId = _organizationRepos.GetAll().Where(u => u.Id == vt.OrganizationUnitId && u.ParentId != null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
+                         })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .AsQueryable();
 
             return query;
         }
@@ -798,7 +803,23 @@ namespace Yootek.Services
                 throw;
             }
         }
-
+        public async Task<object> GetCountCityVoteStatics()
+        {
+            try
+            {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+                var count = await _cityVoteRepos.GetAll()
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .Where(x => x.OrganizationUnitId.HasValue).CountAsync();
+                return DataResult.ResultSuccess(count, "Get success!");
+            }
+            catch (Exception e)
+            {
+                var data = DataResult.ResultError(e.ToString(), "Exception !");
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
         #endregion
 
         #region Common

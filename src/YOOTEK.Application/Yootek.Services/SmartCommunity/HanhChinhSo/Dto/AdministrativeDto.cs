@@ -5,6 +5,11 @@ using Yootek.Organizations.Interface;
 using System;
 using System.Collections.Generic;
 using static Yootek.YootekServiceBase;
+using Abp.Domain.Entities;
+using Yootek.Organizations.Interface;
+using System.ComponentModel.DataAnnotations;
+using Abp.Organizations;
+
 
 namespace Yootek.Services
 {
@@ -50,10 +55,21 @@ namespace Yootek.Services
     }
 
     [AutoMap(typeof(TypeAdministrative))]
-    public class TypeAdministrativeDto : TypeAdministrative
+    public class TypeAdministrativeDto : Entity<long>, IMayHaveUrban, IMayHaveBuilding, IMayHaveOrganizationUnit
     {
         public List<ADPropetyDto> Properties { get; set; }
         public string OrganizationUnitName { get; set; }
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
+        public int? TenantId { get; set; }
+        public string Name { get; set; }
+        public string Detail { get; set; }
+        public string ImageUrl { get; set; }
+        public string FileUrl { get; set; }
+        public long? OrganizationUnitId { get; set; }
+        public double? Price { get; set; }
+        public string PriceDetail { get; set; }
+        public bool? Surcharge { get; set; }
     }
 
     public class GetAllTypeAdministrativeInput : CommonInputDto

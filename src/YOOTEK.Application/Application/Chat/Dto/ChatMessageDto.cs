@@ -1,7 +1,9 @@
 using System;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
+using Abp.Domain.Entities;
 using Yootek.Chat;
+using Yootek.Organizations.Interface;
 
 namespace Yootek.Chat.Dto
 {
@@ -28,5 +30,10 @@ namespace Yootek.Chat.Dto
 
         public ChatMessageDto MessageReplied { get; set; }
 
+    }
+    public class ChatMessageStatic() : ChatMessage, IMayHaveUrban, IMayHaveBuilding
+    {
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
     }
 }

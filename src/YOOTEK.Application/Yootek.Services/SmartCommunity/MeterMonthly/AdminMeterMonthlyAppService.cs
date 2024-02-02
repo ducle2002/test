@@ -106,6 +106,7 @@ namespace Yootek.Services
                 }
                 var month = input.Period.HasValue ? input.Period.Value.Month : 0;
                 var year = input.Period.HasValue ? input.Period.Value.Year : 0;
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
 
                 IQueryable<MeterMonthlyDto> query = (from sm in _meterMonthlyRepository.GetAll()
                                                      join meter in _meterRepository.GetAll() on sm.MeterId equals meter.Id into tb_mt
@@ -136,7 +137,8 @@ namespace Yootek.Services
                                                          BillConfig = apartment.BillConfig,
                                                          BillType = _meterTypeRepository.GetAll().Where(m => m.Id == meter.MeterTypeId).Select(m => m.BillType).FirstOrDefault(),
                                                      })
-                                                     .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == month && x.Period.Value.Year == year)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == month && x.Period.Value.Year == year)
                     .WhereIf(input.MeterTypeId != null, x => x.MeterTypeId == input.MeterTypeId)
                     .WhereIf(input.UrbanId != null, x => x.UrbanId == input.UrbanId)
                     .WhereIf(input.BuildingId != null, x => x.BuildingId == input.BuildingId)

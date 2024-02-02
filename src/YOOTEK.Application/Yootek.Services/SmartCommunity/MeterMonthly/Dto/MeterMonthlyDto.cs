@@ -9,11 +9,12 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Yootek.Common.Enum;
 using Yootek.Services.Dto;
+using Yootek.Organizations.Interface;
 
 namespace Yootek.Services
 {
     [AutoMap(typeof(MeterMonthly))]
-    public class MeterMonthlyDto : MeterMonthly
+    public class MeterMonthlyDto : Entity<long>, IMayHaveUrban, IMayHaveBuilding
     {
         public int? TenantId { get; set; }
         public long? MeterId { get; set; }
@@ -43,6 +44,8 @@ namespace Yootek.Services
         public string? BillConfig { get; set; }
         public List<GetAllBillConfigDto>? ListBillConfig { get; set; }
         public string? CustomerName { get; set; }
+        public int? FirstValue { get; set; }
+        public bool? IsClosed { get; set; }
     }
 
 

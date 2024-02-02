@@ -646,17 +646,32 @@ namespace Yootek.Services
             //toa nha
             else if (data.ReceiveAll == RECEIVE_TYPE.BUIDING_ALL)
             {
-                var citizens = (from cz in _citizenRepos.GetAll()
 
-                                join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
-                                where cz.OrganizationUnitId == data.BuildingId && buIds.Contains((long)cz.BuildingId)
-                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                var citizens = new List<List<UserIdentifier>>();
+
+                foreach (var building in data.OrganizationUnitIds)
+                {
+                    var listCitizens = (from cz in _citizenRepos.GetAll()
+                                        join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
+                                        where cz.OrganizationUnitId == building && buIds.Contains(cz.BuildingId ?? 0)
+                                        select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                    citizens.Add(listCitizens);
+                }
+
+
+                //var citizens = from cz in _citizenRepos.GetAll()
+                //               join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
+                //               where data.OrganizationUnitIds.Contains(cz.OrganizationUnitId)
+                //                     && buIds.Contains(cz.BuildingId ?? 0)
+                //               select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0).ToList();
+
+
                 await _appNotifier.SendMessageNotificationInternalAsync(
                     "Yoolife thông báo số !",
                     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
                     detailUrlApp,
                     detailUrlWA,
-                    citizens.ToArray(),
+                    citizens.SelectMany(x => x).ToArray(),
                     messageDeclined,
                     AppType.USER
                     );

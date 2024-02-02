@@ -484,6 +484,8 @@ namespace Yootek.Services
                                          Id = ci.Id,
                                          Gender = ci.Gender,
                                          DateOfBirth = ci.DateOfBirth,
+                                         BuildingId = ci.BuildingId,
+                                         UrbanId = ci.UrbanId,
                                      })
                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
 
@@ -508,6 +510,8 @@ namespace Yootek.Services
                                      {
                                          Id = ci.Id,
                                          CareerCategoryId = ci.CareerCategoryId,
+                                         BuildingId = ci.BuildingId,
+                                         UrbanId = ci.UrbanId,
                                      })
                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
 

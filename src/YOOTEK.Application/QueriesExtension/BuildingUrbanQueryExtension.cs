@@ -88,7 +88,6 @@ namespace Yootek.QueriesExtension
 
             return (expression != null && condition) ? query.Where(expression) : query;
         }
-
         public static IQueryable<TEntity> WhereByBuildingIf<TEntity>(this IQueryable<TEntity> query, bool condition, List<long> ids) where TEntity : class
         {
             bool mustHaveBuilding = typeof(IMustHaveBuilding).IsAssignableFrom(typeof(TEntity));

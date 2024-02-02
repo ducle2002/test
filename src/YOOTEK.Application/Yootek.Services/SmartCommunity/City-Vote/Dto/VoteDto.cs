@@ -3,17 +3,21 @@ using Yootek.Common;
 using Yootek.EntityDb;
 using System;
 using System.Collections.Generic;
+using Abp.Domain.Entities;
+using Yootek.Organizations.Interface;
 
 namespace Yootek.Services
 {
     [AutoMap(typeof(CityVote))]
-    public class CityVoteDto : CityVote
+    public class CityVoteDto : CityVote, IMayHaveUrban, IMayHaveBuilding
     {
         public List<VoteOption> VoteOptions { get; set; }
         public List<UserVote> UserVotes { get; set; }
         public List<UserVoteDto>?UserVoted { get; set; }
         public long TotalVotes { get; set; }
         public long TotalUsers { get; set; }
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
         public string OrganizationName { get; set; }
         public UserVote UserIsVoted { get; set; }
         public int State { get; set; }

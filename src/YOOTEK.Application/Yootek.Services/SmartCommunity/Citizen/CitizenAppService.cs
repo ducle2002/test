@@ -445,9 +445,12 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
-                    var count = await _citizenRepos.GetAll().CountAsync();
+                    var count = await _citizenRepos.GetAll()
+                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                        .CountAsync();
                     return DataResult.ResultSuccess(count, "Get success");
                 }
             }
@@ -463,6 +466,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 long t1 = TimeUtils.GetNanoseconds();
                 DateTime now = DateTime.Now;
                 int currentMonth = now.Month;
@@ -479,7 +483,9 @@ namespace Yootek.Services
                             for (int index = currentMonth - input.NumberRange + 1; index <= currentMonth; index++)
                             {
                                 var result = new ResultStatisticCitizen();
-                                var query = _citizenRepos.GetAll().AsQueryable();
+                                var query = _citizenRepos.GetAll()
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
                                                                          || x.State.Value == STATE_CITIZEN.MATCHCHECK)
@@ -501,7 +507,9 @@ namespace Yootek.Services
                             for (var index = 13 - (input.NumberRange - currentMonth); index <= 12; index++)
                             {
                                 var result = new ResultStatisticCitizen();
-                                var query = _citizenRepos.GetAll().AsQueryable();
+                                var query = _citizenRepos.GetAll()
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
                                                                          || x.State.Value == STATE_CITIZEN.MATCHCHECK)
@@ -522,7 +530,9 @@ namespace Yootek.Services
                             for (var index = 1; index <= currentMonth; index++)
                             {
                                 var result = new ResultStatisticCitizen();
-                                var query = _citizenRepos.GetAll().AsQueryable();
+                                var query = _citizenRepos.GetAll()
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
                                                                          || x.State.Value == STATE_CITIZEN.MATCHCHECK)

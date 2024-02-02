@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
+using Abp.Domain.Entities;
 
 namespace Yootek.Services
 {
@@ -59,7 +60,7 @@ namespace Yootek.Services
     }
 
     [AutoMap(typeof(UserBill))]
-    public class DebtUserBillDto: EntityDto<long>
+    public class DebtUserBillDto: Entity<long>, IMayHaveUrban, IMayHaveBuilding
     {
         public string Code { get; set; }
         public DateTime? Period { get; set; }

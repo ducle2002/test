@@ -593,6 +593,7 @@ namespace Yootek.Services
 
         private IQueryable<DebtUserBillDto> QueryBillDebtByUserBill(GetAllBillDebtInputDto input)
         {
+            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = from ub in _userBillRepo.GetAll()
                         join cz in _citizenTempRepo.GetAll() on ub.CitizenTempId equals cz.Id into tb_cz
                         from cz in tb_cz.DefaultIfEmpty()
@@ -617,6 +618,7 @@ namespace Yootek.Services
                         };
 
             query = query
+                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                 .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == input.Period.Value.Month && x.Period.Value.Year == input.Period.Value.Year)
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Keyword), x => (x.CitizenName != null && x.CitizenName.ToLower().Contains(input.Keyword.ToLower())) || x.ApartmentCode.ToLower().Contains(input.Keyword.ToLower()))
                 .OrderByDescending(x => x.CreationTime).AsQueryable();
@@ -657,6 +659,8 @@ namespace Yootek.Services
             }
         }
 
+
+       
         public string GetCitizenNameFromApartmentCode(string apartmentCode)
         {
             var citizens = _citizenTempRepo.GetAll().Select(x => new
