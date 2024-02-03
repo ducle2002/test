@@ -95,7 +95,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                              TransactionProperties = pm.TransactionProperties,
                              Type = pm.Type,
                              MerchantId = pm.MerchantId,
-                             MerchantName = mc.Name
+                             MerchantName = mc.Name,
+                             InternalState = pm.InternalState
 
                          })
                          .Where(x => x.Type == EPaymentType.Invoice)

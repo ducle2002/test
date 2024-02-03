@@ -54,6 +54,7 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public DateTime CreatedAt { get; set; }
         public string TenantName { get; set; }
         public string MerchantName { get; set; }
+        public EInternalStateChangeStatus? InternalState { get; set; }
     }
 
     public class CountThirdPartyPaymentDto
