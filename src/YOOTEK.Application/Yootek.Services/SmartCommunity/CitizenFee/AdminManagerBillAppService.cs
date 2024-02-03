@@ -174,7 +174,9 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var result = await _billConfigRepo.GetAll()
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Id.HasValue, x => x.Id == input.Id)
                     .WhereIf(input.BillType.HasValue, x => x.BillType == input.BillType)
                     .WhereIf(input.ParentId.HasValue, x => x.ParentId == input.ParentId)

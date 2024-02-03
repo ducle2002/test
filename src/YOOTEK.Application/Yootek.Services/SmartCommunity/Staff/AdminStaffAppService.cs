@@ -29,6 +29,8 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
 
 
 namespace Yootek.Services
@@ -89,6 +91,7 @@ namespace Yootek.Services
 
             try
             {
+                List<long> buIds = _userManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
 
@@ -121,10 +124,12 @@ namespace Yootek.Services
                                      PositionName = (po != null) ? po.DisplayName : null,
                                      OrganizationUnitName = (ou != null) ? ou.DisplayName : null,
                                      UrbanId = (ou != null) ? ou.ParentId : null,
+                                     BuildingId = _organizationRepos.GetAll().Where(u => u.Id == st.OrganizationUnitId && u.ParentId != null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
                                      DepartmentUnitId = st.DepartmentUnitId,
                                      DepartmentUnitName = (du != null) ? du.DisplayName : null,
                                      Type = st.Type
                                  })
+                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.OrganizationUnitId != null, x => input.OrganizationUnitId == x.OrganizationUnitId)
                                  .WhereIf(input.DepartmentUnitId != null, x => input.DepartmentUnitId == x.DepartmentUnitId)
                                  .WhereIf(input.Type.HasValue, x => input.Type == x.Type)

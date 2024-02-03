@@ -181,13 +181,15 @@ namespace Yootek.Services.Dto
     }
 
     [AutoMap(typeof(CitizenTemp))]
-    public class CitizenTempDto : CitizenTemp
+    public class CitizenTempDto : CitizenTemp, IMayHaveUrban, IMayHaveBuilding
     {
         public string UrbanName { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public DateTime? AccountDOB { get; set; }
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
         public string AccountEmail { get; set; }
     }
     [AutoMap(typeof(CitizenTemp))]

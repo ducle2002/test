@@ -14,9 +14,12 @@ using OfficeOpenXml;
 using Yootek.App.ServiceHttpClient;
 using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using Yootek.Application;
+using Yootek.Authorization;
 using Yootek.Common.DataResult;
 using Yootek.EntityDb;
 using Yootek.Organizations;
+using Yootek.QueriesExtension;
+using Yootek.Services.Dto;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Meter.dto;
 
 namespace Yootek.Services
@@ -57,6 +60,7 @@ namespace Yootek.Services
             try
             {
                 var tenantId = AbpSession.TenantId;
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 IQueryable<MeterDto> query = (from sm in _meterRepository.GetAll()
                                               select new MeterDto
                                               {
@@ -74,6 +78,7 @@ namespace Yootek.Services
                                                   BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
                                                   UrbanName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
                                               })
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .WhereIf(input.MeterTypeId != null, m => m.MeterTypeId == input.MeterTypeId)
                     .WhereIf(input.UrbanId != null, m => m.UrbanId == input.UrbanId)
                     .WhereIf(input.BuildingId != null, m => m.BuildingId == input.BuildingId)
@@ -106,6 +111,8 @@ namespace Yootek.Services
                 throw;
             }
         }
+
+        
 
         public async Task<DataResult> CreateMeter(CreateMeterInput input)
         {

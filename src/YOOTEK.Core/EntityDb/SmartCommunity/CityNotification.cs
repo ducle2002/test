@@ -39,6 +39,7 @@ namespace Yootek.EntityDb
         public bool? IsAllowComment { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
+        public long[]? OrganizationUnitIds { get; set; }
         public RECEIVE_TYPE? ReceiveAll { get; set; }
         public bool? IsReceiveAll { get; set; }
         public List<string>? AttachUrls { get; set; }
