@@ -6,46 +6,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace YOOTEK.EntityDb
 {
     [Table("payment", Schema = "payments")]
-    public class Payment : Entity<int>
-    {
-        [Key][Column("id")] public int Id { get; set; }
-
-        [Column("createdAt")] public DateTime CreatedAt { get; set; }
-
-        [Column("createdById")] public int CreatedById { get; set; }
-
-        [Column("updatedAt")] public DateTime UpdatedAt { get; set; }
-
-        [Column("updatedById")] public int UpdatedById { get; set; }
-
-        [Column("deletedAt")] public DateTime? DeletedAt { get; set; }
-
-        [Column("deletedById")] public int? DeletedById { get; set; }
-
-        [Column("tenantId")] public int TenantId { get; set; }
-
-        [Column("code")] public string Code { get; set; }
-
-        [Column("status")] public int Status { get; set; }
-
-        [Column("method")] public int Method { get; set; }
-
-        [Column("type")] public int Type { get; set; }
-
-        [Column("transactionId")] public string TransactionId { get; set; }
-
-        [Column("transactionProperties")] public string TransactionProperties { get; set; }
-
-        [Column("amount")] public double Amount { get; set; }
-
-        [Column("currency")] public string Currency { get; set; }
-
-        [Column("description")] public string Description { get; set; }
-
-        [Column("properties")] public string Properties { get; set; }
-    }
-
-    [Table("payment", Schema = "payments")]
     public class ThirdPartyPayment: Entity<int>
     {
         [Key][Column("id")] public int Id { get; set; }
@@ -71,11 +31,10 @@ namespace YOOTEK.EntityDb
         [Column("type")] public EPaymentType Type { get; set; }
 
         [Column("transactionId")] public string TransactionId { get; set; }
-
+        [Column("internalState")]  public EInternalStateChangeStatus? InternalState { get; set; }
         [Column("transactionProperties")] public string TransactionProperties { get; set; }
-
         [Column("amount")] public double Amount { get; set; }
-
+        [Column("merchantId")] public int? MerchantId { get; set; }
         [Column("currency")] public string Currency { get; set; }
 
         [Column("description")] public string Description { get; set; }
@@ -88,6 +47,15 @@ namespace YOOTEK.EntityDb
         Pending = 1,
         Paid = 2,
         Failed = 3,
+    }
+
+    public enum EInternalStateChangeStatus
+    {
+        None = 0, // don't action
+        Requesting = 1,
+        Success = 2,
+        Fail = 3, // other service return success = false
+        Error = 4, // current service request error, ex: timeout...
     }
 
     public enum EPaymentMethod

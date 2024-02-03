@@ -37,6 +37,7 @@ namespace Yootek.Services
         private readonly IRepository<UserBill, long> _userBillRepository;
         private readonly IRepository<UserBillPaymentValidation, long> _userBillPaymentValidationRepo;
         private readonly IRepository<ThirdPartyPayment, int> _thirdPartyPaymentRepo;
+        private readonly IRepository<EPaymentBalanceTenant, long> _epaymentBanlanceRepository;
         private readonly HandlePaymentUtilAppService _handlePaymentUtilAppService;
 
         public UserBillPaymentAppService(
@@ -44,7 +45,8 @@ namespace Yootek.Services
             IRepository<UserBill, long> userBillRepository,
             IRepository<UserBillPaymentValidation, long> userBillPaymentValidationRepo,
             IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepo,
-            HandlePaymentUtilAppService handlePaymentUtilAppService
+            HandlePaymentUtilAppService handlePaymentUtilAppService,
+            IRepository<EPaymentBalanceTenant, long> epaymentBanlanceRepository
         )
         {
             _userBillPaymentRepo = userBillPaymentRepo;
@@ -52,6 +54,7 @@ namespace Yootek.Services
             _handlePaymentUtilAppService = handlePaymentUtilAppService;
             _userBillPaymentValidationRepo = userBillPaymentValidationRepo;
             _thirdPartyPaymentRepo = thirdPartyPaymentRepo;
+            _epaymentBanlanceRepository = epaymentBanlanceRepository;
         }
 
         [RemoteService(false)]
@@ -88,8 +91,10 @@ namespace Yootek.Services
                 switch (input.Status)
                 {
                     case EPrepaymentStatus.SUCCESS:
+                        transaction.Status = UserBillPaymentStatus.Success;
+                        transaction.Method = (UserBillPaymentMethod)paymentTransaction.Method;
                         var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);
-                       
+                        await CreateEPaymentBalance(pm.Id, input.Id, paymentTransaction.Amount, pm.Title, pm.TenantId, pm.Method);
                         return DataResult.ResultSuccess(pm.Id, "");
                     case EPrepaymentStatus.FAILED:
                         if (transaction.UserBills != null)
@@ -117,6 +122,21 @@ namespace Yootek.Services
             }
         }
 
+        protected async Task CreateEPaymentBalance(long billPaymentId, int epaymentId, double amount, string title, int? tenantId, UserBillPaymentMethod method)
+        {
+            var payment = new EPaymentBalanceTenant()
+            {
+                BalanceRemaining = amount,
+                BillPaymentId = billPaymentId,
+                EBalanceAction = EBalanceAction.Add,
+                EPaymentId = epaymentId,
+                Method = method,
+                Title = title,  
+                TenantId = tenantId 
+            };
+
+            await _epaymentBanlanceRepository.InsertAsync(payment);
+        }
         private async Task UpdatePaymentPendingUserBills(string billIds, bool isPaymentPending, UserBillStatus status, int? tenantId)
         {
             using(CurrentUnitOfWork.SetTenantId(tenantId))

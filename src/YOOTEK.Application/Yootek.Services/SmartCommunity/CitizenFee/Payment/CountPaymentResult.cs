@@ -17,6 +17,8 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
     internal class CountPaymentSocialResult
     {
         public double TotalAmount { get; set; }
+        public double TotalBalanceOnePay { get; set; }
+        public double TotalBalanceMomo { get; set; }
         public int NumberPayment { get; set; }
         public string TenantName { get; set; }
     }

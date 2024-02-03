@@ -27,6 +27,7 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
     {
         public DateTime? Period { get; set; }
         public int? TenantId { get; set; }
+        public int? MerchantId { get; set; }
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
         public DateTime? FromDay { get; set; }
@@ -46,11 +47,13 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public string TransactionId { get; set; }
         public string TransactionProperties { get; set; }
         public double Amount { get; set; }
+        public int? MerchantId { get; set; }
         public string Currency { get; set; }
         public string Description { get; set; }
         public string Properties { get; set; }
         public DateTime CreatedAt { get; set; }
         public string TenantName { get; set; }
+        public string MerchantName { get; set; }
     }
 
     public class CountThirdPartyPaymentDto
