@@ -141,6 +141,7 @@ namespace Yootek.Services
         public string ApartmentCode { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
+        public long? BillConfigId { get; set; }
         public VehicleType? VehicleType { get; set; }
     }
     public class GetAllParkingPrices
