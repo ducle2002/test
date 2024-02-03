@@ -16,6 +16,7 @@ using Yootek.Notifications;
 using Yootek.Services;
 using Newtonsoft.Json;
 using Abp.Application.Services;
+using Abp.Domain.Entities;
 
 namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
 {
@@ -82,7 +83,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         TypePayment = TypePayment.Bill,
                         Period = input.Period,
                         Title = "Thanh toán hóa đơn tháng " + input.Period.ToString("MM/yyyyy"),
-                        TenantId = AbpSession.TenantId,
+                        TenantId = input.UserBill.TenantId,
                         Description = input.Description,
                         BuildingId = input.UserBill.BuildingId,
                         UrbanId = input.UserBill.UrbanId,
@@ -137,9 +138,9 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         catch { }
                     }
                     if (isPaymentDebt) payment.TypePayment = TypePayment.DebtBill;
-                    await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
-
-
+                    var id = await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
+                    payment.PaymentCode = "PM-" + id + "-" + GetUniqueKey(6);
+                    await  CurrentUnitOfWork.SaveChangesAsync();
                     try
                     {
                         foreach (var item in listBills)
@@ -185,7 +186,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     TypePayment = TypePayment.Bill,
                     Period = input.Period,
                     Title = "Thanh toán hóa đơn tháng " + input.Period.ToString("MM/yyyyy"),
-                    TenantId = AbpSession.TenantId,
+                    TenantId = input.UserBill.TenantId,
                     BuildingId = input.UserBill.BuildingId,
                     UrbanId = input.UserBill.UrbanId,
                     TransactionProperties = transactionProperties

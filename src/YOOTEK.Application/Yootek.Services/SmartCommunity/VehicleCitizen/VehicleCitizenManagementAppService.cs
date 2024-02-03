@@ -1188,8 +1188,8 @@ namespace Yootek.Services
                 {
                     return;
                 }
-                var groupedVehicles = input.GroupBy(v => new { v.ApartmentCode, v.BuildingId, v.UrbanId })
-                                    .ToDictionary(g => $"{g.Key.ApartmentCode}/{g.Key.BuildingId}/{g.Key.UrbanId}", g => g.ToList());
+                var groupedVehicles = input.GroupBy(v => new { v.ApartmentCode, v.BuildingId, v.UrbanId, v.BillConfigId })
+                                    .ToDictionary(g => $"{g.Key.ApartmentCode}/{g.Key.BuildingId}/{g.Key.UrbanId}/{g.Key.BillConfigId}", g => g.ToList());
                 foreach (var group in groupedVehicles)
                 {
 
@@ -1199,6 +1199,7 @@ namespace Yootek.Services
              x.BuildingId == group.Value[0].BuildingId &&
              x.UrbanId == group.Value[0].UrbanId &&
              x.VehicleType == group.Value[0].VehicleType &&
+              x.BillConfigId == group.Value[0].BillConfigId &&
              x.State == CitizenVehicleState.ACCEPTED);
 
                     foreach (var vehicle in group.Value)
@@ -1219,7 +1220,7 @@ namespace Yootek.Services
         public async Task ProcessVehicleAsync(CitizenVehicle vh, int totalVehicles)
         {
 
-            var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == vh.CardNumber);
+            var checkCarCard = await _carCardRepository.FirstOrDefaultAsync(x => x.VehicleCardCode == vh.CardNumber);
             if (checkCarCard == null)
             {
                 var carCard = new CreateCarCardDto();
@@ -1252,8 +1253,17 @@ namespace Yootek.Services
                         case VehicleType.Bicycle:
                             vh.Cost = (double)carProperties.Prices[2].Value;
                             break;
-                        case VehicleType.Other:
+                        case VehicleType.ElectricCar:
                             vh.Cost = (double)carProperties.Prices[3].Value;
+                            break;
+                        case VehicleType.ElectricMotor:
+                            vh.Cost = (double)carProperties.Prices[4].Value;
+                            break;
+                        case VehicleType.ElectricBike:
+                            vh.Cost = (double)carProperties.Prices[5].Value;
+                            break;
+                        case VehicleType.Other:
+                            vh.Cost = (double)carProperties.Prices[6].Value;
                             break;
                         default:
                             break;
@@ -1300,7 +1310,7 @@ namespace Yootek.Services
             try
             {
                 long t1 = TimeUtils.GetNanoseconds();
-                var checkCarCard = _carCardRepository.FirstOrDefault(x => x.VehicleCardCode == input.CardNumber);
+                var checkCarCard = await _carCardRepository.FirstOrDefaultAsync(x => x.VehicleCardCode == input.CardNumber);
                 if (checkCarCard == null)
                 {
 
@@ -1339,7 +1349,7 @@ namespace Yootek.Services
                         x.ApartmentCode == input.ApartmentCode &&
                         x.BuildingId == input.BuildingId &&
                         x.UrbanId == input.UrbanId &&
-                        x.VehicleType == input.VehicleType && x.State == CitizenVehicleState.ACCEPTED)
+                        x.VehicleType == input.VehicleType && x.BillConfigId == input.BillConfigId && x.State == CitizenVehicleState.ACCEPTED)
                     .ToListAsync();
 
                 var totalVehicles = query.Count + 1;
