@@ -18,12 +18,14 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using Yootek.Application;
+using Yootek.Authorization;
 using Yootek.Authorization.Users;
 using Yootek.Common.DataResult;
 using Yootek.Common.Enum;
 using Yootek.Configuration;
 using Yootek.EntityDb;
 using Yootek.Organizations;
+using Yootek.QueriesExtension;
 using Yootek.Services.Dto;
 using Yootek.Yootek.EntityDb.SmartCommunity.Apartment;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
@@ -81,6 +83,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var query = (from vh in _citizenVehicleRepos.GetAll()
@@ -109,6 +112,7 @@ namespace Yootek.Services
                                      Level = vh.Level,
                                      ImageUrl = vh.ImageUrl
                                  })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .Where(x => x.State != CitizenVehicleState.WAITING)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
@@ -529,6 +533,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var query = (from vh in _citizenVehicleRepos.GetAll()
@@ -561,6 +566,7 @@ namespace Yootek.Services
                                      CitizenName = cz.FullName,
 
                                  })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
                                  .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
