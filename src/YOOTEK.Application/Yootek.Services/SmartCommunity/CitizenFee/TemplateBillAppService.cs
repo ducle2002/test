@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using FromBodyAttribute = Microsoft.AspNetCore.Mvc.FromBodyAttribute;
 
 namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee
 {
@@ -30,7 +29,6 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee
         Task<DataResult> UpdateTemplateBill([FromForm] UpdateTemplateBillInput input);
         Task<DataResult> DeleteTemplateBill(long id);
         Task<DataResult> DeleteManyTemplateBills([FromBody] List<long> ids);
-
         // helpers
         string GetContentOfTemplateBill(GetTemplateOfTenantInput input);
     }
