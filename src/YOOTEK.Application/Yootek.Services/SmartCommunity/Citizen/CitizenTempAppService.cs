@@ -487,7 +487,10 @@ namespace Yootek.Services
                                          BuildingId = ci.BuildingId,
                                          UrbanId = ci.UrbanId,
                                      })
-                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
+                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                                .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                                ;
 
                         if (input.OrganizationUnitId.HasValue) query = query.WhereIf(input.OrganizationUnitId.HasValue, x => x.OrganizationUnitId == input.OrganizationUnitId);
                         if (input.Sex.HasValue)
@@ -513,7 +516,10 @@ namespace Yootek.Services
                                          BuildingId = ci.BuildingId,
                                          UrbanId = ci.UrbanId,
                                      })
-                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
+                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                                .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                                ;
 
                         if (input.OrganizationUnitId.HasValue) query = query.WhereIf(input.OrganizationUnitId.HasValue, x => x.OrganizationUnitId == input.OrganizationUnitId);
 

@@ -316,6 +316,8 @@ namespace Yootek.Services.Dto
         public QueryCaseCitizenStatistics QueryCase { get; set; }
         public FormGetCitizenId FormId { get; set; }
         public int? Sex { get; set; }
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
     }
 
     public enum QueryCaseCitizenStatistics
