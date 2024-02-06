@@ -25,6 +25,7 @@ using Yootek.Friendships;
 using Yootek.Friendships.Cache;
 using Yootek.Friendships.Dto;
 using Yootek.Users.Dto;
+using Abp.Linq.Extensions;
 
 namespace Yootek.Friendships
 {
@@ -65,7 +66,7 @@ namespace Yootek.Friendships
             _unitOfWorkManager = unitOfWorkManager;
         }
 
-        public async Task<DataResult> GetFriendRequestingList()
+        public async Task<DataResult> GetFriendRequestingList(GetAllFriendInput input)
         {
             try
             {
@@ -95,17 +96,14 @@ namespace Yootek.Friendships
                                 CreationTime = friendship.CreationTime,
                             })
                         .Where(x => x.IsSender == false).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
                             new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
                         );
                     }
-
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -114,7 +112,7 @@ namespace Yootek.Friendships
             }
         }
 
-        public async Task<DataResult> GetUserRequestingList()
+        public async Task<DataResult> GetUserRequestingList(GetAllFriendInput input)
         {
             try
             {
@@ -140,7 +138,7 @@ namespace Yootek.Friendships
                                 LastMessageDate = friendship.CreationTime
                             })
                         .Where(x => x.IsSender == true).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -148,9 +146,7 @@ namespace Yootek.Friendships
                         );
                     }
 
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -159,7 +155,7 @@ namespace Yootek.Friendships
             }
         }
         
-        public async Task<DataResult> GetFriendFollowingList()
+        public async Task<DataResult> GetFriendFollowingList(GetAllFriendInput input)
         {
             try
             {
@@ -189,17 +185,14 @@ namespace Yootek.Friendships
                                 CreationTime = friendship.CreationTime,
                             })
                         .Where(x => x.IsSender == false).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
                             new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
                         );
                     }
-
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -208,7 +201,7 @@ namespace Yootek.Friendships
             }
         }
         
-        public async Task<DataResult> GetFollowedList()
+        public async Task<DataResult> GetFollowedList(GetAllFriendInput input)
         {
             try
             {
@@ -238,7 +231,7 @@ namespace Yootek.Friendships
                                 CreationTime = friendship.CreationTime,
                             })
                         .Where(x => x.IsSender == false).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -246,9 +239,7 @@ namespace Yootek.Friendships
                         );
                     }
 
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)

@@ -666,7 +666,7 @@ namespace Yootek.Services
                     TotalPaymentWithBanking = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.Banking).Sum(x => x.Amount) ?? 0,
                     TotalPaymentWithDirect = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.Direct).Sum(x => x.Amount) ?? 0,
                     TotalPaymentWithMomo = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.Momo).Sum(x => x.Amount) ?? 0,
-                    TotalPaymentWithVNPay = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.VNPay).Sum(x => x.Amount) ?? 0,
+                    TotalPaymentWithVNPay = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.OnePay).Sum(x => x.Amount) ?? 0,
                     TotalPaymentWithZaloPay = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.ZaloPay).Sum(x => x.Amount) ?? 0,
 
 

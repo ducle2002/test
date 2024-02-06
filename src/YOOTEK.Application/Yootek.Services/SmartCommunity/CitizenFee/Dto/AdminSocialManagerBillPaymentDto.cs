@@ -36,7 +36,22 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public int? Method { get; set; }
     }
 
-    
+    public class GetAlltenantPaymentInput : CommonInputDto
+    {
+    }
+
+    public class TenantPaymentDto 
+    {
+        public int Id { get; set; }
+        public string TenantName { get; set; }
+        public int NumberEPayment { get; set; }
+        public int NumberRPayment { get; set; }
+        public double TotalAmountEpay { get; set; }
+        public double TotalAmountRpay { get; set; }
+        public double TotalPaymentForTenant { get; set; }
+        public double TotalBalance { get; set; }
+    }
+
     public class ThirdPartyPaymentDto: EntityDto<int>
     {
         public int? TenantId { get; set; }
