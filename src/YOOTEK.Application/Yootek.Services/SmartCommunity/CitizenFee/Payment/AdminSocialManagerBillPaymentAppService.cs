@@ -21,7 +21,6 @@ using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment;
 using YOOTEK.EntityDb;
 using Yootek.MultiTenancy;
 using Yootek.Common.Enum;
-using Abp.Json;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -64,6 +63,71 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             _onepayMerchantRepository = onepayMerchantRepository;
         }
 
+        public async Task<object> GetTenantPayment(GetAlltenantPaymentInput input)
+        {
+            try
+            {
+                var result = await _tenantRepository.GetAll().Select(x => new TenantPaymentDto
+                {
+                    Id = x.Id,
+                    TenantName = x.Name,
+                }).PageBy(input).ToListAsync();
+
+                var queryE = (from pm in _thirdPartyPaymentRepository.GetAll()
+                             select new ThirdPartyPaymentDto()
+                             {
+                                 Id = pm.Id,
+                                 Amount = pm.Amount,
+                                 Method = pm.Method,
+                                 Status = pm.Status,
+                                 TenantId = pm.TenantId,
+                                 Type = pm.Type
+                             })
+                             .Where(x => x.Type == EPaymentType.Invoice);
+
+                var queryR = from payment in _userBillPaymentRepo.GetAll()
+                            select new AdminUserBillPaymentOutputDto()
+                            {
+                                Id = payment.Id,
+                                Method = payment.Method,
+                                TenantId = payment.TenantId,
+                                Status = payment.Status,
+                                Amount = payment.Amount,
+                                TypePayment = payment.TypePayment,
+                                IsDeleted = payment.IsDeleted
+                            };
+
+                foreach ( var item in result )
+                {
+                    item.NumberEPayment = queryR
+                        .Where(x => x.Method == UserBillPaymentMethod.Momo || x.Method == UserBillPaymentMethod.OnePay)
+                        .Where(x => x.TenantId == item.Id).Count();
+                    item.NumberRPayment = queryR
+                        .Where(x => x.Method != UserBillPaymentMethod.Momo && x.Method != UserBillPaymentMethod.OnePay)
+                        .Where(x => x.TenantId == item.Id).Count();
+
+                    item.TotalAmountEpay = queryR
+                        .Where(x => x.Method == UserBillPaymentMethod.Momo || x.Method == UserBillPaymentMethod.OnePay)
+                        .Where(x => x.TenantId == item.Id).Sum(x => x.Amount ??0);
+                    item.TotalAmountRpay = queryR
+                        .Where(x => x.Method != UserBillPaymentMethod.Momo && x.Method != UserBillPaymentMethod.OnePay)
+                        .Where(x => x.TenantId == item.Id).Sum(x => x.Amount ?? 0);
+
+                    var balance = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == item.Id && x.EBalanceAction == EBalanceAction.Add ).Sum(x => x.BalanceRemaining);
+                    var subBalance = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == item.Id && x.EBalanceAction == EBalanceAction.Sub ).Sum(x => x.BalanceRemaining);
+                    item.TotalBalance = balance - subBalance;
+
+                    item.TotalPaymentForTenant = subBalance;
+                }
+
+                return DataResult.ResultSuccess(result, "Get  success!");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        } 
         protected IQueryable<ThirdPartyPaymentDto> QueryThirdPartyPayment(GetAllPaymentInput input)
         {
             DateTime fromDay = new DateTime(), toDay = new DateTime();
@@ -147,6 +211,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                     TotalAmount = await query.SumAsync(x => x.Amount),
                     TenantName = _tenantRepository.GetAll().Where(x => x.Id == input.TenantId).Select(x => x.Name).FirstOrDefault()
                 };
+
                 return DataResult.ResultSuccess(result, "");
             }
             catch (Exception ex)
@@ -352,8 +417,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                     double balanceMomo = 0;
                     if (input.TenantId > 0)
                     {
-                        balanceOnepay = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == input.TenantId && x.EBalanceAction == EBalanceAction.Add && x.Method == UserBillPaymentMethod.VNPay).Sum(x => x.BalanceRemaining);
-                        var subBalanceOnepay = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == input.TenantId && x.EBalanceAction == EBalanceAction.Sub && x.Method == UserBillPaymentMethod.VNPay).Sum(x => x.BalanceRemaining);
+                        balanceOnepay = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == input.TenantId && x.EBalanceAction == EBalanceAction.Add && x.Method == UserBillPaymentMethod.OnePay).Sum(x => x.BalanceRemaining);
+                        var subBalanceOnepay = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == input.TenantId && x.EBalanceAction == EBalanceAction.Sub && x.Method == UserBillPaymentMethod.OnePay).Sum(x => x.BalanceRemaining);
                         balanceOnepay = balanceOnepay - subBalanceOnepay;
 
                         balanceMomo = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == input.TenantId && x.EBalanceAction == EBalanceAction.Add && x.Method == UserBillPaymentMethod.Momo).Sum(x => x.BalanceRemaining);
@@ -383,8 +448,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 Logger.Fatal(ex.Message, ex);
                 throw;
             }
-        }
-
-      
+        }      
     }
 }

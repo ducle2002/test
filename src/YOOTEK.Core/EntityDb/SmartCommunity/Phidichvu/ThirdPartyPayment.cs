@@ -36,10 +36,10 @@ namespace YOOTEK.EntityDb
         [Column("amount")] public double Amount { get; set; }
         [Column("merchantId")] public int? MerchantId { get; set; }
         [Column("currency")] public string Currency { get; set; }
-
         [Column("description")] public string Description { get; set; }
-
         [Column("properties")] public string Properties { get; set; }
+        [Column("isAutoVerified")] public bool IsAutoVerified { get; set; }
+        [Column("isManuallyVerified")] public bool IsManuallyVerified { get; set; }
     }
 
     public enum EPaymentStatus
