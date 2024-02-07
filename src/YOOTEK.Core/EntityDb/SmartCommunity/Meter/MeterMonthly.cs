@@ -12,8 +12,8 @@ namespace Yootek.EntityDb
     {
         public int? TenantId { get; set; }
         public long? MeterId { get; set; }
-        public DateTime Period { get; set; }
-        public int Value { get; set; }
+        public DateTime? Period { get; set; }
+        public int? Value { get; set; }
         public int? FirstValue { get; set; }
         public bool? IsClosed { get; set; }
         [CanBeNull] public string ImageUrl { get; set; }

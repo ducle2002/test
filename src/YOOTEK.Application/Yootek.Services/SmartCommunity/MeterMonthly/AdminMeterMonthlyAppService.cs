@@ -232,7 +232,7 @@ namespace Yootek.Services
                                                          UrbanName = _organizationUnitRepository.GetAll().Where(o => o.Id == meter.UrbanId)
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
                                                          CreatorUserName = user.FullName,
-                                                         
+
 
                                                      }).AsQueryable();
 
@@ -261,14 +261,15 @@ namespace Yootek.Services
                     meterMonthly.Period = DateTime.Today;
                     var pre_period = input.Period.Value.AddMonths(-1);
                     var pre_bill = _userBillRepo.FirstOrDefault(x =>
-                            x.ApartmentCode == input.ApartmentCode && x.Period.Value.Year == pre_period.Year &&
-                            x.Period.Value.Month == pre_period.Month);
-                    meterMonthly.FirstValue = (int?)(input.FirstValue ?? pre_bill.IndexEndPeriod ?? 0);
+                        x.ApartmentCode == input.ApartmentCode && x.Period.Value.Year == pre_period.Year &&
+                        x.Period.Value.Month == pre_period.Month);
 
+                    meterMonthly.FirstValue = (int?)(input.FirstValue ?? pre_bill?.IndexEndPeriod);
                 }
 
+
                 //chi lay year va month
-                meterMonthly.Period = new DateTime(meterMonthly.Period.Year, meterMonthly.Period.Month, 1, 0, 0, 0);
+                meterMonthly.Period = new DateTime(meterMonthly.Period.Value.Year, meterMonthly.Period.Value.Month, 1, 0, 0, 0);
 
                 await _meterMonthlyRepository.InsertAsync(meterMonthly);
                 return DataResult.ResultSuccess(true, "Insert success!");
@@ -288,7 +289,7 @@ namespace Yootek.Services
                                            ?? throw new Exception("MeterMonthly not found!");
                 MeterMonthly meterMonthly = ObjectMapper.Map(input, updateData);
                 //chi lay year va month
-                meterMonthly.Period = new DateTime(meterMonthly.Period.Year, meterMonthly.Period.Month, 1, 0, 0, 0);
+                meterMonthly.Period = new DateTime(meterMonthly.Period.Value.Year, meterMonthly.Period.Value.Month, 1, 0, 0, 0);
                 if (input.IsClosed == true)
                 {
                     var listMeterIds = _meterMonthlyRepository.GetAll()
@@ -321,6 +322,47 @@ namespace Yootek.Services
                 throw;
             }
         }
+
+        public async Task<DataResult> IsClosedMetersMonthly([FromBody] List<long> ids)
+        {
+            try
+            {
+                var metersToClose = await _meterMonthlyRepository.GetAll()
+                    .Where(x => ids.Contains(x.Id))
+                    .ToListAsync();
+
+                var metersToCloseDistinct = metersToClose
+                    .GroupBy(x => x.MeterId)
+                    .Select(group => group.OrderByDescending(x => x.CreationTime).First())
+                    .ToList();
+
+                foreach (var meter in metersToCloseDistinct)
+                {
+                    if ((bool)!meter.IsClosed)
+                    {
+                        meter.IsClosed = true;
+
+                        await _meterMonthlyRepository.UpdateAsync(meter);
+
+                        var listMeterIds = _meterMonthlyRepository.GetAll()
+                            .Where(x => x.MeterId == meter.MeterId && x.Id != meter.Id)
+                            .Select(x => x.Id)
+                            .ToList();
+
+                        await DeleteManyMeterMonthly(listMeterIds);
+                    }
+                }
+
+                return DataResult.ResultSuccess("Update success!");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+
 
         public async Task<DataResult> DeleteManyMeterMonthly([FromBody] List<long> ids)
         {
@@ -418,17 +460,18 @@ namespace Yootek.Services
                     const int BUILDING_CODE_INDEX = 7;
                     // const int TYPE_CODE_INDEX = 7;
 
-                    var listNew = new List<MeterMonthly>();
+                    var listNew = new List<CreateMeterMonthlyInput>();
 
                     for (var row = 2; row <= rowCount; row++)
                     {
-                        var meterMonthly = new MeterMonthly();
+                        var meterMonthly = new CreateMeterMonthlyInput();
                         string apartmentCode = worksheet.Cells[row, APARTMENT_CODE_INDEX].Text.Trim();
                         string meterCode = worksheet.Cells[row, METER_CODE_INDEX].Text?.Trim();
-                        var value = worksheet.Cells[row, VALUE_INDEX].Text.ToString() != "" ?
-                            decimal.Parse(worksheet.Cells[row, VALUE_INDEX].Value.ToString()) : 0;
-                        var firstValue = worksheet.Cells[row, FIRST_VALUE_INDEX].Text.ToString() != "" ?
-                            decimal.Parse(worksheet.Cells[row, FIRST_VALUE_INDEX].Value.ToString()) : 0;
+
+                        var valueCell = worksheet.Cells[row, VALUE_INDEX];
+                        var firstValueCell = worksheet.Cells[row, FIRST_VALUE_INDEX];
+                        var value = !string.IsNullOrWhiteSpace(valueCell.Text) ? (decimal?)decimal.Parse(valueCell.Text) : null;
+                        var firstValue = !string.IsNullOrWhiteSpace(firstValueCell.Text) ? (decimal?)decimal.Parse(firstValueCell.Text) : null;
                         var periodString = worksheet.Cells[row, PERIOD_INDEX].Text?.Trim();
                         var period = DateTime.ParseExact(periodString, "dd/MM/yyyy",
                                   CultureInfo.InvariantCulture);
@@ -436,10 +479,12 @@ namespace Yootek.Services
                         string buildingCode = worksheet.Cells[row, BUILDING_CODE_INDEX].Text?.Trim();
                         string urbanCode = worksheet.Cells[row, URBAN_CODE_INDEX].Text.Trim();
 
-                        meterMonthly.TenantId = AbpSession.TenantId;
+                        // meterMonthly.TenantId = AbpSession.TenantId;
                         meterMonthly.Period = period;
-                        meterMonthly.Value = (int)value;
+                        meterMonthly.IsClosed = false;
+                        meterMonthly.Value = (int?)value;
                         meterMonthly.FirstValue = (int?)firstValue;
+                        meterMonthly.ApartmentCode = apartmentCode;
 
 
                         var listBuilding = _organizationUnitRepository.GetAllList(x => x.Type == APP_ORGANIZATION_TYPE.BUILDING);
@@ -471,15 +516,15 @@ namespace Yootek.Services
 
 
                         }
-                        if (firstValue == 0 && meterMonthly.Period != null)
-                        {
-                            var pre_period = meterMonthly.Period.AddMonths(-1);
-                            var pre_bill = _userBillRepo.FirstOrDefault(x =>
-                                    x.ApartmentCode == apartmentCode && x.Period.Value.Year == pre_period.Year &&
-                                    x.Period.Value.Month == pre_period.Month);
+                        // if (firstValue == 0 && meterMonthly.Period != null)
+                        // {
+                        //     var pre_period = meterMonthly.Period.AddMonths(-1);
+                        //     var pre_bill = _userBillRepo.FirstOrDefault(x =>
+                        //            x.ApartmentCode == apartmentCode && x.Period.Value.Year == pre_period.Year &&
+                        //            x.Period.Value.Month == pre_period.Month);
 
-                            meterMonthly.FirstValue = meterMonthly.FirstValue > 0 ? meterMonthly.FirstValue : (int)(pre_bill?.IndexEndPeriod ?? 0);
-                        }
+                        //     meterMonthly.FirstValue = meterMonthly.FirstValue > 0 ? meterMonthly.FirstValue : (int)(pre_bill?.IndexEndPeriod ?? 0);
+                        // }
 
 
                         listNew.Add(meterMonthly);
@@ -501,7 +546,7 @@ namespace Yootek.Services
             }
         }
 
-        private async Task CreateListMeterMonthlyAsync(List<MeterMonthly> input)
+        private async Task CreateListMeterMonthlyAsync(List<CreateMeterMonthlyInput> input)
         {
             try
             {
@@ -511,8 +556,7 @@ namespace Yootek.Services
                 }
                 foreach (var m in input)
                 {
-                    long id = await _meterMonthlyRepository.InsertAndGetIdAsync(m);
-                    m.Id = id;
+                    await CreateMeterMonthly(m);
                     await CurrentUnitOfWork.SaveChangesAsync();
                 }
 
