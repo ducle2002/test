@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
+using Yootek.Common;
 
 namespace Yootek.Friendships.Dto
 {
@@ -9,5 +10,10 @@ namespace Yootek.Friendships.Dto
         public long UserId { get; set; }
 
         public int? TenantId { get; set; }
+    }
+
+    public class GetAllFriendInput : CommonInputDto
+    {
+
     }
 }
