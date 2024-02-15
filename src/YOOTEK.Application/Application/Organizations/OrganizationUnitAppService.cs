@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
 
 namespace Yootek.Service
 {
@@ -100,7 +102,10 @@ namespace Yootek.Service
         {
             try
             {
-                var organizationUnits = await _organizationUnitRepository.GetAllListAsync(x => x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME);
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+                var organizationUnits = await _organizationUnitRepository.GetAll()
+                    .Where(x => x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && buIds.Contains(x.Id) || buIds.Contains((long)x.ParentId))
+                    .ToListAsync();
 
                 var organizationUnitMemberCounts = await _userOrganizationUnitRepository.GetAll()
                    .GroupBy(x => x.OrganizationUnitId)

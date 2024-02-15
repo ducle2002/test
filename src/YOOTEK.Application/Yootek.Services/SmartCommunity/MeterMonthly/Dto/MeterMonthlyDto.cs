@@ -22,7 +22,7 @@ namespace Yootek.Services
         public long? MeterTypeId { get; set; }
 
         [StringLength(1000)] public DateTime? Period { get; set; }
-        [StringLength(2000)] public int Value { get; set; }
+        [StringLength(2000)] public int? Value { get; set; }
         public DateTime CreationTime { get; set; }
         public long CreatorUserId { get; set; }
         [CanBeNull] public string CreatorUserName { get; set; }
