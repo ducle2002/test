@@ -468,7 +468,6 @@ namespace Yootek.Friendships
             }
         }
 
-
         public async Task<FriendDto> UnblockUser(UnblockUserInput input)
         {
             try
@@ -953,7 +952,6 @@ namespace Yootek.Friendships
                 return user.ToUserIdentifier();
             }
         }
-
 
         public async Task<List<UserDto>> FindUserToAddFriendByKeyword(FindUserToAddFriendInput input)
         {
