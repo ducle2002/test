@@ -223,7 +223,6 @@ namespace Yootek.Services
                     int rowCount = worksheet.Dimension.End.Row;
 
                     var listNew = new List<CreateMeterInput>();
-
                     for (var row = 2; row <= rowCount; row++)
                     {
                         var meter = new CreateMeterInput();
