@@ -21,6 +21,7 @@ using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment;
 using YOOTEK.EntityDb;
 using Yootek.MultiTenancy;
 using Yootek.Common.Enum;
+using Nest;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -102,7 +103,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 foreach ( var item in result )
                 {
                    
-
                     using (CurrentUnitOfWork.SetTenantId(item.Id))
                     {
                         item.NumberEPayment = queryR
@@ -168,7 +168,9 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                              Type = pm.Type,
                              MerchantId = pm.MerchantId,
                              MerchantName = mc.Name,
-                             InternalState = pm.InternalState
+                             InternalState = pm.InternalState,
+                             IsAutoVerified = pm.IsAutoVerified,
+                             IsManuallyVerified = pm.IsManuallyVerified
 
                          })
                          .Where(x => x.Type == EPaymentType.Invoice)
@@ -196,6 +198,26 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                     foreach(var item in result)
                     {
                         item.TenantName = tenants.Where(x => x.Id == item.TenantId).Select(x => x.Name).FirstOrDefault();
+                        //if(!item.TransactionProperties.IsNullOrEmpty())
+                        //{
+                        //    try
+                        //    {
+                        //        var properties = JsonConvert.DeserializeObject<dynamic>(JsonConvert.DeserializeObject<string>(item.TransactionProperties));
+                        //        if(properties.userBills != null)
+                        //        {
+                        //            item.BillList = new List<BillPaidDto>();
+                        //            foreach (var bill in properties.userBills)
+                        //            {
+                        //                var id = long.Parse(bill.id);
+                        //                var b = _userBillRepo.GetAll().Select(x => new BillPaidDto()
+                        //                {
+
+                        //                }).Where(x => x.Id == id).FirstOrDefault();
+                        //            }
+                        //        }
+
+                        //    }catch { }
+                        //}
                     }
 
                     return DataResult.ResultSuccess(result, "", query.Count());
