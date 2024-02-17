@@ -401,18 +401,21 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
         private async Task CreateApartmentHistory(UserBillPayment payment, UserBill userBill)
         {
             //tạo lịch sử căn hộ
-            var newHistory = new CreateApartmentHistoryDto();
-            newHistory.TenantId = AbpSession.TenantId;
-            newHistory.ImageUrls = new List<string> { payment.ImageUrl };
-            newHistory.ApartmentId = _apartmentRepos.FirstOrDefault(x => x.ApartmentCode == payment.ApartmentCode && x.UrbanId == payment.UrbanId && x.BuildingId == payment.BuildingId)?.Id ?? 0;
-            newHistory.Title = $"Thanh toán hoá đơn mã {userBill.Code} tháng {userBill.Period.Value.ToString("MM/yyyy")}";
-            newHistory.Type = EApartmentHistoryType.Service;
-            var user = _userRepos.FirstOrDefault(AbpSession.UserId ?? 0);
-            newHistory.ExecutorName = user.FullName;
-            newHistory.DateStart = (DateTime)userBill.Period.Value;
-            newHistory.DateEnd = (DateTime)payment.Period;
-            newHistory.Cost = (long?)payment.Amount;
-            await _apartmentHistoryAppSerivce.CreateApartmentHistoryAsync(newHistory);
+            using(CurrentUnitOfWork.SetTenantId(payment.TenantId))
+            {
+                var newHistory = new CreateApartmentHistoryDto();
+                newHistory.TenantId = AbpSession.TenantId;
+                newHistory.ImageUrls = new List<string> { payment.ImageUrl };
+                newHistory.ApartmentId = _apartmentRepos.FirstOrDefault(x => x.ApartmentCode == payment.ApartmentCode && x.UrbanId == payment.UrbanId && x.BuildingId == payment.BuildingId)?.Id ?? 0;
+                newHistory.Title = $"Thanh toán hoá đơn mã {userBill.Code} tháng {userBill.Period.Value.ToString("MM/yyyy")}";
+                newHistory.Type = EApartmentHistoryType.Service;
+                var user = _userRepos.FirstOrDefault(AbpSession.UserId ?? 0);
+                newHistory.ExecutorName = user.FullName;
+                newHistory.DateStart = (DateTime)userBill.Period.Value;
+                newHistory.DateEnd = (DateTime)payment.Period;
+                newHistory.Cost = (long?)payment.Amount;
+                await _apartmentHistoryAppSerivce.CreateApartmentHistoryAsync(newHistory);
+            }
         }
 
         private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> ValidatePayUserBillPendings(List<PayUserBillDto> userBills)

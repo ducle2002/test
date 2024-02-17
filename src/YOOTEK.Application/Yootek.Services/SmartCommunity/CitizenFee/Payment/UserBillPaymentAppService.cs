@@ -22,6 +22,10 @@ using Abp.Extensions;
 using System.ComponentModel.DataAnnotations;
 using Abp.Json;
 using Abp.Domain.Uow;
+using Yootek.Services.SmartSocial.Ecofarm;
+using Abp.Runtime.Session;
+using Microsoft.Extensions.Configuration;
+using System.Net.Http;
 
 namespace Yootek.Services
 {
@@ -39,8 +43,11 @@ namespace Yootek.Services
         private readonly IRepository<ThirdPartyPayment, int> _thirdPartyPaymentRepo;
         private readonly IRepository<EPaymentBalanceTenant, long> _epaymentBanlanceRepository;
         private readonly HandlePaymentUtilAppService _handlePaymentUtilAppService;
+        private readonly BaseHttpClient _httpClient;
 
         public UserBillPaymentAppService(
+            IAbpSession abpSession,
+            IConfiguration configuration,
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<UserBill, long> userBillRepository,
             IRepository<UserBillPaymentValidation, long> userBillPaymentValidationRepo,
@@ -55,6 +62,7 @@ namespace Yootek.Services
             _userBillPaymentValidationRepo = userBillPaymentValidationRepo;
             _thirdPartyPaymentRepo = thirdPartyPaymentRepo;
             _epaymentBanlanceRepository = epaymentBanlanceRepository;
+            _httpClient = new BaseHttpClient(abpSession, configuration["ApiSettings:Payments"]);
         }
 
         [RemoteService(false)]
@@ -94,6 +102,14 @@ namespace Yootek.Services
                         transaction.Status = UserBillPaymentStatus.Success;
                         transaction.Method = (UserBillPaymentMethod)paymentTransaction.Method;
                         var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);
+
+                        var requestPayment = new
+                        {
+                            id = input.Id,
+                            internalState = 2,
+                            isManuallyVerified = true
+                        };
+                        var res =  await _httpClient.SendSync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
                         await CreateEPaymentBalance(pm.Id, input.Id, paymentTransaction.Amount, pm.Title, pm.TenantId, pm.Method);
                         return DataResult.ResultSuccess(pm.Id, "");
                     case EPrepaymentStatus.FAILED:
@@ -108,11 +124,14 @@ namespace Yootek.Services
                             var ids = string.Join(",", transaction.UserBillDebts.Select(x => x.Id).OrderBy(x => x));
                             await UpdatePaymentPendingUserBills(ids, false, UserBillStatus.Debt, input.TenantId);
                         }
+                        paymentTransaction.IsManuallyVerified = true;
+                        paymentTransaction.InternalState = EInternalStateChangeStatus.Success;
+                        await _thirdPartyPaymentRepo.UpdateAsync(paymentTransaction);
                         break;
                     default:
                         throw new Exception();
                 }
-
+              
                 return DataResult.ResultSuccess("");
             }
             catch (Exception ex)
