@@ -240,9 +240,9 @@ namespace Yootek.Services
                         {
                             continue;
                         }
-                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Text.Trim()))
+                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 2].Text.Trim()))
                         {
-                            var buildIDStr = worksheet.Cells[row, 1].Text.Trim();
+                            var buildIDStr = worksheet.Cells[row, 2].Text.Trim();
                             var buildObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == buildIDStr.ToLower());
                             if (buildObj != null) { meter.BuildingId = buildObj.Id; }
                             else
