@@ -4,6 +4,9 @@ using Yootek.Common.Enum;
 using Yootek.Common;
 using YOOTEK.EntityDb;
 using Abp.Application.Services.Dto;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
 
 namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
 {
@@ -70,6 +73,12 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public string TenantName { get; set; }
         public string MerchantName { get; set; }
         public EInternalStateChangeStatus? InternalState { get; set; }
+        public bool IsAutoVerified { get; set; }
+        public bool IsManuallyVerified { get; set; }
+        public object ObjectProperties { get; set; }
+        public List<BillPaidDto> BillList { get; set; }
+        public List<BillPaidDto> BillListDebt { get; set; }
+        public List<BillPaidDto> BillListPrepayment { get; set; }
     }
 
     public class CountThirdPartyPaymentDto
