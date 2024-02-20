@@ -62,11 +62,9 @@ namespace Yootek.Services
             _httpClient = new BaseHttpClient(abpSession, configuration["ApiSettings:Payments"]);
         }
 
-        [RemoteService(false)]
         public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto request)
         {
-           
-            var payment = await _handlePaymentUtilAppService.RequestValidationPaymentByApartment(request.TransactionProperties);
+            var payment = await _handlePaymentUtilAppService.RequestValidationPaymentByApartment(request.TransactionProperties, request.TenantId);
             return payment;
         }
 
