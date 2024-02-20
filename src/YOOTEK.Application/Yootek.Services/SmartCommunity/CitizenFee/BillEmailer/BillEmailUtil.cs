@@ -4745,7 +4745,7 @@ namespace Yootek.Services
                 }
                 string customerName = GetCustomerName(userBills, citizenTemp);
                 StringBuilder emailTemplate = new StringBuilder(_emailTemplateProvider.GetUserBillTemplate(tenantId));
-                if (billParkingConfigProperties != null && billParkingConfigProperties.Prices.Length == 4)
+                if (billParkingConfigProperties.Prices != null && billParkingConfigProperties.Prices.Length == 4)
                 {
 
                     priceCar = (int)billParkingConfigProperties.Prices[0].Value;

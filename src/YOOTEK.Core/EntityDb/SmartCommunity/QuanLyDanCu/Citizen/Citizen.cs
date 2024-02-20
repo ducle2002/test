@@ -91,5 +91,7 @@ namespace Yootek.EntityDb
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
+        [StringLength(1000)]
+        public string? HomeAddress { get; set; }
     }
 }
