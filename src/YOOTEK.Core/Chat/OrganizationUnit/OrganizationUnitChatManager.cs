@@ -77,7 +77,7 @@ namespace Yootek.Chat
             await HandleDeleteMessageReceiverAsync(receiver, message);
         }
 
-        public async Task SendMessageOrgAsync(UserIdentifier user, UserIdentifier organization, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderProfilePictureId, long? messageRepliedId, int typeMessage = 0, bool isAdmin = false)
+        public async Task SendMessageOrgAsync(UserIdentifier user, UserIdentifier organization, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int typeMessage = 0, bool isAdmin = false)
         {
 
             var sharedMessageId = Guid.NewGuid();
@@ -282,7 +282,7 @@ namespace Yootek.Chat
 
         }
 
-        private async Task HandleOrgUserInfoChangeAsync(UserIdentifier sender, UserIdentifier receiver, string senderTenancyName, string senderUserName, string senderProfilePictureId)
+        private async Task HandleOrgUserInfoChangeAsync(UserIdentifier sender, UserIdentifier receiver, string senderTenancyName, string senderUserName, string friendImageUrl)
         {
             var receiverCacheItem = _userFriendsCache.GetCacheItemOrNull(receiver);
 
@@ -294,7 +294,7 @@ namespace Yootek.Chat
 
             if (senderAsFriend.FriendTenancyName == senderTenancyName &&
                 senderAsFriend.FriendUserName == senderUserName &&
-                senderAsFriend.FriendProfilePictureId == senderProfilePictureId)
+                senderAsFriend.FriendImageUrl == friendImageUrl)
             {
                 return;
             }
@@ -307,7 +307,7 @@ namespace Yootek.Chat
 
             friendship.FriendTenancyName = senderTenancyName;
             friendship.FriendUserName = senderUserName;
-            friendship.FriendProfilePictureId = senderProfilePictureId;
+            friendship.FriendImageUrl = friendImageUrl;
 
             await _friendshipManager.UpdateFriendshipAsync(friendship);
         }

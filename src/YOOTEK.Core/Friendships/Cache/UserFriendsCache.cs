@@ -188,7 +188,7 @@ namespace Yootek.Friendships.Cache
                          FollowState = friendship.FollowState,
                          FriendUserName = friendship.FriendUserName,
                          FriendTenancyName = friendship.FriendTenancyName,
-                         FriendProfilePictureId = friendship.FriendProfilePictureId,
+                         FriendImageUrl = friendship.FriendImageUrl,
                          IsSender = friendship.IsSender,
                          StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                                 where fr.FriendUserId == userIdentifier.UserId

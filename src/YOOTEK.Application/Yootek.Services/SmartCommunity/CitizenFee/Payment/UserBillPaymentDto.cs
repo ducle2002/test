@@ -1,12 +1,28 @@
 ﻿using Abp.AutoMapper;
 using JetBrains.Annotations;
+using System.ComponentModel.DataAnnotations;
 using Yootek.App.ServiceHttpClient.Dto.Business;
 using Yootek.Common.Enum;
 using Yootek.Services.Dto;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
 
 
 namespace Yootek.Services
 {
+    public class RequestValidationPaymentDto
+    {
+        public int? TenantId { get; set; }
+        public EPaymentMethod Method { get; set; }
+        public long TransactionId { get; set; } // orderId, bookingId, ...
+        [MaxLength(512)]
+        public string Description { get; set; }
+        public EPaymentType Type { get; set; }
+        public string Properties { get; set; }
+        public long Amount { get; set; }
+        public PayMonthlyUserBillsInput TransactionProperties { get; set; }
+        public string Unit { get; set; }
+    }
+
     internal class UserBillPaymentDto
     {
     }

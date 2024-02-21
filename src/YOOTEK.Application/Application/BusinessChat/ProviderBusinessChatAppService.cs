@@ -49,18 +49,6 @@ namespace Yootek.Application.BusinessChat
             _userProviderFriendshipRepos = userProviderFriendshipRepos;
             _businessChatCommunicator = businessChatCommunicator;
         }
-        //public async Task<DataResult> CountMessageUnreadUser()
-        //{
-        //    var userId = AbpSession.GetUserId();
-        //    var unreadMessageCount = _businessChatMessageRepos.GetAll()
-        //          .Where(m => (m.UserId == userId && m.ReadState == ChatMessageReadState.Unread))
-        //          .OrderByDescending(m => m.CreationTime)
-        //          .Take(100)
-        //          .ToList()
-        //          .Count();
-        //    var data = DataResult.ResultSuccess(unreadMessageCount, "Get success !");
-        //    return data;
-        //}
 
         public async Task<DataResult> GetUserFriendshipChats(GetUserFriendshipInput input)
         {
@@ -98,8 +86,6 @@ namespace Yootek.Application.BusinessChat
 
                 return DataResult.ResultSuccess(result, "Get success !");
 
-
-
             }
             catch (Exception e)
             {
@@ -107,6 +93,40 @@ namespace Yootek.Application.BusinessChat
             }
         }
 
+        public async Task<DataResult> GetUserChat(GetUserChatInput input)
+        {
+            try
+            {
+                var user = AbpSession.ToUserIdentifier();
+                var item = _userProviderFriendshipRepos.GetAll()
+                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && x.TenantId == input.TenantId && !x.IsShop)
+                             .FirstOrDefault();
+
+                if (item == null) return DataResult.ResultSuccess(null, "");
+                var friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
+                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                    new UserIdentifier(item.TenantId, item.UserId)
+                );
+
+                friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
+                 .Where(m => (m.UserId == user.UserId && m.TargetUserId == item.UserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))
+                 .OrderByDescending(m => m.CreationTime)
+                 .Take(20)
+                 .Count();
+                friend.LastMessage = _businessChatMessageRepos.GetAll()
+                       .Where(m => (m.UserId == user.UserId && m.TargetUserId == friend.FriendUserId && m.ProviderId == friend.ProviderId))
+                       .OrderByDescending(m => m.CreationTime)
+                       .FirstOrDefault();
+                friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
+
+                return DataResult.ResultSuccess(friend, "Get success !");
+
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException("GetUserChatFriendsWithSetting exception !" + e.Message);
+            }
+        }
 
         public async Task<DataResult> GetBusinessChatMessages(GetUserBusinessChatMessageInput input)
         {
@@ -146,7 +166,7 @@ namespace Yootek.Application.BusinessChat
             }
         }
 
-        public async System.Threading.Tasks.Task MarkAllUnreadBusinessChatMessageAsRead(MarkAllUnreadBusinessChatMessageAsReadInput input)
+        public async Task MarkAllUnreadBusinessChatMessageAsRead(MarkAllUnreadBusinessChatMessageAsReadInput input)
         {
             var user = AbpSession.ToUserIdentifier();
             var messages = await _businessChatMessageRepos

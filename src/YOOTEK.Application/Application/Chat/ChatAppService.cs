@@ -77,7 +77,6 @@ namespace Yootek.Chat
             var data = DataResult.ResultSuccess(unreadMessageCount + unreadMessageGroupCount, "Get success !");
             return data;
         }
-
       
         public async Task<DataResult> SearchUserMessageByKeyword(SearchMessageInput input)
         {
@@ -138,7 +137,7 @@ namespace Yootek.Chat
                     cacheItem.Friends = cacheItem.Friends.Where(x => x.FriendUserName.Contains(input.Keyword)).ToList();
                 }
 
-                var friends = cacheItem.Friends.MapTo<List<FriendDto>>();
+                var friends = ObjectMapper.Map<List<FriendDto>>(cacheItem.Friends);
                 var listresults = new List<ChatFriendOrRoomDto>();
 
                 foreach (var friend in friends)

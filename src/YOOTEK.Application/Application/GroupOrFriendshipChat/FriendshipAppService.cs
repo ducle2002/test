@@ -87,7 +87,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                     where fr.FriendUserId == AbpSession.UserId
@@ -133,7 +133,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 LastMessageDate = friendship.CreationTime
                             })
@@ -176,7 +176,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                     where fr.FriendUserId == AbpSession.UserId
@@ -222,7 +222,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                     where fr.FriendUserId == AbpSession.UserId

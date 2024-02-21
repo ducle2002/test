@@ -169,7 +169,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                              InternalState = pm.InternalState,
                              IsAutoVerified = pm.IsAutoVerified,
                              IsManuallyVerified = pm.IsManuallyVerified,
-                             TransactionJson = pm.TransactionProperties != null ? JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(JsonConvert.DeserializeObject<string>(pm.TransactionProperties!)) : null,
 
                          })
                          .Where(x => x.Type == EPaymentType.Invoice)
