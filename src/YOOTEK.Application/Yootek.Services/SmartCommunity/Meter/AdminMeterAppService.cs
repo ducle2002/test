@@ -19,7 +19,6 @@ using Yootek.Common.DataResult;
 using Yootek.EntityDb;
 using Yootek.Organizations;
 using Yootek.QueriesExtension;
-using Yootek.Services.Dto;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Meter.dto;
 
 namespace Yootek.Services
@@ -112,7 +111,7 @@ namespace Yootek.Services
             }
         }
 
-        
+
 
         public async Task<DataResult> CreateMeter(CreateMeterInput input)
         {
@@ -224,12 +223,37 @@ namespace Yootek.Services
                     int rowCount = worksheet.Dimension.End.Row;
 
                     var listNew = new List<CreateMeterInput>();
-
                     for (var row = 2; row <= rowCount; row++)
                     {
                         var meter = new CreateMeterInput();
-                        meter.UrbanId = long.Parse(worksheet.Cells[row, 1].Text.Trim());
-                        meter.BuildingId = long.Parse(worksheet.Cells[row, 2].Text.Trim());
+                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Text.Trim()))
+                        {
+                            var ubIDstr = worksheet.Cells[row, 1].Text.Trim();
+                            var ubObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == ubIDstr.ToLower());
+                            if (ubObj != null) { meter.UrbanId = ubObj.Id; }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 2].Text.Trim()))
+                        {
+                            var buildIDStr = worksheet.Cells[row, 2].Text.Trim();
+                            var buildObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == buildIDStr.ToLower());
+                            if (buildObj != null) { meter.BuildingId = buildObj.Id; }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
                         meter.ApartmentCode = worksheet.Cells[row, 3].Text.Trim();
                         meter.Name = worksheet.Cells[row, 4].Text.Trim();
                         meter.Code = worksheet.Cells[row, 5].Text.Trim();
