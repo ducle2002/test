@@ -156,7 +156,7 @@ namespace Yootek.Organizations.Cache
                         FollowState = friendship.FollowState,
                         FriendUserName = friendship.FriendUserName,
                         FriendTenancyName = friendship.FriendTenancyName,
-                        FriendProfilePictureId = friendship.FriendProfilePictureId,
+                        FriendImageUrl = friendship.FriendImageUrl,
                         IsOrganizationUnit = friendship.IsOrganizationUnit,
                         LastMessageDate = friendship.CreationTime
                     })

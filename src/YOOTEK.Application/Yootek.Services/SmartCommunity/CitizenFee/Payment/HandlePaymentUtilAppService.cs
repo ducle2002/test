@@ -169,13 +169,13 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
         }
 
         [RemoteService(false)]
-        public async Task<UserBillPaymentValidation> RequestValidationPaymentByApartment(string transactionProperties, int? tenantId)
+        public async Task<UserBillPaymentValidation> RequestValidationPaymentByApartment(PayMonthlyUserBillsInput transactionProperties, int? tenantId)
         {
             try
             {
                 using(CurrentUnitOfWork.SetTenantId(tenantId))
                 {
-                    var input = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(transactionProperties);
+                    var input = transactionProperties;
                     if ((input.UserBills == null || input.UserBills.Count() == 0)
                         && (input.UserBillDebts == null || input.UserBillDebts.Count() == 0)
                         && (input.PrepaymentBills == null || input.PrepaymentBills.Count() == 0)) throw new Exception("Input user bill is null");
@@ -191,7 +191,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         TenantId = input.UserBill.TenantId,
                         BuildingId = input.UserBill.BuildingId,
                         UrbanId = input.UserBill.UrbanId,
-                        TransactionProperties = transactionProperties
+                        TransactionProperties = JsonConvert.SerializeObject(transactionProperties)
                     };
 
                     bool isPaymentDebt = true;

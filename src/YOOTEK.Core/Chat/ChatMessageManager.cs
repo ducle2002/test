@@ -21,7 +21,7 @@ namespace Yootek.Chat
 {
     public interface IChatMessageManager : IDomainService
     {
-        Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderProfilePictureId, long? MessageRepliedId, int TypeMessage = 0);
+        Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int TypeMessage = 0);
         Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId, long id);
         long Save(ChatMessage message);
         int GetUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier sender);
@@ -84,7 +84,7 @@ namespace Yootek.Chat
             await HandleDeleteMessageReceiverAsync(receiver, message);
 
         }
-        public async Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderProfilePictureId, long? messageRepliedId, int typeMessage = 0)
+        public async Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int typeMessage = 0)
         {
              CheckReceiverExists(receiver);
 
@@ -100,7 +100,7 @@ namespace Yootek.Chat
 
             await HandleSenderToReceiverAsync(sender, receiver, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
             await HandleReceiverToSenderAsync(sender, receiver, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderProfilePictureId);
+            await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderImageUrl);
         }
 
         private void CheckReceiverExists(UserIdentifier receiver)
@@ -258,7 +258,7 @@ namespace Yootek.Chat
            
         }
 
-        private async Task HandleSenderUserInfoChangeAsync(UserIdentifier sender, UserIdentifier receiver, string senderTenancyName, string senderUserName, string senderProfilePictureId)
+        private async Task HandleSenderUserInfoChangeAsync(UserIdentifier sender, UserIdentifier receiver, string senderTenancyName, string senderUserName, string friendImageUrl)
         {
             var receiverCacheItem = _userFriendsCache.GetCacheItemOrNull(receiver);
 
@@ -270,7 +270,7 @@ namespace Yootek.Chat
 
             if (senderAsFriend.FriendTenancyName == senderTenancyName &&
                 senderAsFriend.FriendUserName == senderUserName &&
-                senderAsFriend.FriendProfilePictureId == senderProfilePictureId)
+                senderAsFriend.FriendImageUrl == friendImageUrl)
             {
                 return;
             }
@@ -283,9 +283,14 @@ namespace Yootek.Chat
 
             friendship.FriendTenancyName = senderTenancyName;
             friendship.FriendUserName = senderUserName;
-            friendship.FriendProfilePictureId = senderProfilePictureId;
+            friendship.FriendImageUrl = friendImageUrl;
+
+            senderAsFriend.FriendTenancyName = senderTenancyName;
+            senderAsFriend.FriendUserName = senderUserName;
+            senderAsFriend.FriendImageUrl = friendImageUrl;
 
             await _friendshipManager.UpdateFriendshipAsync(friendship);
+            _userFriendsCache.UpdateFriend(receiver, senderAsFriend);
         }
 
 

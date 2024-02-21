@@ -26,8 +26,7 @@ namespace Yootek.Friendships
         public string FriendUserName { get; set; }
 
         public string FriendTenancyName { get; set; }
-
-        public string FriendProfilePictureId { get; set; }
+        public string FriendImageUrl { get; set; }
         public bool? IsSender { get; set; }
         public bool? IsOrganizationUnit { get; set; }
 
@@ -35,7 +34,7 @@ namespace Yootek.Friendships
         public FollowState? FollowState { get; set; }
         public DateTime CreationTime { get; set; }
 
-        public Friendship(UserIdentifier user, UserIdentifier probableFriend, string probableFriendTenancyName, string probableFriendUserName, string probableFriendProfilePictureId, FriendshipState state, FollowState followState, bool isSender = false, bool isOrganizationUnit = false)
+        public Friendship(UserIdentifier user, UserIdentifier probableFriend, string probableFriendTenancyName, string probableFriendUserName, string friendImageUrl, FriendshipState state, FollowState followState, bool isSender = false, bool isOrganizationUnit = false)
         {
             if (user == null)
             {
@@ -65,7 +64,7 @@ namespace Yootek.Friendships
             FriendUserName = probableFriendUserName;
             State = state;
             FollowState = followState;
-            FriendProfilePictureId = probableFriendProfilePictureId;
+            FriendImageUrl = FriendImageUrl;
             IsSender = isSender;
             CreationTime = Clock.Now;
             IsOrganizationUnit = isOrganizationUnit;

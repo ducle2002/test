@@ -29,7 +29,7 @@ namespace Yootek.Services
     public interface IUserBillPaymentAppService : IApplicationService
     {
         Task<DataResult> HandlePaymentForThirdParty(HandPaymentForThirdPartyInput input);
-        Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto input);
+        Task<UserBillPaymentValidation> RequestValidationUserBillPayment(RequestValidationPaymentDto input);
     }
 
     public class UserBillPaymentAppService : YootekAppServiceBase, IUserBillPaymentAppService
@@ -62,7 +62,7 @@ namespace Yootek.Services
             _httpClient = new BaseHttpClient(abpSession, configuration["ApiSettings:Payments"]);
         }
 
-        public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto request)
+        public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(RequestValidationPaymentDto request)
         {
             var payment = await _handlePaymentUtilAppService.RequestValidationPaymentByApartment(request.TransactionProperties, request.TenantId);
             return payment;
@@ -90,7 +90,7 @@ namespace Yootek.Services
             {
                 var paymentTransaction = _thirdPartyPaymentRepo.FirstOrDefault(x => x.Id == input.Id);
                 if (paymentTransaction == null) throw new Exception();
-                var transaction = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(JsonConvert.DeserializeObject<string>(paymentTransaction.TransactionProperties));
+                var transaction = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(paymentTransaction.TransactionProperties);
                 var requestPayment = new
                 {
                     id = input.Id,
