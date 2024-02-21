@@ -225,7 +225,8 @@ namespace Yootek.Services
                                      CitizenCode = ctemp.CitizenCode,
                                      DateOfBirth = ctemp.DateOfBirth,
                                      IsVoter = ctemp.IsVoter,
-                                     OrganizationUnitId = ctemp.OrganizationUnitId
+                                     OrganizationUnitId = ctemp.OrganizationUnitId,
+                                     Hometown = ctemp.Hometown
                                  }).FirstOrDefault();
                     return query;
                 }
@@ -352,6 +353,7 @@ namespace Yootek.Services
                              CreationTime = ci.CreationTime,
                              BuildingName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
                              UrbanName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
+                             HomeAddress = ci.HomeAddress,
                          })
                          .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                          .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
@@ -983,6 +985,7 @@ namespace Yootek.Services
                             citizenTemp.UrbanCode = input.UrbanCode;
                             citizenTemp.AccountId = input.AccountId;
                             citizenTemp.UrbanId = input.UrbanId;
+                            citizenTemp.Hometown = input.HomeAddress;
                             await _citizenTempRepos.UpdateAsync(citizenTemp);
                             if (!updateData.CitizenTempId.HasValue) updateData.CitizenTempId = citizenTemp.Id;
                             await CurrentUnitOfWork.SaveChangesAsync();
@@ -1016,6 +1019,7 @@ namespace Yootek.Services
                             citizenInternal.UrbanCode = input.UrbanCode;
                             citizenInternal.AccountId = input.AccountId;
                             citizenInternal.UrbanId = input.UrbanId;
+                            citizenInternal.Hometown = input.HomeAddress;
                             await _citizenTempRepos.UpdateAsync(citizenInternal);
                             if (!updateData.CitizenTempId.HasValue) updateData.CitizenTempId = citizenInternal.Id;
                             await CurrentUnitOfWork.SaveChangesAsync();
@@ -1052,6 +1056,7 @@ namespace Yootek.Services
                                 UrbanCode = input.UrbanCode,
                                 AccountId = input.AccountId,
                                 UrbanId = input.UrbanId,
+                                Hometown = input.HomeAddress
                             };
                             var olderOwners = _citizenTempRepos.GetAll()
                                 .Where(x => x.RelationShip == RELATIONSHIP.Contractor && x.ApartmentCode == updateData.ApartmentCode && x.Id != updateData.Id && x.IsStayed == citizenTemp.IsStayed)
@@ -1251,7 +1256,8 @@ namespace Yootek.Services
                                  MemberNum = ci.MemberNum,
                                  Career = ci.Career,
                                  BuildingId = ci.BuildingId,
-                                 UrbanId = ci.UrbanId
+                                 UrbanId = ci.UrbanId,
+                                 HomeAddress = ci.HomeAddress,
                              })
                     .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Ids != null && input.Ids.Count > 0, x => input.Ids.Contains(x.Id))

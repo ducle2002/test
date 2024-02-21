@@ -52,6 +52,7 @@ namespace Yootek.Services.Dto
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
+        public string? HomeAddress { get; set; }
     }
 
     public class CitizenInfoDto
@@ -96,6 +97,7 @@ namespace Yootek.Services.Dto
         public long? UrbanId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
         public STATE_CITIZEN? State { get; set; }
+        public string? HomeAddress { get; set; }
 
     }
 
@@ -129,6 +131,7 @@ namespace Yootek.Services.Dto
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
+        public string? HomeAddress { get; set; }
     }
 
     [AutoMap(typeof(Citizen))]
@@ -188,8 +191,6 @@ namespace Yootek.Services.Dto
         public string FirstName { get; set; }
         public string Surname { get; set; }
         public DateTime? AccountDOB { get; set; }
-        public long? UrbanId { get; set; }
-        public long? BuildingId { get; set; }
         public string AccountEmail { get; set; }
     }
     [AutoMap(typeof(CitizenTemp))]
@@ -237,6 +238,7 @@ namespace Yootek.Services.Dto
         public int? OwnerGeneration { get; set; }
         public long? OwnerId { get; set; }
         public int? CareerCategoryId { get; set; }
+        public string? HomeTown { get; set; }
     }
     public class AccountDto
     {
