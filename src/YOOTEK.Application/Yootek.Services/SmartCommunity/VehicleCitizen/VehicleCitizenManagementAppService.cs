@@ -1627,15 +1627,19 @@ namespace Yootek.Services
                 var updateData = await _citizenVehicleRepos.GetAsync(input.Id);
                 if (updateData != null)
                 {
-                    input.MapTo(updateData);
-
+                    updateData.BillConfigId = input.BillConfigId;
+                    updateData.RegistrationDate = input.RegistrationDate;
+                    updateData.ExpirationDate = input.ExpirationDate;
+                    updateData.CardNumber = input.CardNumber;
+                    updateData.VehicleName = input.VehicleName;
+                    updateData.VehicleType = input.VehicleType;
+                    updateData.ParkingId = input.ParkingId;
+                    updateData.VehicleCode = input.VehicleCode;
                     listVehicle.Add(updateData);
                 }
                 await CreateOrUpdateVehicleAsync(listVehicle);
                 mb.statisticMetris(t1, 0, "ud_vehicle");
-
-                var data = DataResult.ResultSuccess(updateData, "Update success!");
-                return data;
+                return DataResult.ResultSuccess("Update success!");
             }
             catch (Exception e)
             {
