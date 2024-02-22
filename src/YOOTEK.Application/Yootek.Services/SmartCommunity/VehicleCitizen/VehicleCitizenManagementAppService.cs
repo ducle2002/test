@@ -1416,9 +1416,9 @@ namespace Yootek.Services
 
                         if (existingItem == null)
                         {
-                            // Tạo một item mới
+
                             var newItem = detail.MapTo<CitizenVehicle>();
-                            // Đặt các thuộc tính bổ sung
+
                             newItem.VehicleCode = detail.VehicleCode;
                             newItem.ApartmentCode = input.ApartmentCode;
                             newItem.BuildingId = input.BuildingId;
@@ -1430,7 +1430,6 @@ namespace Yootek.Services
                             newItem.ExpirationDate = detail.ExpirationDate;
                             newItem.ImageUrl = detail.ImageUrl;
 
-                            // Đặt trạng thái dựa trên ngày hết hạn
                             if (newItem.ExpirationDate != null && newItem.ExpirationDate <= DateTime.Now)
                             {
                                 if (newItem.State != CitizenVehicleState.REJECTED)
@@ -1447,7 +1446,7 @@ namespace Yootek.Services
                         }
                         else
                         {
-                            // Cập nhật item hiện tại
+
                             detail.MapTo(existingItem);
                             existingItem.VehicleCode = detail.VehicleCode;
                             existingItem.ApartmentCode = input.ApartmentCode;
@@ -1460,7 +1459,7 @@ namespace Yootek.Services
                             existingItem.ExpirationDate = detail.ExpirationDate;
                             existingItem.ImageUrl = detail.ImageUrl;
 
-                            // Đặt trạng thái dựa trên ngày hết hạn
+
                             if (existingItem.ExpirationDate != null && existingItem.ExpirationDate <= DateTime.Now)
                             {
                                 if (existingItem.State != CitizenVehicleState.REJECTED)
@@ -1637,9 +1636,6 @@ namespace Yootek.Services
 
                 var data = DataResult.ResultSuccess(updateData, "Update success!");
                 return data;
-
-
-
             }
             catch (Exception e)
             {
