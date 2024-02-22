@@ -699,49 +699,7 @@ namespace Yootek.Services
         }
 
 
-        public async Task<object> CreateOrUpdateVehicle(CitizenVehicleDto input)
-        {
-            try
-            {
-                long t1 = TimeUtils.GetNanoseconds();
-                input.TenantId = AbpSession.TenantId;
-                if (input.Id > 0)
-                {
-                    var updateData = await _citizenVehicleRepos.GetAsync(input.Id);
-                    if (updateData != null)
-                    {
-                        input.MapTo(updateData);
 
-                        await _citizenVehicleRepos.UpdateAsync(updateData);
-                    }
-                    mb.statisticMetris(t1, 0, "ud_vehicle");
-
-                    var data = DataResult.ResultSuccess(updateData, "Update success!");
-                    return data;
-                }
-                else
-                {
-                    var insertInput = input.MapTo<CitizenVehicle>();
-
-                    long id = await _citizenVehicleRepos.InsertAndGetIdAsync(insertInput);
-                    insertInput.Id = id;
-
-                    mb.statisticMetris(t1, 0, "is_vehicle");
-
-                    var data = DataResult.ResultSuccess(insertInput, "Insert success!");
-                    return data;
-                }
-
-            }
-            catch (Exception e)
-            {
-                Logger.Info(e.ToString());
-
-                var data = DataResult.ResultError(e.ToString(), "Exception!");
-                Logger.Fatal(e.Message);
-                throw;
-            }
-        }
 
         public async Task<object> DeleteByApartment(string apartmentCode)
         {
@@ -779,11 +737,14 @@ namespace Yootek.Services
         {
             try
             {
+                var deleteDataVehicle = await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.Id == id);
+                var query = _citizenVehicleRepos.GetAll().Where(x => x.UrbanId == deleteDataVehicle.UrbanId && x.BuildingId == deleteDataVehicle.BuildingId && x.ApartmentCode == deleteDataVehicle.ApartmentCode && x.BillConfigId == deleteDataVehicle.BillConfigId && x.VehicleType == deleteDataVehicle.VehicleType && x.Id != id).ToList();
                 var deleteData = await _citizenVehicleRepos.GetAsync(id);
                 if (deleteData != null)
                 {
                     await _citizenVehicleRepos.DeleteAsync(deleteData);
                 }
+                await CreateOrUpdateVehicleAsync(query);
                 return DataResult.ResultSuccess("Deleted!");
             }
             catch (Exception e)
@@ -1418,7 +1379,277 @@ namespace Yootek.Services
                 throw;
             }
         }
+        public async Task<object> GetAllPriceList()
+        {
+            try
+            {
+                long startTime = TimeUtils.GetNanoseconds();
+                var query = _billConfigRepos.GetAll().Where(x => x.BillType == BillType.Parking);
+                var result = await query.ToListAsync();
+                mb.statisticMetris(startTime, 0, "GetTotalVehiclesApartment");
 
+                return DataResult.ResultSuccess(result, "Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> CreateOrUpdateAndDeleteVehicle(CreateOrUpdateVehicleByApartmentDto input)
+        {
+            List<CitizenVehicle> vehicles = new List<CitizenVehicle>();
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+
+                if (input.DeleteList != null && input.DeleteList.Count > 0)
+                {
+                    await _citizenVehicleRepos.DeleteAsync(x => input.DeleteList.Contains(x.Id));
+                }
+
+                if (input.Value != null && input.Value.Count > 0)
+                {
+                    foreach (CitizenVehicleDto detail in input.Value)
+                    {
+                        var existingItem = await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.Id == detail.Id);
+
+                        if (existingItem == null)
+                        {
+                            // Tạo một item mới
+                            var newItem = detail.MapTo<CitizenVehicle>();
+                            // Đặt các thuộc tính bổ sung
+                            newItem.VehicleCode = detail.VehicleCode;
+                            newItem.ApartmentCode = input.ApartmentCode;
+                            newItem.BuildingId = input.BuildingId;
+                            newItem.UrbanId = input.UrbanId;
+                            newItem.Description = input.Description;
+                            newItem.OwnerName = input.OwnerName;
+                            newItem.TenantId = AbpSession.TenantId;
+                            newItem.RegistrationDate = detail.RegistrationDate;
+                            newItem.ExpirationDate = detail.ExpirationDate;
+                            newItem.ImageUrl = detail.ImageUrl;
+
+                            // Đặt trạng thái dựa trên ngày hết hạn
+                            if (newItem.ExpirationDate != null && newItem.ExpirationDate <= DateTime.Now)
+                            {
+                                if (newItem.State != CitizenVehicleState.REJECTED)
+                                {
+                                    newItem.State = CitizenVehicleState.OVERDUE;
+                                }
+                            }
+                            else
+                            {
+                                newItem.State = newItem.State ?? CitizenVehicleState.ACCEPTED;
+                            }
+
+                            vehicles.Add(newItem);
+                        }
+                        else
+                        {
+                            // Cập nhật item hiện tại
+                            detail.MapTo(existingItem);
+                            existingItem.VehicleCode = detail.VehicleCode;
+                            existingItem.ApartmentCode = input.ApartmentCode;
+                            existingItem.BuildingId = input.BuildingId;
+                            existingItem.UrbanId = input.UrbanId;
+                            existingItem.Description = input.Description;
+                            existingItem.OwnerName = input.OwnerName;
+                            existingItem.TenantId = AbpSession.TenantId;
+                            existingItem.RegistrationDate = detail.RegistrationDate;
+                            existingItem.ExpirationDate = detail.ExpirationDate;
+                            existingItem.ImageUrl = detail.ImageUrl;
+
+                            // Đặt trạng thái dựa trên ngày hết hạn
+                            if (existingItem.ExpirationDate != null && existingItem.ExpirationDate <= DateTime.Now)
+                            {
+                                if (existingItem.State != CitizenVehicleState.REJECTED)
+                                {
+                                    existingItem.State = CitizenVehicleState.OVERDUE;
+                                }
+                            }
+                            else
+                            {
+                                existingItem.State = existingItem.State ?? CitizenVehicleState.ACCEPTED;
+                            }
+
+                            vehicles.Add(existingItem);
+                        }
+                    }
+                }
+
+                await CreateOrUpdateVehicleAsync(vehicles);
+
+                await CurrentUnitOfWork.SaveChangesAsync();
+
+                return DataResult.ResultSuccess("Cập nhật thành công");
+            }
+            catch (Exception e)
+            {
+                Logger.Info(e.ToString());
+
+                var data = DataResult.ResultError(e.ToString(), "Lỗi ngoại lệ!");
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        private async Task CreateOrUpdateVehicleAsync(List<CitizenVehicle> input)
+        {
+            try
+            {
+                if (input == null || !input.Any())
+                {
+                    return;
+                }
+                var groupedVehicles = input.GroupBy(v => new { v.ApartmentCode, v.BuildingId, v.UrbanId, v.BillConfigId })
+                                    .ToDictionary(g => $"{g.Key.ApartmentCode}/{g.Key.BuildingId}/{g.Key.UrbanId}/{g.Key.BillConfigId}", g => g.ToList());
+                foreach (var group in groupedVehicles)
+                {
+
+
+                    var totalVehicles = 0;
+
+                    foreach (var vehicle in group.Value)
+                    {
+                        totalVehicles++;
+                        await ProcessCreateOrUpdateVehicleAsync(vehicle, totalVehicles);
+                    }
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex.Message);
+                throw;
+            }
+        }
+        public async Task ProcessCreateOrUpdateVehicleAsync(CitizenVehicle vh, int totalVehicles)
+        {
+
+            var checkCarCard = await _carCardRepository.FirstOrDefaultAsync(x => x.VehicleCardCode == vh.CardNumber);
+            if (checkCarCard == null)
+            {
+                var carCard = new CreateCarCardDto();
+                carCard.VehicleCardCode = vh.CardNumber;
+                carCard.ParkingId = vh.ParkingId;
+                var carCardNew = carCard.MapTo<CarCard>();
+                carCardNew.TenantId = AbpSession.TenantId;
+                await _carCardRepository.InsertAsync(carCardNew);
+            }
+            if (vh.BillConfigId == null)
+            {
+
+                if (vh.Id > 0)
+                {
+                    await _citizenVehicleRepos.UpdateAsync(vh);
+                }
+                else
+                {
+                    await _citizenVehicleRepos.InsertAsync(vh);
+                }
+            }
+            else
+            {
+
+                var carPropertiesInput = _billConfigRepos.FirstOrDefault(x => x.Id == vh.BillConfigId);
+                var carProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(carPropertiesInput.Properties);
+                if (carPropertiesInput.PricesType == BillConfigPricesType.Parking)
+                {
+                    switch (vh.VehicleType)
+                    {
+                        case VehicleType.Car:
+                            vh.Cost = (double)carProperties.Prices[0].Value;
+                            break;
+                        case VehicleType.Motorbike:
+                            vh.Cost = (double)carProperties.Prices[1].Value;
+                            break;
+                        case VehicleType.Bicycle:
+                            vh.Cost = (double)carProperties.Prices[2].Value;
+                            break;
+                        case VehicleType.ElectricCar:
+                            vh.Cost = (double)carProperties.Prices[3].Value;
+                            break;
+                        case VehicleType.ElectricMotor:
+                            vh.Cost = (double)carProperties.Prices[4].Value;
+                            break;
+                        case VehicleType.ElectricBike:
+                            vh.Cost = (double)carProperties.Prices[5].Value;
+                            break;
+                        case VehicleType.Other:
+                            vh.Cost = (double)carProperties.Prices[6].Value;
+                            break;
+                        default:
+                            break;
+                    }
+                    if (vh.Id > 0)
+                    {
+                        await _citizenVehicleRepos.UpdateAsync(vh);
+                    }
+                    else
+                    {
+                        await _citizenVehicleRepos.InsertAsync(vh);
+                    }
+
+                }
+                else
+                {
+                    foreach (var price in carProperties.Prices)
+                    {
+                        if (price.From == totalVehicles)
+                        {
+                            vh.Cost = price.Value;
+                        }
+                        else if (price.From < totalVehicles)
+                        {
+                            vh.Cost = price.Value;
+                        }
+                    }
+                    if (vh.Id > 0)
+                    {
+                        await _citizenVehicleRepos.UpdateAsync(vh);
+                    }
+                    else
+                    {
+                        await _citizenVehicleRepos.InsertAsync(vh);
+                    }
+                }
+
+            }
+
+        }
+        public async Task<object> CreateOrUpdateVehicle(CitizenVehicleDto input)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+
+                var listVehicle = await _citizenVehicleRepos.GetAllListAsync(x => x.UrbanId == input.UrbanId && x.BuildingId == input.BuildingId && x.ApartmentCode == input.ApartmentCode && x.Id != input.Id);
+                var updateData = await _citizenVehicleRepos.GetAsync(input.Id);
+                if (updateData != null)
+                {
+                    input.MapTo(updateData);
+
+                    listVehicle.Add(updateData);
+                }
+                await CreateOrUpdateVehicleAsync(listVehicle);
+                mb.statisticMetris(t1, 0, "ud_vehicle");
+
+                var data = DataResult.ResultSuccess(updateData, "Update success!");
+                return data;
+
+
+
+            }
+            catch (Exception e)
+            {
+                Logger.Info(e.ToString());
+
+                var data = DataResult.ResultError(e.ToString(), "Exception!");
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
 
     }
 }
