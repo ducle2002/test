@@ -300,15 +300,15 @@ namespace Yootek.Chat
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppUser_ChatUser,
-                          AppRouterLinks.AppUser_ChatUser,
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
                           friend.FriendImageUrl
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendName + " đã gửi 1 tin nhắn !",
                 message.Message,
-                AppRouterLinks.AppUser_ChatUser,
-                AppRouterLinks.AppUser_ChatUser,
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
                 new UserIdentifier[] { user },
                 messageData,
                 apptype
