@@ -14,7 +14,7 @@ namespace Yootek.Dto.Interface
         public DateTime CreationTime { get; set; }
         public DateTime LastMessageDate { get; set; }
         public bool IsOnline { get; set; }
-        public bool IsBlockOrDelete { get; set; }
+        public bool IsDeleted { get; set; }
         public int UnreadMessageCount { get; set; }
         public ChatFriendOrRoomDto()
         {
