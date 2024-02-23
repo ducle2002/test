@@ -15,12 +15,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Yootek.Organizations;
+using Yootek.EntityDb;
 
 namespace Yootek.Chat
 {
     public interface IBusinessChatMessageManager : IDomainService
     {
-        Task SendMessageBusinessAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string providerName = null);
+        Task SendMessageUserToProviderAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null);
+        Task SendMessageProviderToUserAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null);
         Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId);
     }
 
@@ -75,15 +78,84 @@ namespace Yootek.Chat
             await HandleDeleteMessageReceiverAsync(receiver, message);
         }
 
-        public async Task SendMessageBusinessAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null)
+        public async Task SendMessageUserToProviderAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null)
         {
-            //CheckReceiverExists(receiver);
+            var sharedMessageId = Guid.NewGuid();
+            var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
+            var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message,fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
+            await HandleSendToSenderAsync(receiver, sender, providerId, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+            await FireNotificationMessageToUserAsync(sentMessage, receiver, friendships.Item2, AppType.SELLER);
+        }
 
+        public async Task SendMessageProviderToUserAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null)
+        {
             var sharedMessageId = Guid.NewGuid();
 
-            await HandleSendToReceiverAsync(sender, receiver, providerId, message,fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
-            await HandleSendToSenderAsync(receiver, sender, providerId, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            //await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderProfilePictureId);
+
+            var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
+
+            var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message, fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
+            await HandleSendToSenderAsync(receiver, sender, providerId, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+
+            await FireNotificationMessageToUserAsync(sentMessage, receiver, friendships.Item1, AppType.USER);
+        }
+
+        private async Task<Tuple<UserProviderFriendship, UserProviderFriendship>> CheckBusinessFriendshipAsync(UserIdentifier user, UserIdentifier userShop, long providerId, string providerName, string providerImageUrl)
+        {
+            var userFriend = new UserProviderFriendship();
+            _unitOfWorkManager.WithUnitOfWork(() =>
+            {
+                using (CurrentUnitOfWork.SetTenantId(user.TenantId))
+                {
+                    userFriend = _userProviderFriendshipRepos.FirstOrDefault(x => x.UserId == user.UserId && x.FriendUserId == userShop.UserId && x.ProviderId == providerId);
+                }
+            });
+
+            if (userFriend == null)
+            {
+                var userInfo = _userManager.GetUser(user);
+                userFriend = new UserProviderFriendship()
+                {
+                    UserId = user.UserId,
+                    FriendUserId = userShop.UserId,
+                    FriendImageUrl = userInfo.ImageUrl,
+                    FriendName = userInfo.UserName,
+                    ProviderId = providerId,
+                    TenantId = user.TenantId,
+                    FriendTenantId = userFriend.TenantId,
+                    IsShop = false
+
+                };
+                SaveFriend(userFriend);
+            }
+
+            var shopFriend = new UserProviderFriendship();
+            _unitOfWorkManager.WithUnitOfWork(() =>
+            {
+                using (CurrentUnitOfWork.SetTenantId(userShop.TenantId))
+                {
+                    shopFriend = _userProviderFriendshipRepos.FirstOrDefault(x => x.UserId == userShop.UserId && x.FriendUserId == user.UserId && x.ProviderId == providerId);
+                }
+            });
+
+            if (shopFriend == null)
+            {
+                shopFriend = new UserProviderFriendship()
+                {
+                    UserId = userShop.UserId,
+                    FriendUserId = user.UserId,
+                    FriendImageUrl = providerImageUrl,
+                    FriendName = providerName,
+                    ProviderId = providerId,
+                    TenantId = userShop.TenantId,
+                    FriendTenantId = user.TenantId,
+                    IsShop = true
+                };
+
+                SaveFriend(shopFriend);
+            }
+
+            return new Tuple<UserProviderFriendship, UserProviderFriendship>(userFriend, shopFriend);
         }
 
         public virtual long Save(BusinessChatMessage message)
@@ -108,43 +180,9 @@ namespace Yootek.Chat
             });
         }
 
-        private void CheckReceiverExists(UserIdentifier receiver)
+        private async Task<BusinessChatMessage> HandleSendToReceiverAsync(UserIdentifier senderIdentifier, UserIdentifier receiverIdentifier, long providerId, string message, string fileUrl, string receiverImageUrl, Guid sharedMessageId, long? messageRepliedId, int typeMessage, string friendName = null)
         {
-            var receiverUser = _userManager.GetUser(receiver);
-            if (receiverUser == null)
-            {
-                throw new UserFriendlyException(L("TargetUserNotFoundProbablyDeleted"));
-            }
-        }
-
-        private async Task HandleSendToReceiverAsync(UserIdentifier senderIdentifier, UserIdentifier receiverIdentifier, long providerId, string message,string fileUrl, string receiverImageUrl, Guid sharedMessageId, long? messageRepliedId, int typeMessage, string friendName = null)
-        {
-            var friendship = new UserProviderFriendship();
-            _unitOfWorkManager.WithUnitOfWork(() =>
-            {
-                using (CurrentUnitOfWork.SetTenantId(senderIdentifier.TenantId))
-                {
-                    friendship = _userProviderFriendshipRepos.FirstOrDefault(x => x.UserId == senderIdentifier.UserId && x.FriendUserId == receiverIdentifier.UserId && x.ProviderId == providerId);
-                }
-            });
-
-            if (friendship == null)
-            {
-                var userfriend = _userManager.GetUser(receiverIdentifier);
-                friendship = new UserProviderFriendship()
-                {
-                    UserId = senderIdentifier.UserId,
-                    FriendUserId = receiverIdentifier.UserId,
-                    FriendImageUrl = receiverImageUrl,
-                    FriendName = friendName != null ? friendName : userfriend.ImageUrl,
-                    ProviderId = providerId,
-                    TenantId = senderIdentifier.TenantId,
-                    FriendTenantId = userfriend.TenantId,
-                    IsShop = true
-                };
-
-                SaveFriend(friendship);
-            }
+          
 
             var sentMessage = new BusinessChatMessage(
                 senderIdentifier,
@@ -171,36 +209,12 @@ namespace Yootek.Chat
             {
                 await _businessChatCommunicator.SendMessageToClient(clients, sentMessage, messRep);
             }
+           
+            return sentMessage;
         }
-
         private async Task HandleSendToSenderAsync(UserIdentifier senderIdentifier, UserIdentifier receiverIdentifier, long providerId, string message, string fileUrl, Guid sharedMessageId, long? messageRepliedId, int typeMessage)
         {
-            var friendship = new UserProviderFriendship();
-            _unitOfWorkManager.WithUnitOfWork(() =>
-            {
-                using (CurrentUnitOfWork.SetTenantId(senderIdentifier.TenantId))
-                {
-                    friendship = _userProviderFriendshipRepos.FirstOrDefault(x => x.UserId == senderIdentifier.UserId && x.FriendUserId == receiverIdentifier.UserId && x.ProviderId == providerId);
-                }
-            });
-
-            if (friendship == null)
-            {
-                var userFriend = _userManager.GetUser(receiverIdentifier);
-                friendship = new UserProviderFriendship()
-                {
-                    UserId = senderIdentifier.UserId,
-                    FriendUserId = receiverIdentifier.UserId,
-                    FriendImageUrl = userFriend.ImageUrl,
-                    FriendName = userFriend.UserName,
-                    ProviderId = providerId,
-                    TenantId = senderIdentifier.TenantId,
-                    FriendTenantId = userFriend.TenantId,
-                    IsShop = false
-
-                };
-                SaveFriend(friendship);
-            }
+           
 
             var sentMessage = new BusinessChatMessage(
                     senderIdentifier,
@@ -229,7 +243,6 @@ namespace Yootek.Chat
             }
 
         }
-
         protected async Task<BusinessChatMessage> GetMessageAsync(long id, long userId, ChatSide side, int? tenantId = null)
         {
             return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
@@ -249,10 +262,7 @@ namespace Yootek.Chat
                }
            });
 
-
-
         }
-
         public async Task HandleDeleteMessageSenderAsync(UserIdentifier sender, BusinessChatMessage message)
         {
             await _businessChatMessageRepos.DeleteAsync(message.Id);
@@ -263,7 +273,6 @@ namespace Yootek.Chat
             }
 
         }
-
         public async Task HandleDeleteMessageReceiverAsync(UserIdentifier receiver, BusinessChatMessage message)
         {
             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
@@ -284,7 +293,27 @@ namespace Yootek.Chat
             });
          
         }
-
+        public async Task FireNotificationMessageToUserAsync(BusinessChatMessage message, UserIdentifier user, UserProviderFriendship friend, AppType apptype)
+        {
+            var messageData = new UserMessageNotificationDataBase(
+                          AppNotificationAction.ChatMessage,
+                          AppNotificationIcon.ChatMessageIcon,
+                          TypeAction.Detail,
+                          message.Message,
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                          friend.FriendImageUrl
+                          );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                friend.FriendName + " đã gửi 1 tin nhắn !",
+                message.Message,
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                new UserIdentifier[] { user },
+                messageData,
+                apptype
+               );
+        }
         private int CheckTypeMessage(string message)
         {
             string regexImg = "([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)";

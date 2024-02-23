@@ -26,8 +26,7 @@ namespace Yootek.Friendships
         public string FriendUserName { get; set; }
 
         public string FriendTenancyName { get; set; }
-
-        public string FriendProfilePictureId { get; set; }
+        public string FriendImageUrl { get; set; }
         public bool? IsSender { get; set; }
         public bool? IsOrganizationUnit { get; set; }
 
@@ -35,7 +34,7 @@ namespace Yootek.Friendships
         public FollowState? FollowState { get; set; }
         public DateTime CreationTime { get; set; }
 
-        public Friendship(UserIdentifier user, UserIdentifier probableFriend, string probableFriendTenancyName, string probableFriendUserName, string probableFriendProfilePictureId, FriendshipState state, FollowState followState, bool isSender = false, bool isOrganizationUnit = false)
+        public Friendship(UserIdentifier user, UserIdentifier probableFriend, string probableFriendTenancyName, string probableFriendUserName, string friendImageUrl, FriendshipState state, FollowState? followState = null, bool isSender = false, bool isOrganizationUnit = false)
         {
             if (user == null)
             {
@@ -52,10 +51,6 @@ namespace Yootek.Friendships
                 throw new InvalidEnumArgumentException(nameof(state), (int)state, typeof(FriendshipState));
             }
             
-            if (!Enum.IsDefined(typeof(FollowState), followState))
-            {
-                throw new InvalidEnumArgumentException(nameof(followState), (int)followState, typeof(FollowState));
-            }
 
             UserId = user.UserId;
             TenantId = user.TenantId;
@@ -65,7 +60,7 @@ namespace Yootek.Friendships
             FriendUserName = probableFriendUserName;
             State = state;
             FollowState = followState;
-            FriendProfilePictureId = probableFriendProfilePictureId;
+            FriendImageUrl = friendImageUrl;
             IsSender = isSender;
             CreationTime = Clock.Now;
             IsOrganizationUnit = isOrganizationUnit;

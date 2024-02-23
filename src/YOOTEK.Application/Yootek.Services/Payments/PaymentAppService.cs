@@ -51,11 +51,6 @@ namespace Yootek.Yootek.Services.Yootek.Payments
 
         public async Task<DataResultT<PaymentDto>> Create(CreatePaymentDto input)
         {
-            if (input.Type == EPaymentType.BILL)
-            {
-                var paymentBill = await _userBillPaymentAppService.RequestValidationUserBillPayment(input);
-                input.TransactionId = paymentBill.Id;
-            }
 
             return await _httpClient.SendSync<PaymentDto>("/api/payments/create", HttpMethod.Post, input);
         }

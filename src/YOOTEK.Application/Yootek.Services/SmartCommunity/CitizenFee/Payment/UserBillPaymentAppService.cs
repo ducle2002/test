@@ -9,9 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Yootek.Common.Enum;
 using Yootek.EntityDb;
-using Yootek.Notifications.UserBillNotification;
-using Yootek.Notifications;
-using Yootek.Services.Dto;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment;
 using Microsoft.EntityFrameworkCore;
 using Yootek.App.ServiceHttpClient.Dto.Business;
@@ -32,7 +29,7 @@ namespace Yootek.Services
     public interface IUserBillPaymentAppService : IApplicationService
     {
         Task<DataResult> HandlePaymentForThirdParty(HandPaymentForThirdPartyInput input);
-        Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto input);
+        Task<UserBillPaymentValidation> RequestValidationUserBillPayment(RequestValidationPaymentDto input);
     }
 
     public class UserBillPaymentAppService : YootekAppServiceBase, IUserBillPaymentAppService
@@ -65,11 +62,9 @@ namespace Yootek.Services
             _httpClient = new BaseHttpClient(abpSession, configuration["ApiSettings:Payments"]);
         }
 
-        [RemoteService(false)]
-        public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(CreatePaymentDto request)
+        public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(RequestValidationPaymentDto request)
         {
-           
-            var payment = await _handlePaymentUtilAppService.RequestValidationPaymentByApartment(request.TransactionProperties);
+            var payment = await _handlePaymentUtilAppService.RequestValidationPaymentByApartment(request.TransactionProperties, request.TenantId);
             return payment;
         }
 
@@ -95,20 +90,20 @@ namespace Yootek.Services
             {
                 var paymentTransaction = _thirdPartyPaymentRepo.FirstOrDefault(x => x.Id == input.Id);
                 if (paymentTransaction == null) throw new Exception();
-                var transaction = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(JsonConvert.DeserializeObject<string>(paymentTransaction.TransactionProperties));
+                var transaction = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(paymentTransaction.TransactionProperties);
+                var requestPayment = new
+                {
+                    id = input.Id,
+                    internalState = 2,
+                    isManuallyVerified = true
+                };
                 switch (input.Status)
                 {
                     case EPrepaymentStatus.SUCCESS:
                         transaction.Status = UserBillPaymentStatus.Success;
                         transaction.Method = (UserBillPaymentMethod)paymentTransaction.Method;
-                        var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);
+                        var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);  
 
-                        var requestPayment = new
-                        {
-                            id = input.Id,
-                            internalState = 2,
-                            isManuallyVerified = true
-                        };
                         var res =  await _httpClient.SendSync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
                         await CreateEPaymentBalance(pm.Id, input.Id, paymentTransaction.Amount, pm.Title, pm.TenantId, pm.Method);
                         return DataResult.ResultSuccess(pm.Id, "");
@@ -124,9 +119,8 @@ namespace Yootek.Services
                             var ids = string.Join(",", transaction.UserBillDebts.Select(x => x.Id).OrderBy(x => x));
                             await UpdatePaymentPendingUserBills(ids, false, UserBillStatus.Debt, input.TenantId);
                         }
-                        paymentTransaction.IsManuallyVerified = true;
-                        paymentTransaction.InternalState = EInternalStateChangeStatus.Success;
-                        await _thirdPartyPaymentRepo.UpdateAsync(paymentTransaction);
+
+                        await _httpClient.SendSync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
                         break;
                     default:
                         throw new Exception();

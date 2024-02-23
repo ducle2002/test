@@ -16,12 +16,10 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto;
 using Abp.Domain.Uow;
-using Yootek.Services.Dto;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment;
 using YOOTEK.EntityDb;
 using Yootek.MultiTenancy;
 using Yootek.Common.Enum;
-using Nest;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -170,7 +168,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                              MerchantName = mc.Name,
                              InternalState = pm.InternalState,
                              IsAutoVerified = pm.IsAutoVerified,
-                             IsManuallyVerified = pm.IsManuallyVerified
+                             IsManuallyVerified = pm.IsManuallyVerified,
 
                          })
                          .Where(x => x.Type == EPaymentType.Invoice)
@@ -181,7 +179,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                          .WhereIf(input.TenantId.HasValue, x => x.TenantId == input.TenantId)
                          .WhereIf(input.Method.HasValue, x => x.Method == (EPaymentMethod)input.Method)
                          .WhereIf(input.Status.HasValue, x => x.Status == (EPaymentStatus)input.Status)
-                         .WhereIf(!string.IsNullOrEmpty(input.Keyword), x =>x.TransactionProperties != null && EF.Functions.JsonExists(x.TransactionProperties, $"(@ like '%{input.Keyword}%')"))
+                         .WhereIf(!string.IsNullOrEmpty(input.Keyword), x => x.Id.ToString() == input.Keyword || x.Amount.ToString() == input.Keyword)
                          .AsQueryable();
             return query;
         }
@@ -198,26 +196,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                     foreach(var item in result)
                     {
                         item.TenantName = tenants.Where(x => x.Id == item.TenantId).Select(x => x.Name).FirstOrDefault();
-                        //if(!item.TransactionProperties.IsNullOrEmpty())
-                        //{
-                        //    try
-                        //    {
-                        //        var properties = JsonConvert.DeserializeObject<dynamic>(JsonConvert.DeserializeObject<string>(item.TransactionProperties));
-                        //        if(properties.userBills != null)
-                        //        {
-                        //            item.BillList = new List<BillPaidDto>();
-                        //            foreach (var bill in properties.userBills)
-                        //            {
-                        //                var id = long.Parse(bill.id);
-                        //                var b = _userBillRepo.GetAll().Select(x => new BillPaidDto()
-                        //                {
-
-                        //                }).Where(x => x.Id == id).FirstOrDefault();
-                        //            }
-                        //        }
-
-                        //    }catch { }
-                        //}
+                        
                     }
 
                     return DataResult.ResultSuccess(result, "", query.Count());

@@ -81,22 +81,15 @@ namespace Yootek.Web.Host.Chat
         public async Task<bool> SendMessage(SendChatMessageInput input)
         {
             var sender = Context.ToUserIdentifier();
-            input.TenantId = sender.TenantId;
             var receiver = new UserIdentifier(input.TenantId, input.UserId);
 
             try
             {
                 using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
                 {
-                    await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.ProfilePictureId, input.MessageRepliedId, input.TypeMessage);
+                    await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
                     return true;
                 }
-            }
-            catch (UserFriendlyException ex)
-            {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
-                return false;
             }
             catch (Exception ex)
             {
@@ -271,7 +264,7 @@ namespace Yootek.Web.Host.Chat
             {
                 using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
                 {
-                    await _organizationUnitChatManager.SendMessageOrgAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.ProfilePictureId, input.MessageRepliedId, input.TypeMessage, input.IsAdmin);
+                    await _organizationUnitChatManager.SendMessageOrgAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage, input.IsAdmin);
                     return true;
                 }
             }
@@ -344,7 +337,7 @@ namespace Yootek.Web.Host.Chat
             {
                 using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
                 {
-                    await _busniessChatMessageManager.SendMessageBusinessAsync(sender, receiver, input.ProviderId, input.Message,input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
+                    await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message,input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
                 }
                 return true;
             }
@@ -363,7 +356,7 @@ namespace Yootek.Web.Host.Chat
             {
                 using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
                 {
-                    await _busniessChatMessageManager.SendMessageBusinessAsync(sender, receiver, input.ProviderId, input.Message,input.FileUrl, input.UserImageUrl, input.MessageRepliedId, input.TypeMessage);
+                    await _busniessChatMessageManager.SendMessageProviderToUserAsync(sender, receiver, input.ProviderId, input.Message,input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
                 }
             }
             catch (Exception ex)

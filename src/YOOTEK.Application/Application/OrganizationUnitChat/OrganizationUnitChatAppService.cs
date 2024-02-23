@@ -193,7 +193,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                         FollowState = friendship.FollowState,
                         FriendUserName = friendship.FriendUserName,
                         FriendTenancyName = friendship.FriendTenancyName,
-                        FriendProfilePictureId = friendship.FriendProfilePictureId,
+                        FriendImageUrl = friendship.FriendImageUrl,
                         IsOrganizationUnit = friendship.IsOrganizationUnit,
                         LastMessageDate = friendship.CreationTime,
                         FriendInfo = (from ctz in _citizenRepos.GetAll()

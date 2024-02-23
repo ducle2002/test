@@ -10,11 +10,11 @@ namespace Yootek.Web.Host.SignalR
         public long? MessageRepliedId { get; set; }
         public long UserId { get; set; }
         public long ProviderId { get; set; }
-        public string UserImageUrl { get; set; }
-        [Required]
         public string Message { get; set; }
         public string FileUrl { get; set; }
         public int TypeMessage { get; set; }
+        public string ProviderImageUrl { get; set; }
+        public string ProviderName { get; set; }
     }
 
     public class UserSendMessageProviderInput

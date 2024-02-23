@@ -16,7 +16,7 @@ namespace Yootek.Friendships.Cache
 
         public string FriendTenancyName { get; set; }
 
-        public string FriendProfilePictureId { get; set; }
+        public string FriendImageUrl { get; set; }
 
         public int UnreadMessageCount { get; set; }
 

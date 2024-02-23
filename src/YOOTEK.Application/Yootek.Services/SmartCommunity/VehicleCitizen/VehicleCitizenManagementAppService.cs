@@ -1179,6 +1179,31 @@ namespace Yootek.Services
                 throw;
             }
         }
+        public async Task<object> CreateVehicle(List<CitizenVehicle> input)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+                for (var i = 0; i < input.Count; i++)
+                {
+                    if ((await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.VehicleCode == input[i].VehicleCode)) != null)
+                    {
+                        throw new Exception("license plate already exists.");
+                    };
+                    input[i].TenantId = AbpSession.TenantId;
+                    input[i].State = CitizenVehicleState.ACCEPTED;
+                }
+
+                await CreateListVehicleAsync(input);
+                mb.statisticMetris(t1, 0, "CreateVehicle");
+                return DataResult.ResultSuccess("Get success");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
 
         private async Task CreateListVehicleAsync(List<CitizenVehicle> input)
         {
