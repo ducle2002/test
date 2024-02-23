@@ -2,7 +2,7 @@
 
 namespace Yootek.Application.Chat.Dto
 {
-    public class GetUserChatFriendsWithSettingInput : FilteredInputDto
+    public class GetUserChatFriendsWithSettingInput : CommonInputDto
     {
     }
 }

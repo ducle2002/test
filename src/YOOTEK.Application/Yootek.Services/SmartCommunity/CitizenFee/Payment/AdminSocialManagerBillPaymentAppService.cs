@@ -196,26 +196,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                     foreach(var item in result)
                     {
                         item.TenantName = tenants.Where(x => x.Id == item.TenantId).Select(x => x.Name).FirstOrDefault();
-                        //if(!item.TransactionProperties.IsNullOrEmpty())
-                        //{
-                        //    try
-                        //    {
-                        //        var properties = JsonConvert.DeserializeObject<dynamic>(JsonConvert.DeserializeObject<string>(item.TransactionProperties));
-                        //        if(properties.userBills != null)
-                        //        {
-                        //            item.BillList = new List<BillPaidDto>();
-                        //            foreach (var bill in properties.userBills)
-                        //            {
-                        //                var id = long.Parse(bill.id);
-                        //                var b = _userBillRepo.GetAll().Select(x => new BillPaidDto()
-                        //                {
-
-                        //                }).Where(x => x.Id == id).FirstOrDefault();
-                        //            }
-                        //        }
-
-                        //    }catch { }
-                        //}
+                        
                     }
 
                     return DataResult.ResultSuccess(result, "", query.Count());

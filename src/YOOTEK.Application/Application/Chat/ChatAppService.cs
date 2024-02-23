@@ -24,6 +24,7 @@ using Yootek.Common.DataResult;
 using Yootek.Application.Chat.Dto;
 using Yootek.Authorization.Users;
 using Abp.UI;
+using Abp.Json;
 
 namespace Yootek.Chat
 {
@@ -37,6 +38,7 @@ namespace Yootek.Chat
         private readonly IChatCommunicator _chatCommunicator;
         private readonly IGroupChatCache _groupChatCache;
         private readonly IUserOrganizationUnitCache _userOrganizationUnitCache;
+        private readonly IChatMessageManager _chatMessageManager;
 
         public ChatAppService(
             IRepository<ChatMessage, long> chatMessageRepository,
@@ -46,7 +48,8 @@ namespace Yootek.Chat
             IOnlineClientManager onlineClientManager,
             IChatCommunicator chatCommunicator,
             IGroupChatCache groupChatCache,
-            IUserOrganizationUnitCache userOrganizationUnitCache
+            IUserOrganizationUnitCache userOrganizationUnitCache,
+            IChatMessageManager chatMessageManager
             )
         {
             _chatMessageRepository = chatMessageRepository;
@@ -57,7 +60,26 @@ namespace Yootek.Chat
             _chatCommunicator = chatCommunicator;
             _groupChatCache = groupChatCache;
             _userOrganizationUnitCache = userOrganizationUnitCache;
+            _chatMessageManager = chatMessageManager;
         }
+
+
+        //public async Task<bool> SendMessage(SendChatMessageInput input)
+        //{
+        //    var sender = AbpSession.ToUserIdentifier();
+        //    var receiver = new UserIdentifier(input.TenantId, input.UserId);
+        //    try
+        //    {
+        //        await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.Warn("Could not send chat message to user: " + receiver);
+        //        Logger.Warn(ex.ToString(), ex);
+        //        return false;
+        //    }
+        //}
 
         public async Task<DataResult> CountMessageUnreadUser()
         {
@@ -76,8 +98,7 @@ namespace Yootek.Chat
                   .Count();
             var data = DataResult.ResultSuccess(unreadMessageCount + unreadMessageGroupCount, "Get success !");
             return data;
-        }
-      
+        } 
         public async Task<DataResult> SearchUserMessageByKeyword(SearchMessageInput input)
         {
             try
@@ -124,20 +145,20 @@ namespace Yootek.Chat
         }
 
         [DisableAuditing]
-        public async Task<GetUserChatFriendsWithSettingsOutput> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
+        public async Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
         {
             try
             {
                 var userId = AbpSession.GetUserId();
                 //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
-                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), FriendshipState.Accepted);
+                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
 
                 if (!string.IsNullOrWhiteSpace(input.Keyword))
                 {
                     cacheItem.Friends = cacheItem.Friends.Where(x => x.FriendUserName.Contains(input.Keyword)).ToList();
                 }
 
-                var friends = ObjectMapper.Map<List<FriendDto>>(cacheItem.Friends);
+                var friends = ObjectMapper.Map<List<FriendDto>>(cacheItem.Friends.Skip(input.SkipCount).Take(input.MaxResultCount).ToList());
                 var listresults = new List<ChatFriendOrRoomDto>();
 
                 foreach (var friend in friends)
@@ -158,7 +179,12 @@ namespace Yootek.Chat
                        .FirstOrDefault();
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
 
-                    friend.IsBlockOrDelete = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? true : false;
+                    friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
+                    if(friend.State == FriendshipState.IsDeleted)
+                    {
+                        friend.FriendUserName = "Người dùng yoolife";
+                        friend.FriendImageUrl = null;
+                    }
                 }
 
                 listresults = listresults.Concat(friends).ToList();
@@ -187,16 +213,13 @@ namespace Yootek.Chat
 
                 #endregion
 
-                return new GetUserChatFriendsWithSettingsOutput
-                {
-                    Friends = listresults,
-                    ServerTime = Clock.Now,
-                    SenderId = AbpSession.UserId.Value
-                };
+                return DataResult.ResultSuccess(listresults, "get success", cacheItem.Friends.Count());
+               
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException("GetUserChatFriendsWithSetting exception !" + e.Message);
+                Logger.Fatal("GetUserChatFriendsWithSettings : "+  e.ToJsonString());
+                throw;
             }
         }
 
@@ -309,5 +332,23 @@ namespace Yootek.Chat
                 await _chatCommunicator.SendAllUnreadMessagesOfUserReadToClients(onlineClients, friendIdentifier);
             }
         }
+    }
+    public class SendChatMessageInput
+    {
+        public int? TenantId { get; set; }
+        public long? MessageRepliedId { get; set; }
+        public long UserId { get; set; }
+
+        public long SenderId { get; set; }
+
+        public string UserName { get; set; }
+
+        public string TenancyName { get; set; }
+
+        public string SenderImageUrl { get; set; }
+        public string Message { get; set; }
+        public string FileUrl { get; set; }
+        public int TypeMessage { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

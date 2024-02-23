@@ -15,6 +15,8 @@ namespace Yootek.Web.Host.SignalR
         public string Message { get; set; }
         public string FileUrl { get; set; }
         public int TypeMessage { get; set; }
+        public string ProviderImageUrl { get; set; }
+        public string ProviderName { get; set; }
     }
 
     public class UserSendMessageProviderInput
