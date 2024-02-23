@@ -369,15 +369,15 @@ namespace Yootek.Chat
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppUser_ChatUser,
-                          AppRouterLinks.AppUser_ChatUser,
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
                           friend.FriendImageUrl                           
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendUserName + " " + NotificationMessageCheckType(message),
                 message.Message,
-                AppRouterLinks.AppUser_ChatUser,
-                AppRouterLinks.AppUser_ChatUser,
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
                 new UserIdentifier[] {user},
                 messageData,
                 AppType.USER
