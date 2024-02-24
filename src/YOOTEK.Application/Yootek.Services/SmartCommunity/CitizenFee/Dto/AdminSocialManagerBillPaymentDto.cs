@@ -71,7 +71,9 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public string Description { get; set; }
         public string Properties { get; set; }
         public DateTime CreatedAt { get; set; }
+        public long? CreatedById { get; set; }
         public string TenantName { get; set; }
+        public string FullName { get; set; }
         public string MerchantName { get; set; }
         public EInternalStateChangeStatus? InternalState { get; set; }
         public bool IsAutoVerified { get; set; }
@@ -79,7 +81,7 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public object ObjectProperties { get; set; }
         public List<BillPaidDto> BillList { get; set; }
         public List<BillPaidDto> BillListDebt { get; set; }
-        public List<BillPaidDto> BillListPrepayment { get; set; }
+        public List<PrepaymentBillDto> BillListPrepayment { get; set; }
     }
 
     public class CountThirdPartyPaymentDto
