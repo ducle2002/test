@@ -42,7 +42,7 @@ namespace Yootek.EntityDb
         public long[]? OrganizationUnitIds { get; set; }
         public RECEIVE_TYPE? ReceiveAll { get; set; }
         public bool? IsReceiveAll { get; set; }
-        public List<string>? AttachUrls { get; set; }
+        public string? AttachUrls { get; set; }
         
     }
 }
