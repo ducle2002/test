@@ -142,11 +142,13 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 fromDay = new DateTime(input.FromDay.Value.Year, input.FromDay.Value.Month, input.FromDay.Value.Day, 0, 0, 0);
 
             }
+
             if (input.ToDay.HasValue)
             {
                 toDay = new DateTime(input.ToDay.Value.Year, input.ToDay.Value.Month, input.ToDay.Value.Day, 23, 59, 59);
 
             }
+
             var query = (from pm in _thirdPartyPaymentRepository.GetAll()
                          join mc in _onepayMerchantRepository.GetAll() on pm.MerchantId equals mc.Id into tb_mc
                          from mc in tb_mc.DefaultIfEmpty()
@@ -155,6 +157,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                              Id = pm.Id,
                              Amount = pm.Amount,
                              CreatedAt = pm.CreatedAt,
+                             CreatedById = pm.CreatedById,
                              Currency = pm.Currency,
                              Description = pm.Description,
                              Method = pm.Method,
@@ -169,6 +172,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                              InternalState = pm.InternalState,
                              IsAutoVerified = pm.IsAutoVerified,
                              IsManuallyVerified = pm.IsManuallyVerified,
+                             TransactionJson = JsonConvert.DeserializeObject<PayMonthlyUserBillsInput>(pm.TransactionProperties)
 
                          })
                          .Where(x => x.Type == EPaymentType.Invoice)
@@ -183,6 +187,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                          .AsQueryable();
             return query;
         }
+
         public async Task<object> GetAllThirdPartyPayments(GetAllPaymentInput input)
         {
             try
@@ -197,6 +202,21 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                     {
                         item.TenantName = tenants.Where(x => x.Id == item.TenantId).Select(x => x.Name).FirstOrDefault();
                         
+                        if(item.TransactionJson?.UserBills != null)
+                        {
+                            var ids = item.TransactionJson.UserBills.Select(x => x.Id).ToList();
+                            item.BillList = await GetBillByIds(ids, item.TenantId);
+                        }
+
+                        if (item.TransactionJson?.UserBillDebts != null)
+                        {
+                            var ids = item.TransactionJson.UserBillDebts.Select(x => x.Id).ToList();
+                            item.BillListDebt = await GetBillByIds(ids, item.TenantId);
+                        }
+
+                        item.BillListPrepayment = item.TransactionJson?.PrepaymentBills;
+
+                        item.FullName = await GetUserFullName(item.CreatedById??0, item.TenantId);
                     }
 
                     return DataResult.ResultSuccess(result, "", query.Count());
@@ -209,6 +229,41 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 throw;
             }
         }
+
+        protected async Task<string> GetUserFullName(long id, int? tenantId)
+        {
+            using(CurrentUnitOfWork.SetTenantId(tenantId))
+            {
+                return (await _userRepos.FirstOrDefaultAsync(id))?.FullName;
+            }
+        }
+
+        protected Task<List<BillPaidDto>> GetBillByIds(List<long> ids, int? tenantId)
+        {
+            using(CurrentUnitOfWork.SetTenantId(tenantId))
+            {
+                return _userBillRepo.GetAll()
+               .Select(x => new BillPaidDto()
+               {
+                   Id = x.Id,
+                   Amount = x.Amount,
+                   ApartmentCode = x.ApartmentCode,
+                   BillType = x.BillType,
+                   Code = x.Code,
+                   LastCost = x.LastCost,
+                   Period = x.Period,
+                   Status = x.Status,
+                   Title = x.Title,
+                   IndexEndPeriod = x.IndexEndPeriod,
+                   IndexHeadPeriod = x.IndexHeadPeriod,
+                   TotalIndex = x.TotalIndex,
+                   DebtTotal = x.DebtTotal,
+                   PayAmount = x.DebtTotal > 0 ? (double)x.DebtTotal : x.LastCost
+               })
+               .Where(x => ids.Contains(x.Id)).ToListAsync();
+            }
+        }
+
         public async Task<object> GetCountThirdPartyPayments(GetAllPaymentInput input)
         {
             try
@@ -229,6 +284,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 throw;
             }
         }
+
         protected IQueryable<AdminSocialUserBillPaymentOutputDto> QueryUserBillPayments(GetAllBillPaymentByAdminSocialDto input)
         {
            
