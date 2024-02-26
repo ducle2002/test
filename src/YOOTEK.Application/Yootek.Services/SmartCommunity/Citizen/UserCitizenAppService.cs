@@ -132,6 +132,7 @@ namespace Yootek.Services
                             BuildingName = _organizationUnitRepository.GetAll()
                                 .Where(i => i.Code == citizen.BuildingCode)
                                 .Select(x => x.DisplayName).FirstOrDefault(),
+                            HomeAddress = citizen.HomeAddress,
                         }
                     )
                     .Where(x => x.AccountId == AbpSession.UserId)
@@ -334,6 +335,7 @@ namespace Yootek.Services
                 citizenUpdate.UrbanId = input.UrbanId;
                 citizenUpdate.IdentityImageUrls = input.IdentityImageUrls;
                 citizenUpdate.State = STATE_CITIZEN.NEW;
+                citizenUpdate.HomeAddress = input.HomeAddress;
 
                 await _citizenRepos.UpdateAsync(citizenUpdate);
                 return DataResult.ResultSuccess(true, "Update success !");
