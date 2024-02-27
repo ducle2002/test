@@ -162,7 +162,7 @@ namespace Yootek.Emailing
                     return template;
                 }
             }
-             else if (tenantId == 47)
+            else if (tenantId == 49)
             {
                 using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.trungdo.html"))
                 {

@@ -169,6 +169,12 @@ namespace Yootek.Services
                    AbpSession.TenantId);
 
             }
+            else if (AbpSession.TenantId == 49)
+            {
+                template = await CreateTemplateTrungDo(apartmentCode, period,
+                   AbpSession.TenantId);
+
+            }
             else if (AbpSession.TenantId == 114)
             {
                 template = await CreateTemplateLT(apartmentCode, period,
