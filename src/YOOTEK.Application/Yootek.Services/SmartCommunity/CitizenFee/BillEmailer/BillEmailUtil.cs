@@ -4980,6 +4980,455 @@ namespace Yootek.Services
                 return emailTemplate;
             }
         }
+        //Trung do
+        public async Task<StringBuilder> CreateTemplateTrungDo(string apartmentCode, DateTime period, int? tenantId)
+        {
+            using (CurrentUnitOfWork.SetTenantId(tenantId))
+            {
+                DateTime currentDate = DateTime.Now;
+                string periodString = period.ToString("MM/yyyy");
+                DateTime preMonthPeriod = period.AddMonths(-1);
+
+                List<BillConfig> billConfigs = _billConfigRepository.GetAllList();
+                List<UserBill> userBills = _userBillRepository.GetAll()
+                     .Where(x => x.ApartmentCode == apartmentCode)
+                     .Where(x => (x.Period.Value.Month == period.Month &&
+                            x.Period.Value.Year == period.Year))
+                     .ToList();
+                var dueDate = userBills[0]?.DueDate ?? currentDate;
+                var creationTime = userBills[0]?.CreationTime ?? currentDate;
+                CitizenTemp citizenTemp =
+                    _citizenTempRepository.FirstOrDefault(x =>
+                        x.ApartmentCode == apartmentCode &&
+                        x.RelationShip == RELATIONSHIP.Contractor &&
+                        x.IsStayed == true) ??
+                    _citizenTempRepository.GetAll()
+                        .Where(x => x.ApartmentCode == apartmentCode && x.RelationShip == RELATIONSHIP.Contractor)
+                        .OrderByDescending(x => x.OwnerGeneration)
+                        .FirstOrDefault();
+                List<BillDebt>? billDebt = _billDebtRepos.GetAllList(x =>
+                        x.ApartmentCode == apartmentCode &&
+                        x.Period.Year == period.Year &&
+                        x.Period.Month == period.Month &&
+                        (citizenTemp == null || x.CitizenTempId == citizenTemp.Id)).ToList();
+                UserBill parkingBill = userBills.FirstOrDefault(x => x.BillType == BillType.Parking && (x.Period.Value.Month == period.Month &&
+                            x.Period.Value.Year == period.Year));
+                UserBill waterBill = userBills.FirstOrDefault(x => x.BillType == BillType.Water && (x.Period.Value.Month == period.Month &&
+                            x.Period.Value.Year == period.Year));
+                UserBill electricBill = userBills.FirstOrDefault(x => x.BillType == BillType.Electric);
+                UserBill managementBill = userBills.FirstOrDefault(x => x.BillType == BillType.Manager && (x.Period.Value.Month == period.Month &&
+                            x.Period.Value.Year == period.Year));
+                var priceslist = _billConfigRepository.GetAllList();
+                var priceE = priceslist.FirstOrDefault(x => x.BillType == BillType.Electric && x.PricesType == BillConfigPricesType.Level);
+                var percentsE = priceslist.Where(x => x.BillType == BillType.Electric && x.PricesType == BillConfigPricesType.Percentage).ToList();
+                BillConfig priceParkingConfig = GetBillConfigPrice(billConfigs, BillType.Parking, BillConfigPricesType.Parking);
+                BillConfig priceManagementConfig = GetBillConfigPrice(billConfigs, BillType.Manager, BillConfigPricesType.Rapport);
+                BillConfig priceWaterConfig = GetBillConfigPrice(billConfigs, BillType.Water, BillConfigPricesType.Level);
+                var head_period = new DateTime(period.Year, period.Month, 1);
+                var period_day_end = period.TotalDaysInMonth();
+                var end_period = new DateTime(period.Year, period.Month, period_day_end);
+
+
+
+
+
+                double parkingMoneyUnpaid = GetBillCost(parkingBill);
+                double waterMoneyUnpaid = GetBillCost(waterBill);
+                double managementMoneyUnpaid = GetBillCost(managementBill);
+
+                double electricMoneyUnpaid = GetBillCost(electricBill);
+
+
+                double managementMoneyDebt = 0;
+                double parkingMoneyDebt = 0;
+                double waterMoneyDebt = 0;
+                var e_vat = 0.08;
+                var e_ht = 0.09;
+                double managementMoney = managementMoneyUnpaid + managementMoneyDebt;
+                double waterMoney = waterMoneyUnpaid + waterMoneyDebt;
+                double parkingMoney = parkingMoneyUnpaid + parkingMoneyDebt;
+
+                double costUnpaid = parkingMoneyUnpaid + waterMoneyUnpaid + managementMoneyUnpaid + electricMoneyUnpaid;
+
+                double costDebt = managementMoneyDebt + parkingMoneyDebt + waterMoneyDebt;
+                double totalFeeAndDebt = costUnpaid + costDebt;
+
+                decimal? acreageApartment = GetAcreageApartment(managementBill);
+                decimal indexHeadWater = GetIndexHead(waterBill);
+                decimal indexEndWater = GetIndexEnd(waterBill);
+                decimal totalIndexWater = indexEndWater - indexHeadWater;
+                decimal indexHeadElectric = GetIndexHead(electricBill);
+                decimal indexEndElectric = GetIndexEnd(electricBill);
+                decimal totalIndexElectric = GetTotalIndex(electricBill);
+
+
+
+                string listRowVehicles = "";
+                List<CitizenVehiclePas> listVehicles = new();
+                if (listVehicles.Count > 0)
+                {
+                    foreach (var (vehicle, index) in listVehicles.Select((vehicle, index) => (vehicle, index)))
+                    {
+                        StringBuilder vehicleRowTemplate = new("<tr>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{VEHICLE_TYPE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{VEHICLE_CODE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\"></td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{COST_VEHICLE}</td>\r\n              <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: right;\">{COST_PARKING_ELEMENT}</td>\r\n          </tr>");
+                        string vehicleName = GetVehicleName(vehicle);
+                        string vehicleCode = vehicle?.vehicleCode ?? "";
+                        decimal vehicleCost = vehicle?.cost ?? 0;
+                        // var vehicleCount = vehicle?.level ?? 0;
+                        vehicleRowTemplate
+                            .Replace("{INDEX}", GetStringValue(index + 1))
+                            //.Replace("{APARTMENT_CODE}", $"{apartmentCode}")
+                            .Replace("{VEHICLE_TYPE}", $"{vehicleName}")
+                            .Replace("{VEHICLE_CODE}", $"{vehicleCode}")
+                            // .Replace("{VEHICLE_COUNT}", $"{vehicleCount}")
+                            .Replace("{COST_VEHICLE}", $"{vehicleCost}")
+                            .Replace("{COST_PARKING_ELEMENT}", FormatCost((double?)vehicleCost));
+                        listRowVehicles += vehicleRowTemplate.ToString();
+                    }
+                }
+                else
+                {
+
+                }
+
+                // list vehicle parking
+                int p_money = 0;
+                int priceCar = 0;
+                int priceMotor = 0;
+                int priceBike = 0;
+                int priceOther = 0;
+                int priceECar = 0;
+                int priceEMotor = 0;
+                int priceEBike = 0;
+                BillConfigPropertiesDto billParkingConfigProperties = new();
+                if (priceParkingConfig?.Properties != null)
+                {
+                    billParkingConfigProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(priceParkingConfig.Properties);
+                }
+                BillConfigPropertiesDto billWaterConfigProperties = new();
+                if (priceWaterConfig?.Properties != null)
+                {
+                    billWaterConfigProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(priceWaterConfig.Properties);
+                }
+                BillConfigPropertiesDto billManagementConfigProperties = new();
+                if (priceManagementConfig?.Properties != null)
+                {
+                    billManagementConfigProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(priceManagementConfig.Properties);
+                }
+                string customerName = GetCustomerName(userBills, citizenTemp);
+                StringBuilder emailTemplate = new StringBuilder(_emailTemplateProvider.GetUserBillTemplate(tenantId));
+                if (billParkingConfigProperties.Prices != null && billParkingConfigProperties.Prices.Length == 4)
+                {
+
+                    priceCar = (int)billParkingConfigProperties.Prices[0].Value;
+                    priceMotor = (int)billParkingConfigProperties.Prices[1].Value;
+                    priceBike = (int)billParkingConfigProperties.Prices[2].Value;
+                    priceECar = (int)billParkingConfigProperties.Prices[3].Value;
+                    priceEMotor = (int)billParkingConfigProperties.Prices[4].Value;
+                    priceEBike = (int)billParkingConfigProperties.Prices[5].Value;
+                    priceOther = (int)billParkingConfigProperties.Prices[6].Value;
+
+
+                }
+
+                emailTemplate.Replace("{PRICE_CAR}", string.Format("{0:#,#.##}", priceCar));
+                emailTemplate.Replace("{PRICE_MOTOR}", string.Format("{0:#,#.##}", priceMotor));
+                emailTemplate.Replace("{PRICE_BIKE}", string.Format("{0:#,#.##}", priceBike));
+                emailTemplate.Replace("{PRICE_ECAR}", string.Format("{0:#,#.##}", priceECar));
+                emailTemplate.Replace("{PRICE_EMOTOR}", string.Format("{0:#,#.##}", priceEMotor));
+                emailTemplate.Replace("{PRICE_EBIKE}", string.Format("{0:#,#.##}", priceEBike));
+                emailTemplate.Replace("{PRICE_OTHER}", string.Format("{0:#,#.##}", priceOther));
+
+                int numCar = 0;
+                int numMotor = 0;
+                int numBike = 0;
+                int numOther = 0;
+                //int numECar = 0;
+                //int numEMotor = 0;
+                //int numEBike = 0;
+
+                if (parkingBill != null)
+                {
+                    p_money = (int)parkingBill.LastCost;
+                    numCar = parkingBill.CarNumber ?? 0;
+                    numMotor = parkingBill.MotorbikeNumber ?? 0;
+                    numBike = parkingBill.BicycleNumber ?? 0;
+                    numOther = parkingBill.OtherVehicleNumber ?? 0;
+                    //numECar = parkingBill.ECarNumber ?? 0;
+                    //numOther = parkingBill.EMotorNumber ?? 0;
+                    //numOther = parkingBill.EBikeNumber ?? 0;
+                }
+
+                emailTemplate.Replace("{P_MONEY}", string.Format("{0:#,#.##}", p_money));
+                emailTemplate.Replace("{CAR_NUMBER}", numCar + "");
+                emailTemplate.Replace("{MOTOR_NUMBER}", numMotor + "");
+                emailTemplate.Replace("{BIKE_NUMBER}", numBike + "");
+                emailTemplate.Replace("{OTHER_NUMBER}", numOther + "");
+
+                emailTemplate.Replace("{MONEY_CAR}", FormatCost(priceCar * numCar));
+                emailTemplate.Replace("{MONEY_ECAR}", FormatCost(priceCar * numCar));
+                emailTemplate.Replace("{MONEY_MOTOR}", FormatCost(priceMotor * numMotor));
+                emailTemplate.Replace("{MONEY_EMOTOR}", FormatCost(priceMotor * numMotor));
+                emailTemplate.Replace("{MONEY_ALLMOTOR}", FormatCost(priceMotor * numMotor));
+                emailTemplate.Replace("{MONEY_BIKE}", FormatCost(priceBike * numBike));
+                emailTemplate.Replace("{MONEY_EBIKE}", FormatCost(priceBike * numBike));
+                emailTemplate.Replace("{MONEY_ALLBIKE}", FormatCost(priceBike * numBike));
+                emailTemplate.Replace("{MONEY_OTHER}", FormatCost(priceOther * numOther));
+
+                string listWaterConsumptions = string.Empty;
+                int dayWater = await GetDayWater(waterBill, currentDate);
+
+                if (billWaterConfigProperties.Prices != null && billWaterConfigProperties.Prices.Any())
+                {
+                    List<PriceDto> listUnitPrices = billWaterConfigProperties.Prices.ToList();
+                    foreach (var (unitPrice, index) in listUnitPrices.Select((unitPrice, index) => (unitPrice, index)))
+                    {
+                        // declare
+                        int waterConsumptionQuantity;
+                        long unitPriceWater;
+                        long costWaterUnpaid;
+
+                        string utilityWater = "m3";
+                        StringBuilder waterRowTemplate = new("<tr> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px\"> {U_WATER} </td> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{WATER_CONSUMPTION_QUANTITY}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\"> {UNIT_PRICE_WATER}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\">{COST_WATER_UNPAID} </td> </tr>");
+                        string unitWaterName = $"Từ {unitPrice?.From} tới {unitPrice?.To} (m3)" ?? "";
+
+                        // caculate price for each unit and content
+                        if (index == 0 && unitPrice.To < totalIndexWater)
+                        {
+                            waterConsumptionQuantity = (int)(unitPrice.To - unitPrice.From);
+                            unitPriceWater = (long)unitPrice.Value;
+                            costWaterUnpaid = waterConsumptionQuantity * unitPriceWater;
+                        }
+                        else if (unitPrice.To.HasValue && unitPrice.To < totalIndexWater)
+                        {
+                            waterConsumptionQuantity = (int)(unitPrice.To - unitPrice.From + 1);
+                            unitPriceWater = (long)unitPrice.Value;
+                            costWaterUnpaid = waterConsumptionQuantity * unitPriceWater;
+                        }
+                        else
+                        {
+                            waterConsumptionQuantity = (int)(totalIndexWater - unitPrice.From) <= 0 ? 0 : (int)(totalIndexWater - unitPrice.From);
+                            unitPriceWater = (long)unitPrice.Value;
+                            costWaterUnpaid = waterConsumptionQuantity * unitPriceWater;
+                        }
+                        if (index != 0)
+                        {
+                            utilityWater = string.Empty;
+                        }
+
+                        // complete
+                        waterRowTemplate
+                            .Replace("{INDEX}", $"{index + 1}")
+                            .Replace("{UTILITY}", utilityWater)
+                            .Replace("{U_WATER}", unitWaterName)
+                            .Replace("{WATER_CONSUMPTION_QUANTITY}", $"{waterConsumptionQuantity}")
+                            .Replace("{UNIT_PRICE_WATER}", FormatCost(unitPriceWater))
+                            .Replace("{COST_WATER_UNPAID}", FormatCost(costWaterUnpaid));
+
+                        listWaterConsumptions += waterRowTemplate.ToString();
+                    }
+                }
+                var w_money = 0;
+                var resultW = 0;
+                if (waterBill != null) w_money = (int)waterBill.LastCost;
+
+                if (billWaterConfigProperties != null && billWaterConfigProperties.Prices != null)
+                {
+                    var brk = false;
+                    var amount = waterBill != null ? (int)waterBill.TotalIndex.Value : 0;
+
+                    var index = 0;
+                    foreach (var level in billWaterConfigProperties.Prices)
+                    {
+                        index++;
+                        //var levelVal = level.Value + (0.05 * level.Value) + (0.1 * level.Value);
+                        var levelVal = level.Value;
+                        string unitWaterName = $"Từ {level?.From} tới {level?.To} (m3)" ?? "";
+                        emailTemplate.Replace("{U_WATER" + index + "}", unitWaterName + "");
+
+                        if (!brk)
+                        {
+
+                            if (amount < level.To)
+                            {
+                                var kla = amount > 0 ? (index == 1 ? amount - level.From : amount - level.From + 1) : 0;
+                                emailTemplate.Replace("{W_INDEX" + index + "}", kla + "");
+                                emailTemplate.Replace("{W_PRICE" + index + "}", string.Format("{0:#,#.##}", levelVal));
+                                emailTemplate.Replace("{W_AMOUNT" + index + "}", string.Format("{0:#,#.##}", (int)(levelVal * kla)));
+                                resultW += (int)(levelVal * kla);
+                                brk = true;
+                                continue;
+                            }
+
+                            if (!level.To.HasValue)
+                            {
+                                var kla = index == 1 ? amount - level.From : amount - level.From + 1;
+                                emailTemplate.Replace("{W_INDEX" + index + "}", kla + "");
+                                emailTemplate.Replace("{W_PRICE" + index + "}", string.Format("{0:#,#.##}", levelVal));
+                                emailTemplate.Replace("{W_AMOUNT" + index + "}", string.Format("{0:#,#.##}", (int)(levelVal * kla)));
+                                resultW += (int)(levelVal * kla);
+                                brk = true;
+                                continue;
+                            }
+
+                            var kl = index == 1 ? level.To - level.From : level.To - level.From + 1;
+                            emailTemplate.Replace("{W_INDEX" + index + "}", kl + "");
+                            emailTemplate.Replace("{W_PRICE" + index + "}", string.Format("{0:#,#.##}", levelVal));
+                            emailTemplate.Replace("{W_AMOUNT" + index + "}", string.Format("{0:#,#.##}", (int)(levelVal * kl)));
+                            resultW += (int)(levelVal * kl);
+                        }
+                        else
+                        {
+                            emailTemplate.Replace("{W_PRICE" + index + "}", string.Format("{0:#,#.##}", levelVal));
+                        }
+                    }
+                    for (var i = 1; i < 7; i++)
+                    {
+                        emailTemplate.Replace("{W_INDEX" + i + "}", "");
+                        emailTemplate.Replace("{W_PRICE" + i + "}", "");
+                        emailTemplate.Replace("{W_AMOUNT" + i + "}", "");
+                        emailTemplate.Replace("{INDEX" + i + "}", "");
+                    }
+                    emailTemplate.Replace("{W_TOTAL_AMOUNT}", string.Format("{0:#,#.##}", resultW));
+
+                }
+                var resultE = 0;
+                var billConfigPropertiesE = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(priceE.Properties);
+                var electrictbill = userBills.FirstOrDefault(x => x.BillType == BillType.Electric);
+
+                if (billConfigPropertiesE != null && billConfigPropertiesE.Prices != null)
+                {
+                    var brk = false;
+                    var amount = electrictbill != null ? (int)electrictbill.TotalIndex.Value : 0;
+                    var index = 0;
+                    foreach (var level in billConfigPropertiesE.Prices)
+                    {
+                        index++;
+                        if (!brk)
+                        {
+                            if (amount < level.To)
+                            {
+                                var kla = index == 1 ? amount - level.From : amount - level.From + 1;
+                                emailTemplate.Replace("{E_INDEX" + index + "}", kla + "");
+                                emailTemplate.Replace("{E_PRICE" + index + "}", string.Format("{0:#,#.##}", level.Value));
+                                emailTemplate.Replace("{E_AMOUNT" + index + "}", string.Format("{0:#,#.##}", (int)(level.Value * kla)));
+                                resultE += (int)(level.Value * kla);
+                                brk = true;
+                                continue;
+                            }
+
+                            if (!level.To.HasValue)
+                            {
+                                var kla = index == 1 ? amount - level.From : amount - level.From + 1;
+                                emailTemplate.Replace("{E_INDEX" + index + "}", kla + "");
+                                emailTemplate.Replace("{E_PRICE" + index + "}", string.Format("{0:#,#.##}", level.Value));
+                                emailTemplate.Replace("{E_AMOUNT" + index + "}", string.Format("{0:#,#.##}", (int)(level.Value * kla)));
+                                resultE += (int)(level.Value * kla);
+                                brk = true;
+                                continue;
+                            }
+
+                            var kl = index == 1 ? level.To - level.From : level.To - level.From + 1;
+                            emailTemplate.Replace("{E_INDEX" + index + "}", kl + "");
+                            emailTemplate.Replace("{E_PRICE" + index + "}", string.Format("{0:#,#.##}", level.Value));
+                            emailTemplate.Replace("{E_AMOUNT" + index + "}", string.Format("{0:#,#.##}", (int)(level.Value * kl)));
+                            resultE += (int)(level.Value * kl);
+                        }
+                        else
+                        {
+                            emailTemplate.Replace("{E_PRICE" + index + "}", string.Format("{0:#,#.##}", level.Value));
+                        }
+                    }
+
+                    for (var i = 1; i < 7; i++)
+                    {
+                        emailTemplate.Replace("{E_INDEX" + i + "}", "");
+                        emailTemplate.Replace("{E_PRICE" + i + "}", "");
+                        emailTemplate.Replace("{E_AMOUNT" + i + "}", "");
+                    }
+
+                    emailTemplate.Replace("{E_TOTAL_AMOUNT}", string.Format("{0:#,#.##}", resultE));
+
+                    
+                    // emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE + e_percent));
+                    emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE));
+                }
+                
+                double parkingMoneyPaid = parkingBill != null && parkingBill.Status == UserBillStatus.Paid ? parkingBill.LastCost.Value : 0;
+
+
+                // edit EmailTemplate
+                emailTemplate
+                    .Replace("{DAY_NOW}", $"{currentDate.Day:D2}")
+                    .Replace("{MONTH_NOW}", $"{currentDate.Month:D2}")
+                    .Replace("{YEAR_NOW}", $"{currentDate.Year}")
+                    .Replace("{PERIOD}", $"{periodString}")
+                    .Replace("{MONTH_PERIOD}", $"{period.Month:D2}")
+                    .Replace("{YEAR_PERIOD}", $"{period.Year}")
+                    .Replace("{DAY_WATER}", $"{28}")
+                    .Replace("{PRE_MONTH_PERIOD}", $"{preMonthPeriod.Month:D2}")
+                    .Replace("{PRE_YEAR_PERIOD}", $"{preMonthPeriod.Year}")
+                    .Replace("{CUSTOMER_NAME}", $"{customerName}")
+                    .Replace("{APARTMENT_CODE}", $"{apartmentCode}")
+                    .Replace("{DUE_DATE}", FormatDateTime(dueDate, "dd/MM/yyyy"))
+                    .Replace("{CREATIONTIME}", FormatDateTime(creationTime, "dd/MM/yyyy"))
+                    .Replace("{MONTH_NAME_PERIOD}", $"{period.ToString("MMMM", CultureInfo.InvariantCulture)}")
+                    .Replace("{MONTH_NAME_ACRON}", $"{DateTime.Now.ToString("MMM", CultureInfo.InvariantCulture)}")
+                    // amount 
+                    .Replace("{ACREAGE_APARTMENT}", GetStringValue((double?)acreageApartment))
+                    .Replace("{HEAD_INDEX_W}", GetStringValue((double?)indexHeadWater))
+                    .Replace("{END_INDEX_W}", GetStringValue((double?)indexEndWater))
+                    .Replace("{HEAD_INDEX_E}", GetStringValue(indexHeadElectric))
+                    .Replace("{END_INDEX_E}", GetStringValue(indexEndElectric))
+                    .Replace("{TOTAL_INDEX_W}", GetStringValue((double?)totalIndexWater))
+                    .Replace("{TOTAL_INDEX_E}", GetStringValue(totalIndexElectric))
+                    .Replace("{LIST_WATER}", listWaterConsumptions)
+                    .Replace("{E_VAT}", string.Format("{0:#,#.##}", (resultE * e_vat)))
+                    .Replace("{E_HT}", string.Format("{0:#,#.##}", (resultE * e_ht)))
+                    .Replace("{P_MONEY_PAID}", FormatCost(parkingMoneyPaid))
+
+
+                    // unit price
+                    .Replace("{UNIT_PRICE_MANAGEMENT}", FormatCost(billManagementConfigProperties?.Prices[0].Value))
+                    .Replace("{UNIT_PRICE_WATER}", FormatCost(billWaterConfigProperties?.Prices[0].Value))
+
+                    // management
+                    .Replace("{COST_MANAGEMENT_UNPAID}", FormatCost(managementMoneyUnpaid))
+                    .Replace("{COST_MANAGEMENT_DEBT}", FormatCost(managementMoneyDebt))
+                    .Replace("{COST_MANAGEMENT}", FormatCost(managementMoney))
+                    .Replace("{M_MONEY_PAID}", FormatCost(managementMoney))
+
+                    // water
+                    .Replace("{COST_WATER_UNPAID}", FormatCost(waterMoneyUnpaid))
+                    .Replace("{COST_WATER_DEBT}", FormatCost(waterMoneyDebt))
+                    .Replace("{COST_WATER}", FormatCost(waterMoney))
+                    .Replace("{W_MONEY}", FormatCost(w_money))
+
+
+                    // parking
+                    .Replace("{UNIT_PRICE_PARKING}", "")
+                    .Replace("{COST_PARKING_UNPAID}", FormatCost(parkingMoney))
+                    .Replace("{COST_PARKING_DEBT}", FormatCost(parkingMoneyDebt))
+                    .Replace("{COST_PARKING}", FormatCost(parkingMoney))
+
+                    // card parking
+                    .Replace("{COST_CARD_VEHICLE_UNPAID}", FormatCost(0))
+                    .Replace("{COST_CARD_VEHICLE_DEBT}", FormatCost(0))
+                    .Replace("{COST_CARD_VEHICLE}", FormatCost(0))
+
+                    // list vehicle
+                    .Replace("{LIST_VEHICLE}", $"{listRowVehicles}")
+                    //.Replace("{LIST_WATER}", $"{listRowWaterConfig}")
+                    // total money
+                    .Replace("{COST_UNPAID}", FormatCost(costUnpaid))
+                    .Replace("{COST_DEBT}", FormatCost(costDebt))
+                    .Replace("{COST_PAYMENT}", FormatCost(totalFeeAndDebt))
+                    .Replace("{COST_PAYMENT_TEXT}", VietNameseConverter.FormatCurrency((decimal)totalFeeAndDebt))
+                .Replace("{TOTAL_2}", FormatCost(totalFeeAndDebt));
+                return emailTemplate;
+            }
+        }
+
+
 
         #region Helper methods
         private double GetBillCost(UserBill bill) => bill?.LastCost ?? 0;
