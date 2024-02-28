@@ -4711,13 +4711,13 @@ namespace Yootek.Services
                         string vehicleName = GetVehicleName(vehicle);
                         string vehicleCode = vehicle?.vehicleCode ?? "";
                         decimal vehicleCost = vehicle?.cost ?? 0;
-                       // var vehicleCount = vehicle?.level ?? 0;
+                        // var vehicleCount = vehicle?.level ?? 0;
                         vehicleRowTemplate
                             .Replace("{INDEX}", GetStringValue(index + 1))
                             //.Replace("{APARTMENT_CODE}", $"{apartmentCode}")
                             .Replace("{VEHICLE_TYPE}", $"{vehicleName}")
                             .Replace("{VEHICLE_CODE}", $"{vehicleCode}")
-                           // .Replace("{VEHICLE_COUNT}", $"{vehicleCount}")
+                            // .Replace("{VEHICLE_COUNT}", $"{vehicleCount}")
                             .Replace("{COST_VEHICLE}", $"{vehicleCost}")
                             .Replace("{COST_PARKING_ELEMENT}", FormatCost((double?)vehicleCost));
                         listRowVehicles += vehicleRowTemplate.ToString();
@@ -4816,11 +4816,11 @@ namespace Yootek.Services
                         int waterConsumptionQuantity;
                         long unitPriceWater;
                         long costWaterUnpaid;
-                       
+
                         string utilityWater = "m3";
                         StringBuilder waterRowTemplate = new("<tr> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{INDEX}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px\"> {U_WATER} </td> <td style=\"border-width: 1px; border-style: solid; padding: 6px; text-align: center;\">{WATER_CONSUMPTION_QUANTITY}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\"> {UNIT_PRICE_WATER}</td> <td style=\"border-width: 1px; border-style: solid; padding: 6px 10px; text-align: right;\">{COST_WATER_UNPAID} </td> </tr>");
                         string unitWaterName = $"Từ {unitPrice?.From} tới {unitPrice?.To} (m3)" ?? "";
-                        
+
                         // caculate price for each unit and content
                         if (index == 0 && unitPrice.To < totalIndexWater)
                         {
@@ -5352,13 +5352,14 @@ namespace Yootek.Services
                         emailTemplate.Replace("{E_AMOUNT" + i + "}", "");
                     }
 
-                    emailTemplate.Replace("{E_TOTAL_AMOUNT}", string.Format("{0:#,#.##}", resultE));
+                    emailTemplate.Replace("{E_TOTAL_AMOUNT}",
+                        string.Format("{0:#,#.##}", electricBill.LastCost.HasValue ? string.Format("{0:#,#}", Math.Round(electricBill.LastCost.Value)) : null));
 
-                    
+
                     // emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE + e_percent));
                     emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE));
                 }
-                
+
                 double parkingMoneyPaid = parkingBill != null && parkingBill.Status == UserBillStatus.Paid ? parkingBill.LastCost.Value : 0;
 
 
@@ -5438,7 +5439,7 @@ namespace Yootek.Services
 
         #region Helper methods
         private double GetBillCost(UserBill bill) => bill?.LastCost ?? 0;
-        private int GetMonthNumber(UserBill bill) => bill != null? bill.MonthNumber ?? 1: 0;
+        private int GetMonthNumber(UserBill bill) => bill != null ? bill.MonthNumber ?? 1 : 0;
         private decimal GetAcreageApartment(UserBill bill) => bill?.TotalIndex ?? 0;
         private string GetCustomerName(List<UserBill> userBills, CitizenTemp? citizenTemp)
         {
