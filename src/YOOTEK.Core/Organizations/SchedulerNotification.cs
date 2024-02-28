@@ -165,7 +165,7 @@ namespace Yootek.Organizations
         public const string AppSeller_Promotion = "yooseller://promotion";
         public const string AppSeller_Ads = "yooseller://ads";
         public const string AppSeller_FlashSale = "yooseller://flashsale";
-        public const string AppSeller_ChatUser = "yooseller://chat-user";
+        public const string AppSeller_ChatUser = "yooseller://chat-user/chatbox";
 
 
         public static string GetEnumValue(Enum en)
