@@ -14,6 +14,7 @@ using Abp.Linq.Extensions;
 using Abp.Organizations;
 using Abp.RealTime;
 using Abp.UI;
+using JetBrains.Annotations;
 using Yootek.Application;
 using Yootek.AppManager.HomeMembers;
 using Yootek.Authorization;
@@ -316,7 +317,7 @@ namespace Yootek.Services
             }
         }
 
-        protected IQueryable<CitizenDto> QueryCitizen(GetAllCitizenInput input)
+        protected IQueryable<CitizenDto> QueryCitizen([CanBeNull] GetAllCitizenInput input)
         {
             List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
 
@@ -760,8 +761,48 @@ namespace Yootek.Services
         {
             try
             {
-                var result = await _citizenRepos.GetAsync(id);
-                var data = DataResult.ResultSuccess(result, "Get success!");
+                var query = (from ci in _citizenRepos.GetAll()
+                    join us in _userRepos.GetAll() on ci.AccountId equals us.Id into tb_us
+                    from us in tb_us.DefaultIfEmpty()
+                    select new CitizenDto()
+                    {
+                        Id = ci.Id,
+                        PhoneNumber = ci.PhoneNumber != null ? ci.PhoneNumber : us.PhoneNumber,
+                        Nationality = ci.Nationality,
+                        FullName = ci.FullName,
+                        IdentityNumber = ci.IdentityNumber,
+                        ImageUrl = ci.ImageUrl != null ? ci.ImageUrl : us.ImageUrl,
+                        Email = ci.Email != null
+                            ? ci.Email
+                            : (us.EmailAddress.Contains("yootek") ? us.EmailAddress : null),
+                        Address = ci.Address,
+                        DateOfBirth = ci.DateOfBirth,
+                        AccountId = ci.AccountId,
+                        Gender = ci.Gender,
+                        IsVoter = ci.IsVoter,
+                        State = ci.State,
+                        ApartmentCode = ci.ApartmentCode,
+                        Type = ci.Type,
+                        TenantId = ci.TenantId,
+                        OrganizationUnitId = ci.OrganizationUnitId,
+                        RelationShip = ci.RelationShip,
+                        CitizenCode = ci.CitizenCode,
+                        MemberNum = ci.MemberNum,
+                        Career = ci.Career,
+                        UrbanId = ci.UrbanId,
+                        BuildingId = ci.BuildingId,
+                        CitizenTempId = ci.CitizenTempId,
+                        IdentityImageUrls = ci.IdentityImageUrls,
+                        CreationTime = ci.CreationTime,
+                        BuildingName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.BuildingId)
+                            .Select(x => x.DisplayName).FirstOrDefault(),
+                        UrbanName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.UrbanId)
+                            .Select(x => x.DisplayName).FirstOrDefault(),
+                        HomeAddress = ci.HomeAddress,
+                    }).Where(x => x.Id == id).FirstOrDefaultAsync();
+                // var result = await _citizenRepos.GetAsync(id);
+                //
+                var data = DataResult.ResultSuccess(query.Result, "Get success!");
                 return data;
             }
             catch (Exception e)
