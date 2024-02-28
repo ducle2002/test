@@ -97,6 +97,7 @@ namespace Yootek.Services
                     internalState = 2,
                     isManuallyVerified = true
                 };
+
                 switch (input.Status)
                 {
                     case EPrepaymentStatus.SUCCESS:

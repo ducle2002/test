@@ -84,7 +84,7 @@ namespace Yootek.Chat
             var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
             var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message,fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
             await HandleSendToSenderAsync(receiver, sender, providerId, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await FireNotificationMessageToUserAsync(sentMessage, receiver, friendships.Item2, AppType.SELLER);
+            await FireNotificationMessageToProviderAsync(sentMessage, sender, receiver, providerId, friendships.Item2, AppType.SELLER);
         }
 
         public async Task SendMessageProviderToUserAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null)
@@ -97,7 +97,7 @@ namespace Yootek.Chat
             var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message, fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
             await HandleSendToSenderAsync(receiver, sender, providerId, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
 
-            await FireNotificationMessageToUserAsync(sentMessage, receiver, friendships.Item1, AppType.USER);
+            await FireNotificationMessageToUserAsync(sentMessage, receiver, providerId, friendships.Item1, AppType.USER);
         }
 
         private async Task<Tuple<UserProviderFriendship, UserProviderFriendship>> CheckBusinessFriendshipAsync(UserIdentifier user, UserIdentifier userShop, long providerId, string providerName, string providerImageUrl)
@@ -293,27 +293,51 @@ namespace Yootek.Chat
             });
          
         }
-        public async Task FireNotificationMessageToUserAsync(BusinessChatMessage message, UserIdentifier user, UserProviderFriendship friend, AppType apptype)
+
+        public async Task FireNotificationMessageToProviderAsync(BusinessChatMessage message, UserIdentifier user, UserIdentifier receiver, long providerId, UserProviderFriendship friend, AppType apptype)
         {
             var messageData = new UserMessageNotificationDataBase(
                           AppNotificationAction.ChatMessage,
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
                           friend.FriendImageUrl
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendName + " đã gửi 1 tin nhắn !",
                 message.Message,
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
+                new UserIdentifier[] { receiver },
+                messageData,
+                apptype
+               );
+        }
+
+        public async Task FireNotificationMessageToUserAsync(BusinessChatMessage message, UserIdentifier user, long providerId,  UserProviderFriendship friend, AppType apptype)
+        {
+            var messageData = new UserMessageNotificationDataBase(
+                          AppNotificationAction.ChatMessage,
+                          AppNotificationIcon.ChatMessageIcon,
+                          TypeAction.Detail,
+                          message.Message,
+                          AppRouterLinks.AppUser_ChatSeller + "/" + providerId,
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId,
+                          friend.FriendImageUrl
+                          );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                friend.FriendName + " đã gửi 1 tin nhắn !",
+                message.Message,
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId,
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId,
                 new UserIdentifier[] { user },
                 messageData,
                 apptype
                );
         }
+
         private int CheckTypeMessage(string message)
         {
             string regexImg = "([^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$)";

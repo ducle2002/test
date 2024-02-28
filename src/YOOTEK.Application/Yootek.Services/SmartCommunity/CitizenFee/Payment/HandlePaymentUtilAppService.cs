@@ -17,6 +17,7 @@ using Yootek.Services;
 using Newtonsoft.Json;
 using Abp.Application.Services;
 using Abp.Domain.Entities;
+using YOOTEK.EntityDb;
 
 namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
 {
@@ -33,6 +34,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
         private readonly IRepository<UserBillPaymentHistory, long> _billPaymentHistoryRepos;
         private readonly IRepository<BillStatistic, long> _billStatisticRepos;
         private readonly IRepository<Apartment, long> _apartmentRepos;
+        private readonly IRepository<ApartmentBalance, long> _apartmentBalanceRepos;
         private readonly ApartmentHistoryAppService _apartmentHistoryAppSerivce;
 
         public HandlePaymentUtilAppService(
@@ -46,7 +48,8 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             IRepository<UserBillPaymentHistory, long> billPaymentHistoryRepos,
             IRepository<BillStatistic, long> billStatisticRepos,
             ApartmentHistoryAppService apartmentHistoryAppSerivce,
-            IRepository<Apartment, long> apartmentRepos
+            IRepository<Apartment, long> apartmentRepos,
+            IRepository<ApartmentBalance, long> apartmentBalanceRepos
             )
 
         {
@@ -62,6 +65,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             _apartmentHistoryAppSerivce = apartmentHistoryAppSerivce;
             _apartmentRepos = apartmentRepos;
             _userBillPaymentValidationRepo = userBillPaymentValidationRepo;
+            _apartmentBalanceRepos = apartmentBalanceRepos;
         }
 
         [RemoteService(false)]

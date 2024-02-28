@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Yootek.Organizations;
 using Yootek.EntityDb;
+using YOOTEK.Common;
 
 namespace Yootek.Chat
 {
@@ -369,15 +370,15 @@ namespace Yootek.Chat
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
                           friend.FriendImageUrl                           
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendUserName + " " + NotificationMessageCheckType(message),
                 message.Message,
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierString(),
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
                 new UserIdentifier[] {user},
                 messageData,
                 AppType.USER
