@@ -58,7 +58,7 @@ namespace Yootek.Application
                 {
                     InvocationExpression property = Expression.Invoke(Expression.Constant(field), parameter);
                     MethodCallExpression toLowerExpression = Expression.Call(property, toLowerMethod);
-                    MethodCallExpression searchExpression = Expression.Call(toLowerExpression, containsMethod, Expression.Constant(keyword));
+                    MethodCallExpression searchExpression = Expression.Call(toLowerExpression, containsMethod, Expression.Constant(keyword.ToLower()));
                     body = Expression.OrElse(body, searchExpression);
                 }
 
