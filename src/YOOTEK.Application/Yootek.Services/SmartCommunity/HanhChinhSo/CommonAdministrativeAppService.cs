@@ -16,6 +16,8 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
 
 namespace Yootek.Services
 {
@@ -260,6 +262,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     // var ouUI = await _userOrganizationUnitRepository.GetAll()
@@ -273,6 +276,8 @@ namespace Yootek.Services
                                      TenantId = ci.TenantId,
                                      Name = ci.Name,
                                      OrganizationUnitId = ci.OrganizationUnitId,
+                                     UrbanId = ci.UrbanId,
+                                     BuildingId = ci.BuildingId,
                                      Detail = ci.Detail,
                                      ImageUrl = ci.ImageUrl,
                                      FileUrl = ci.FileUrl,
@@ -300,6 +305,7 @@ namespace Yootek.Services
                     }
 
                     var result = await query
+                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                             .ApplySort(input.OrderBy, input.SortBy)
                             .ApplySort(OrderByTypeAdministrative.NAME)
                             .PageBy(input).ToListAsync();
@@ -335,6 +341,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var query = (from ci in _typeAdministrativeRepos.GetAll()
@@ -343,15 +350,18 @@ namespace Yootek.Services
                                      Id = ci.Id,
                                      Name = ci.Name,
                                      OrganizationUnitId = ci.OrganizationUnitId,
+                                     UrbanId = ci.UrbanId,
+                                     BuildingId = ci.BuildingId,
                                      FileUrl = ci.FileUrl
-                                 });
-
+                                 })
+                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
                     var result = await query.ToListAsync();
                     if (result != null)
                     {
                         foreach (var item in result)
                         {
                             item.Properties = QueryAdministrativeProperty(new GetAdministrativePropertyInputDto() { TypeId = item.Id });
+                            
                         }
                     }
                     var data = DataResult.ResultSuccess(result, "Get success!", query.Count());

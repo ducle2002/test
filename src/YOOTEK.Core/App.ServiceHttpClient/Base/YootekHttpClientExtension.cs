@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System;
+using System.Text;
 
 namespace Yootek.Extensions
 {
@@ -56,12 +57,14 @@ namespace Yootek.Extensions
             }
             else if (method == HttpMethod.Post)
             {
-                var content = JsonContent.Create(data);
+                var jsonContent = JsonConvert.SerializeObject(data);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 response = await httpClient.PostAsync(path, content);
             }
             else if (method == HttpMethod.Put)
             {
-                var content = JsonContent.Create(data);
+                var jsonContent = JsonConvert.SerializeObject(data);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 response = await httpClient.PutAsync(path, content);
             }
             else if (method == HttpMethod.Delete)

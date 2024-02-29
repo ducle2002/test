@@ -866,6 +866,7 @@ namespace Yootek.Services.SmartCommunity.ExcelBill
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     List<DataStatisticScope> result = new();
@@ -875,18 +876,27 @@ namespace Yootek.Services.SmartCommunity.ExcelBill
                         {
                             Data = GetDataStatisticScope(input.UrbanId, input.BuildingId),
                             ScopeName = GetTenantName(AbpSession.TenantId),
-                        });
+                        }
+
+                        );
                         List<DataStatisticScope> dataUrbans = new();
                         List<AppOrganizationUnit> listUrbans = GetListUrbans((int)AbpSession.TenantId);
-                        foreach (AppOrganizationUnit urban in listUrbans)
-                        {
-                            dataUrbans.Add(new DataStatisticScope()
+                        result.AddRange(listUrbans
+                            .Where(urban => buIds.Contains(urban.Id))
+                            .Select(urban => new DataStatisticScope
                             {
                                 Data = GetDataStatisticScope(urban.Id, input.BuildingId),
                                 ScopeName = urban.DisplayName,
-                            });
-                        }
-                        result.AddRange(dataUrbans);
+                            }));
+                        //foreach (AppOrganizationUnit urban in listUrbans)
+                        //{
+                        //    dataUrbans.Add(new DataStatisticScope()
+                        //    {
+                        //        Data = GetDataStatisticScope(urban.Id, input.BuildingId),
+                        //        ScopeName = urban.DisplayName,
+                        //    });
+                        //}
+                        //result.AddRange(dataUrbans);
                     }
                     else if (input.UrbanId != null && input.BuildingId == null)
                     {
@@ -897,17 +907,24 @@ namespace Yootek.Services.SmartCommunity.ExcelBill
                         });
                         List<DataStatisticScope> dataBuildings = new();
                         List<AppOrganizationUnit> listBuildings = GetListBuildings((long)input.UrbanId);
-                        foreach (AppOrganizationUnit building in listBuildings)
-                        {
-                            dataBuildings.Add(new DataStatisticScope()
+                        result.AddRange(listBuildings
+                            .Where(building => buIds.Contains(building.Id))
+                            .Select(building => new DataStatisticScope
                             {
                                 Data = GetDataStatisticScope(input.UrbanId, building.Id),
                                 ScopeName = building.DisplayName,
-                            });
-                        }
-                        result.AddRange(dataBuildings);
+                            }));
+                        //foreach (AppOrganizationUnit building in listBuildings)
+                        //{
+                        //    dataBuildings.Add(new DataStatisticScope()
+                        //    {
+                        //        Data = GetDataStatisticScope(input.UrbanId, building.Id),
+                        //        ScopeName = building.DisplayName,
+                        //    });
+                        //}
+                        //result.AddRange(dataBuildings);
                     }
-                    else if ( input.BuildingId != null)
+                    else if (input.BuildingId != null)
                     {
                         result.Add(new DataStatisticScope()
                         {
@@ -938,7 +955,6 @@ namespace Yootek.Services.SmartCommunity.ExcelBill
             int currentYear = now.Year;
             var result = new Dictionary<string, DataStatisticBillTenantDto>();
 
-
             if (currentMonth >= 6)
             {
                 for (int i = currentMonth - 6 + 1; i <= currentMonth; i++)
@@ -948,7 +964,8 @@ namespace Yootek.Services.SmartCommunity.ExcelBill
                         BuildingId = buildingId,
                         UrbanId = urbanId,
                         Period = new DateTime(currentYear, i, 1)
-                    };
+                    }
+                    ;
                     var dt = _statisticBillAppService.QueryBillMonthlyStatistics(input);
                     result.Add(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(i), dt);
                 }

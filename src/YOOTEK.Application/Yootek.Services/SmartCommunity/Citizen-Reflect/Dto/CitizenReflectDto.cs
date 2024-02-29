@@ -23,6 +23,7 @@ namespace Yootek.Services
         public string Address { get; set; }
         public string OrganizationUnitName { get; set; }
         public string HandlerName { get; set; }
+        public string? HandlersName { get; set; }
         [CanBeNull] public string UrbanName { get; set; }
         [CanBeNull] public string BuildingName { get; set; }
         [CanBeNull] public List<WorkDto> Works { get; set; }
@@ -75,5 +76,10 @@ namespace Yootek.Services
         public int Year { get; set; }
         public int Month { get; set; }
         public int Day { get; set; }
+    }
+    public class CitizenReflectCommentStatic : CitizenReflectComment, IMayHaveUrban, IMayHaveBuilding
+    {
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
     }
 }

@@ -14,9 +14,11 @@ using OfficeOpenXml;
 using Yootek.App.ServiceHttpClient;
 using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using Yootek.Application;
+using Yootek.Authorization;
 using Yootek.Common.DataResult;
 using Yootek.EntityDb;
 using Yootek.Organizations;
+using Yootek.QueriesExtension;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Meter.dto;
 
 namespace Yootek.Services
@@ -57,6 +59,7 @@ namespace Yootek.Services
             try
             {
                 var tenantId = AbpSession.TenantId;
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 IQueryable<MeterDto> query = (from sm in _meterRepository.GetAll()
                                               select new MeterDto
                                               {
@@ -74,6 +77,7 @@ namespace Yootek.Services
                                                   BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
                                                   UrbanName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
                                               })
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .WhereIf(input.MeterTypeId != null, m => m.MeterTypeId == input.MeterTypeId)
                     .WhereIf(input.UrbanId != null, m => m.UrbanId == input.UrbanId)
                     .WhereIf(input.BuildingId != null, m => m.BuildingId == input.BuildingId)
@@ -106,6 +110,8 @@ namespace Yootek.Services
                 throw;
             }
         }
+
+
 
         public async Task<DataResult> CreateMeter(CreateMeterInput input)
         {
@@ -217,12 +223,37 @@ namespace Yootek.Services
                     int rowCount = worksheet.Dimension.End.Row;
 
                     var listNew = new List<CreateMeterInput>();
-
                     for (var row = 2; row <= rowCount; row++)
                     {
                         var meter = new CreateMeterInput();
-                        meter.UrbanId = long.Parse(worksheet.Cells[row, 1].Text.Trim());
-                        meter.BuildingId = long.Parse(worksheet.Cells[row, 2].Text.Trim());
+                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Text.Trim()))
+                        {
+                            var ubIDstr = worksheet.Cells[row, 1].Text.Trim();
+                            var ubObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == ubIDstr.ToLower());
+                            if (ubObj != null) { meter.UrbanId = ubObj.Id; }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 2].Text.Trim()))
+                        {
+                            var buildIDStr = worksheet.Cells[row, 2].Text.Trim();
+                            var buildObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == buildIDStr.ToLower());
+                            if (buildObj != null) { meter.BuildingId = buildObj.Id; }
+                            else
+                            {
+                                continue;
+                            }
+                        }
+                        else
+                        {
+                            continue;
+                        }
                         meter.ApartmentCode = worksheet.Cells[row, 3].Text.Trim();
                         meter.Name = worksheet.Cells[row, 4].Text.Trim();
                         meter.Code = worksheet.Cells[row, 5].Text.Trim();

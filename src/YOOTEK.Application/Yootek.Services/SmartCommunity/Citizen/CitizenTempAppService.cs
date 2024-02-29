@@ -484,8 +484,13 @@ namespace Yootek.Services
                                          Id = ci.Id,
                                          Gender = ci.Gender,
                                          DateOfBirth = ci.DateOfBirth,
+                                         BuildingId = ci.BuildingId,
+                                         UrbanId = ci.UrbanId,
                                      })
-                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
+                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                                .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                                ;
 
                         if (input.OrganizationUnitId.HasValue) query = query.WhereIf(input.OrganizationUnitId.HasValue, x => x.OrganizationUnitId == input.OrganizationUnitId);
                         if (input.Sex.HasValue)
@@ -508,8 +513,13 @@ namespace Yootek.Services
                                      {
                                          Id = ci.Id,
                                          CareerCategoryId = ci.CareerCategoryId,
+                                         BuildingId = ci.BuildingId,
+                                         UrbanId = ci.UrbanId,
                                      })
-                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
+                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                                .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                                ;
 
                         if (input.OrganizationUnitId.HasValue) query = query.WhereIf(input.OrganizationUnitId.HasValue, x => x.OrganizationUnitId == input.OrganizationUnitId);
 
@@ -585,6 +595,7 @@ namespace Yootek.Services
                                      AccountId = user.Id,
                                      AccountDOB = user.DateOfBirth,
                                      AccountEmail = user.EmailAddress,
+                                     Hometown = ci.Hometown,
                                  })
                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                             .WhereIf(input.IsStayed.HasValue, x => x.IsStayed == input.IsStayed)
@@ -716,6 +727,7 @@ namespace Yootek.Services
                         AccountId = citizenTemp.AccountId,
                         CareerCategoryId = citizenTemp.CareerCategoryId,
                         BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == citizenTemp.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
+                        Hometown = citizenTemp.Hometown
                     }
 ;
 
@@ -819,6 +831,7 @@ namespace Yootek.Services
                     const int URBAN_CODE_INDEX = 11;
                     const int BUILDING_CODE_INDEX = 12;
                     const int TAX_CODE_INDEX = 13;
+                    const int HOMETOWN_INDEX = 14; 
 
                     var listNew = new List<CitizenTempDto>();
                     var listDupl = new List<CitizenTempDto>();
@@ -840,6 +853,7 @@ namespace Yootek.Services
                         string buildingCode = worksheet.Cells[row, BUILDING_CODE_INDEX].Text?.Trim();
                         string urbanCode = worksheet.Cells[row, URBAN_CODE_INDEX].Text.Trim();
                         string taxCode = worksheet.Cells[row, TAX_CODE_INDEX].Text.Trim();
+                        var homeTown = worksheet.Cells[row, HOMETOWN_INDEX].Value?.ToString();
 
                         // Validate apartmentCode và urbanCode
                         if (string.IsNullOrWhiteSpace(apartmentCode) || string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(urbanCode))
@@ -872,7 +886,8 @@ namespace Yootek.Services
                             IsStayed = isStayed,
                             UrbanCode = urbanCode,
                             BuildingCode = buildingCode,
-                            TaxCode = taxCode
+                            TaxCode = taxCode,
+                            Hometown = homeTown
 
                         };
 
@@ -1039,7 +1054,6 @@ namespace Yootek.Services
                     const int URBAN_CODE_INDEX = 11;
                     const int BUILDING_CODE_INDEX = 12;
                     const int TAX_CODE_INDEX = 13;
-
                     var listNew = new List<CitizenTempDto>();
                     var listDupl = new List<CitizenTempDto>();
 
@@ -1084,7 +1098,7 @@ namespace Yootek.Services
                             Email = email?.ToString(),
                             IsStayed = true,
                             UrbanCode = urbanCode,
-                            BuildingCode = buildingCode
+                            BuildingCode = buildingCode,
                         };
 
                         var listBuilding = _organizationUnitRepository.GetAllList(x => x.Type == APP_ORGANIZATION_TYPE.BUILDING);

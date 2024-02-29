@@ -27,6 +27,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOI.SS.Formula.Functions;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
+using Nest;
+using Yootek.Application;
+using Yootek.Services.Dto;
+using Yootek.Services;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.Count;
 
 namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 {
@@ -83,36 +91,36 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                 if (urbanId.HasValue)
                 {
                     ouOfUrbanIds = (from ou in _organizationRepos.GetAll()
-                                        join ouc in _organizationRepos.GetAll() on ou.ParentId equals ouc.Id
-                                        where ou.Type == APP_ORGANIZATION_TYPE.CHAT
-                                        && ouc.ParentId == urbanId
-                                        select ouc.Id).ToList();
+                                    join ouc in _organizationRepos.GetAll() on ou.ParentId equals ouc.Id
+                                    where ou.Type == APP_ORGANIZATION_TYPE.CHAT
+                                    && ouc.ParentId == urbanId
+                                    select ouc.Id).ToList();
                 }
-                
-                var data = (from ou in _organizationRepos.GetAll()
-                             select new AppOrganizationUnitDto()
-                             {
-                                 DisplayName = ou.DisplayName,
-                                 Id = ou.ParentId.Value,
-                                 Type = ou.Type,
-                                 TenantId = ou.TenantId,
-                                 ParentId = ou.ParentId,
-                                 Description = ou.Description,
-                                 ImageUrl = ou.ImageUrl
 
-                             })
+                var data = (from ou in _organizationRepos.GetAll()
+                            select new AppOrganizationUnitDto()
+                            {
+                                DisplayName = ou.DisplayName,
+                                Id = ou.ParentId.Value,
+                                Type = ou.Type,
+                                TenantId = ou.TenantId,
+                                ParentId = ou.ParentId,
+                                Description = ou.Description,
+                                ImageUrl = ou.ImageUrl
+
+                            })
                              .Where(x => x.Type == APP_ORGANIZATION_TYPE.CHAT)
                              .Where(x => ouIds.Contains(x.ParentId.Value))
-                             .WhereIf(urbanId.HasValue,x => ouOfUrbanIds.Contains(x.ParentId.Value))
+                             .WhereIf(urbanId.HasValue, x => ouOfUrbanIds.Contains(x.ParentId.Value))
                              .ToList();
-                return  DataResult.ResultSuccess(data, "Get success");
+                return DataResult.ResultSuccess(data, "Get success");
             }
             catch (Exception e)
             {
                 throw;
             }
         }
-    
+
         public async Task<object> GetOrganizationUnitChatUser(long orgId)
         {
             try
@@ -169,7 +177,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                 throw;
             }
         }
-      
+
         public async Task<object> GetOrganizationUnitChatAdmin(long organizationUnitId)
         {
             try
@@ -185,7 +193,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                         FollowState = friendship.FollowState,
                         FriendUserName = friendship.FriendUserName,
                         FriendTenancyName = friendship.FriendTenancyName,
-                        FriendProfilePictureId = friendship.FriendProfilePictureId,
+                        FriendImageUrl = friendship.FriendImageUrl,
                         IsOrganizationUnit = friendship.IsOrganizationUnit,
                         LastMessageDate = friendship.CreationTime,
                         FriendInfo = (from ctz in _citizenRepos.GetAll()
@@ -236,7 +244,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                 throw;
             }
         }
-      
+
         public async Task<ListResultDto<ChatMessageDto>> GetUserChatMessages(GetOrganizationChatMessagesInput input)
         {
             try
@@ -290,9 +298,34 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
+        public async Task<object> GetCountChatOrganizationStatistics()
+        {
+            try
+            {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+                var query = (from mes in _chatMessageRepository.GetAll()
+                             select new ChatMessageStatic
+                             {
+                                 IsOrganizationUnit = mes.IsOrganizationUnit,
+                                 UrbanId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
+                                 BuildingId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
+                             })
+                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                             .Where(x => x.IsOrganizationUnit == true).CountAsync();
+
+                var result = await query;
+                return DataResult.ResultSuccess(result, "Get success!");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
         public async Task<int> GetCountMessageUnread(MarkAllUnreadMessagesOfUserAsReadInput input)
         {
-            var count =  _chatMessageRepository
+            var count = _chatMessageRepository
                .GetAll()
                .Where(m => m.IsOrganizationUnit == true)
                .Where(m =>

@@ -4,6 +4,9 @@ using Yootek.Common.Enum;
 using Yootek.Common;
 using YOOTEK.EntityDb;
 using Abp.Application.Services.Dto;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
 
 namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
 {
@@ -27,6 +30,7 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
     {
         public DateTime? Period { get; set; }
         public int? TenantId { get; set; }
+        public int? MerchantId { get; set; }
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
         public DateTime? FromDay { get; set; }
@@ -35,7 +39,22 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public int? Method { get; set; }
     }
 
-    
+    public class GetAlltenantPaymentInput : CommonInputDto
+    {
+    }
+
+    public class TenantPaymentDto 
+    {
+        public int Id { get; set; }
+        public string TenantName { get; set; }
+        public int NumberEPayment { get; set; }
+        public int NumberRPayment { get; set; }
+        public double TotalAmountEpay { get; set; }
+        public double TotalAmountRpay { get; set; }
+        public double TotalPaymentForTenant { get; set; }
+        public double TotalBalance { get; set; }
+    }
+
     public class ThirdPartyPaymentDto: EntityDto<int>
     {
         public int? TenantId { get; set; }
@@ -45,12 +64,24 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
         public EPaymentType Type { get; set; }
         public string TransactionId { get; set; }
         public string TransactionProperties { get; set; }
+        public PayMonthlyUserBillsInput TransactionJson { get; set; }
         public double Amount { get; set; }
+        public int? MerchantId { get; set; }
         public string Currency { get; set; }
         public string Description { get; set; }
         public string Properties { get; set; }
         public DateTime CreatedAt { get; set; }
+        public long? CreatedById { get; set; }
         public string TenantName { get; set; }
+        public string FullName { get; set; }
+        public string MerchantName { get; set; }
+        public EInternalStateChangeStatus? InternalState { get; set; }
+        public bool IsAutoVerified { get; set; }
+        public bool IsManuallyVerified { get; set; }
+        public object ObjectProperties { get; set; }
+        public List<BillPaidDto> BillList { get; set; }
+        public List<BillPaidDto> BillListDebt { get; set; }
+        public List<PrepaymentBillDto> BillListPrepayment { get; set; }
     }
 
     public class CountThirdPartyPaymentDto

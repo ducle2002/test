@@ -4765,7 +4765,7 @@ namespace Yootek.Migrations
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("FriendProfilePictureId")
+                    b.Property<string>("FriendImageUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FriendTenancyName")

@@ -31,6 +31,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.UserFeedbackEnum;
+using Newtonsoft.Json;
 
 namespace Yootek.Services
 {
@@ -63,7 +64,7 @@ namespace Yootek.Services
         // private readonly IFeedbackListExcelExporter _feedbackListExcelExporter;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationRepos;
         private readonly IRepository<AppOrganizationUnit, long> _organizationRepos;
-        private readonly IRepository<User, long> _userRepos;
+        private static IRepository<User, long> _userRepos;
         private readonly IRepository<Citizen, long> _citizenRepos;
         private readonly IRepository<Apartment, long> _smartHomeRepos;
         private readonly IAppNotifier _appNotifier;
@@ -147,6 +148,8 @@ namespace Yootek.Services
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
                                                        UrbanName = _organizationRepos.GetAll().Where(o => o.Id == fb.UrbanId)
                                                              .Select(b => b.DisplayName).FirstOrDefault(),
+                                                       ListHandleUserIds = fb.ListHandleUserIds,
+                                                       //HandlersName = await GetUsersOrganizationNameAsync(fb.ListHandleUserIds),
                                                    })
                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                 .WhereIf(input.OrganizationUnitId.HasValue, x => (x.Type.HasValue && x.Type == input.OrganizationUnitId)
@@ -183,9 +186,11 @@ namespace Yootek.Services
                     case (int)FORM_ID_FEEDBACK.FORM_ADMIN_GET_FEEDBACK_HANDLING:
                         query = query
                             .Where(x => x.State == (int)STATE_FEEDBACK.HANDLING ||
-                                        x.State == (int)STATE_FEEDBACK.DECLINED).OrderByDescending(u =>
+                                        x.State == (int)STATE_FEEDBACK.DECLINED)
+                            .OrderByDescending(u =>
                                 u.LastModificationTime.HasValue ? u.LastModificationTime : u.CreationTime);
                         break;
+
                     //phản ánh bị từ chối
                     //case (int)FORM_ID_FEEDBACK.FORM_ADMIN_GET_FEEDBACK_DECLINED:
                     //    query = query.Where(x => x.State == (int)STATE_FEEDBACK.DECLINED).OrderByDescending(x => x.Id);
@@ -216,6 +221,10 @@ namespace Yootek.Services
                 if (query != null)
                 {
                     var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+                    foreach(var item in result)
+                    {
+                        item.HandlersName = await GetUsersOrganizationNameAsync(item.ListHandleUserIds);
+                    }
                     return DataResult.ResultSuccess(result, "Get success!", query.Count());
                 }
                 else
@@ -239,6 +248,7 @@ namespace Yootek.Services
                 CitizenReflectDto citizenReflectDto = ObjectMapper.Map<CitizenReflectDto>(citizenReflect);
                 citizenReflectDto.BuildingName = GetOrganizationName(citizenReflect.BuildingId);
                 citizenReflectDto.UrbanName = GetOrganizationName(citizenReflect.UrbanId);
+                citizenReflectDto.HandlersName = await GetUsersOrganizationNameAsync(citizenReflect.ListHandleUserIds);
                 MicroserviceResultDto<List<WorkDto>> result = await _httpWorkAssignmentService.GetAllWorkByRelatedId(new GetListWorkByRelatedIdDto()
                 {
                     RelatedId = citizenReflect.Id,
@@ -261,7 +271,9 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var count = await _citizenReflectRepos.GetAll()
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .Where(x => x.Type.HasValue && x.OrganizationUnitId.HasValue).CountAsync();
                 return DataResult.ResultSuccess(count, "Get success!");
             }
@@ -290,6 +302,25 @@ namespace Yootek.Services
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task<DataResult> UpdateReflect(UpdateCitizenReflectInput input)
+        {
+            try
+            {
+                CitizenReflect? citizenOrg = await _citizenReflectRepos.FirstOrDefaultAsync(input.Id)
+                    ?? throw new UserFriendlyException("Reflect not found!");
+
+                ObjectMapper.Map(input, citizenOrg);
+
+                await _citizenReflectRepos.UpdateAsync(citizenOrg);
+                return DataResult.ResultSuccess(true, "Update success !");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
                 throw;
             }
         }
@@ -567,6 +598,7 @@ namespace Yootek.Services
 
         private IQueryable<CitizenReflectDto> QueryGetAllCitizenReflect(FormGetReflectId formId)
         {
+            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = (from uf in _citizenReflectRepos.GetAll()
                          select new CitizenReflectDto()
                          {
@@ -578,7 +610,9 @@ namespace Yootek.Services
                              Rating = uf.Rating,
                              UrbanId = uf.UrbanId,
                              BuildingId = uf.BuildingId,
-                         }).AsQueryable();
+                         })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .AsQueryable();
             switch (formId)
             {
                 case FormGetReflectId.GetAll:
@@ -712,7 +746,8 @@ namespace Yootek.Services
                         {
                             DateTime cal = monthCur.AddMonths(-monthIndex);
                             var query = QueryGetAllCitizenReflect(input.FormId);
-                            int count = query.WhereIf(input.OrganizationUnitId.HasValue,
+                            int count = query
+                                .WhereIf(input.OrganizationUnitId.HasValue,
                                     x => x.OrganizationUnitId == input.OrganizationUnitId)
                                 .Where(x => x.CreationTime.Month == cal.Month && x.CreationTime.Year == cal.Year)
                                  .WhereIf(input.BuildingId.HasValue && input.BuildingId.Value > 0, x => x.BuildingId == input.BuildingId)
@@ -725,7 +760,8 @@ namespace Yootek.Services
                     case QueryCaseStatistics.ByDay:
                         int days = DateTime.DaysInMonth(monthCur.Year, monthCur.Month);
                         var queryByDay = QueryGetAllCitizenReflect(input.FormId);
-                        var dataCount = queryByDay.WhereIf(input.OrganizationUnitId.HasValue,
+                        var dataCount = queryByDay
+                            .WhereIf(input.OrganizationUnitId.HasValue,
                                     x => x.OrganizationUnitId == input.OrganizationUnitId)
                                 .Where(x => x.CreationTime.Year == monthCur.Year && x.CreationTime.Month == monthCur.Month)
                                  .WhereIf(input.BuildingId.HasValue && input.BuildingId.Value > 0, x => x.BuildingId == input.BuildingId)
@@ -739,7 +775,8 @@ namespace Yootek.Services
                         break;
                     case QueryCaseStatistics.ByHours:
                         var queryByHours = QueryGetAllCitizenReflect(input.FormId);
-                        var dataCountHours = queryByHours.WhereIf(input.OrganizationUnitId.HasValue,
+                        var dataCountHours = queryByHours
+                            .WhereIf(input.OrganizationUnitId.HasValue,
                                     x => x.OrganizationUnitId == input.OrganizationUnitId)
                                 .Where(x => x.CreationTime.Year == monthCur.Year && x.CreationTime.Month == monthCur.Month)
                                 .WhereIf(input.BuildingId.HasValue && input.BuildingId.Value > 0, x => x.BuildingId == input.BuildingId)
@@ -976,6 +1013,19 @@ namespace Yootek.Services
         private string GetOrganizationName(long? organizationId)
         {
             return _organizationRepos.GetAll().Where(x => x.Id == (organizationId ?? 0)).Select(x => x.DisplayName).FirstOrDefault();
+        }
+        private async Task<string> GetUsersOrganizationNameAsync(long[]? userIds)
+        {
+            if (userIds == null || userIds.Length == 0)
+            {
+                return string.Empty;
+            }
+
+            var users = await _userRepos.GetAll().Where(x => userIds.Contains(x.Id)).ToListAsync();
+
+            var names = users.Select(x => $"{x.Surname} {x.Name}");
+
+            return string.Join(", ", names);
         }
         #endregion
     }

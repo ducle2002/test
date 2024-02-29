@@ -6,11 +6,12 @@ using System.ComponentModel.DataAnnotations;
 using Abp.Application.Services.Dto;
 using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using JetBrains.Annotations;
+using Yootek.Organizations.Interface;
 
 namespace Yootek.Services
 {
     [AutoMap(typeof(Meter))]
-    public class MeterDto : EntityDto<long>
+    public class MeterDto : Entity<long>, IMayHaveUrban, IMayHaveBuilding
     {
         public int? TenantId { get; set; }
         public string? ApartmentCode { get; set; }

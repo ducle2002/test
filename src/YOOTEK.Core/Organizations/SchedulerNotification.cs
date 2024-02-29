@@ -129,6 +129,8 @@ namespace Yootek.Organizations
         public const string AppUser_Administrative = "yoolife://app/administrative";
         public const string AppUser_QnA = "yoolife://app/qna";
         public const string AppUser_Hotline = "yoolife://app/hotline";
+        public const string AppUser_ChatUser = "yoolife://app/chat-user";
+        public const string AppUser_ChatSeller = "yoolife://app/chat-seller";
 
         public const string AppUser_Social_Shopping = "yoolife://app/smartsocial-shopping";
         public const string AppUser_Social_Booking = "yoolife://app/smartsocial-booking";
@@ -163,6 +165,7 @@ namespace Yootek.Organizations
         public const string AppSeller_Promotion = "yooseller://promotion";
         public const string AppSeller_Ads = "yooseller://ads";
         public const string AppSeller_FlashSale = "yooseller://flashsale";
+        public const string AppSeller_ChatUser = "yooseller://chat-user/chatbox";
 
 
         public static string GetEnumValue(Enum en)

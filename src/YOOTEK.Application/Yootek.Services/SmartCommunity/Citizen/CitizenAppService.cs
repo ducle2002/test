@@ -14,6 +14,7 @@ using Abp.Linq.Extensions;
 using Abp.Organizations;
 using Abp.RealTime;
 using Abp.UI;
+using JetBrains.Annotations;
 using Yootek.Application;
 using Yootek.AppManager.HomeMembers;
 using Yootek.Authorization;
@@ -225,7 +226,8 @@ namespace Yootek.Services
                                      CitizenCode = ctemp.CitizenCode,
                                      DateOfBirth = ctemp.DateOfBirth,
                                      IsVoter = ctemp.IsVoter,
-                                     OrganizationUnitId = ctemp.OrganizationUnitId
+                                     OrganizationUnitId = ctemp.OrganizationUnitId,
+                                     Hometown = ctemp.Hometown
                                  }).FirstOrDefault();
                     return query;
                 }
@@ -315,7 +317,7 @@ namespace Yootek.Services
             }
         }
 
-        protected IQueryable<CitizenDto> QueryCitizen(GetAllCitizenInput input)
+        protected IQueryable<CitizenDto> QueryCitizen([CanBeNull] GetAllCitizenInput input)
         {
             List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
 
@@ -352,6 +354,7 @@ namespace Yootek.Services
                              CreationTime = ci.CreationTime,
                              BuildingName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
                              UrbanName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
+                             HomeAddress = ci.HomeAddress,
                          })
                          .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                          .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
@@ -445,9 +448,12 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
-                    var count = await _citizenRepos.GetAll().CountAsync();
+                    var count = await _citizenRepos.GetAll()
+                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                        .CountAsync();
                     return DataResult.ResultSuccess(count, "Get success");
                 }
             }
@@ -463,6 +469,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 long t1 = TimeUtils.GetNanoseconds();
                 DateTime now = DateTime.Now;
                 int currentMonth = now.Month;
@@ -479,7 +486,9 @@ namespace Yootek.Services
                             for (int index = currentMonth - input.NumberRange + 1; index <= currentMonth; index++)
                             {
                                 var result = new ResultStatisticCitizen();
-                                var query = _citizenRepos.GetAll().AsQueryable();
+                                var query = _citizenRepos.GetAll()
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
                                                                          || x.State.Value == STATE_CITIZEN.MATCHCHECK)
@@ -501,7 +510,9 @@ namespace Yootek.Services
                             for (var index = 13 - (input.NumberRange - currentMonth); index <= 12; index++)
                             {
                                 var result = new ResultStatisticCitizen();
-                                var query = _citizenRepos.GetAll().AsQueryable();
+                                var query = _citizenRepos.GetAll()
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
                                                                          || x.State.Value == STATE_CITIZEN.MATCHCHECK)
@@ -522,7 +533,9 @@ namespace Yootek.Services
                             for (var index = 1; index <= currentMonth; index++)
                             {
                                 var result = new ResultStatisticCitizen();
-                                var query = _citizenRepos.GetAll().AsQueryable();
+                                var query = _citizenRepos.GetAll()
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
                                                                          || x.State.Value == STATE_CITIZEN.MATCHCHECK)
@@ -748,8 +761,48 @@ namespace Yootek.Services
         {
             try
             {
-                var result = await _citizenRepos.GetAsync(id);
-                var data = DataResult.ResultSuccess(result, "Get success!");
+                var query = (from ci in _citizenRepos.GetAll()
+                    join us in _userRepos.GetAll() on ci.AccountId equals us.Id into tb_us
+                    from us in tb_us.DefaultIfEmpty()
+                    select new CitizenDto()
+                    {
+                        Id = ci.Id,
+                        PhoneNumber = ci.PhoneNumber != null ? ci.PhoneNumber : us.PhoneNumber,
+                        Nationality = ci.Nationality,
+                        FullName = ci.FullName,
+                        IdentityNumber = ci.IdentityNumber,
+                        ImageUrl = ci.ImageUrl != null ? ci.ImageUrl : us.ImageUrl,
+                        Email = ci.Email != null
+                            ? ci.Email
+                            : (us.EmailAddress.Contains("yootek") ? us.EmailAddress : null),
+                        Address = ci.Address,
+                        DateOfBirth = ci.DateOfBirth,
+                        AccountId = ci.AccountId,
+                        Gender = ci.Gender,
+                        IsVoter = ci.IsVoter,
+                        State = ci.State,
+                        ApartmentCode = ci.ApartmentCode,
+                        Type = ci.Type,
+                        TenantId = ci.TenantId,
+                        OrganizationUnitId = ci.OrganizationUnitId,
+                        RelationShip = ci.RelationShip,
+                        CitizenCode = ci.CitizenCode,
+                        MemberNum = ci.MemberNum,
+                        Career = ci.Career,
+                        UrbanId = ci.UrbanId,
+                        BuildingId = ci.BuildingId,
+                        CitizenTempId = ci.CitizenTempId,
+                        IdentityImageUrls = ci.IdentityImageUrls,
+                        CreationTime = ci.CreationTime,
+                        BuildingName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.BuildingId)
+                            .Select(x => x.DisplayName).FirstOrDefault(),
+                        UrbanName = _appOrganizationUnitRepository.GetAll().Where(x => x.Id == ci.UrbanId)
+                            .Select(x => x.DisplayName).FirstOrDefault(),
+                        HomeAddress = ci.HomeAddress,
+                    }).Where(x => x.Id == id).FirstOrDefaultAsync();
+                // var result = await _citizenRepos.GetAsync(id);
+                //
+                var data = DataResult.ResultSuccess(query.Result, "Get success!");
                 return data;
             }
             catch (Exception e)
@@ -973,6 +1026,7 @@ namespace Yootek.Services
                             citizenTemp.UrbanCode = input.UrbanCode;
                             citizenTemp.AccountId = input.AccountId;
                             citizenTemp.UrbanId = input.UrbanId;
+                            citizenTemp.Hometown = input.HomeAddress;
                             await _citizenTempRepos.UpdateAsync(citizenTemp);
                             if (!updateData.CitizenTempId.HasValue) updateData.CitizenTempId = citizenTemp.Id;
                             await CurrentUnitOfWork.SaveChangesAsync();
@@ -1006,6 +1060,7 @@ namespace Yootek.Services
                             citizenInternal.UrbanCode = input.UrbanCode;
                             citizenInternal.AccountId = input.AccountId;
                             citizenInternal.UrbanId = input.UrbanId;
+                            citizenInternal.Hometown = input.HomeAddress;
                             await _citizenTempRepos.UpdateAsync(citizenInternal);
                             if (!updateData.CitizenTempId.HasValue) updateData.CitizenTempId = citizenInternal.Id;
                             await CurrentUnitOfWork.SaveChangesAsync();
@@ -1042,6 +1097,7 @@ namespace Yootek.Services
                                 UrbanCode = input.UrbanCode,
                                 AccountId = input.AccountId,
                                 UrbanId = input.UrbanId,
+                                Hometown = input.HomeAddress
                             };
                             var olderOwners = _citizenTempRepos.GetAll()
                                 .Where(x => x.RelationShip == RELATIONSHIP.Contractor && x.ApartmentCode == updateData.ApartmentCode && x.Id != updateData.Id && x.IsStayed == citizenTemp.IsStayed)
@@ -1241,7 +1297,8 @@ namespace Yootek.Services
                                  MemberNum = ci.MemberNum,
                                  Career = ci.Career,
                                  BuildingId = ci.BuildingId,
-                                 UrbanId = ci.UrbanId
+                                 UrbanId = ci.UrbanId,
+                                 HomeAddress = ci.HomeAddress,
                              })
                     .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Ids != null && input.Ids.Count > 0, x => input.Ids.Contains(x.Id))

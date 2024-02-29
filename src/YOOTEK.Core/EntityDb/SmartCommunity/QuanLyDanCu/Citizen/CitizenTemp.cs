@@ -56,5 +56,8 @@ namespace Yootek.EntityDb
         public long? OwnerId { get; set; }
         public long? AccountId { get; set; }
         public int? CareerCategoryId { get; set; }
+
+        [StringLength(1000)]
+        public string? Hometown { get; set; }
     }
 }

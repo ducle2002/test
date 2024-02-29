@@ -24,6 +24,8 @@ namespace Yootek.EntityDb
         public double? Price { get; set; }
         [StringLength(1000)]
         public string PriceDetail { get; set; }
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
       //  public UnitCharge Unit { get; set; }
     }
 

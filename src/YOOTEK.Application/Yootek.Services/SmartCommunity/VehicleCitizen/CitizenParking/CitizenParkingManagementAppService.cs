@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
 
 namespace Yootek.Services
 {
@@ -54,10 +56,12 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var query = _citizenParkingRepos.GetAll();
                     var paginatedData = await query
+                            .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                             .ApplySearchFilter(input.Keyword, x => x.ParkingName, x => x.ParkingCode)
                             .ApplySort(input.OrderBy, input.SortBy)
                             .ApplySort(OrderByCitizenParking.PARKING_CODE)

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using static Yootek.YootekServiceBase;
+using Yootek.Organizations.Interface;
 
 namespace Yootek.Services
 {
@@ -24,7 +25,7 @@ namespace Yootek.Services
         }
     }
     [AutoMap(typeof(Staff))]
-    public class StaffInput : Staff
+    public class StaffInput : Staff, IMayHaveUrban, IMayHaveBuilding
     {
         public string FullName { get { return this.Surname + " " + this.Name; } }
         //public bool IsActive { get; set; }
@@ -32,6 +33,7 @@ namespace Yootek.Services
         public string? OrganizationUnitName { get; set; }
         public string? DepartmentUnitName { get; set; }
         public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
         public string[] RoleNames { get; set; }
         public string UserName { get; set; }
         public string Name { get; set; }

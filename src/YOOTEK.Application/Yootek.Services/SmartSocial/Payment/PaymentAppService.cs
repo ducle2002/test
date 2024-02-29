@@ -264,7 +264,7 @@ namespace Yootek.Yootek.Services.Yootek.DichVu.Payment
                     PaymentId = extraData.PaymentId,
                     TenantId = extraData.TenantId,
                     Amount = input.vnp_Amount / 100,
-                    PaymentMethod = UserBillPaymentMethod.VNPay,
+                    PaymentMethod = UserBillPaymentMethod.OnePay,
                     UserId = extraData.UserId,
                     Properties = JsonConvert.SerializeObject(input)
                 });

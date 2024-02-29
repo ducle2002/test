@@ -13,6 +13,8 @@ namespace Yootek.Services
     {
         public DateTime? Period { get; set; }
         public long? OrganizationUnitId { get; set; }
+        public long? BuildingId { get; set; }
+        public long? UrbanId { get; set; }
         public string ApartmentCode { get; set; }
         
     }
