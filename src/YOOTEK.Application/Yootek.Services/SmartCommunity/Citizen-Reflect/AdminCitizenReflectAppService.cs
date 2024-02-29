@@ -151,7 +151,7 @@ namespace Yootek.Services
                                                        ListHandleUserIds = fb.ListHandleUserIds,
                                                        //HandlersName = await GetUsersOrganizationNameAsync(fb.ListHandleUserIds),
                                                    })
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(input.OrganizationUnitId.HasValue, x => (x.Type.HasValue && x.Type == input.OrganizationUnitId)
                                                                  || (x.OrganizationUnitId.HasValue &&
                                                                      x.OrganizationUnitId == input.OrganizationUnitId))
@@ -273,7 +273,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var count = await _citizenReflectRepos.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .Where(x => x.Type.HasValue && x.OrganizationUnitId.HasValue).CountAsync();
                 return DataResult.ResultSuccess(count, "Get success!");
             }
@@ -611,7 +611,7 @@ namespace Yootek.Services
                              UrbanId = uf.UrbanId,
                              BuildingId = uf.BuildingId,
                          })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .AsQueryable();
             switch (formId)
             {

@@ -113,8 +113,8 @@ namespace Yootek.Roles
             var role = await _roleManager.GetRoleByIdAsync(input.Id);
 
             ObjectMapper.Map(input, role);
-            if (input.GrantedPermissions.Contains(PermissionNames.Pages_Digitals_Communications) ||
-                input.GrantedPermissions.Contains(PermissionNames.Pages_Government_ChatCitizen))
+            if (input.GrantedPermissions.Contains(IOCPermissionNames.Pages_Digitals_Communications) ||
+                input.GrantedPermissions.Contains(IOCPermissionNames.Pages_Government_ChatCitizen))
             {
                 role.IsChatActive = true;
             }

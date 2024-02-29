@@ -126,7 +126,7 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                                                             })
                     .WhereIf(!string.IsNullOrEmpty(input.Keyword), x =>
 x.Address.ToLower().Contains(input.Keyword.ToLower()))
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
     .WhereIf(input.Status > 0, x => x.Status == input.Status)
     .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1 ? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE : input.StatusTab == 2 ? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
     .WhereIf(input.ServiceId > 0, x => x.ServiceId == input.ServiceId)

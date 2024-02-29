@@ -141,7 +141,7 @@ namespace Yootek.MultiTenancy
         //    await _tenantManager.UpdateAsync(tenant);
         //}
 
-        [AbpAuthorize(PermissionNames.Pages_Tenants)]
+        [AbpAuthorize(IOCPermissionNames.Pages_Tenants)]
         public async Task UpdateConfigTenant(UpdateConfigTenantDto input)
         {
             try

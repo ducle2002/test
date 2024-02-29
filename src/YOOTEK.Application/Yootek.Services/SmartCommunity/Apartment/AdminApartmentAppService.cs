@@ -112,7 +112,7 @@ namespace Yootek.Services
                                                             BillConfig = apartment.BillConfig,
                                                             
                                                         })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .WhereIf(input.StatusId.HasValue, x => x.StatusId == input.StatusId)
                          .WhereIf(input.TypeId.HasValue, x => x.TypeId == input.TypeId)
                          .WhereIf(input.FloorId.HasValue, x => x.FloorId == input.FloorId)

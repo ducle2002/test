@@ -310,7 +310,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                                  UrbanId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
                                  BuildingId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
                              })
-                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                             .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                              .Where(x => x.IsOrganizationUnit == true).CountAsync();
 
                 var result = await query;

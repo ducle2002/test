@@ -147,7 +147,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var query = QueryDataCityNotification(input)
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                   .WhereIf(input.ReceiverGroupCode != null, x => input.ReceiverGroupCode == x.ReceiverGroupCode)
                   .WhereIf(input.OrganizationUnitId != null, x => input.OrganizationUnitId == x.OrganizationUnitId)
                   .WhereIf(input.ReceiveAll != null, x => input.ReceiveAll == x.ReceiveAll)
