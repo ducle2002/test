@@ -647,9 +647,7 @@ namespace Yootek.Services
             {
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
-                    var role = await _roleRepos.FirstOrDefaultAsync(x => x.Name == StaticRoleNames.Tenants.DefaultUser);
                     var query = (from us_role in _userRoleRepos.GetAll()
-                                 where role.Id == us_role.RoleId
                                  join us in _userRepos.GetAll() on us_role.UserId equals us.Id into tb_us
                                  from us in tb_us.DefaultIfEmpty()
                                  select new AccountDto()
@@ -690,9 +688,7 @@ namespace Yootek.Services
             {
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
-                    var role = await _roleRepos.FirstOrDefaultAsync(x => x.Name == StaticRoleNames.Tenants.DefaultUser);
                     var query = (from us_role in _userRoleRepos.GetAll()
-                                 where role.Id == us_role.RoleId
                                  join us in _userRepos.GetAll() on us_role.UserId equals us.Id into tb_us
                                  from us in tb_us.DefaultIfEmpty()
                                  select new AccountDto()

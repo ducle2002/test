@@ -59,8 +59,6 @@ namespace Yootek.MultiTenancy
         }
 
 
-        public string Mobile_Version => _appConfiguration["MobileVersion"] ?? "0.0.2";
-
         public override async Task<TenantDto> CreateAsync(CreateTenantDto input)
         {
             try
@@ -94,31 +92,6 @@ namespace Yootek.MultiTenancy
                     await CurrentUnitOfWork.SaveChangesAsync(); // To get static role ids
                     //role user default
 
-                    //user default
-                    var userRole =
-                        _roleManager.Roles.FirstOrDefault(r => r.Name == StaticRoleNames.Tenants.DefaultUser);
-                    if (userRole == null)
-                    {
-                        userRole = _roleManager.CreateRole(new Role(tenant.Id, StaticRoleNames.Tenants.DefaultUser,
-                            StaticRoleNames.Tenants.DefaultUser) { IsStatic = true });
-                        await CurrentUnitOfWork.SaveChangesAsync();
-                    }
-
-                    //var permissionUser = _permissionManager.GetPermission(PermissionNames.Pages_User_Detail);
-                    //await _roleManager.GrantPermissionAsync(userRole, permissionUser);
-                    //citizen manager
-                    var citizenManagerRole =
-                        _roleManager.Roles.FirstOrDefault(r => r.Name == StaticRoleNames.Tenants.CitizenManager);
-                    if (citizenManagerRole == null)
-                    {
-                        citizenManagerRole = _roleManager.CreateRole(new Role(tenant.Id,
-                                StaticRoleNames.Tenants.CitizenManager, StaticRoleNames.Tenants.CitizenManager)
-                            { IsStatic = true });
-                        await CurrentUnitOfWork.SaveChangesAsync();
-                    }
-
-                    //var permissionCitizenManager = _permissionManager.GetPermission(PermissionNames.Pages_Citizens);
-                    //await _roleManager.GrantPermissionAsync(citizenManagerRole, permissionCitizenManager);
 
                     // Grant all permissions to admin role
                     var adminRole = _roleManager.Roles.Single(r => r.Name == StaticRoleNames.Tenants.Admin);

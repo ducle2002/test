@@ -12,7 +12,7 @@ namespace Yootek.MultiTenancy
 
         [StringLength(128)] public string SubName { get; set; }
 
-        public int? TenantType { get; set; }
+        public TenantType? TenantType { get; set; }
 
         public Tenant()
         {
@@ -25,5 +25,14 @@ namespace Yootek.MultiTenancy
             : base(tenancyName, name)
         {
         }
+    }
+
+    public enum TenantType
+    {
+        IOC = 2,
+        GOVERNMENT = 3,
+        FORUM = 4,
+        RETAIL = 5,
+        FNB = 6
     }
 }

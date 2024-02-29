@@ -23,7 +23,7 @@ namespace Yootek.MultiTenancy.Dto
 
         [StringLength(AbpTenantBase.MaxConnectionStringLength)]
         public string ConnectionString { get; set; }
-
+        public TenantType? TenantType { get; set; }
         public bool IsActive { get; set; }
     }
 }
