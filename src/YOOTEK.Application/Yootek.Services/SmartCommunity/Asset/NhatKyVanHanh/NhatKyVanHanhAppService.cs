@@ -69,6 +69,7 @@ IRepository<TaiSanChiTiet, long> taiSanChiTietRepository, IRepository<BlockTower
                                                           TenantId = o.TenantId,
                                                           TrangThai = o.TrangThai,
                                                           NguoiKiemTraId = o.NguoiKiemTraId,
+                                                          CreationTime = o.CreationTime,
                                                           NguoiKiemTraText = _userRepository.GetAll().Where(x => x.Id == o.NguoiKiemTraId).Select(x => x.FullName).FirstOrDefault(),
                                                           TaiSanText = _taiSanChiTietRepository.GetAll().Where(x => x.Id == o.TaiSanId).Select(x => x.Title).FirstOrDefault(),
                                                       })
