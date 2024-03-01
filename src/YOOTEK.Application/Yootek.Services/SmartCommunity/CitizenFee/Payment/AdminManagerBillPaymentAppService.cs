@@ -527,21 +527,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             {
                 input.Status = UserBillPaymentStatus.Success;
                 await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
-                var sendEmails = new List<SendUserBillNotificationInput>();
-
-                foreach (var userBill in input.UserBills)
-                {
-                   var sendEmailInput = new SendUserBillNotificationInput
-                   {
-                       ApartmentCode = input.ApartmentCode,
-                       Period = input.Period,
-                   };
-
-                   sendEmails.Add(sendEmailInput);
-                }
                 var data = DataResult.ResultSuccess("Admin payment success");
-                await _handlePayment.SendEmailAndBNotificationAllApartment(sendEmails);
-
                 return data;
             }
             catch (Exception ex)

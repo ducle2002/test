@@ -1,8 +1,6 @@
 ﻿using Abp.Modules;
 using Abp.Quartz;
 using Abp.Reflection.Extensions;
-using Hangfire;
-using Hangfire.Common;
 using Yootek.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
