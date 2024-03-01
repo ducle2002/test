@@ -23,6 +23,9 @@ using Yootek.Services.SmartSocial.Ecofarm;
 using Abp.Runtime.Session;
 using Microsoft.Extensions.Configuration;
 using System.Net.Http;
+using Yootek.Lib.CrudBase;
+using Yootek.Extensions;
+using Abp.Collections.Extensions;
 
 namespace Yootek.Services
 {
@@ -40,7 +43,7 @@ namespace Yootek.Services
         private readonly IRepository<ThirdPartyPayment, int> _thirdPartyPaymentRepo;
         private readonly IRepository<EPaymentBalanceTenant, long> _epaymentBanlanceRepository;
         private readonly HandlePaymentUtilAppService _handlePaymentUtilAppService;
-        private readonly BaseHttpClient _httpClient;
+        private readonly HttpClient _httpClient;
 
         public UserBillPaymentAppService(
             IAbpSession abpSession,
@@ -50,7 +53,8 @@ namespace Yootek.Services
             IRepository<UserBillPaymentValidation, long> userBillPaymentValidationRepo,
             IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepo,
             HandlePaymentUtilAppService handlePaymentUtilAppService,
-            IRepository<EPaymentBalanceTenant, long> epaymentBanlanceRepository
+            IRepository<EPaymentBalanceTenant, long> epaymentBanlanceRepository,
+             YootekHttpClient yootekHttpClient
         )
         {
             _userBillPaymentRepo = userBillPaymentRepo;
@@ -59,7 +63,7 @@ namespace Yootek.Services
             _userBillPaymentValidationRepo = userBillPaymentValidationRepo;
             _thirdPartyPaymentRepo = thirdPartyPaymentRepo;
             _epaymentBanlanceRepository = epaymentBanlanceRepository;
-            _httpClient = new BaseHttpClient(abpSession, configuration["ApiSettings:Payments"]);
+            _httpClient = yootekHttpClient.GetHttpClient(configuration["ApiSettings:Payments"]);
         }
 
         public async Task<UserBillPaymentValidation> RequestValidationUserBillPayment(RequestValidationPaymentDto request)
@@ -70,16 +74,23 @@ namespace Yootek.Services
 
         public async Task RequestValidationUserBillPaymentOnSuccess(RequestValidationInput input)
         {
-            var tenantId = AbpSession.TenantId;
-            var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
-            if (validate != null && !validate.UserBillIds.IsNullOrEmpty())
+            try
             {
-                await UpdatePaymentPendingUserBills(validate.UserBillIds, true, UserBillStatus.Pending, tenantId);
-            }
+                var tenantId = AbpSession.TenantId;
+                var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
 
-            if (validate != null && !validate.UserBillDebtIds.IsNullOrEmpty())
+                if (input.ReturnUrl.IsNullOrEmpty())
+                {
+                    validate.ReturnUrl = input.ReturnUrl;
+                    if (validate.ReturnUrl.Contains("Approved")) validate.State = EReturnState.Approved;
+                    else validate.State = EReturnState.Reject;
+                }
+
+                await _userBillPaymentValidationRepo.UpdateAsync(validate);
+            }
+            catch
             {
-                await UpdatePaymentPendingUserBills(validate.UserBillDebtIds, true, UserBillStatus.Debt, tenantId);
+                return;
             }
 
         }
@@ -105,23 +116,11 @@ namespace Yootek.Services
                         transaction.Method = (UserBillPaymentMethod)paymentTransaction.Method;
                         var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);  
 
-                        var res =  await _httpClient.SendSync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
+                        var res =  await _httpClient.SendAsync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
                         await CreateEPaymentBalance(pm.Id, input.Id, paymentTransaction.Amount, pm.Title, pm.TenantId, pm.Method);
                         return DataResult.ResultSuccess(pm.Id, "");
                     case EPrepaymentStatus.FAILED:
-                        if (transaction.UserBills != null)
-                        {
-                            var ids = string.Join(",", transaction.UserBills.Select(x => x.Id).OrderBy(x => x));
-                            await UpdatePaymentPendingUserBills(ids, false, UserBillStatus.Pending, input.TenantId);
-                        }
-
-                        if (transaction.UserBillDebts != null)
-                        {
-                            var ids = string.Join(",", transaction.UserBillDebts.Select(x => x.Id).OrderBy(x => x));
-                            await UpdatePaymentPendingUserBills(ids, false, UserBillStatus.Debt, input.TenantId);
-                        }
-
-                        await _httpClient.SendSync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
+                        await _httpClient.SendAsync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
                         break;
                     default:
                         throw new Exception();
