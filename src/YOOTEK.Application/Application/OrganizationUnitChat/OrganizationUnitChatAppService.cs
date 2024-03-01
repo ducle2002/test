@@ -35,12 +35,13 @@ using Yootek.Application;
 using Yootek.Services.Dto;
 using Yootek.Services;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Count;
+using YOOTEK.Application.OrganizationUnitChat.Dto;
+using Abp.Linq.Extensions;
 
 namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 {
     public interface IOrganizationUnitChatAppService : IApplicationService
     {
-        Task<object> GetOrganizationUnitChatUser(long orgId);
     }
 
     public class OrganizationUnitChatAppService : YootekAppServiceBase, IOrganizationUnitChatAppService
@@ -81,39 +82,40 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             _citizenRepos = citizenRepos;
         }
 
-        public async Task<object> GetOrganizationUnitIdByUser(long? urbanId)
+        public async Task<object> GetOrganizationUnitIdByUser(GetOrganizationUnitIdByUserInput input)
         {
             var ouIds = UserManager.GetAccessibleOperationDepartmentIds();
 
             try
             {
                 var ouOfUrbanIds = new List<long>();
-                if (urbanId.HasValue)
+                if (input.UrbanId.HasValue)
                 {
                     ouOfUrbanIds = (from ou in _organizationRepos.GetAll()
                                     join ouc in _organizationRepos.GetAll() on ou.ParentId equals ouc.Id
                                     where ou.Type == APP_ORGANIZATION_TYPE.CHAT
-                                    && ouc.ParentId == urbanId
+                                    && ouc.ParentId == input.UrbanId.Value
                                     select ouc.Id).ToList();
                 }
 
-                var data = (from ou in _organizationRepos.GetAll()
-                            select new AppOrganizationUnitDto()
-                            {
-                                DisplayName = ou.DisplayName,
-                                Id = ou.ParentId.Value,
-                                Type = ou.Type,
-                                TenantId = ou.TenantId,
-                                ParentId = ou.ParentId,
-                                Description = ou.Description,
-                                ImageUrl = ou.ImageUrl
+                var query = (from ou in _organizationRepos.GetAll()
+                             select new AppOrganizationUnitDto()
+                             {
+                                 DisplayName = ou.DisplayName,
+                                 Id = ou.ParentId.Value,
+                                 Type = ou.Type,
+                                 TenantId = ou.TenantId,
+                                 ParentId = ou.ParentId,
+                                 Description = ou.Description,
+                                 ImageUrl = ou.ImageUrl
 
-                            })
+                             })
                              .Where(x => x.Type == APP_ORGANIZATION_TYPE.CHAT)
                              .Where(x => ouIds.Contains(x.ParentId.Value))
-                             .WhereIf(urbanId.HasValue, x => ouOfUrbanIds.Contains(x.ParentId.Value))
-                             .ToList();
-                return DataResult.ResultSuccess(data, "Get success");
+                             .WhereIf(input.UrbanId.HasValue, x => ouOfUrbanIds.Contains(x.ParentId.Value))
+                             .AsQueryable();
+                var data = await query.PageBy(input).ToListAsync();
+                return DataResult.ResultSuccess(data, "Get success", query.Count());
             }
             catch (Exception e)
             {
@@ -121,12 +123,12 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
-        public async Task<object> GetOrganizationUnitChatUser(long orgId)
+        public async Task<object> GetOrganizationUnitChatUser(GetOrganizationUnitChatUserInput input)
         {
             try
             {
                 var userId = AbpSession.GetUserId();
-                var org = await _organizationRepos.FirstOrDefaultAsync(orgId);
+                var org = await _organizationRepos.FirstOrDefaultAsync(input.OrganizationUnitId);
 
                 if (org == null)
                 {
@@ -138,7 +140,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     Type = APP_ORGANIZATION_TYPE.CHAT
                 });
 
-                var data = (from apm in orgs
+                var query = (from apm in orgs
                             where apm.Type == APP_ORGANIZATION_TYPE.CHAT
                             && apm.Code.StartsWith(org.Code)
                             select new TenantProjectChatDto()
@@ -150,7 +152,8 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                                 Description = apm.Description
 
                             })
-                            .ToList();
+                            .AsQueryable();
+                var data = await query.ToListAsync();
                 foreach (var friend in data)
                 {
                     //friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -169,7 +172,8 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                        .FirstOrDefault();
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
                 }
-                return data;
+
+                return DataResult.ResultSuccess(data, "", query.Count());
 
             }
             catch (Exception e)
@@ -178,13 +182,13 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
-        public async Task<object> GetOrganizationUnitChatAdmin(long organizationUnitId)
+        public async Task<object> GetOrganizationUnitChatAdmin(GetOrganizationUnitChatUserInput input)
         {
             try
             {
                 var query =
                    (from friendship in _friendshipRepos.GetAll()
-                    where friendship.UserId == organizationUnitId
+                    where friendship.UserId == input.OrganizationUnitId
                     select new FriendDto()
                     {
                         FriendUserId = friendship.FriendUserId,
@@ -217,26 +221,22 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     );
 
                     friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-                     .Where(m => (m.UserId == organizationUnitId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
+                     .Where(m => (m.UserId == input.OrganizationUnitId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
                      .OrderByDescending(m => m.CreationTime)
                      .Take(20)
                      .ToList()
                      .Count();
                     friend.LastMessage = _chatMessageRepository.GetAll()
-                       .Where(m => (m.UserId == organizationUnitId && m.TargetUserId == friend.FriendUserId))
+                       .Where(m => (m.UserId == input.OrganizationUnitId && m.TargetUserId == friend.FriendUserId))
                        .OrderByDescending(m => m.CreationTime)
                        .FirstOrDefault();
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
                 }
 
                 listresults = listresults.Concat(friends).ToList();
-                listresults = listresults.OrderByDescending(x => x.LastMessageDate).ToList();
-                return new GetUserChatFriendsWithSettingsOutput
-                {
-                    Friends = listresults,
-                    ServerTime = Clock.Now,
-                    SenderId = AbpSession.UserId.Value
-                };
+                listresults = listresults.OrderByDescending(x => x.LastMessageDate).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+
+                return DataResult.ResultSuccess(listresults, "", query.Count());
 
             }
             catch (Exception e)
@@ -245,21 +245,22 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
-        public async Task<ListResultDto<ChatMessageDto>> GetUserChatMessages(GetOrganizationChatMessagesInput input)
+        public async Task<DataResult> GetUserChatMessages(GetOrganizationChatMessagesInput input)
         {
             try
             {
                 input.TenantId = AbpSession.TenantId;
-                var messages = _chatMessageRepository.GetAll()
+                var query = _chatMessageRepository.GetAll()
                     .Where(x => x.IsOrganizationUnit == true)
                     .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)
                     .Where(m => m.UserId == input.OrganizationUnitId && m.TargetTenantId == input.TenantId && m.TargetUserId == input.UserId)
                     .OrderByDescending(m => m.CreationTime)
-                    .Take(50)
+                    .AsQueryable();
+                var messages = query.PageBy(input)
                     .ToList();
 
                 messages.Reverse();
-                var result = messages.MapTo<List<ChatMessageDto>>();
+                var result = ObjectMapper.Map<List<ChatMessageDto>>(messages);
                 if (result != null)
                 {
                     foreach (var mes in result)
@@ -269,13 +270,13 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                             var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == input.OrganizationUnitId);
                             if (rep != null)
                             {
-                                mes.MessageReplied = rep.MapTo<ChatMessageDto>();
+                                mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
                             }
                         }
                     }
                 }
 
-                return new ListResultDto<ChatMessageDto>(result);
+                return DataResult.ResultSuccess(result, "", query.Count());
             }
             catch (Exception e)
             {
@@ -336,6 +337,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             return count;
 
         }
+
         public async Task MarkAllUnreadMessagesOfUserAsRead(MarkAllUnreadMessagesOfUserAsReadInput input)
         {
             var userId = AbpSession.GetUserId();
