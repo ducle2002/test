@@ -153,7 +153,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 
                             })
                             .AsQueryable();
-                var data = await query.ToListAsync();
+                var data = query.ToList();
                 foreach (var friend in data)
                 {
                     //friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -207,7 +207,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     .Where(x => x.IsOrganizationUnit == true)
                     .AsQueryable();
 
-                var friends = await query.ToListAsync();
+                var friends =  query.ToList();
                 // var cacheItem = _userOrganizationUnitCache.GetFriendChatOrganizationUnit(organizationUnitId, AbpSession.TenantId);
 
                 //var friends = cacheItem.MapTo<List<FriendDto>>();
