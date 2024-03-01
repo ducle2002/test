@@ -13,7 +13,7 @@ namespace Yootek.Localization
                 new DictionaryBasedLocalizationSource(YootekConsts.LocalizationSourceName,
                     new XmlEmbeddedFileLocalizationDictionaryProvider(
                         typeof(YootekLocalizationConfigurer).GetAssembly(),
-                        "Yootek.Localization.SourceFiles"
+                        "YOOTEK.Localization.SourceFiles"
                     )
                 )
             );

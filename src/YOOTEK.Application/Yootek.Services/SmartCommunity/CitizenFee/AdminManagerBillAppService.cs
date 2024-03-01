@@ -669,14 +669,7 @@ namespace Yootek.Services
                 }
                 else
                 {
-                    try
-                    {
-                        listUserBill = ExtractExcelOnlyLastIndexUserBillEW(package, input.Type, input.Formulas);
-                    }
-                    catch
-                    {
-                        listUserBill = ExtractExcelUserBillEWM(package, input.Type, input.Formulas);
-                    }
+                    listUserBill = ExtractExcelOnlyLastIndexUserBillEW(package, input.Type, input.Formulas);
                 }
 
                 await CreateListUserBillAsync(listUserBill, input.ParkingType);
@@ -693,7 +686,7 @@ namespace Yootek.Services
                 stream.Close();
                 File.Delete(filePath);
                 Logger.Fatal(ex.Message, ex);
-                throw;
+                throw new UserFriendlyException(ex.Message, ex);
             }
         }
 
@@ -1735,7 +1728,7 @@ namespace Yootek.Services
             {
                 //var data = DataResult.ResultError(ex.Message, "Error");
                 Logger.Fatal(ex.Message, ex);
-                throw;
+                throw new UserFriendlyException(ex.Message); ;
             }
         }
 

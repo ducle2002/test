@@ -41,9 +41,6 @@ namespace Yootek.Web.Host.Startup
 
         public override void PostInitialize()
         {
-            var appFolders = IocManager.Resolve<AppFolders>();
-            appFolders.TempFileDownloadFolder = "C://Download";
-
             // Quartz scheduler
             var _quartzScheduler = IocManager.Resolve<IQuartzScheduler>();
             _quartzScheduler.Init();

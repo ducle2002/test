@@ -310,7 +310,7 @@ namespace Yootek.Services
                 {
                     sb.AppendFormat("{0},", id);
                 }
-                var sql = string.Format("UPDATE \"ObjectPartners\"" +
+                var sql = string.Format("UPDATE \"CityNotificationComments\"" +
                     " SET \"IsDeleted\" = true, \"DeleterUserId\" = {1}, \"DeletionTime\" = CURRENT_TIMESTAMP " +
                     " WHERE \"Id\" IN ({0})",
                     sb.ToString().TrimEnd(','),
