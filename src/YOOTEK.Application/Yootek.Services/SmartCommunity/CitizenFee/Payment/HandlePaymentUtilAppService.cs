@@ -111,7 +111,6 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         {
                             Amount = input.BalanceAmount,
                             ApartmentCode = input.UserBill.ApartmentCode,
-                            BillType = input.UserBill.BillType,
                             BuildingId = input.UserBill.BuildingId,
                             CitizenTempId = input.UserBill.CitizenTempId,
                             EBalanceAction = EBalanceAction.Add,
