@@ -234,5 +234,12 @@ namespace Yootek
             public int TotalReplace { get; set; }
         }
         #endregion
+
+        #region number convert
+        protected decimal DecimalRouding(object value, int number = 0) => value == null ? 0 : Math.Round((decimal)value, number);
+       // protected decimal DecimalRoudingUp(object value) => value == null ? 0 : Math.Round((decimal)value + (decimal)0.5, 0);
+        protected decimal DecimalRoudingUp(double value) => Math.Round((decimal)value + (decimal)0.5, 0);
+        protected decimal DecimalRoudingUp(decimal value) => Math.Round(value + (decimal)0.5, 0);
+        #endregion
     }
 }

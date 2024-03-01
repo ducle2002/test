@@ -184,6 +184,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                          .WhereIf(input.Method.HasValue, x => x.Method == (EPaymentMethod)input.Method)
                          .WhereIf(input.Status.HasValue, x => x.Status == (EPaymentStatus)input.Status)
                          .WhereIf(!string.IsNullOrEmpty(input.Keyword), x => x.Id.ToString() == input.Keyword || x.Amount.ToString() == input.Keyword)
+                         .OrderByDescending(x => x.CreatedAt)
                          .AsQueryable();
             return query;
         }

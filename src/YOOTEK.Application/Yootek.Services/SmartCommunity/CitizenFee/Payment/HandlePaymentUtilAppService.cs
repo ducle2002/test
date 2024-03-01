@@ -103,12 +103,32 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     // Handle billDebt
                     var listBills = new List<BillPaidInfoDto>();
 
+                    // List bill balance
+                    var billBalances = new List<BillPaymentBalanceDto>();
+                    if(input.BalanceAmount > 0)
+                    {
+                        var balance = new BillPaymentBalanceDto()
+                        {
+                            Amount = input.BalanceAmount,
+                            ApartmentCode = input.UserBill.ApartmentCode,
+                            BuildingId = input.UserBill.BuildingId,
+                            CitizenTempId = input.UserBill.CitizenTempId,
+                            EBalanceAction = EBalanceAction.Add,
+                            TenantId = input.UserBill.TenantId,
+                            UrbanId = input.UserBill.UrbanId,
+                            UserBillId = input.UserBill.Id
+                        };
+                        billBalances.Add(balance);
+                    }
+
                     if (input.UserBillDebts != null && input.UserBillDebts.Count() > 0)
                     {
                         var res = await HandlePayUserBillDebts(input.UserBillDebts, payment);
                         billPaymentInfo.BillListDebt = res.Item1;
                         listBills.AddRange(res.Item2);
                         payment.UserBillDebtIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+
+                        billBalances = billBalances.Concat(res.Item3).ToList();
                         isPaymentDebt = true;
                     }
 
@@ -119,6 +139,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         billPaymentInfo.BillList = res.Item1;
                         listBills.AddRange(res.Item2);
                         payment.UserBillIds = string.Join(",", res.Item1.Select(x => x.Id).OrderBy(x => x));
+                        billBalances = billBalances.Concat(res.Item3).ToList();
                         isPaymentDebt = false;
                     }
 
@@ -141,10 +162,19 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         }
                         catch { }
                     }
+                    
+                    
+                    if(billBalances.Count() > 0)
+                    {
+                        await CreateApartmentBalances(billBalances);
+                    }
+
                     if (isPaymentDebt) payment.TypePayment = TypePayment.DebtBill;
                     var id = await _userBillPaymentRepo.InsertAndGetIdAsync(payment);
                     payment.PaymentCode = "PM-" + id + "-" + GetUniqueKey(6);
                     await  CurrentUnitOfWork.SaveChangesAsync();
+
+
                     try
                     {
                         foreach (var item in listBills)
@@ -153,7 +183,6 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         }
                         if (payment.Status == UserBillPaymentStatus.Success)
                         {
-
                             await NotifierBillPaymentSuccess(payment, (int)payment.Amount, payment.CreatorUserId.Value);
                             await CreateApartmentHistory(payment, input.UserBill);
                         }
@@ -446,11 +475,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     billInfo.DebtTotal = (int)billInfo.LastCost - (int)bd.PayAmount;
                     billInfo.Status = UserBillStatus.Debt;
                 }
-                else
-                {
-                    throw new Exception("PayAmount is not matching !");
-                }
-  
+              
                 billInfo.PayAmount = billPaid.PayAmount;
                 listBills.Add(billPaid);
                 bills.Add(billInfo);
@@ -481,10 +506,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     billInfo.DebtTotal = (int)billInfo.DebtTotal - (int)bd.PayAmount;
                     billInfo.Status = UserBillStatus.Debt;
                 }
-                else
-                {
-                    throw new Exception("PayAmount is not matching !");
-                }
+             
 
              
                 billInfo.PayAmount = billPaid.PayAmount;
@@ -495,30 +517,49 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>(listBills, bills);
         }
 
-        private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> HandlePayUserBillPendings(List<PayUserBillDto> userBills, UserBillPayment payment)
+        private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>, List<BillPaymentBalanceDto>>> HandlePayUserBillPendings(List<PayUserBillDto> userBills, UserBillPayment payment)
         {
             var listBills = new List<BillPaidDto>();
             var bills = new List<BillPaidInfoDto>();
+            var balances = new List<BillPaymentBalanceDto>();
+
             foreach (var bd in userBills)
             {
                 var bill = await _userBillRepo.GetAsync(bd.Id);
                 if (bill == null) throw new Exception("BillDebt is not found !");
-                var billPaid = bill.MapTo<BillPaidDto>();
+
+                var billPaid = ObjectMapper.Map<BillPaidDto>(bill);
                 billPaid.PayAmount = bd.PayAmount;
-                if ((int)bill.LastCost == (int)(bd.PayAmount))
+                var lastCost = DecimalRoudingUp(bill.LastCost.Value);
+                var payAmount = DecimalRoudingUp(bd.PayAmount);
+
+                if (lastCost == payAmount)
                 {
                     bill.Status = UserBillStatus.Paid;
                     bill.DebtTotal = 0;
                 }
-                else if ((int)bill.LastCost > (int)(bd.PayAmount))
+                else if (lastCost > payAmount)
                 {
                     bill.DebtTotal = (int)bill.LastCost - (int)bd.PayAmount;
                     bill.Status = UserBillStatus.Debt;
                 }
                 else
                 {
-                    throw new Exception("PayAmount is not matching !");
+                    var balance = new BillPaymentBalanceDto()
+                    {
+                        Amount = payAmount - lastCost,
+                        ApartmentCode = bill.ApartmentCode,
+                        BillType = bill.BillType,
+                        BuildingId = bill.BuildingId,
+                        CitizenTempId = bill.CitizenTempId,
+                        EBalanceAction = EBalanceAction.Add,
+                        TenantId = bill.TenantId,
+                        UrbanId = bill.UrbanId,
+                        UserBillId = bill.Id
+                    };
+                    balances.Add(balance);
                 }
+
                 if (payment.Status == UserBillPaymentStatus.Pending)
                 {
                     bill.IsPaymentPending = true;
@@ -526,40 +567,60 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 {
                     bill.IsPaymentPending = false;
                 }
-                var billInfo = bill.MapTo<BillPaidInfoDto>();
+                var billInfo = ObjectMapper.Map<BillPaidInfoDto>(bill);
                 billInfo.PayAmount = billPaid.PayAmount;
                 listBills.Add(billPaid);
                 bills.Add(billInfo);
                 await CurrentUnitOfWork.SaveChangesAsync();
             }
 
-            return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>(listBills, bills);
+            return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>, List<BillPaymentBalanceDto>>(listBills, bills, balances);
         }
 
-        private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> HandlePayUserBillDebts(List<PayUserBillDto> userBillDebts, UserBillPayment payment)
+        private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>, List<BillPaymentBalanceDto>>> HandlePayUserBillDebts(List<PayUserBillDto> userBillDebts, UserBillPayment payment)
         {
             var listBills = new List<BillPaidDto>();
             var bills = new List<BillPaidInfoDto>();
+
+            var balances = new List<BillPaymentBalanceDto>();
+
             foreach (var bd in userBillDebts)
             {
                 var bill = await _userBillRepo.GetAsync(bd.Id);
                 if (bill == null) throw new Exception("BillDebt is not found !");
-                var billPaid = bill.MapTo<BillPaidDto>();
+
+                var billPaid = ObjectMapper.Map<BillPaidDto>(bill);
                 billPaid.PayAmount = bd.PayAmount;
                 if (bill.DebtTotal == null || bill.DebtTotal == 0) bill.DebtTotal = (decimal)bill.LastCost;
-                if ((int)bill.DebtTotal == (int)(bd.PayAmount))
+
+                var debtTotal = DecimalRoudingUp(bill.DebtTotal.Value);
+                var payAmount = DecimalRoudingUp(bd.PayAmount);
+
+                if (debtTotal == payAmount)
                 {
                     bill.Status = UserBillStatus.Paid;
                     bill.DebtTotal = 0;
                 }
-                else if ((int)bill.DebtTotal > (int)(bd.PayAmount))
+                else if (debtTotal > payAmount)
                 {
                     bill.DebtTotal = (int)bill.DebtTotal - (int)bd.PayAmount;
                     bill.Status = UserBillStatus.Debt;
                 }
                 else
                 {
-                    throw new Exception("PayAmount is not matching !");
+                    var balance = new BillPaymentBalanceDto()
+                    {
+                        Amount = payAmount - debtTotal,
+                        ApartmentCode = bill.ApartmentCode,
+                        BillType = bill.BillType,
+                        BuildingId = bill.BuildingId,
+                        CitizenTempId = bill.CitizenTempId,
+                        EBalanceAction = EBalanceAction.Add,
+                        TenantId = bill.TenantId,
+                        UrbanId = bill.UrbanId,
+                        UserBillId = bill.Id
+                    };
+                    balances.Add(balance);
                 }
 
                 if (payment.Status == UserBillPaymentStatus.Pending)
@@ -570,14 +631,14 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 {
                     bill.IsPaymentPending = false;
                 }
-                var billInfo = bill.MapTo<BillPaidInfoDto>();
+                var billInfo = ObjectMapper.Map<BillPaidInfoDto>(bill);
                 billInfo.PayAmount = billPaid.PayAmount;
                 listBills.Add(billPaid);
                 bills.Add(billInfo);
                 await CurrentUnitOfWork.SaveChangesAsync();
             }
 
-            return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>(listBills, bills);
+            return new Tuple<List<BillPaidDto>, List<BillPaidInfoDto>, List<BillPaymentBalanceDto>>(listBills, bills, balances);
         }
 
         private async Task<Tuple<List<BillPaidDto>, List<BillPaidInfoDto>>> HandlePrepaymentVerifyPayment(List<PrepaymentBillDto> prepaymentBillDtos, UserBill userBill, UserBillPayment payment)
@@ -713,6 +774,15 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             {
             }
         }
+
+        private async Task CreateApartmentBalances(List<BillPaymentBalanceDto> balances)
+        {
+            foreach(var balance in balances)
+            {
+                var data = ObjectMapper.Map<ApartmentBalance>(balance);
+                await _apartmentBalanceRepos.InsertAsync(data);
+            }
+        }
         #region Notification
         private async Task NotifierBillPaymentSuccess(UserBillPayment bill, int amount, long userId)
         {
@@ -790,6 +860,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
             }
             catch { }
         }
+
         #endregion
     }
 }
