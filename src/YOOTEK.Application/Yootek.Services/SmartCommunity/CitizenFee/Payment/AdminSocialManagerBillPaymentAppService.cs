@@ -348,6 +348,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 .WhereIf(input.FromDay.HasValue, u => u.CreationTime >= fromDay)
                 .WhereIf(input.ToDay.HasValue, u => u.CreationTime <= toDay)
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.PaymentCode.Contains(input.Keyword) || x.ApartmentCode.Contains(input.Keyword))
+                .OrderByDescending(x => x.CreationTime)
                 .AsQueryable();
             return query;
         }

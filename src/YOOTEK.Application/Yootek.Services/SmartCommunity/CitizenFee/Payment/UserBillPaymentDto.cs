@@ -51,6 +51,7 @@ namespace Yootek.Services
     public class RequestValidationInput
     {
         public long TransactionId { get; set; }
+        public string ReturnUrl { get; set; }
     }
 
     public enum EPrepaymentStatus
