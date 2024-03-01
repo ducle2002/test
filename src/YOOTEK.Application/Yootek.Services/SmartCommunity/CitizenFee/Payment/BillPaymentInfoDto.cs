@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Application.Services.Dto;
 using Abp.AutoMapper;
@@ -89,4 +90,19 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto
         public List<BillPaidDto> BillListPrepayment { get; set; }
     }
 
+    [AutoMap(typeof(ApartmentBalance))]
+    public class BillPaymentBalanceDto
+    {
+        public int? TenantId { get; set; }
+        public long? BuildingId { get; set; }
+        public long? UrbanId { get; set; }
+        public string CustomerName { get; set; }
+        public string ApartmentCode { get; set; }
+        public BillType? BillType { get; set; }
+        public decimal Amount { get; set; }
+        public long? CitizenTempId { get; set; }
+        public long? UserBillId { get; set; }
+        public EBalanceAction EBalanceAction { get; set; }
+
+    }
 }

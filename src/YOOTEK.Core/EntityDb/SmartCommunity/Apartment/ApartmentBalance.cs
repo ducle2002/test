@@ -14,7 +14,7 @@ namespace YOOTEK.EntityDb
         [StringLength(1000)] public string CustomerName { get; set; }
         [StringLength(1000)] public string ApartmentCode { get; set; }
         public BillType? BillType { get; set; }
-        public double Amount { get; set; }
+        public decimal Amount { get; set; }
         public long? CitizenTempId { get; set; }
         public long? UserBillId { get; set; }
         public EBalanceAction EBalanceAction { get; set; }
