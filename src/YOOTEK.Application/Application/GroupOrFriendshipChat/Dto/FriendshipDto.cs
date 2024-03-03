@@ -17,7 +17,7 @@ namespace Yootek.Friendships.Dto
         public int? FriendTenantId { get; set; }
         public string FriendUserName { get; set; }
         public string FriendTenancyName { get; set; }
-        public string FriendProfilePictureId { get; set; }
+        public string FriendImageUrl { get; set; }
         public FriendshipState State { get; set; }
         public FollowState? FollowState { get; set; }
         public int StateAddFriend { get; set; }

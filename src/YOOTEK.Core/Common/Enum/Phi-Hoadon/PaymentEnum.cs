@@ -4,7 +4,7 @@ namespace Yootek.Common.Enum
     {
         Direct = 1,
         Momo = 2,
-        VNPay = 3,
+        OnePay = 3,
         ZaloPay = 4,
         AdminVerify = 5,
         Banking = 6,

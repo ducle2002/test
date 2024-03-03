@@ -7,7 +7,7 @@ namespace Yootek.Friendships.Cache
         UserWithFriendsCacheItem GetCacheItem(UserIdentifier userIdentifier);
 
         UserWithFriendsCacheItem GetCacheItemOrNull(UserIdentifier userIdentifier);
-        UserWithFriendsCacheItem GetUserFriendsCacheItemInternal(UserIdentifier userIdentifier, FriendshipState state, bool? isSender = null);
+        UserWithFriendsCacheItem GetUserFriendsCacheItemInternal(UserIdentifier userIdentifier, FriendshipState? state, bool? isSender = null);
 
         void ResetUnreadMessageCount(UserIdentifier userIdentifier, UserIdentifier friendIdentifier);
 

@@ -31,6 +31,5 @@ namespace Yootek.EntityDb
         Percentage = 2,
         Adjust = 3
 
-
     }
 }

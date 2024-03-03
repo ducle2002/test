@@ -16,7 +16,7 @@ namespace YOOTEK.EntityDb
         public double BalanceRemaining { get; set; }
         public UserBillPaymentMethod Method { get; set; }
         public EBalanceAction EBalanceAction { get; set; }
-        public int TenantId { get; set; }       
+        public int? TenantId { get; set; }       
     }
 
     public enum EBalanceAction

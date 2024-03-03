@@ -16,6 +16,8 @@ using Yootek.MultiTenancy;
 using Yootek.Organizations;
 using Yootek.Services.Dto;
 using Microsoft.EntityFrameworkCore;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
 
 namespace Yootek.Services
 {
@@ -599,6 +601,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 DateTime fromDay = new DateTime(), toDay = new DateTime();
                 if (input.FromDay.HasValue)
                 {
@@ -621,6 +624,7 @@ namespace Yootek.Services
                 }
 
                 IQueryable<UserBill> queryUserBill = _userBillRepository.GetAll()
+                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                         .WhereIf(input.FromDay.HasValue, u => u.Period >= fromDay)
                         .WhereIf(input.ToDay.HasValue, u => u.Period <= toDay)
                         .WhereIf(!input.FromDay.HasValue && !input.ToDay.HasValue, x => x.Period.Value.Year == yearCurrent & x.Period.Value.Month == monthCurrent)
@@ -628,6 +632,7 @@ namespace Yootek.Services
                         .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId);
 
                 IQueryable<UserBillPayment> queryBillPayment = _userBillPaymentRepository.GetAll()
+                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                     .WhereIf(input.FromDay.HasValue, u => u.CreationTime >= fromDay)
                     .WhereIf(input.ToDay.HasValue, u => u.CreationTime <= toDay)
                     .WhereIf(!input.FromDay.HasValue && !input.ToDay.HasValue, x => x.CreationTime.Year == yearCurrent & x.CreationTime.Month == monthCurrent)
@@ -666,7 +671,7 @@ namespace Yootek.Services
                     TotalPaymentWithBanking = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.Banking).Sum(x => x.Amount) ?? 0,
                     TotalPaymentWithDirect = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.Direct).Sum(x => x.Amount) ?? 0,
                     TotalPaymentWithMomo = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.Momo).Sum(x => x.Amount) ?? 0,
-                    TotalPaymentWithVNPay = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.VNPay).Sum(x => x.Amount) ?? 0,
+                    TotalPaymentWithVNPay = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.OnePay).Sum(x => x.Amount) ?? 0,
                     TotalPaymentWithZaloPay = queryBillPayment.Where(x => x.Method == UserBillPaymentMethod.ZaloPay).Sum(x => x.Amount) ?? 0,
 
 
@@ -715,6 +720,7 @@ namespace Yootek.Services
         }
         private async Task<IQueryable<UserBillStatisticDto>> QueryUserBillStatisticAsync(BillQueryInput input)
         {
+            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = (from b in _userBillRepository.GetAll()
                          select new UserBillStatisticDto()
                          {
@@ -727,6 +733,7 @@ namespace Yootek.Services
                              UrbanId = b.UrbanId,
                              DebtTotal = b.DebtTotal
                          })
+                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                 .WhereIf(input.Type > 0, x => x.BillType == input.Type)

@@ -52,6 +52,7 @@ namespace Yootek.Services.Dto
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
+        public string? HomeAddress { get; set; }
     }
 
     public class CitizenInfoDto
@@ -96,6 +97,7 @@ namespace Yootek.Services.Dto
         public long? UrbanId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
         public STATE_CITIZEN? State { get; set; }
+        public string? HomeAddress { get; set; }
 
     }
 
@@ -129,6 +131,7 @@ namespace Yootek.Services.Dto
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
+        public string? HomeAddress { get; set; }
     }
 
     [AutoMap(typeof(Citizen))]
@@ -151,7 +154,9 @@ namespace Yootek.Services.Dto
         public int? MemberNum { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
-        public List<string>? IdentityImageUrls { get; set; }
+        [CanBeNull] public List<string> IdentityImageUrls { get; set; }
+        [CanBeNull] public String HomeAddress { get; set; }
+
     }
 
     [AutoMap(typeof(Citizen))]
@@ -178,10 +183,11 @@ namespace Yootek.Services.Dto
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
         public List<string>? IdentityImageUrls { get; set; }
+        [CanBeNull] public String HomeAddress { get; set; }
     }
 
     [AutoMap(typeof(CitizenTemp))]
-    public class CitizenTempDto : CitizenTemp
+    public class CitizenTempDto : CitizenTemp, IMayHaveUrban, IMayHaveBuilding
     {
         public string UrbanName { get; set; }
         public string UserName { get; set; }
@@ -235,6 +241,7 @@ namespace Yootek.Services.Dto
         public int? OwnerGeneration { get; set; }
         public long? OwnerId { get; set; }
         public int? CareerCategoryId { get; set; }
+        public string? HomeTown { get; set; }
     }
     public class AccountDto
     {
@@ -314,6 +321,8 @@ namespace Yootek.Services.Dto
         public QueryCaseCitizenStatistics QueryCase { get; set; }
         public FormGetCitizenId FormId { get; set; }
         public int? Sex { get; set; }
+        public long? UrbanId { get; set; }
+        public long? BuildingId { get; set; }
     }
 
     public enum QueryCaseCitizenStatistics

@@ -225,7 +225,7 @@ namespace Yootek.Services
                     return "Thanh toán chuyển khoản";
                 case UserBillPaymentMethod.Direct:
                     return "Thanh toán tiền mặt";
-                case UserBillPaymentMethod.VNPay:
+                case UserBillPaymentMethod.OnePay:
                     return "Thanh toán VNPay";
                 case UserBillPaymentMethod.ZaloPay:
                     return "Thanh toán ZaloPay";

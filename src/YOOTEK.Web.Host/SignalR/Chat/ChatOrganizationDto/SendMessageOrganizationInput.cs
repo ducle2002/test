@@ -17,7 +17,7 @@ namespace Yootek.Web.Host.Chat
 
         public string TenancyName { get; set; }
 
-        public string ProfilePictureId { get; set; }
+        public string SenderImageUrl { get; set; }
         public string Message { get; set; }
         public string FileUrl { get; set; }
         public int TypeMessage { get; set; }

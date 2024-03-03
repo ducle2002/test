@@ -28,6 +28,8 @@ using Yootek.Services.SmartCommunity.ExcelBill.Dto;
 using DocumentFormat.OpenXml.Vml;
 using System.IO;
 using DocumentFormat.OpenXml.Drawing;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
 
 namespace Yootek.Services
 {
@@ -84,6 +86,7 @@ namespace Yootek.Services
         {
             try
             {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 IQueryable<GetAllApartmentDto> query = (from apartment in _apartmentRepository.GetAll()
                                                         select new GetAllApartmentDto
                                                         {
@@ -109,6 +112,7 @@ namespace Yootek.Services
                                                             BillConfig = apartment.BillConfig,
                                                             
                                                         })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                          .WhereIf(input.StatusId.HasValue, x => x.StatusId == input.StatusId)
                          .WhereIf(input.TypeId.HasValue, x => x.TypeId == input.TypeId)
                          .WhereIf(input.FloorId.HasValue, x => x.FloorId == input.FloorId)

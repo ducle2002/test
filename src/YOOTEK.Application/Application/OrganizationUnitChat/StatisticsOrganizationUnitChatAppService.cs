@@ -11,6 +11,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Yootek.Authorization;
+using Yootek.QueriesExtension;
+using Yootek.Chat.Dto;
+using Yootek.Authorization.Users;
+using Abp.Authorization.Users;
+using Yootek.Services;
 
 namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 {
@@ -22,43 +28,61 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
     {
         private readonly IRepository<ChatMessage, long> _chatMessageRepository;
         private readonly IRepository<CitizenReflectComment, long> _citizenReflectChatRepos;
+        private readonly IRepository<CitizenReflect, long> _reflectChatRepos;
         private readonly IRepository<AppOrganizationUnit, long> _organizationUnitRepository;
+        private readonly IRepository<UserOrganizationUnit, long> _userOrganizationRepository;
 
         public StatisticsOrganizationUnitChatAppService(
             IRepository<ChatMessage, long> chatMessageRepository,
             IRepository<CitizenReflectComment, long> citizenReflectChatRepos,
-            IRepository<AppOrganizationUnit, long> organizationUnitRepository
+            IRepository<CitizenReflect, long> reflectChatRepos,
+            IRepository<AppOrganizationUnit, long> organizationUnitRepository,
+            IRepository<UserOrganizationUnit, long> userOrganizationRepository
             )
         {
             _chatMessageRepository = chatMessageRepository;
             _citizenReflectChatRepos = citizenReflectChatRepos;
             _organizationUnitRepository = organizationUnitRepository;
+            _userOrganizationRepository= userOrganizationRepository;
+            _reflectChatRepos = reflectChatRepos;
         }
 
 
         public IQueryable<ChatMessage> QueryGetAllChatOrganization()
         {
+            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = (from mes in _chatMessageRepository.GetAll()
-                         select new ChatMessage()
+                         select new ChatMessageStatic
                          {
                              Id = mes.Id,
                              CreationTime = mes.CreationTime,
                              UserId = mes.UserId,
                              IsOrganizationUnit = mes.IsOrganizationUnit,
-                             Side = mes.Side
+                             Side = mes.Side,
+                             UrbanId = _userOrganizationRepository.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
+                             BuildingId = _userOrganizationRepository.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
                          })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                          .Where(x => x.IsOrganizationUnit == true && x.Side == ChatSide.Sender).AsQueryable();
             return query;
 
         }
-        public IQueryable<CitizenReflectComment> QueryGetAllChatReflects()
+
+        public IQueryable<CitizenReflectCommentStatic> QueryGetAllChatReflects()
         {
+            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = (from mes in _citizenReflectChatRepos.GetAll()
-                         select new CitizenReflectComment()
+                         join rc in _reflectChatRepos.GetAll() on mes.FeedbackId equals rc.Id into tb_rc
+                         from rc in tb_rc.DefaultIfEmpty()
+                         select new CitizenReflectCommentStatic
                          {
                              Id = mes.Id,
-                             CreationTime = mes.CreationTime
+                             CreationTime = mes.CreationTime,
+                             UrbanId = rc.UrbanId,
+                             BuildingId = rc.BuildingId
+
                          })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                          .AsQueryable();
 
             return query;

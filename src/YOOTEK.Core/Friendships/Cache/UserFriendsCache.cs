@@ -168,7 +168,7 @@ namespace Yootek.Friendships.Cache
             }
         }
 
-        public  UserWithFriendsCacheItem GetUserFriendsCacheItemInternal(UserIdentifier userIdentifier, FriendshipState friendState, bool? isSender = null)
+        public  UserWithFriendsCacheItem GetUserFriendsCacheItemInternal(UserIdentifier userIdentifier, FriendshipState? friendState, bool? isSender = null)
         {
             var tenancyName = userIdentifier.TenantId.HasValue
                 ? _tenantCache.GetOrNull(userIdentifier.TenantId.Value)?.TenancyName
@@ -179,7 +179,7 @@ namespace Yootek.Friendships.Cache
                 var query =
                     (from friendship in _friendshipRepository.GetAll()
                      where friendship.UserId == userIdentifier.UserId
-                     && friendship.State == friendState && friendship.IsOrganizationUnit != true
+                     && friendship.IsOrganizationUnit != true
                      select new FriendCacheItem
                      {
                          FriendUserId = friendship.FriendUserId,
@@ -188,13 +188,14 @@ namespace Yootek.Friendships.Cache
                          FollowState = friendship.FollowState,
                          FriendUserName = friendship.FriendUserName,
                          FriendTenancyName = friendship.FriendTenancyName,
-                         FriendProfilePictureId = friendship.FriendProfilePictureId,
+                         FriendImageUrl = friendship.FriendImageUrl,
                          IsSender = friendship.IsSender,
                          StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                                 where fr.FriendUserId == userIdentifier.UserId
                                                 select fr.State).First(),
                          LastMessageDate = friendship.CreationTime
                      })
+                     .WhereIf(friendState.HasValue, x => x.State == friendState)
                      .WhereIf(isSender.HasValue, x => x.IsSender == isSender)
                      .AsQueryable();
 

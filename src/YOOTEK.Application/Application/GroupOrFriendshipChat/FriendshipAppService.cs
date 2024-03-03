@@ -25,6 +25,7 @@ using Yootek.Friendships;
 using Yootek.Friendships.Cache;
 using Yootek.Friendships.Dto;
 using Yootek.Users.Dto;
+using Abp.Linq.Extensions;
 
 namespace Yootek.Friendships
 {
@@ -65,7 +66,7 @@ namespace Yootek.Friendships
             _unitOfWorkManager = unitOfWorkManager;
         }
 
-        public async Task<DataResult> GetFriendRequestingList()
+        public async Task<DataResult> GetFriendRequestingList(GetAllFriendInput input)
         {
             try
             {
@@ -86,7 +87,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                     where fr.FriendUserId == AbpSession.UserId
@@ -95,17 +96,14 @@ namespace Yootek.Friendships
                                 CreationTime = friendship.CreationTime,
                             })
                         .Where(x => x.IsSender == false).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
                             new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
                         );
                     }
-
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -114,7 +112,7 @@ namespace Yootek.Friendships
             }
         }
 
-        public async Task<DataResult> GetUserRequestingList()
+        public async Task<DataResult> GetUserRequestingList(GetAllFriendInput input)
         {
             try
             {
@@ -135,12 +133,12 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 LastMessageDate = friendship.CreationTime
                             })
                         .Where(x => x.IsSender == true).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -148,9 +146,7 @@ namespace Yootek.Friendships
                         );
                     }
 
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -159,7 +155,7 @@ namespace Yootek.Friendships
             }
         }
         
-        public async Task<DataResult> GetFriendFollowingList()
+        public async Task<DataResult> GetFriendFollowingList(GetAllFriendInput input)
         {
             try
             {
@@ -180,7 +176,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                     where fr.FriendUserId == AbpSession.UserId
@@ -189,17 +185,14 @@ namespace Yootek.Friendships
                                 CreationTime = friendship.CreationTime,
                             })
                         .Where(x => x.IsSender == false).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
                             new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
                         );
                     }
-
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -208,7 +201,7 @@ namespace Yootek.Friendships
             }
         }
         
-        public async Task<DataResult> GetFollowedList()
+        public async Task<DataResult> GetFollowedList(GetAllFriendInput input)
         {
             try
             {
@@ -229,7 +222,7 @@ namespace Yootek.Friendships
                                 FollowState = friendship.FollowState,
                                 FriendUserName = friendship.FriendUserName,
                                 FriendTenancyName = friendship.FriendTenancyName,
-                                FriendProfilePictureId = friendship.FriendProfilePictureId,
+                                FriendImageUrl = friendship.FriendImageUrl,
                                 IsSender = friendship.IsSender,
                                 StateAddFriend = (int)(from fr in _friendshipRepository.GetAll()
                                     where fr.FriendUserId == AbpSession.UserId
@@ -238,7 +231,7 @@ namespace Yootek.Friendships
                                 CreationTime = friendship.CreationTime,
                             })
                         .Where(x => x.IsSender == false).AsQueryable();
-                    var friends = query.ToList();
+                    var friends = query.PageBy(input).ToList();
                     foreach (var friend in friends)
                     {
                         friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -246,9 +239,7 @@ namespace Yootek.Friendships
                         );
                     }
 
-                    var listresults = new List<ChatFriendOrRoomDto>();
-                    listresults = listresults.Concat(friends).ToList();
-                    return DataResult.ResultSuccess(listresults, "", query.Count());
+                    return DataResult.ResultSuccess(friends, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -287,7 +278,7 @@ namespace Yootek.Friendships
                         throw new UserFriendlyException(L("YouAlreadySentAFriendshipRequestToThisUser"));
                     }
 
-                    if (friendShip.State != FriendshipState.Stranger)
+                    if (friendShip.State != FriendshipState.None)
                     {
                         throw new UserFriendlyException(L("FriendShipStateIsNotValid"));
                     }
@@ -477,7 +468,6 @@ namespace Yootek.Friendships
             }
         }
 
-
         public async Task<FriendDto> UnblockUser(UnblockUserInput input)
         {
             try
@@ -487,7 +477,7 @@ namespace Yootek.Friendships
                 var friendShip = await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend);
                 if (friendShip != null)
                 {
-                    if (friendShip.State == FriendshipState.Stranger)
+                    if (friendShip.State == FriendshipState.None)
                         throw new UserFriendlyException(L("YouAlreadyUnBlockedThisUser"));
                     if (friendShip.State != FriendshipState.Blocked)
                     {
@@ -499,22 +489,22 @@ namespace Yootek.Friendships
                         if (clients.Any())
                         {
                             await _chatCommunicator.SendUserStateChangeToClients(clients, probableFriend,
-                                FriendshipState.Stranger);
+                                FriendshipState.None);
                         }
 
                         var senderClients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
                         if (senderClients.Any())
                         {
                             await _chatCommunicator.SendUserStateChangeToClients(senderClients, userIdentifier,
-                                FriendshipState.Stranger);
+                                FriendshipState.None);
                         }
                         var followState = FollowState.UnFollow;
                         if (friendShip.FollowState != null)
                         {
                             followState = (FollowState)friendShip.FollowState;
                         }
-                        await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.Stranger, followState);
-                        await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.Stranger, followState);
+                        await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.None, followState);
+                        await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.None, followState);
 
                         return friendShip.MapTo<FriendDto>();
                     }
@@ -533,7 +523,7 @@ namespace Yootek.Friendships
                         ? _tenantCache.Get(probableFriend.TenantId.Value).TenancyName
                         : null;
                     var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName,
-                        probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Stranger,
+                        probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.None,
                         FollowState.UnFollow, true);
                     await _friendshipManager.CreateFriendshipAsync(sourceFriendship);
 
@@ -541,7 +531,7 @@ namespace Yootek.Friendships
                     var userTenancyName =
                         user.TenantId.HasValue ? _tenantCache.Get(user.TenantId.Value).TenancyName : null;
                     var targetFriendship = new Friendship(probableFriend, userIdentifier, userTenancyName,
-                        user.FullName, user.ImageUrl, FriendshipState.Stranger, FollowState.UnFollow);
+                        user.FullName, user.ImageUrl, FriendshipState.None, FollowState.UnFollow);
                     await _friendshipManager.CreateFriendshipAsync(targetFriendship);
 
                     var clients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
@@ -617,14 +607,14 @@ namespace Yootek.Friendships
                         ? _tenantCache.Get(probableFriend.TenantId.Value).TenancyName
                         : null;
                     var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName,
-                        probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Stranger,
+                        probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.None,
                         FollowState.Following, true);
                     await _friendshipManager.CreateFriendshipAsync(sourceFriendship);
                     //set state is requesting when friend request is not accepted
                     var userTenancyName =
                         user.TenantId.HasValue ? _tenantCache.Get(user.TenantId.Value).TenancyName : null;
                     var targetFriendship = new Friendship(probableFriend, userIdentifier, userTenancyName,
-                        user.FullName, user.ImageUrl, FriendshipState.Stranger, FollowState.Following);
+                        user.FullName, user.ImageUrl, FriendshipState.None, FollowState.Following);
                     await _friendshipManager.CreateFriendshipAsync(targetFriendship);
                     var clients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
                     if (clients.Any())
@@ -697,7 +687,7 @@ namespace Yootek.Friendships
                         ? _tenantCache.Get(probableFriend.TenantId.Value).TenancyName
                         : null;
                     var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName,
-                        probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Stranger,
+                        probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.None,
                         FollowState.UnFollow, true);
                     await _friendshipManager.CreateFriendshipAsync(sourceFriendship);
 
@@ -705,7 +695,7 @@ namespace Yootek.Friendships
                     var userTenancyName =
                         user.TenantId.HasValue ? _tenantCache.Get(user.TenantId.Value).TenancyName : null;
                     var targetFriendship = new Friendship(probableFriend, userIdentifier, userTenancyName,
-                        user.FullName, user.ImageUrl, FriendshipState.Stranger, FollowState.UnFollow);
+                        user.FullName, user.ImageUrl, FriendshipState.None, FollowState.UnFollow);
                     await _friendshipManager.CreateFriendshipAsync(targetFriendship);
 
                     var clients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
@@ -847,7 +837,7 @@ namespace Yootek.Friendships
                var friendShip = await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend);
                if (friendShip != null)
                {
-                   if (friendShip.State == FriendshipState.Stranger)
+                   if (friendShip.State == FriendshipState.None)
                    {
                        return;
                    }
@@ -862,21 +852,21 @@ namespace Yootek.Friendships
                        if (clients.Any())
                        {
                            await _chatCommunicator.SendUserStateChangeToClients(clients, probableFriend,
-                               FriendshipState.Stranger);
+                               FriendshipState.None);
                        }
 
                        var senderClients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
                        if (senderClients.Any())
                        {
                            await _chatCommunicator.SendUserStateChangeToClients(senderClients, userIdentifier,
-                               FriendshipState.Stranger);
+                               FriendshipState.None);
                        }
                        var follow = FollowState.UnFollow;
                        if (friendShip.FollowState != null)
                        {
                            follow = (FollowState)friendShip.FollowState;
                        }
-                       await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.Stranger, follow);
+                       await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.None, follow);
                    }
                }
                else
@@ -893,7 +883,7 @@ namespace Yootek.Friendships
                        ? _tenantCache.Get(probableFriend.TenantId.Value).TenancyName
                        : null;
                    var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName,
-                       probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Stranger,
+                       probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.None,
                        FollowState.UnFollow, true);
                    await _friendshipManager.CreateFriendshipAsync(sourceFriendship);
 
@@ -901,7 +891,7 @@ namespace Yootek.Friendships
                    var userTenancyName =
                        user.TenantId.HasValue ? _tenantCache.Get(user.TenantId.Value).TenancyName : null;
                    var targetFriendship = new Friendship(probableFriend, userIdentifier, userTenancyName,
-                       user.FullName, user.ImageUrl, FriendshipState.Stranger, FollowState.UnFollow);
+                       user.FullName, user.ImageUrl, FriendshipState.None, FollowState.UnFollow);
                    await _friendshipManager.CreateFriendshipAsync(targetFriendship);
 
                    var clients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
@@ -963,7 +953,6 @@ namespace Yootek.Friendships
             }
         }
 
-
         public async Task<List<UserDto>> FindUserToAddFriendByKeyword(FindUserToAddFriendInput input)
         {
             try
@@ -998,7 +987,7 @@ namespace Yootek.Friendships
               var friendShip = await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend);
               if (friendShip != null)
               {
-                  if (friendShip.State == FriendshipState.Stranger)
+                  if (friendShip.State == FriendshipState.None)
                   {
                       return;
                   }
@@ -1013,22 +1002,22 @@ namespace Yootek.Friendships
                       if (clients.Any())
                       {
                           await _chatCommunicator.SendUserStateChangeToClients(clients, probableFriend,
-                              FriendshipState.Stranger);
+                              FriendshipState.None);
                       }
 
                       var senderClients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
                       if (senderClients.Any())
                       {
                           await _chatCommunicator.SendUserStateChangeToClients(senderClients, userIdentifier,
-                              FriendshipState.Stranger);
+                              FriendshipState.None);
                       }
                       var follow = FollowState.UnFollow;
                       if (friendShip.FollowState != null)
                       {
                           follow = (FollowState)friendShip.FollowState;
                       }
-                      await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.Stranger, follow);
-                      await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.Stranger, follow);
+                      await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.None, follow);
+                      await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.None, follow);
 
                   }
               }
@@ -1046,7 +1035,7 @@ namespace Yootek.Friendships
                       ? _tenantCache.Get(probableFriend.TenantId.Value).TenancyName
                       : null;
                   var sourceFriendship = new Friendship(userIdentifier, probableFriend, friendTenancyName,
-                      probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.Stranger,
+                      probableFriendUser.FullName, probableFriendUser.ImageUrl, FriendshipState.None,
                       FollowState.UnFollow, true);
                   await _friendshipManager.CreateFriendshipAsync(sourceFriendship);
 
@@ -1054,7 +1043,7 @@ namespace Yootek.Friendships
                   var userTenancyName =
                       user.TenantId.HasValue ? _tenantCache.Get(user.TenantId.Value).TenancyName : null;
                   var targetFriendship = new Friendship(probableFriend, userIdentifier, userTenancyName,
-                      user.FullName, user.ImageUrl, FriendshipState.Stranger, FollowState.UnFollow);
+                      user.FullName, user.ImageUrl, FriendshipState.None, FollowState.UnFollow);
                   await _friendshipManager.CreateFriendshipAsync(targetFriendship);
 
                   var clients = await _onlineClientManager.GetAllByUserIdAsync(probableFriend);
