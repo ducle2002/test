@@ -99,6 +99,7 @@ namespace Yootek.Chat
             var data = DataResult.ResultSuccess(unreadMessageCount + unreadMessageGroupCount, "Get success !");
             return data;
         } 
+
         public async Task<DataResult> SearchUserMessageByKeyword(SearchMessageInput input)
         {
             try
@@ -224,38 +225,7 @@ namespace Yootek.Chat
         }
 
         [DisableAuditing]
-        public async Task<GetUserChatFriendsWithSettingsOutput> GetFriendRequestingList()
-        {
-            var userId = AbpSession.GetUserId();
-            //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
-            var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), FriendshipState.Requesting, false);
-
-            var friends = cacheItem.Friends.MapTo<List<FriendDto>>();
-
-            foreach (var friend in friends)
-            {
-                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-                    new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
-                );
-
-                friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-                 .Where(m => (m.UserId == userId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
-                 .OrderByDescending(m => m.CreationTime)
-                 .Take(10)
-                 .ToList()
-                 .Count();
-            }
-            var listresults = new List<ChatFriendOrRoomDto>();
-            listresults = listresults.Concat(friends).ToList();
-            return new GetUserChatFriendsWithSettingsOutput
-            {
-                Friends = listresults,
-                ServerTime = Clock.Now
-            };
-        }
-
-        [DisableAuditing]
-        public async Task<ListResultDto<ChatMessageDto>> GetUserChatMessages(GetUserChatMessagesInput input)
+        public async Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input)
         {
             try
             {
@@ -263,17 +233,18 @@ namespace Yootek.Chat
                 input.TenantId = AbpSession.TenantId;
                 using(CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
-                    var messages = await _chatMessageRepository.GetAll()
+                    var query =  _chatMessageRepository.GetAll()
                        .WhereIf(input.IsOrganizationUnit == null || !input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit != true)
                        .WhereIf(input.IsOrganizationUnit.HasValue && input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit == input.IsOrganizationUnit)
                        .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)
                        .Where(m => m.UserId == userId && m.TargetTenantId == input.TenantId && m.TargetUserId == input.UserId)
                        .OrderByDescending(m => m.CreationTime)
-                       .Take(50)
+                       .AsQueryable();
+                    var messages = await query.PageBy(input)
                        .ToListAsync();
 
                     messages.Reverse();
-                    var result = messages.MapTo<List<ChatMessageDto>>();
+                    var result = ObjectMapper.Map<List<ChatMessageDto>>(messages);
                     if (result != null)
                     {
                         foreach (var mes in result)
@@ -283,13 +254,13 @@ namespace Yootek.Chat
                                 var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == userId);
                                 if (rep != null)
                                 {
-                                    mes.MessageReplied = rep.MapTo<ChatMessageDto>();
+                                    mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
                                 }
                             }
                         }
                     }
 
-                    return new ListResultDto<ChatMessageDto>(result);
+                    return DataResult.ResultSuccess(result, "", query.Count());
                 }
             }
             catch (Exception e)

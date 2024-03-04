@@ -184,6 +184,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                          .WhereIf(input.Method.HasValue, x => x.Method == (EPaymentMethod)input.Method)
                          .WhereIf(input.Status.HasValue, x => x.Status == (EPaymentStatus)input.Status)
                          .WhereIf(!string.IsNullOrEmpty(input.Keyword), x => x.Id.ToString() == input.Keyword || x.Amount.ToString() == input.Keyword)
+                         .OrderByDescending(x => x.CreatedAt)
                          .AsQueryable();
             return query;
         }
@@ -348,6 +349,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 .WhereIf(input.FromDay.HasValue, u => u.CreationTime >= fromDay)
                 .WhereIf(input.ToDay.HasValue, u => u.CreationTime <= toDay)
                 .WhereIf(!input.Keyword.IsNullOrWhiteSpace(), x => x.PaymentCode.Contains(input.Keyword) || x.ApartmentCode.Contains(input.Keyword))
+                .OrderByDescending(x => x.CreationTime)
                 .AsQueryable();
             return query;
         }

@@ -532,7 +532,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             {
                 input.Status = UserBillPaymentStatus.Success;
                 var payment = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
-                
+
                 var data = DataResult.ResultSuccess("Admin payment success");
                 ////yêu cầu aden gửi email thông báo hóa đơn
                 //var sendEmailInput = new PrintBillInvoiceInput
@@ -544,7 +544,10 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 //    Payment = payment,
                 //};
                 //await _billInvoice.SendEmailReceiptToApartmentAsync(sendEmailInput, input.Period); // đợi phiếu thu của aden
-                await _handlePayment.SendEmailToEmailAdminSenderAsync(payment.Id, input.Period);
+                if (AbpSession.TenantId == 114)
+                {
+                    await _handlePayment.SendEmailToEmailAdminSenderAsync(payment.Id, input.Period);
+                }
                 return data;
             }
             catch (Exception ex)

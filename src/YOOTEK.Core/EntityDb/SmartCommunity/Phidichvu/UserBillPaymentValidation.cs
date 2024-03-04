@@ -29,5 +29,13 @@ namespace Yootek.EntityDb
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
         public string TransactionProperties { get; set; }
+        public string ReturnUrl { get; set; }
+        public EReturnState State { get; set; }
+    }
+
+    public enum EReturnState
+    {
+        Approved = 1,
+        Reject = 2
     }
 }

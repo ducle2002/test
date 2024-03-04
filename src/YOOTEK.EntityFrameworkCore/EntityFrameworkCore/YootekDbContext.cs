@@ -201,6 +201,7 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<CitizenParking> CitizenParkings { get; set; }
         public virtual DbSet<UserVehicle> UserVehicles { get; set; }
         public virtual DbSet<Apartment> Apartments { get; set; }
+        public virtual DbSet<ApartmentBalance> ApartmentBalances { get; set; }
         public virtual DbSet<ApartmentHistory> ApartmentHistories { get; set; }
         public virtual DbSet<ApartmentStatus> ApartmentStatuses { get; set; }
         public virtual DbSet<ApartmentDiscount> ApartmentDiscounts { get; set; }

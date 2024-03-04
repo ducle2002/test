@@ -11,7 +11,7 @@ namespace Yootek.Chat
     {
         Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input);
 
-        Task<ListResultDto<ChatMessageDto>> GetUserChatMessages(GetUserChatMessagesInput input);
+        Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input);
 
         Task MarkAllUnreadMessagesOfUserAsRead(MarkAllUnreadMessagesOfUserAsReadInput input);
 

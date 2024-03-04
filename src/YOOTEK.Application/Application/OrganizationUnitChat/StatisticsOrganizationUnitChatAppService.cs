@@ -67,6 +67,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             return query;
 
         }
+
         public IQueryable<CitizenReflectCommentStatic> QueryGetAllChatReflects()
         {
             List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();

@@ -40,6 +40,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto
         public UserBillPaymentStatus? Status { get; set; }
         [JsonPropertyName("creationTime")]
         public DateTime CreationTime { get; set; }
+        public decimal BalanceAmount { get; set; }
 
     }
 
