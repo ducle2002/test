@@ -78,8 +78,11 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     if ((input.UserBills == null || input.UserBills.Count() == 0)
                         && (input.UserBillDebts == null || input.UserBillDebts.Count() == 0)
                         && (input.PrepaymentBills == null || input.PrepaymentBills.Count() == 0)) throw new Exception("Input user bill is null");
-                    var checkPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(x => x.EPaymentId == epaymentId);
-                    if (checkPayment != null) return checkPayment;
+                    if(epaymentId.HasValue)
+                    {
+                        var checkPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(x => x.EPaymentId == epaymentId);
+                        if (checkPayment != null) return checkPayment;
+                    }
 
                     var payment = new UserBillPayment()
                     {
