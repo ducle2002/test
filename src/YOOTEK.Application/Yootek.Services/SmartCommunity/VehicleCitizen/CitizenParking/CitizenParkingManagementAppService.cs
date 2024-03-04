@@ -162,13 +162,8 @@ namespace Yootek.Services
             try
             {
                 if (ids.Count == 0) return DataResult.ResultError("Error", "Empty input!");
-                var tasks = new List<Task>();
-                foreach (var id in ids)
-                {
-                    var task = Delete(id);
-                    tasks.Add(task);
-                }
-                Task.WaitAll(tasks.ToArray());
+
+                await _citizenParkingRepos.DeleteAsync(x => ids.Contains(x.Id));
                 var data = DataResult.ResultSuccess("Deleted successfully!");
                 return data;
             }
