@@ -30,6 +30,8 @@
         public const string CityVoteNew = "App.CityVoteNew";
         public const string CityNotificationNew = "App.CityNotificationNew";
 
+        public const string AdministrativeNew = "App.AdministrativeNew";
+
         public const string CityNotificationComment = "App.CityNotificationComment";
 
         public const string ChatMessage = "App.ChatMessage";
@@ -86,6 +88,8 @@
 
         public const string CityVoteNewIcon = "App.CityVoteNewIcon";
         public const string CityNotificationNewIcon = "App.CityNotificationNewIcon";
+
+        public const string AdministrativeNewIcon = "App.AdministrativeNewIcon";
 
         public const string CityNotificationCommentIcon = "App.CityNotificationCommentIcon";
 

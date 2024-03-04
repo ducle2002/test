@@ -827,8 +827,10 @@ namespace Yootek.Services
         {
             var detailUrlApp = $"yoolife://app/evote/detail?id={vote.Id}";
             var citizens = (from cz in _citizenRepos.GetAll()
-                            where cz.State == STATE_CITIZEN.ACCEPTED
-                            select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).ToList();
+                            where cz.State == STATE_CITIZEN.ACCEPTED &&
+                                  (vote.UrbanId == null || cz.UrbanId == vote.UrbanId) &&
+                                  (vote.BuildingId == null || cz.BuildingId == vote.BuildingId)
+                            select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
 
             var messageDeclined = new NotificationWithContentIdDatabase(
                              vote.Id,

@@ -28,6 +28,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Math;
+using Yootek.Services.SmartCommunity.BillingInvoice;
 
 namespace Yootek.Services
 {
@@ -170,12 +171,12 @@ namespace Yootek.Services
                    AbpSession.TenantId);
 
             }
-            else if (AbpSession.TenantId == 47)
-            {
-                template = await CreateTemplateTrungDo(apartmentCode, period,
-                   AbpSession.TenantId);
+            //else if (AbpSession.TenantId == 47)
+            //{
+            //    template = await CreateTemplateTrungDo(apartmentCode, period,
+            //       AbpSession.TenantId);
 
-            }
+            //}
             else if (AbpSession.TenantId == 114)
             {
                 template = await CreateTemplateLT(apartmentCode, period,
@@ -246,6 +247,7 @@ namespace Yootek.Services
 
         }
 
+        
         [RemoteService(false)]
         public async Task<StringBuilder> CreateTemplate(string apartmentCode, DateTime time, int? tenantId, CitizenTemp citizenTemp = null)
         {
@@ -4991,6 +4993,7 @@ namespace Yootek.Services
         }
 
         //Trung do
+        [RemoteService(false)]
         public async Task<StringBuilder> CreateTemplateTrungDo(string apartmentCode, DateTime period, int? tenantId)
         {
             using (CurrentUnitOfWork.SetTenantId(tenantId))
@@ -5356,9 +5359,10 @@ namespace Yootek.Services
                         emailTemplate.Replace("{E_AMOUNT" + i + "}", "");
                     }
 
-                    emailTemplate.Replace("{E_TOTAL_AMOUNT}", string.Format("{0:#,#.##}", resultE));
+                    emailTemplate.Replace("{E_TOTAL_AMOUNT}",
+                                            string.Format("{0:#,#.##}", electricBill.LastCost.HasValue ? string.Format("{0:#,#}", Math.Round(electricBill.LastCost.Value)) : null));
 
-                    
+
                     // emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE + e_percent));
                     emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE));
                 }

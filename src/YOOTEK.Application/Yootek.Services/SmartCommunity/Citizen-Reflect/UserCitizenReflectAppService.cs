@@ -323,6 +323,7 @@ namespace Yootek.Services
                 {
                     citizenInsert.Phone = citizen.PhoneNumber;
                     citizenInsert.NameFeeder = citizen.FullName;
+                    citizenInsert.ApartmentCode = citizen.ApartmentCode;
                 }
 
                 CitizenReflectComment feedbackComment = new()
@@ -334,13 +335,75 @@ namespace Yootek.Services
                 };
                 await _citizenReflectCommentRepos.InsertAndGetIdAsync(feedbackComment);
                 await CurrentUnitOfWork.SaveChangesAsync();
+                List<User> adminsBuilding = null;
+                List<User> adminsUrban = null;
+                List<User> admins = null;
+                string urbanCode = null;
+                string buildingCode = null;
 
-                List<User>? admins = await _store.GetUserByOrganizationUnitIdAsync(0, AbpSession.TenantId);
+                if (input.UrbanId != null)
+                {
+                    adminsUrban = await _store.GetUserByOrganizationUnitIdAsync((long)input.UrbanId, AbpSession.TenantId);
+                    urbanCode = await _appOrganizationUnitRepos.GetAll()
+                    .Where(x => x.Id == input.UrbanId && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && x.ParentId == null)
+                    .Select(x => x.Code)
+                    .FirstOrDefaultAsync();
+                }
 
+                if (input.BuildingId != null)
+                {
+                    adminsBuilding = await _store.GetUserByOrganizationUnitIdAsync((long)input.BuildingId, AbpSession.TenantId);
+                    buildingCode = await _appOrganizationUnitRepos.GetAll()
+                    .Where(x => x.Id == input.BuildingId && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && x.ParentId != null)
+                    .Select(x => x.Code)
+                    .FirstOrDefaultAsync();
+                }
+                var organizationUnits = await _appOrganizationUnitRepos.GetAll()
+                .Where(x => x.Type == APP_ORGANIZATION_TYPE.ADMINISTRATION &&
+                            (urbanCode != null && x.Code.StartsWith(urbanCode + ".") ||
+                             buildingCode != null && x.Code.StartsWith(buildingCode + ".")))
+                .Select(x => x.ParentId)
+                .ToListAsync();
+
+                List<User> adminsOrganization = new List<User>();
+
+                foreach (var ou in organizationUnits)
+                {
+                    List<User> adminsInOrganization = await _store.GetUserByOrganizationUnitIdAsync((long)ou, AbpSession.TenantId);
+                    adminsOrganization.AddRange(adminsInOrganization);
+                }
+
+                admins = adminsUrban.Union(adminsBuilding).Union(adminsOrganization).ToList();
+
+                // List<User>? admins = await _store.GetUserByOrganizationUnitIdAsync(0, AbpSession.TenantId);
+                string detailUrlApp, detailUrlWA;
+                detailUrlApp = $"yooioc://app/feedback/detail?id={id}";
+                detailUrlWA = $"/feedbacks/id={id}";
                 if (admins != null && admins.Any())
                 {
-                    _notificationCommunicator.SendNotificationToAdminTenant(admins, citizenInsert);
+                    var messageAccept = new UserMessageNotificationDataBase(
+                        AppNotificationAction.ReflectCitizenNew,
+                        AppNotificationIcon.ReflectCitizenNewIcon,
+                        TypeAction.Detail,
+                        $"Có một phản ánh mới {citizenInsert.Name} từ cư dân {citizenInsert.ApartmentCode}!",
+                        detailUrlApp,
+                        detailUrlWA,
+                        citizen.ImageUrl ?? "",
+                        "",
+                        0
+                    );
+
+                    // Gửi thông báo tới tất cả người quản trị (admins)
+                    await _appNotifier.SendUserMessageNotifyFullyAsync(
+                        "Thông báo phản ánh cư dân",
+                        $"Có một phản ánh mới {citizenInsert.Name} từ cư dân {citizenInsert.ApartmentCode}!",
+                        detailUrlApp,
+                        detailUrlWA,
+                        admins.Select(admin => new UserIdentifier(admin.TenantId, admin.Id)).ToArray(),
+                        messageAccept
+                    );
                 }
+
                 return DataResult.ResultSuccess(citizenInsert, "Insert success !");
             }
             catch (Exception ex)

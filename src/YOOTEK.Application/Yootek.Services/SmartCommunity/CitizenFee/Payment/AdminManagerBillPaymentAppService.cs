@@ -31,6 +31,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Yootek.Common.Enum.CommonENum;
 using Abp.Authorization;
+using Yootek.Services.SmartCommunity.BillingInvoice;
+using Yootek.Services.SmartCommunity.BillingInvoice.Dto;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -60,6 +62,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         private readonly UserBillEmailer _handlePayment;
         private readonly IRepository<UserBillPaymentHistory, long> _billPaymentHistoryRepos;
         private readonly IPaymentExcelExporter _paymentExcelExporter;
+        private readonly IBillInvoiceAppService _billInvoice;
         public AdminManagerBillPaymentAppService(
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<User, long> userRepos, IRepository<UserBill, long> userBillRepo,
@@ -70,7 +73,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             HandlePaymentUtilAppService handlePaymentUtilAppService,
             UserBillEmailer handlePayment,
             IRepository<UserBillPaymentHistory, long> billPaymentHistoryRepos,
-            IPaymentExcelExporter paymentExcelExporter
+            IPaymentExcelExporter paymentExcelExporter,
+            IBillInvoiceAppService billInvoice
             )
 
         {
@@ -85,6 +89,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             _handlePayment = handlePayment;
             _billPaymentHistoryRepos = billPaymentHistoryRepos;
             _paymentExcelExporter = paymentExcelExporter;
+            _billInvoice = billInvoice;
         }
 
         protected IQueryable<AdminUserBillPaymentOutputDto> QueryUserBillPayments(GetAllAdminUserBillPaymentDto input)
@@ -354,7 +359,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         {
             try
             {
-                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
                     var userBillPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(input.Id);
                     switch (input.Status)
@@ -526,22 +531,20 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             try
             {
                 input.Status = UserBillPaymentStatus.Success;
-                await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
-                var sendEmails = new List<SendUserBillNotificationInput>();
-
-                foreach (var userBill in input.UserBills)
-                {
-                   var sendEmailInput = new SendUserBillNotificationInput
-                   {
-                       ApartmentCode = input.ApartmentCode,
-                       Period = input.Period,
-                   };
-
-                   sendEmails.Add(sendEmailInput);
-                }
+                var payment = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
+                
                 var data = DataResult.ResultSuccess("Admin payment success");
-                await _handlePayment.SendEmailAndBNotificationAllApartment(sendEmails);
-
+                ////yêu cầu aden gửi email thông báo hóa đơn
+                //var sendEmailInput = new PrintBillInvoiceInput
+                //{
+                //    ApartmentCode = input.ApartmentCode,
+                //    PeriodMonth = input.Period.Month,
+                //    PeriodYear = input.Period.Year,
+                //    Method = input.Method,
+                //    Payment = payment,
+                //};
+                //await _billInvoice.SendEmailReceiptToApartmentAsync(sendEmailInput, input.Period); // đợi phiếu thu của aden
+                await _handlePayment.SendEmailToEmailAdminSenderAsync(payment.Id, input.Period);
                 return data;
             }
             catch (Exception ex)

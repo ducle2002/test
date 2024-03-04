@@ -22,6 +22,9 @@ using Abp.Authorization;
 using Abp;
 using Yootek.Authorization;
 using Abp.UI;
+using Org.BouncyCastle.Utilities.Collections;
+using Yootek.Organizations;
+using NPOI.SS.Formula.Functions;
 
 namespace Yootek.Services
 {
@@ -57,22 +60,26 @@ namespace Yootek.Services
         private readonly IRepository<AdministrativeValue, long> _valueAdministrativeRepos;
         private readonly IRepository<HomeMember, long> _homeMemberRepos;
         private readonly IRepository<Citizen, long> _citizenRepos;
+        private readonly UserStore _store;
         private readonly IRepository<UserBill, long> _userBillRepos;
         private readonly IRepository<FcmTokens, long> _fcmTokenRepos;
         private readonly CloudMessagingManager _cloudMessagingManager;
         private readonly ISqlExecuter _sqlExecute;
         private readonly IAppNotifier _appNotifier;
+        private readonly IRepository<AppOrganizationUnit, long> _organizationUnit;
 
 
         public AdministrativeAppService(
             IRepository<TypeAdministrative, long> typeAdministrativeRepos,
             IRepository<Administrative, long> administrativeRepos,
             IRepository<Citizen, long> citizenRepos,
+            UserStore store,
             IRepository<AdministrativeValue, long> valueAdministrativeRepos,
             IRepository<AdministrativeProperty, long> administrativePropertiesRepos,
             IRepository<HomeMember, long> homeMemberRepos,
             IRepository<UserBill, long> userBillRepos,
             IRepository<FcmTokens, long> fcmTokenRepos,
+            IRepository<AppOrganizationUnit, long> organizationUnit,
             CloudMessagingManager cloudMessagingManager,
             IAppNotifier appNotifier,
             ISqlExecuter sqlExecute)
@@ -81,6 +88,7 @@ namespace Yootek.Services
             _administrativeRepos = administrativeRepos;
             _administrativePropertiesRepos = administrativePropertiesRepos;
             _citizenRepos = citizenRepos;
+            _store = store;
             _valueAdministrativeRepos = valueAdministrativeRepos;
             _sqlExecute = sqlExecute;
             _userBillRepos = userBillRepos;
@@ -88,9 +96,10 @@ namespace Yootek.Services
             _homeMemberRepos = homeMemberRepos;
             _cloudMessagingManager = cloudMessagingManager;
             _appNotifier = appNotifier;
+            _organizationUnit = organizationUnit;
         }
 
-      
+
         public async Task<object> CreateOrUpdateAdministrative(AdministrativeDto input)
         {
             try
@@ -110,6 +119,7 @@ namespace Yootek.Services
                         //call back
                         await _administrativeRepos.UpdateAsync(updateData);
                         await CreateOrUpdateValueWithAdministrative(input.Properties, input.Id, input.ADTypeId, oldProperties);
+
                     }
                     mb.statisticMetris(t1, 0, "Ud_administrative");
 
@@ -118,16 +128,17 @@ namespace Yootek.Services
                 }
                 else
                 {
-                    
+
                     var insertInput = input.MapTo<Administrative>();
                     // Only admin can send administrative request
                     //var creatorUser = _homeMemberRepos.FirstOrDefault(x => x.Id == insertInput.CreatorUserId);
                     //if (creatorUser == null) { return null; }
                     //if (!creatorUser.IsAdmin) { return null; }
                     //
-					long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
+                    long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
                     await CreateOrUpdateValueWithAdministrative(input.Properties, id, input.ADTypeId);
+                    await NotifierNewNotificationAdmin(insertInput);
                     mb.statisticMetris(t1, 0, "is_administrative");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -142,7 +153,7 @@ namespace Yootek.Services
 
         }
 
-      
+
         public async Task<DataResult> HandleStateUserAdministrative(HandleStateAdministrativeInput input)
         {
             try
@@ -286,7 +297,7 @@ namespace Yootek.Services
         }
 
 
-      
+
         public async Task<DataResult> DeleteAdministrative(long id)
         {
             try
@@ -329,7 +340,7 @@ namespace Yootek.Services
         }
 
 
-      
+
         public async Task<object> UpdateStateAdministrative(long id, int state)
         {
             try
@@ -359,7 +370,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public async Task<object> UpdateConfirmationOwner(long id)
         {
             try
@@ -392,7 +403,7 @@ namespace Yootek.Services
 
         #region Config
 
-      
+
         public async Task<object> CreateOrUpdateType(TypeAdministrativeDto input)
         {
             try
@@ -464,7 +475,8 @@ namespace Yootek.Services
 
                 var data = DataResult.ResultSuccess("Delete success!");
                 return Task.FromResult(data);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
@@ -575,7 +587,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public async Task<DataResult> DeleteValueWithAdministrativeIdAsync(long adId)
         {
             try
@@ -606,7 +618,7 @@ namespace Yootek.Services
         #endregion
 
         #region Property
-      
+
         public async Task<object> CreateOrUpdateProperty(ADPropetyInput input)
         {
             try
@@ -647,7 +659,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> CreateProperty(ADPropetyInput input)
         {
             try
@@ -690,7 +702,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> UpdateProperty(ADPropetyInput input)
         {
             try
@@ -746,7 +758,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> CreateOrUpdateListProperty(List<ADPropetyInput> input)
         {
             try
@@ -800,6 +812,86 @@ namespace Yootek.Services
                 return Task.FromResult(data);
             }
         }
+
+        private async Task NotifierNewNotificationAdmin(Administrative data)
+        {
+            var detailUrlApp = $"yooioc://app/adminstrative/detail?id={data.Id}";
+            var detailUrlWA = $"/adminstrative?id={data.Id}";
+            string creatorName = "";
+            var citizen = _citizenRepos.FirstOrDefault(x => x.AccountId == data.CreatorUserId);
+            creatorName = citizen.FullName ?? "";
+            var urbanId = _typeAdministrativeRepos.FirstOrDefault(x => x.Id == data.ADTypeId)?.UrbanId;
+            var buildingId = _typeAdministrativeRepos.FirstOrDefault(x => x.Id == data.ADTypeId)?.BuildingId;
+            List<User> adminsUrban = new List<User>();
+            List<User> adminsBuilding = new List<User>();
+            string urbanCode = null;
+            string buildingCode = null;
+
+            if (urbanId != null)
+            {
+                adminsUrban = await _store.GetUserByOrganizationUnitIdAsync((long)urbanId, AbpSession.TenantId);
+                urbanCode = await _organizationUnit.GetAll()
+                    .Where(x => x.Id == urbanId && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && x.ParentId == null)
+                    .Select(x => x.Code)
+                    .FirstOrDefaultAsync();
+            }
+
+            if (buildingId != null)
+            {
+                adminsBuilding = await _store.GetUserByOrganizationUnitIdAsync((long)buildingId, AbpSession.TenantId);
+                buildingCode = await _organizationUnit.GetAll()
+                    .Where(x => x.Id == buildingId && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && x.ParentId != null)
+                    .Select(x => x.Code)
+                    .FirstOrDefaultAsync();
+            }
+
+            var organizationUnits = await _organizationUnit.GetAll()
+                .Where(x => x.Type == APP_ORGANIZATION_TYPE.ADMINISTRATION &&
+                            (urbanCode != null && x.Code.StartsWith(urbanCode + ".") ||
+                             buildingCode != null && x.Code.StartsWith(buildingCode + ".")))
+                .Select(x => x.ParentId)
+                .ToListAsync();
+
+
+
+            List<User> adminsOrganization = new List<User>();
+
+            foreach (var ou in organizationUnits)
+            {
+                List<User> adminsInOrganization = await _store.GetUserByOrganizationUnitIdAsync((long)ou, AbpSession.TenantId);
+                adminsOrganization.AddRange(adminsInOrganization);
+            }
+
+            List<User> admins = adminsUrban.Union(adminsBuilding).Union(adminsOrganization).ToList();
+            if (admins != null && admins.Count > 0)
+            {
+
+
+                var messageAccept = new NotificationWithContentIdDatabase(
+                                data.Id,
+                                AppNotificationAction.AdministrativeNew,
+                                AppNotificationIcon.AdministrativeNewIcon,
+                                TypeAction.Detail,
+                                $"{creatorName} đã tạo một đăng ký hành chính mới. Nhấn để xem chi tiết !",
+                                detailUrlApp,
+                                detailUrlWA,
+                                "",
+                                ""
+
+                                );
+                // Gửi thông báo tới tất cả người quản trị (admins)
+                await _appNotifier.SendUserMessageNotifyFullyAsync(
+                    "Thông báo hành chính số",
+                    $"Có một đăng ký hành chính mới từ cư dân {creatorName}!",
+                    detailUrlApp,
+                    detailUrlWA,
+                    admins.Select(admin => new UserIdentifier(admin.TenantId, admin.Id)).ToArray(),
+                    messageAccept
+                );
+
+            }
+        }
+
         #endregion
     }
 }

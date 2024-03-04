@@ -20,6 +20,7 @@ namespace Yootek.Application.Configuration.Tenant
     public interface ITenantSettingsAppService : IApplicationService
     {
         Task<TenantSettingsEditDto> GetAllSettings();
+        Task<EmailSettingsEditDto> GetEmailSettingsAsync();
     }
 
     public class TenantSettingsAppService : YootekAppServiceBase, ITenantSettingsAppService
