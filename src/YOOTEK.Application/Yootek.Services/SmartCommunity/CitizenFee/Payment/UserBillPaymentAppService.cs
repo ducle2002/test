@@ -46,7 +46,6 @@ namespace Yootek.Services
         private readonly HttpClient _httpClient;
 
         public UserBillPaymentAppService(
-            IAbpSession abpSession,
             IConfiguration configuration,
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<UserBill, long> userBillRepository,
@@ -76,17 +75,18 @@ namespace Yootek.Services
         {
             try
             {
-                var tenantId = AbpSession.TenantId;
-                var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
+                //var tenantId = AbpSession.TenantId;
+                //var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
 
-                if (input.ReturnUrl.IsNullOrEmpty())
-                {
-                    validate.ReturnUrl = input.ReturnUrl;
-                    if (validate.ReturnUrl.Contains("Approved")) validate.State = EReturnState.Approved;
-                    else validate.State = EReturnState.Reject;
-                }
+                //if (input.ReturnUrl.IsNullOrEmpty())
+                //{
+                //    validate.ReturnUrl = input.ReturnUrl;
+                //    if (validate.ReturnUrl.Contains("Approved")) validate.State = EReturnState.Approved;
+                //    else validate.State = EReturnState.Reject;
+                //}
 
-                await _userBillPaymentValidationRepo.UpdateAsync(validate);
+                //await _userBillPaymentValidationRepo.UpdateAsync(validate);
+                return;
             }
             catch
             {
