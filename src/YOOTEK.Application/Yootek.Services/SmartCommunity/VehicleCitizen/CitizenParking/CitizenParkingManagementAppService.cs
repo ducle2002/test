@@ -1,26 +1,25 @@
 ﻿
 
-using Abp.Application.Services;
-using Abp.Authorization;
-using Abp.AutoMapper;
-using Abp.Domain.Repositories;
-using Abp.Linq.Extensions;
-using Abp.UI;
-using Yootek.Application;
-using Yootek.Common.DataResult;
-using Yootek.EntityDb;
-using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
-using Yootek.Organizations;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Application.Services;
+using Abp.Authorization;
+using Abp.AutoMapper;
+using Abp.Domain.Repositories;
+using Abp.Linq.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
+using Yootek.Application;
 using Yootek.Authorization;
+using Yootek.Common.DataResult;
+using Yootek.EntityDb;
+using Yootek.Organizations;
 using Yootek.QueriesExtension;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen;
 
 namespace Yootek.Services
 {
@@ -38,10 +37,12 @@ namespace Yootek.Services
         private readonly IRepository<CitizenParking, long> _citizenParkingRepos;
         private readonly ICitizenVehicleExcelExporter _exporter;
         private readonly IRepository<AppOrganizationUnit, long> _appOrganizationUnitRepos;
+        private readonly IRepository<CitizenVehicle, long> _citizenVehicleRepos;
         public CitizenParkingManagementAppService(
             IRepository<CitizenTemp, long> citizenTempRepos,
             IRepository<CitizenParking, long> citizenParkingRepos,
             IRepository<AppOrganizationUnit, long> appOrganizationUnitRepos,
+            IRepository<CitizenVehicle, long> citizenVehicleRepos,
             ICitizenVehicleExcelExporter exporter
             )
         {
@@ -49,6 +50,7 @@ namespace Yootek.Services
             _citizenParkingRepos = citizenParkingRepos;
             _appOrganizationUnitRepos = appOrganizationUnitRepos;
             _exporter = exporter;
+            _citizenVehicleRepos = citizenVehicleRepos;
         }
 
 
@@ -143,9 +145,14 @@ namespace Yootek.Services
             try
             {
                 var deleteData = await _citizenParkingRepos.GetAsync(id);
-                if (deleteData != null)
+                var deleteDataVehicle = await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.ParkingId == id);
+                if (deleteData != null && deleteDataVehicle == null)
                 {
                     await _citizenParkingRepos.DeleteAsync(deleteData);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Unable to delete data. Either data does not exist or it is associated with a vehicle.");
                 }
                 return DataResult.ResultSuccess(deleteData, "Delete success!");
             }
