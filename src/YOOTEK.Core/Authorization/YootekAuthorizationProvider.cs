@@ -3,6 +3,7 @@
 using Abp.Authorization;
 using Abp.Localization;
 using Abp.MultiTenancy;
+using YOOTEK.Authorization;
 
 namespace Yootek.Authorization
 {
@@ -14,6 +15,13 @@ namespace Yootek.Authorization
         }
 
         public override void SetPermissions(IPermissionDefinitionContext context)
+        {
+            SetPermissionIOC(context);
+            SetPermissionERP(context);
+
+        }
+
+        protected void SetPermissionIOC(IPermissionDefinitionContext context)
         {
             var dataAdmin = context.CreatePermission(IOCPermissionNames.Data_Admin, L("Quyền dữ liệu admin"));
 
@@ -661,6 +669,72 @@ namespace Yootek.Authorization
             var smartDevice =
                 context.CreatePermission(IOCPermissionNames.Pages_Smart_Device, L("Thiết bị thông minh"));
             var parking = context.CreatePermission(IOCPermissionNames.Pages_Parking_Management, L("Quản lý bãi đỗ xe"));
+        }
+        protected void SetPermissionERP(IPermissionDefinitionContext context)
+        {
+           
+            var erpAdmin = context.CreatePermission(ERPPermissionNames.ERP_Admin);
+            //system config
+            var systemConfig = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_Account);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_Branch);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_Contract);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_Pricing);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_ServicePackage);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_ShopList);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_Staff);
+            systemConfig.CreateChildPermission(ERPPermissionNames.ERP_Admin_SystemConfig_Tax);
+
+            var product = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product);
+            product.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product_View);
+            product.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product_Create);
+            product.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product_Update);
+            product.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product_Delete);
+            product.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product_Export);
+            product.CreateChildPermission(ERPPermissionNames.ERP_Admin_Product_Import);
+
+            var customer = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_ViewAll);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_View);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_Create);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_Update);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_Delete);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_Import);
+            customer.CreateChildPermission(ERPPermissionNames.ERP_Admin_Customer_Export);
+
+            var order = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_ViewAll);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_View);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Create);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Update);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Cancel);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Import);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Export);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Packaging);
+            order.CreateChildPermission(ERPPermissionNames.ERP_Admin_Order_Payment);
+
+
+            var delivery = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Delivery);
+
+            var loyalty = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Loyalty);
+
+            var marketing = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Marketing);
+
+            var report = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Report);
+
+            var offline = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Offline);
+            
+            var website = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Website);
+
+            var guarantee = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Guarantee);
+
+            var cashbook = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_CashBook);
+
+            var general = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_General);
+
+            var socialChanel = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_SocialChanel);
+
+            var application = erpAdmin.CreateChildPermission(ERPPermissionNames.ERP_Admin_Application);
         }
 
         private static ILocalizableString L(string name)

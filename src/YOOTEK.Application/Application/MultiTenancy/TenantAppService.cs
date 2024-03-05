@@ -187,6 +187,7 @@ namespace Yootek.MultiTenancy
             entity.Name = updateInput.Name;
             entity.TenancyName = updateInput.TenancyName;
             entity.IsActive = updateInput.IsActive;
+            entity.TenantType = updateInput.TenantType;
         }
 
         public override async Task DeleteAsync(EntityDto<int> input)
