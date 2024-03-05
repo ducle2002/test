@@ -112,7 +112,7 @@ namespace Yootek.Services
                                      Level = vh.Level,
                                      ImageUrl = vh.ImageUrl
                                  })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .Where(x => x.State != CitizenVehicleState.WAITING)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
@@ -566,7 +566,7 @@ namespace Yootek.Services
                                      CitizenName = cz.FullName,
 
                                  })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
                                  .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)

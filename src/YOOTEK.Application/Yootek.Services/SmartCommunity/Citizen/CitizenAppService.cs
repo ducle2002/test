@@ -359,7 +359,7 @@ namespace Yootek.Services
                          .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                          .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                          .WhereIf(input.ApartmentCode != null, x => x.ApartmentCode == input.ApartmentCode)
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .ApplySearchFilter(input.Keyword, x => x.FullName, x => x.Address, x => x.Email, x => x.ApartmentCode);
 
             switch (input.FormId)
@@ -452,7 +452,7 @@ namespace Yootek.Services
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var count = await _citizenRepos.GetAll()
-                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                        .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                         .CountAsync();
                     return DataResult.ResultSuccess(count, "Get success");
                 }
@@ -487,7 +487,7 @@ namespace Yootek.Services
                             {
                                 var result = new ResultStatisticCitizen();
                                 var query = _citizenRepos.GetAll()
-                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                     .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
@@ -511,7 +511,7 @@ namespace Yootek.Services
                             {
                                 var result = new ResultStatisticCitizen();
                                 var query = _citizenRepos.GetAll()
-                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                     .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
@@ -534,7 +534,7 @@ namespace Yootek.Services
                             {
                                 var result = new ResultStatisticCitizen();
                                 var query = _citizenRepos.GetAll()
-                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                     .AsQueryable();
                                 result.CountNew = await query.Where(x => x.State.Value == STATE_CITIZEN.NEW ||
                                                                          x.State.Value == STATE_CITIZEN.MISMATCH
@@ -648,9 +648,7 @@ namespace Yootek.Services
             {
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
-                    var role = await _roleRepos.FirstOrDefaultAsync(x => x.Name == StaticRoleNames.Tenants.DefaultUser);
                     var query = (from us_role in _userRoleRepos.GetAll()
-                                 where role.Id == us_role.RoleId
                                  join us in _userRepos.GetAll() on us_role.UserId equals us.Id into tb_us
                                  from us in tb_us.DefaultIfEmpty()
                                  select new AccountDto()
@@ -691,9 +689,7 @@ namespace Yootek.Services
             {
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
-                    var role = await _roleRepos.FirstOrDefaultAsync(x => x.Name == StaticRoleNames.Tenants.DefaultUser);
                     var query = (from us_role in _userRoleRepos.GetAll()
-                                 where role.Id == us_role.RoleId
                                  join us in _userRepos.GetAll() on us_role.UserId equals us.Id into tb_us
                                  from us in tb_us.DefaultIfEmpty()
                                  select new AccountDto()
@@ -1300,7 +1296,7 @@ namespace Yootek.Services
                                  UrbanId = ci.UrbanId,
                                  HomeAddress = ci.HomeAddress,
                              })
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Ids != null && input.Ids.Count > 0, x => input.Ids.Contains(x.Id))
                     .AsQueryable();
                 switch (input.FormId)

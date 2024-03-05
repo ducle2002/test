@@ -91,7 +91,7 @@ namespace Yootek.Organizations.Cache
                     using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                     {
                         //var test = _permissionManager.GetAllPermissions();
-                        var role = _roleRepository.GetAllIncluding(x => x.Permissions).Where(m => m.Permissions != null && m.Permissions.Where(p => p.Name == PermissionNames.Pages_Digitals_Communications || p.Name == PermissionNames.Pages_Government_ChatCitizen).FirstOrDefault() != null).Select(r => r.Id).ToList();
+                        var role = _roleRepository.GetAllIncluding(x => x.Permissions).Where(m => m.Permissions != null && m.Permissions.Where(p => p.Name == IOCPermissionNames.Pages_Digitals_Communications || p.Name == IOCPermissionNames.Pages_Government_ChatCitizen).FirstOrDefault() != null).Select(r => r.Id).ToList();
                         var ouIds = _organizationUnitRoleRepos.GetAllList(x => role.Contains(x.RoleId)).Select(m => m.OrganizationUnitId).ToList();
                         var result = data.Where(x => ouIds.Contains(x.OrganizationUnitId)).ToList();
 

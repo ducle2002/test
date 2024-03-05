@@ -63,7 +63,7 @@ namespace Yootek.Services
                 {
                     var query = _citizenParkingRepos.GetAll();
                     var paginatedData = await query
-                            .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                            .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                             .ApplySearchFilter(input.Keyword, x => x.ParkingName, x => x.ParkingCode)
                             .ApplySort(input.OrderBy, input.SortBy)
                             .ApplySort(OrderByCitizenParking.PARKING_CODE)

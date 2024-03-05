@@ -30,52 +30,7 @@ namespace Yootek.EntityFrameworkCore.Seed.Tenants
 
         private void CreateRolesAndUsers()
         {
-            // Default User
-            var defaultUerRole = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.DefaultUser);
-
-            if (defaultUerRole == null)
-            {
-                defaultUerRole = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.DefaultUser, StaticRoleNames.Tenants.DefaultUser) { IsStatic = true }).Entity;
-                _context.SaveChanges();
-            }
-            var permissionDefault = _context.RolePermissions.FirstOrDefault(p => (p.Name == PermissionNames.Pages_User_Detail));
-            var permissionUser = _context.RolePermissions.FirstOrDefault(p => (p.Name == PermissionNames.Pages_User_Detail) && (p.RoleId == defaultUerRole.Id));
-
-            if (permissionUser == null)
-            {
-                _context.RolePermissions.Add(new RolePermissionSetting
-                {
-                    TenantId = _tenantId,
-                    Name = permissionDefault != null ? permissionDefault.Name : "",
-                    IsGranted = true,
-                    RoleId = defaultUerRole.Id
-                });
-                _context.SaveChanges();
-            }
-            //Admin citizen management
-            var roleCitizen = _context.Roles.IgnoreQueryFilters().FirstOrDefault(r => r.TenantId == _tenantId && r.Name == StaticRoleNames.Tenants.CitizenManager);
-
-            if (roleCitizen == null)
-            {
-                roleCitizen = _context.Roles.Add(new Role(_tenantId, StaticRoleNames.Tenants.CitizenManager, StaticRoleNames.Tenants.CitizenManager) { IsStatic = true }).Entity;
-                _context.SaveChanges();
-            }
-            var permissionCitizen = _context.RolePermissions.FirstOrDefault(p => (p.Name == PermissionNames.Pages_Citizens || p.Name == PermissionNames.Pages_Residents));
-            var permissionAdminCitizen = _context.RolePermissions.FirstOrDefault(p => (p.Name == PermissionNames.Pages_Citizens || p.Name == PermissionNames.Pages_Residents) && (p.RoleId == roleCitizen.Id));
-
-
-
-            if (permissionAdminCitizen == null)
-            {
-                _context.RolePermissions.Add(new RolePermissionSetting
-                {
-                    TenantId = _tenantId,
-                    Name = permissionDefault != null ? permissionDefault.Name : "",
-                    IsGranted = true,
-                    RoleId = roleCitizen.Id
-                });
-                _context.SaveChanges();
-            }
+             
 
             // Admin role
 

@@ -176,7 +176,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var result = await _billConfigRepo.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Id.HasValue, x => x.Id == input.Id)
                     .WhereIf(input.BillType.HasValue, x => x.BillType == input.BillType)
                     .WhereIf(input.ParentId.HasValue, x => x.ParentId == input.ParentId)
@@ -418,7 +418,7 @@ namespace Yootek.Services
         {
             List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
             var query = _userBillRepo.GetAll()
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(input.UrbanId.HasValue,
                     x => (x.UrbanId.HasValue && x.UrbanId.Value == input.UrbanId.Value))
                 .WhereIf(input.BuildingId.HasValue,
@@ -1911,7 +1911,7 @@ namespace Yootek.Services
                 int year = input.Period.HasValue ? input.Period.Value.Year : 0;
 
                 var listq = _userBillRepo.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == month && x.Period.Value.Year == year)
                     .WhereIf(!input.ApartmentCode.IsNullOrEmpty(), x => x.ApartmentCode.Contains(input.ApartmentCode))
                     .WhereIf(input.Status.HasValue, x => x.Status == input.Status)

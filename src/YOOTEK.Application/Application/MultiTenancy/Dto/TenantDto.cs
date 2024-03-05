@@ -19,6 +19,7 @@ namespace Yootek.MultiTenancy.Dto
         public string MobileConfig { get; set; }
         public string AdminPageConfig { get; set; }
         public string Permissions { get; set; }
+        public TenantType? TenantType { get; set; }
         public bool IsActive { get; set; }
     }
 }

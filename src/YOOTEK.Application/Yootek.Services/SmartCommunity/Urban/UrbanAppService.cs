@@ -344,7 +344,7 @@ namespace Yootek.Services
                                      Type = dt.Type,
                                      Code = dtc.Code
                                  })
-                                 .WhereIf(!IsGranted(PermissionNames.Data_Admin), x => codes.Contains(x.Code)).ToListAsync();
+                                 .WhereIf(!IsGranted(IOCPermissionNames.Data_Admin), x => codes.Contains(x.Code)).ToListAsync();
                     var data = DataResult.ResultSuccess(urbans, "Get success!");
                     return data;
                 }

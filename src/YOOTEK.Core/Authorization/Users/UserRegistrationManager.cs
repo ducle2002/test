@@ -52,8 +52,6 @@ namespace Yootek.Authorization.Users
             _appConfiguration = configurationAccessor.Configuration;
         }
 
-
-        public string rocketChatUrl => _appConfiguration["RocketChatUrl"] ?? "http://103.124.95.246:3000/";
         public async Task<User> RegisterAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed, bool isCitizen = false, string phoneNumber = "", string address = "", string gender = "", DateTime? dateOfBirth = null)
         {
             //CheckForTenant();
@@ -80,11 +78,6 @@ namespace Yootek.Authorization.Users
             };
 
             user.SetNormalizedNames();
-            var defaultRole = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Name == StaticRoleNames.Tenants.DefaultUser && r.TenantId == AbpSession.TenantId);
-            if (defaultRole != null)
-            {
-                user.Roles.Add(new UserRole(AbpSession.TenantId, user.Id, defaultRole.Id));
-            }
 
             await _userManager.InitializeOptionsAsync(null);
 
@@ -136,11 +129,6 @@ namespace Yootek.Authorization.Users
 
 
                     user.SetNormalizedNames();
-                    var defaultRole = await _roleManager.Roles.FirstOrDefaultAsync(r => r.Name == StaticRoleNames.Tenants.DefaultUser && r.TenantId == AbpSession.TenantId);
-                    if (defaultRole != null)
-                    {
-                        user.Roles.Add(new UserRole(AbpSession.TenantId, user.Id, defaultRole.Id));
-                    }
 
                     await _userManager.InitializeOptionsAsync(null);
                     if (string.IsNullOrWhiteSpace(us.Password) || us.Password.Length < 4) us.Password = "Password01@";
