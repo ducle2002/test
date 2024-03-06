@@ -55,6 +55,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto
         public decimal? TotalIndex { get; set; }
         public double? PayAmount { get; set; }
         public double Amount { get; set; }
+        public decimal? BalanceAmount { get; set; }
         public decimal? DebtTotal { get; set; }
     }
 

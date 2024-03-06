@@ -186,7 +186,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                             {
                                 totalPrice += b.LastCost.Value;
                             }
-
                         }
 
                         if (!bill.UserBillDebtIds.IsNullOrEmpty())
@@ -198,9 +197,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         if (!bill.UserBillPrepaymentIds.IsNullOrEmpty())
                         {
                             bill.BillListPrepayment = await SplitBills(bill.UserBillPrepaymentIds);
-
                         }
-
                     }
 
                     if (bill.TypePayment == TypePayment.DebtBill && !bill.BillDebtIds.IsNullOrWhiteSpace())
@@ -221,6 +218,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         }
                         catch { }
                     }
+
                     bill.TotalPayment = totalPrice;
 
                     if (bill.ApartmentCode.IsNullOrEmpty())
@@ -527,20 +525,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             {
                 input.Status = UserBillPaymentStatus.Success;
                 await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
-                var sendEmails = new List<SendUserBillNotificationInput>();
-
-                foreach (var userBill in input.UserBills)
-                {
-                   var sendEmailInput = new SendUserBillNotificationInput
-                   {
-                       ApartmentCode = input.ApartmentCode,
-                       Period = input.Period,
-                   };
-
-                   sendEmails.Add(sendEmailInput);
-                }
                 var data = DataResult.ResultSuccess("Admin payment success");
-                await _handlePayment.SendEmailAndBNotificationAllApartment(sendEmails);
 
                 return data;
             }
