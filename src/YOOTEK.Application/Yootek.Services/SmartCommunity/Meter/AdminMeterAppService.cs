@@ -31,8 +31,8 @@ namespace Yootek.Services
         Task<DataResult> DeleteMeter(long id);
         Task<DataResult> DeleteManyMeter([FromBody] List<long> ids);
         Task<DataResult> GetMeterByIdAsync(long id);
-        Task<DataResult> CreateWaterMeters(List<CreateMeterInput> inputs);
-        Task<object> ImportCreateWaterMeterExcel([FromForm] ImportCreateMeterInput input);
+        Task<DataResult> CreateMetersList(List<CreateMeterInput> inputs);
+        Task<object> ImportCreateMeterExcel([FromForm] ImportCreateMeterInput input);
     }
 
     public class AdminMeterAppService : YootekAppServiceBase, IAdminMeterAppService
@@ -150,7 +150,7 @@ namespace Yootek.Services
                 throw;
             }
         }
-        public async Task<DataResult> CreateWaterMeters(List<CreateMeterInput> inputs)
+        public async Task<DataResult> CreateMetersList(List<CreateMeterInput> inputs)
         {
             try
             {
@@ -158,8 +158,6 @@ namespace Yootek.Services
 
                 foreach (var input in inputs)
                 {
-                    input.MeterTypeId = 10;
-                    // Check if the meter already exists
                     Meter? _meter = await _meterRepository.FirstOrDefaultAsync(m =>
                         m.ApartmentCode == input.ApartmentCode && m.MeterTypeId == input.MeterTypeId);
 
@@ -173,10 +171,10 @@ namespace Yootek.Services
                     meter.TenantId = AbpSession.TenantId;
 
                     var data = await _meterRepository.InsertAsync(meter);
-                    await CurrentUnitOfWork.SaveChangesAsync();
+                    // await CurrentUnitOfWork.SaveChangesAsync();
 
                     data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Meter);
-                    await CurrentUnitOfWork.SaveChangesAsync();
+                    // await CurrentUnitOfWork.SaveChangesAsync();
                 }
 
                 mb.statisticMetris(t1, 0, "ParkingService.CreateParkingAsync");
@@ -195,7 +193,7 @@ namespace Yootek.Services
             }
         }
 
-        public async Task<object> ImportCreateWaterMeterExcel([FromForm] ImportCreateMeterInput input)
+        public async Task<object> ImportCreateMeterExcel([FromForm] ImportCreateMeterInput input)
         {
             try
             {
@@ -257,9 +255,10 @@ namespace Yootek.Services
                         meter.ApartmentCode = worksheet.Cells[row, 3].Text.Trim();
                         meter.Name = worksheet.Cells[row, 4].Text.Trim();
                         meter.Code = worksheet.Cells[row, 5].Text.Trim();
+                        meter.MeterTypeId = input.MeterTypeId;
                         listNew.Add(meter);
                     }
-                    await CreateWaterMeters(listNew);
+                    await CreateMetersList(listNew);
 
                     File.Delete(filePath);
 
