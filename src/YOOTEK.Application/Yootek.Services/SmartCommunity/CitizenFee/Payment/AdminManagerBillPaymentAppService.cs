@@ -186,7 +186,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                             {
                                 totalPrice += b.LastCost.Value;
                             }
-
                         }
 
                         if (!bill.UserBillDebtIds.IsNullOrEmpty())
@@ -198,9 +197,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         if (!bill.UserBillPrepaymentIds.IsNullOrEmpty())
                         {
                             bill.BillListPrepayment = await SplitBills(bill.UserBillPrepaymentIds);
-
                         }
-
                     }
 
                     if (bill.TypePayment == TypePayment.DebtBill && !bill.BillDebtIds.IsNullOrWhiteSpace())
@@ -221,6 +218,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         }
                         catch { }
                     }
+
                     bill.TotalPayment = totalPrice;
 
                     if (bill.ApartmentCode.IsNullOrEmpty())
