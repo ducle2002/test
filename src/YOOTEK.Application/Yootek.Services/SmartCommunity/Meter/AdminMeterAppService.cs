@@ -197,73 +197,72 @@ namespace Yootek.Services
         {
             try
             {
-                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+
+                IFormFile file = input.File;
+                string fileName = file.FileName;
+                string fileExt = Path.GetExtension(fileName);
+                if (fileExt != ".xlsx" && fileExt != ".xls")
                 {
-                    IFormFile file = input.File;
-                    string fileName = file.FileName;
-                    string fileExt = Path.GetExtension(fileName);
-                    if (fileExt != ".xlsx" && fileExt != ".xls")
-                    {
-                        return DataResult.ResultError("File not supported", "Error");
-                    }
-
-                    // Generate a unique file path
-                    string filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + fileExt);
-
-                    using (FileStream stream = File.Create(filePath))
-                    {
-                        await file.CopyToAsync(stream);
-                        stream.Close();
-                    }
-
-                    var package = new ExcelPackage(new FileInfo(filePath));
-                    var worksheet = package.Workbook.Worksheets.First();
-                    int rowCount = worksheet.Dimension.End.Row;
-
-                    var listNew = new List<CreateMeterInput>();
-                    for (var row = 2; row <= rowCount; row++)
-                    {
-                        var meter = new CreateMeterInput();
-                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Text.Trim()))
-                        {
-                            var ubIDstr = worksheet.Cells[row, 1].Text.Trim();
-                            var ubObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == ubIDstr.ToLower());
-                            if (ubObj != null) { meter.UrbanId = ubObj.Id; }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                        if (!string.IsNullOrEmpty(worksheet.Cells[row, 2].Text.Trim()))
-                        {
-                            var buildIDStr = worksheet.Cells[row, 2].Text.Trim();
-                            var buildObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == buildIDStr.ToLower());
-                            if (buildObj != null) { meter.BuildingId = buildObj.Id; }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                        meter.ApartmentCode = worksheet.Cells[row, 3].Text.Trim();
-                        meter.Name = worksheet.Cells[row, 4].Text.Trim();
-                        meter.Code = worksheet.Cells[row, 5].Text.Trim();
-                        meter.MeterTypeId = input.MeterTypeId;
-                        listNew.Add(meter);
-                    }
-                    await CreateMetersList(listNew);
-
-                    File.Delete(filePath);
-
-                    return DataResult.ResultSuccess(listNew, "Upload success");
+                    return DataResult.ResultError("File not supported", "Error");
                 }
+
+                // Generate a unique file path
+                string filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + fileExt);
+
+                using (FileStream stream = File.Create(filePath))
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Close();
+                }
+
+                var package = new ExcelPackage(new FileInfo(filePath));
+                var worksheet = package.Workbook.Worksheets.First();
+                int rowCount = worksheet.Dimension.End.Row;
+
+                var listNew = new List<CreateMeterInput>();
+                for (var row = 2; row <= rowCount; row++)
+                {
+                    var meter = new CreateMeterInput();
+                    if (!string.IsNullOrEmpty(worksheet.Cells[row, 1].Text.Trim()))
+                    {
+                        var ubIDstr = worksheet.Cells[row, 1].Text.Trim();
+                        var ubObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == ubIDstr.ToLower());
+                        if (ubObj != null) { meter.UrbanId = ubObj.Id; }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    if (!string.IsNullOrEmpty(worksheet.Cells[row, 2].Text.Trim()))
+                    {
+                        var buildIDStr = worksheet.Cells[row, 2].Text.Trim();
+                        var buildObj = await _organizationUnitRepository.FirstOrDefaultAsync(x => x.ProjectCode.ToLower() == buildIDStr.ToLower());
+                        if (buildObj != null) { meter.BuildingId = buildObj.Id; }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    meter.ApartmentCode = worksheet.Cells[row, 3].Text.Trim();
+                    meter.Name = worksheet.Cells[row, 4].Text.Trim();
+                    meter.Code = worksheet.Cells[row, 5].Text.Trim();
+                    meter.MeterTypeId = input.MeterTypeId;
+                    listNew.Add(meter);
+                }
+                await CreateMetersList(listNew);
+
+                File.Delete(filePath);
+
+                return DataResult.ResultSuccess(listNew, "Upload success");
+
             }
             catch (Exception ex)
             {
