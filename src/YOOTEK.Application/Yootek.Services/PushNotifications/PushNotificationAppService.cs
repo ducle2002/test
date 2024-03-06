@@ -17,6 +17,8 @@ using Newtonsoft.Json;
 using Abp;
 using Abp.UI;
 using Abp.Json;
+using System.Linq;
+using Abp.Domain.Uow;
 
 namespace Yootek.Services
 {
@@ -46,54 +48,52 @@ namespace Yootek.Services
             _cloudMessagingManager = cloudMessagingManager;
         }
 
-        public async Task<object> TestRegisterToTenant(string key)
+        protected async Task RegisterToSocial(string key)
         {
             try
             {
-                long t1 = TimeUtils.GetNanoseconds();
-                var tenantGroupName = "hieu";
-              
-                var tenantGroup =
-                    await _fcmGroupRepos.FirstOrDefaultAsync(x => x.GroupName == tenantGroupName);
-                var fcmGroupKey = await _cloudMessagingManager.FcmGetGroupNotificationKey(tenantGroupName);
-                
-                if (tenantGroup == null)
+                using(CurrentUnitOfWork.SetTenantId(null))
                 {
-                    // Add to fcm group
-                    if (fcmGroupKey == null)
+                    var tenantGroupName = "social";
+
+                    var tenantGroup =
+                        await _fcmGroupRepos.FirstOrDefaultAsync(x => x.GroupName == tenantGroupName);
+                    var fcmGroupKey = await _cloudMessagingManager.FcmGetGroupNotificationKey(tenantGroupName);
+
+                    if (tenantGroup == null)
                     {
-                        fcmGroupKey = await _cloudMessagingManager.FcmCreateDeviceGroup(tenantGroupName,
-                            new List<string>() { key });
+                        // Add to fcm group
+                        if (fcmGroupKey == null)
+                        {
+                            fcmGroupKey = await _cloudMessagingManager.FcmCreateDeviceGroup(tenantGroupName,
+                                new List<string>() { key });
+                        }
+
+                        // Add to db
+                        var fcmGroup = new FcmGroups()
+                        {
+                            GroupName = tenantGroupName,
+                            NotificationKey = fcmGroupKey,
+                            TenantId = AbpSession.TenantId
+                        };
+                        await _fcmGroupRepos.InsertAsync(fcmGroup);
                     }
-
-                    // Add to db
-                    var fcmGroup = new FcmGroups()
+                    else
                     {
-                        GroupName = tenantGroupName,
-                        NotificationKey = fcmGroupKey,
-                        TenantId = AbpSession.TenantId
-                    };
-                    await _fcmGroupRepos.InsertAsync(fcmGroup);
-                }
-                else
-                {
-                    // Da co group
-                    // Add to fcm
-                    await _cloudMessagingManager.FcmAddDevicesToGroup(new FcmAddDevicesToGroupInput
-                    {
-                        Tokens = new List<string>() { key },
-                        NotificationKey = tenantGroup.NotificationKey,
-                        Name = tenantGroupName
-                    });
+                        // Da co group
+                        // Add to fcm
+                        await _cloudMessagingManager.FcmAddDevicesToGroup(new FcmAddDevicesToGroupInput
+                        {
+                            Tokens = new List<string>() { key },
+                            NotificationKey = tenantGroup.NotificationKey,
+                            Name = tenantGroupName
+                        });
+                    }
                 }
 
-           
-                mb.statisticMetris(t1, 0, "register_CM");
-                return DataResult.ResultSuccess("Register success!");
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException(e.ToJsonString());
             }
         }
 
@@ -103,6 +103,7 @@ namespace Yootek.Services
             try
             {
                 long t1 = TimeUtils.GetNanoseconds();
+                //await RegisterToSocial(input.Token);
                 input.TenantId = AbpSession.TenantId;
                 var tenantGroupName = "tenant_" + AbpSession.TenantId;
                 var fcmTokenObj = await _fcmTokenRepos.FirstOrDefaultAsync(x => x.Token == input.Token);

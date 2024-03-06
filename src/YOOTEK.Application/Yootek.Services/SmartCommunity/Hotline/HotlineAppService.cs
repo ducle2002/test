@@ -111,7 +111,7 @@ namespace Yootek.Services
                                      UrbanId = dt.UrbanId,
                                      BuildingId = dt.BuildingId
                                  })
-                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                 .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.OrganizationUnitId != null, u => u.OrganizationUnitId == input.OrganizationUnitId)
                                  .ApplySearchFilter(input.Keyword, x => x.Name, x => x.Properties);
 

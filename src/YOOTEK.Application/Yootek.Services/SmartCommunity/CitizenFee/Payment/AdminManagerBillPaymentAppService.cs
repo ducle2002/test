@@ -137,7 +137,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
                         };
             query = query
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(!input.IsAdvanced, x => !(x.Method != UserBillPaymentMethod.Direct && x.Status == UserBillPaymentStatus.Pending) || !(x.Method != UserBillPaymentMethod.Banking && x.Status == UserBillPaymentStatus.Pending))
                 .WhereIf(input.Status.HasValue, x => x.Status == input.Status)
                 .WhereIf(input.InDay.HasValue, x => x.CreationTime.Day == input.InDay.Value.Day && x.CreationTime.Month == input.InDay.Value.Month && x.CreationTime.Year == input.InDay.Value.Year)
@@ -670,7 +670,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
 
                                  })
-                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                   .Where(x => x.IsDeleted && x.IsRecover.HasValue && x.IsRecover.Value)
                                   .WhereIf(input.Method.HasValue, x => (int)x.Method == input.Method)
                                   .WhereIf(input.UrbanId.HasValue, x => (long)x.UrbanId == input.UrbanId)

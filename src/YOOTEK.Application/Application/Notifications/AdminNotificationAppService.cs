@@ -23,6 +23,8 @@ using Yootek.Organizations.AppOrganizationUnits;
 using Yootek.Organizations;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
+using Abp.Domain.Uow;
+using NPOI.SS.Formula.Functions;
 
 namespace Yootek.Notifications
 {
@@ -33,7 +35,7 @@ namespace Yootek.Notifications
         Task SchedulerYearCreateNotificationAsync();
     }
 
-    [AbpAuthorize(PermissionNames.Pages_SmartSocial_Notification)]
+    [AbpAuthorize(IOCPermissionNames.Pages_SmartSocial_Notification)]
     public class AdminNotificationAppService : YootekAppServiceBase, IAdminNotificationAppService
     {
         private readonly INotificationDefinitionManager _notificationDefinitionManager;
@@ -468,67 +470,82 @@ namespace Yootek.Notifications
         [RemoteService]
         public async Task SchedulerDayCreateNotificationAsync()
         {
-            var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
-            var schedulers = await _schedulerNotificationRepository.GetAllListAsync(x => x.IsScheduler == true && x.IsCompleted == false);
-
-            foreach (var scheduler in schedulers)
+            try
             {
-                if(scheduler.DueDate <  now)
+                await UnitOfWorkManager.WithUnitOfWorkAsync(async () =>
                 {
-                    scheduler.IsCompleted = true;
-                    await _schedulerNotificationRepository.UpdateAsync(scheduler);
-                    continue;
-                }
-
-                var users = JsonConvert.DeserializeObject<List<UserIdentifier>>(scheduler.Users);
-                var message = JsonConvert.DeserializeObject<UserMessageNotificationDataBase>(scheduler.Message);
-                bool isSend = false;
-
-                if (scheduler.TypeScheduler == TypeScheduler.Normal
-                    && scheduler.ListTimes != null
-                    && scheduler.ListTimes.Count > 0)
-                {
-                    foreach (var time in scheduler.ListTimes)
+                    using (CurrentUnitOfWork.SetTenantId(null))
                     {
-                        if (time == now)
+                        var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+                        var schedulers = await _schedulerNotificationRepository.GetAllListAsync(x => x.IsScheduler == true && x.IsCompleted == false);
+
+                        foreach (var scheduler in schedulers)
                         {
-                            isSend = true;
-                            scheduler.ListTimes.Remove(time);
-                            if(scheduler.ListTimes.Count == 0)
+                            if (scheduler.DueDate < now)
                             {
                                 scheduler.IsCompleted = true;
-                               
+                                await _schedulerNotificationRepository.UpdateAsync(scheduler);
+                                continue;
                             }
-                            await _schedulerNotificationRepository.UpdateAsync(scheduler);
-                            continue;
+
+                            var users = JsonConvert.DeserializeObject<List<UserIdentifier>>(scheduler.Users);
+                            var message = JsonConvert.DeserializeObject<UserMessageNotificationDataBase>(scheduler.Message);
+                            bool isSend = false;
+
+                            if (scheduler.TypeScheduler == TypeScheduler.Normal
+                                && scheduler.ListTimes != null
+                                && scheduler.ListTimes.Count > 0)
+                            {
+                                foreach (var time in scheduler.ListTimes)
+                                {
+                                    if (time == now)
+                                    {
+                                        isSend = true;
+                                        scheduler.ListTimes.Remove(time);
+                                        if (scheduler.ListTimes.Count == 0)
+                                        {
+                                            scheduler.IsCompleted = true;
+
+                                        }
+                                        await _schedulerNotificationRepository.UpdateAsync(scheduler);
+                                        continue;
+                                    }
+                                }
+
+                            }
+
+                            if (scheduler.Time.HasValue)
+                            {
+                                switch (scheduler.TypeScheduler)
+                                {
+                                    case TypeScheduler.LoopDay:
+                                        if (scheduler.Time.Value.Hour == now.Hour)
+                                        {
+                                            isSend = true;
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+
+                            if (isSend)
+                            {
+                                await SendNotification(scheduler.IsSocial, scheduler.IsOnlyFirebase, message, scheduler.Header, users);
+                                //await _appNotifier.SendUserMessageNotifyFullyAsync(scheduler.Header,
+                                //               message.Description,
+                                //               message.DetailUrlApp,
+                                //               message.DetailUrlApp,
+                                //               users.ToArray(),
+                                //               message);
+                            }
                         }
                     }
-                }
+                });
+            }
+            catch (Exception e)
+            {
 
-                if (scheduler.Time.HasValue)
-                {
-                    switch (scheduler.TypeScheduler)
-                    {
-                        case TypeScheduler.LoopDay:
-                            if (scheduler.Time.Value.Hour == now.Hour)
-                            {
-                                isSend = true;
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                if(isSend)
-                {
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(scheduler.Header,
-                                   message.Description,
-                                   message.DetailUrlApp,
-                                   message.DetailUrlApp,
-                                   users.ToArray(),
-                                   message);
-                }
             }
         }
 
@@ -536,62 +553,80 @@ namespace Yootek.Notifications
         [RemoteService]
         public async Task SchedulerMonthCreateNotificationAsync()
         {
-            var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
-            var schedulers = await _schedulerNotificationRepository.GetAllListAsync(x => x.IsScheduler == true && x.IsCompleted == false && x.TypeScheduler == TypeScheduler.LoopMonth);
-
-            foreach (var scheduler in schedulers)
+            await UnitOfWorkManager.WithUnitOfWorkAsync(async () =>
             {
-                if (scheduler.DueDate < now)
+                using (CurrentUnitOfWork.SetTenantId(null))
                 {
-                    scheduler.IsCompleted = true;
-                    await _schedulerNotificationRepository.UpdateAsync(scheduler);
-                    continue;
-                }
+                    var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+                    var schedulers = await _schedulerNotificationRepository.GetAllListAsync(x => x.IsScheduler == true && x.IsCompleted == false && x.TypeScheduler == TypeScheduler.LoopMonth);
 
-                var users = JsonConvert.DeserializeObject<List<UserIdentifier>>(scheduler.Users);
-                var message = JsonConvert.DeserializeObject<UserMessageNotificationDataBase>(scheduler.Message);
-                if (scheduler.Time.HasValue && scheduler.Time.Value.Day == now.Day)
-                {
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(scheduler.Header,
-                                 message.Description,
-                                 message.DetailUrlApp,
-                                 message.DetailUrlApp,
-                                 users.ToArray(),
-                                 message);
-                }
+                    foreach (var scheduler in schedulers)
+                    {
+                        if (scheduler.DueDate < now)
+                        {
+                            scheduler.IsCompleted = true;
+                            await _schedulerNotificationRepository.UpdateAsync(scheduler);
+                            continue;
+                        }
 
-            }
+                        var users = JsonConvert.DeserializeObject<List<UserIdentifier>>(scheduler.Users);
+                        var message = JsonConvert.DeserializeObject<UserMessageNotificationDataBase>(scheduler.Message);
+                        if (scheduler.Time.HasValue && scheduler.Time.Value.Day == now.Day)
+                        {
+                            //await _appNotifier.SendUserMessageNotifyFullyAsync(scheduler.Header,
+                            //             message.Description,
+                            //             message.DetailUrlApp,
+                            //             message.DetailUrlApp,
+                            //             users.ToArray(),
+                            //             message);
+
+                            await SendNotification(scheduler.IsSocial, scheduler.IsOnlyFirebase, message, scheduler.Header, users);
+                        }
+
+                    }
+                }
+            });
+
         }
 
         [AbpAllowAnonymous]
         [RemoteService]
         public async Task SchedulerYearCreateNotificationAsync()
         {
-            var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
-            var schedulers = await _schedulerNotificationRepository.GetAllListAsync(x => x.IsScheduler == true && x.IsCompleted == false && x.TypeScheduler == TypeScheduler.LoopYear);
-
-            foreach (var scheduler in schedulers)
+            await UnitOfWorkManager.WithUnitOfWorkAsync(async () =>
             {
-                if (scheduler.DueDate < now)
+                using (CurrentUnitOfWork.SetTenantId(null))
                 {
-                    scheduler.IsCompleted = true;
-                    await _schedulerNotificationRepository.UpdateAsync(scheduler);
-                    continue;
-                }
 
-                var users = JsonConvert.DeserializeObject<List<UserIdentifier>>(scheduler.Users);
-                var message = JsonConvert.DeserializeObject<UserMessageNotificationDataBase>(scheduler.Message);
-                if (scheduler.Time.HasValue && scheduler.Time.Value.Month == now.Month)
-                {
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(scheduler.Header,
-                                 message.Description,
-                                 message.DetailUrlApp,
-                                 message.DetailUrlApp,
-                                 users.ToArray(),
-                                 message);
-                }
+                    var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+                    var schedulers = await _schedulerNotificationRepository.GetAllListAsync(x => x.IsScheduler == true && x.IsCompleted == false && x.TypeScheduler == TypeScheduler.LoopYear);
 
-            }
+                    foreach (var scheduler in schedulers)
+                    {
+                        if (scheduler.DueDate < now)
+                        {
+                            scheduler.IsCompleted = true;
+                            await _schedulerNotificationRepository.UpdateAsync(scheduler);
+                            continue;
+                        }
+
+                        var users = JsonConvert.DeserializeObject<List<UserIdentifier>>(scheduler.Users);
+                        var message = JsonConvert.DeserializeObject<UserMessageNotificationDataBase>(scheduler.Message);
+                        if (scheduler.Time.HasValue && scheduler.Time.Value.Month == now.Month)
+                        {
+                            //await _appNotifier.SendUserMessageNotifyFullyAsync(scheduler.Header,
+                            //             message.Description,
+                            //             message.DetailUrlApp,
+                            //             message.DetailUrlApp,
+                            //             users.ToArray(),
+                            //             message);
+                            await SendNotification(scheduler.IsSocial, scheduler.IsOnlyFirebase, message, scheduler.Header, users);
+                        }
+
+                    }
+                }
+            });
+
         }
     }
 

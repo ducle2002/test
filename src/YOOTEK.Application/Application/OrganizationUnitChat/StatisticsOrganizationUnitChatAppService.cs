@@ -62,11 +62,12 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                              UrbanId = _userOrganizationRepository.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
                              BuildingId = _userOrganizationRepository.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
                          })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .Where(x => x.IsOrganizationUnit == true && x.Side == ChatSide.Sender).AsQueryable();
             return query;
 
         }
+
         public IQueryable<CitizenReflectCommentStatic> QueryGetAllChatReflects()
         {
             List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
@@ -81,7 +82,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                              BuildingId = rc.BuildingId
 
                          })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .AsQueryable();
 
             return query;

@@ -112,7 +112,7 @@ namespace Yootek.Services
                                      Level = vh.Level,
                                      ImageUrl = vh.ImageUrl
                                  })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .Where(x => x.State != CitizenVehicleState.WAITING)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
@@ -566,7 +566,7 @@ namespace Yootek.Services
                                      CitizenName = cz.FullName,
 
                                  })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
                                  .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
@@ -1145,14 +1145,23 @@ namespace Yootek.Services
             try
             {
                 long t1 = TimeUtils.GetNanoseconds();
+                string ownerName = null;
+                if (input != null && input.Count > 0)
+                {
+                    var firstInput = input[0];
+                    var query = await _citizenTempRepos.FirstOrDefaultAsync(x => x.BuildingId == firstInput.BuildingId && x.ApartmentCode == firstInput.ApartmentCode && x.UrbanId == firstInput.UrbanId);
+                    ownerName = query.FullName;
+                }
                 for (var i = 0; i < input.Count; i++)
                 {
                     if ((await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.VehicleCode == input[i].VehicleCode)) != null)
                     {
                         throw new Exception("license plate already exists.");
                     };
+
                     input[i].TenantId = AbpSession.TenantId;
                     input[i].State = CitizenVehicleState.ACCEPTED;
+                    input[i].OwnerName = ownerName;
                 }
 
                 await CreateListVehicleAsync(input);

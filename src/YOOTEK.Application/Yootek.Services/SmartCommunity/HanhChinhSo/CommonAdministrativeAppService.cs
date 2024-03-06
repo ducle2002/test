@@ -305,7 +305,7 @@ namespace Yootek.Services
                     }
 
                     var result = await query
-                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                        .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                             .ApplySort(input.OrderBy, input.SortBy)
                             .ApplySort(OrderByTypeAdministrative.NAME)
                             .PageBy(input).ToListAsync();
@@ -354,7 +354,7 @@ namespace Yootek.Services
                                      BuildingId = ci.BuildingId,
                                      FileUrl = ci.FileUrl
                                  })
-                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
+                                 .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds);
                     var result = await query.ToListAsync();
                     if (result != null)
                     {

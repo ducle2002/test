@@ -12,6 +12,7 @@ using Yootek.Common.DataResult;
 using Abp.Runtime.Validation;
 using Microsoft.EntityFrameworkCore;
 using Abp.UI;
+using Yootek.MultiTenancy;
 
 namespace Yootek.Authorization.Permissions
 {
@@ -19,12 +20,15 @@ namespace Yootek.Authorization.Permissions
     {
         private readonly IPermissionManager _permissionManager;
         private readonly IRepository<PermissionTenant, long> _permissionTenantRepo;
+        private readonly IRepository<Tenant, int> _tenantRepository;
 
         public PermissionAppService(IPermissionManager permissionManager,
-            IRepository<PermissionTenant, long> permissionTenantRepository)
+            IRepository<PermissionTenant, long> permissionTenantRepository,
+            IRepository<Tenant, int> tenantRepository)
         {
             _permissionManager = permissionManager;
             _permissionTenantRepo = permissionTenantRepository;
+            _tenantRepository = tenantRepository;
         }
 
         public async Task<ListResultDto<FlatPermissionWithLevelDto>> GetAllPermissions(GetAllPermissionsDto input)

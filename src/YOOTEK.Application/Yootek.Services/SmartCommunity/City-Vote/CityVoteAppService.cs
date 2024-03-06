@@ -131,7 +131,7 @@ namespace Yootek.Services
                              .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                              .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                              .ApplySearchFilter(input.Keyword, x => x.Name)
-                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                             .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                              .OrderByDescending(x => x.CreationTime)
                     .AsQueryable();
 
@@ -489,7 +489,7 @@ namespace Yootek.Services
                                  OptionVoteId = uv.OptionVoteId,
                                  Id = uv.Id,
                              })
-                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                             .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                              .OrderByDescending(x => x.CreationTime)
                              .AsQueryable();
 
@@ -540,7 +540,7 @@ namespace Yootek.Services
                              UrbanId = _organizationRepos.GetAll().Where(u => u.Id == vt.OrganizationUnitId && u.ParentId == null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
                              BuildingId = _organizationRepos.GetAll().Where(u => u.Id == vt.OrganizationUnitId && u.ParentId != null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
                          })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .AsQueryable();
 
             return query;
@@ -809,7 +809,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var count = await _cityVoteRepos.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .Where(x => x.OrganizationUnitId.HasValue).CountAsync();
                 return DataResult.ResultSuccess(count, "Get success!");
             }

@@ -202,8 +202,8 @@ namespace Yootek.Authorization.Accounts
             }
             catch (Exception ex)
             {
-                Logger.Info("pass + Email: " + ex.ToString());
-                throw new UserFriendlyException(ex.ToJsonString());
+                Logger.Fatal("pass + Email: " + ex.ToJsonString());
+                throw;
             }
         }
 

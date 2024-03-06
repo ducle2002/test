@@ -69,6 +69,7 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public string? Note { get; set; }
         public List<string>? ImageUrls { get; set; }
         public long? WorkTurnId { get; set; }
+        public int? QualityWork { get; set; }
     }
     public class UpdateManyWorkLogTimeDto
     {

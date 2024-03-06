@@ -30,6 +30,7 @@
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\aden.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\aden_payment.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\lathanh.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
+    <EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\trungdo.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 
 		<EmbeddedResource Include="Localization\SourceFiles\*.xml;Authorization\Emailing\EmailTemplates\common_bill.html" Exclude="bin\**;obj\**;**\*.xproj;packages\**;@(EmbeddedResource)" />
 

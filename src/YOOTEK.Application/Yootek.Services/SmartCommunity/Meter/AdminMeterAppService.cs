@@ -77,7 +77,7 @@ namespace Yootek.Services
                                                   BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
                                                   UrbanName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
                                               })
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.MeterTypeId != null, m => m.MeterTypeId == input.MeterTypeId)
                     .WhereIf(input.UrbanId != null, m => m.UrbanId == input.UrbanId)
                     .WhereIf(input.BuildingId != null, m => m.BuildingId == input.BuildingId)

@@ -15,7 +15,7 @@ namespace Yootek.Chat.Dto
         public bool? IsOrganizationUnit { get; set; }
     }
 
-    public class GetOrganizationChatMessagesInput
+    public class GetOrganizationChatMessagesInput: CommonInputDto
     {
         public int? TenantId { get; set; }
 

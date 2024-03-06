@@ -1,6 +1,7 @@
 using Abp.Domain.Entities;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Yootek.MultiTenancy;
 
 namespace Yootek.Authorization.Permissions
 {
@@ -11,5 +12,6 @@ namespace Yootek.Authorization.Permissions
 
         [StringLength(1000)]
         public string Name { get; set; }
+        public TenantType? TenantType { get; set; }
     }
 }
