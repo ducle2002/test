@@ -171,10 +171,10 @@ namespace Yootek.Services
                     meter.TenantId = AbpSession.TenantId;
 
                     var data = await _meterRepository.InsertAsync(meter);
-                    // await CurrentUnitOfWork.SaveChangesAsync();
+
 
                     data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Meter);
-                    // await CurrentUnitOfWork.SaveChangesAsync();
+
                 }
 
                 mb.statisticMetris(t1, 0, "ParkingService.CreateParkingAsync");
