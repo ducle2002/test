@@ -39,6 +39,7 @@ namespace Yootek.Services
         Task<DataResult> UpdateFeedback(UpdateFeedbackDigitalServiceOrderDto input);
         Task<DataResult> Delete(long id);
     }
+
     [AbpAuthorize]
     public class DigitalServiceOrderAppService : YootekAppServiceBase, IDigitalServiceOrderAppService
     {
@@ -86,7 +87,7 @@ IRepository<DigitalServices, long> digitalServicesRepository, IRepository<Citize
                     .WhereIf(!string.IsNullOrEmpty(input.Keyword), x =>
 x.Address.ToLower().Contains(input.Keyword.ToLower()))
     .WhereIf(input.Status > 0, x => x.Status == input.Status)
-    .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE: input.StatusTab == 2? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
+    .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1 ? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE : input.StatusTab == 2 ? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
     .WhereIf(input.ServiceId > 0, x => x.ServiceId == input.ServiceId)
 ;
                 List<DigitalServiceOrderDto> result = await query.ApplySort(input.OrderBy, (SortBy)input.SortBy).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
@@ -148,8 +149,8 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                 var data = item.MapTo<DigitalServiceOrderViewDto>();
                 data.CreatorCitizen = await _citizenRepos.FirstOrDefaultAsync(x => x.AccountId == item.CreatorUserId);
                 data.ArrServiceDetails = !string.IsNullOrEmpty(item.ServiceDetails) ? JsonConvert.DeserializeObject<List<DigitalServiceDetailsGridDto>>(item.ServiceDetails) : new List<DigitalServiceDetailsGridDto>();
-               
-                 try //để tạm trong trường hợp trên máy local ko chạy được grpc
+
+                try //để tạm trong trường hợp trên máy local ko chạy được grpc
                 {
                     MicroserviceResultDto<List<WorkDto>> result = await _httpWorkAssignmentService.GetAllWorkByRelatedId(new GetListWorkByRelatedIdDto()
                     {
@@ -165,7 +166,7 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                 {
 
                 }
-              
+
                 return DataResult.ResultSuccess(data, Common.Resource.QuanLyChung.Success);
             }
             catch (Exception e)
@@ -178,15 +179,17 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
         {
             try
             {
-                DigitalServiceOrder item = dto.MapTo<DigitalServiceOrderCrearteDto>();
+                var services = await _digitalServicesRepository.FirstOrDefaultAsync(dto.ServiceId);
+                if (services == null) return DataResult.ResultCode(dto, "Digital service not found !", 404);
+
+                DigitalServiceOrder item = ObjectMapper.Map<DigitalServiceOrderCrearteDto>(dto);
                 if (dto.ArrServiceDetails != null)
                     item.ServiceDetails = JsonConvert.SerializeObject(dto.ArrServiceDetails);
-                if (item.UrbanId == 0 && item.ServiceId > 0) {
-                    var services = await _digitalServicesRepository.FirstOrDefaultAsync(item.ServiceId);
-                    item.UrbanId = services.UrbanId;
-                }
+              
+                item.UrbanId = services.UrbanId;
                 item.TenantId = AbpSession.TenantId;
-                await _repository.InsertAsync(item);
+                await _repository.InsertAndGetIdAsync(item);
+                await FireNotificationCreateServiceOrder(item, services.Title);
                 return DataResult.ResultSuccess(Common.Resource.QuanLyChung.InsertSuccess);
             }
             catch (Exception e)
@@ -281,7 +284,6 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                 throw;
             }
         }
-
         public async Task<DataResult> UpdateFeedback(UpdateFeedbackDigitalServiceOrderDto input)
         {
             try
@@ -310,30 +312,28 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
         {
             try
             {
-                string detailUrlApp;
+                string detailUrlApp = $"yoolife://app/digital-service-order/detail?id={oDigitalServiceOrder.Id}";
                 switch (oDigitalServiceOrder.Status)
                 {
                     case (int)TypeActionUpdateStateServiceOrder.RECEIVE:
-                        detailUrlApp = "yoolife://app/digital-service-order";
+                       
                         var messageAccept = new UserMessageNotificationDataBase(
                             AppNotificationAction.DigitalServiceOrder,
                             AppNotificationIcon.DigitalServiceOrder,
                             TypeAction.Detail,
                             "Dịch vụ bạn đặt đã được tiếp nhận",
                             detailUrlApp,
-                            "",
-                            "",
-                            "",
-                            oDigitalServiceOrder.Id
+                            ""
 
                         );
-                        await _appNotifier.SendUserMessageNotifyFullyAsync(
-                            "Thông báo đặt dịch vụ",
+                        await _appNotifier.SendMessageNotificationInternalAsync(
+                            "Yoolife dịch vụ nội khu !",
                             "Dịch vụ bạn đặt đã được tiếp nhận!",
                             detailUrlApp,
                             "",
-                            new UserIdentifier[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId.Value) },
-                            messageAccept);
+                            new[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId.Value) },
+                            messageAccept,
+                            AppType.USER);
                         break;
                     case (int)TypeActionUpdateStateServiceOrder.FEEDBACK:
                         detailUrlApp = "yoolife://app/digital-service-order";
@@ -343,19 +343,17 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                             TypeAction.Detail,
                             "Dịch vụ bạn đặt có phản hồi",
                             detailUrlApp,
-                            "",
-                            "",
-                            "",
-                            0
+                             ""
 
                         );
-                        await _appNotifier.SendUserMessageNotifyFullyAsync(
-                            "Thông báo đặt dịch vụ",
+                        await _appNotifier.SendMessageNotificationInternalAsync(
+                            "Yoolife dịch vụ nội khu !",
                             "Dịch vụ bạn đặt có phản hồi. Hãy xác nhận!",
                             detailUrlApp,
                             "",
-                            new UserIdentifier[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId.Value) },
-                            messageAcceptFeed);
+                            new[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId.Value) },
+                            messageAcceptFeed,
+                            AppType.USER);
                         break;
                     case (int)TypeActionUpdateStateServiceOrder.COMPLETE:
                         detailUrlApp = "yoolife://app/digital-service-order";
@@ -365,23 +363,51 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                             TypeAction.Detail,
                             "Dịch vụ bạn đặt đã hoàn thành. Hãy thanh toán!",
                             detailUrlApp,
-                            "",
-                            "",
-                            "",
-                            0
+                            ""
 
                         );
-                        await _appNotifier.SendUserMessageNotifyFullyAsync(
-                            "Thông báo đặt dịch vụ",
+                        await _appNotifier.SendMessageNotificationInternalAsync(
+                            "Yoolife dịch vụ nội khu !",
                             "Dịch vụ bạn đặt đã hoàn thành. Hãy thanh toán!",
                             detailUrlApp,
                             "",
-                            new UserIdentifier[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId.Value) },
-                            messageAcceptCom);
+                            new[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId.Value) },
+                            messageAcceptCom,
+                            AppType.USER);
                         break;
                     default:
                         break;
                 }
+            }
+            catch
+            {
+            }
+        }
+        private async Task FireNotificationCreateServiceOrder(DigitalServiceOrder oDigitalServiceOrder, string serviceName)
+        {
+            try
+            {
+                string detailUrlApp = $"yooioc://app/digital-service-order/detail?id={oDigitalServiceOrder.Id}";
+                var messageAccept = new UserMessageNotificationDataBase(
+                    AppNotificationAction.DigitalServiceOrder,
+                    AppNotificationIcon.DigitalServiceOrder,
+                    TypeAction.Detail,
+                    $"Dịch vụ {serviceName} có một đơn đặt mới. Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    "",
+                    "",
+                    "",
+                    oDigitalServiceOrder.Id
+
+                );
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Yoolife dịch vụ nội khu !",
+                    $"Dịch vụ {serviceName} có một đơn đặt mới. Nhấn để xem chi tiết !",
+                    detailUrlApp,
+                    "",
+                    new[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId ?? 0) },
+                    messageAccept,
+                    AppType.IOC);
             }
             catch
             {

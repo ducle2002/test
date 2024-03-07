@@ -174,7 +174,6 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     payment.PaymentCode = "PM-" + id + "-" + GetUniqueKey(6);
                     await  CurrentUnitOfWork.SaveChangesAsync();
 
-
                     try
                     {
                         foreach (var item in listBills)

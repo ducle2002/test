@@ -704,7 +704,7 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Vote
                                 detailUrlApp
                              );
             await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                "Thông báo khảo sát cư dân!",
+                "Yoolife khảo sát số!",
                 $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 "",

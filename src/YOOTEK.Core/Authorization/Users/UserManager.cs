@@ -28,6 +28,7 @@ using Microsoft.EntityFrameworkCore;
 using Yootek.Organizations.OrganizationStructure;
 using Yootek.Organizations.Cache.Dto;
 using Abp.AutoMapper;
+using Abp.Json;
 
 namespace Yootek.Authorization.Users
 {
@@ -217,7 +218,7 @@ namespace Yootek.Authorization.Users
             }
             catch (Exception e)
             {
-                Logger.LogError("Exception", e.ToString());
+                Logger.LogError(e.Message);
                 return null;
             }
         }
@@ -306,8 +307,6 @@ namespace Yootek.Authorization.Users
             });
         }
 
-      
-
         public override async Task RemoveFromOrganizationUnitAsync(long userId, long ouId)
         {
             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
@@ -350,6 +349,26 @@ namespace Yootek.Authorization.Users
             );
         }
 
+        public async Task<List<UserIdentifier>> GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE type)
+        {
+            try
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
+                {
+                    var ids = await _organizationUnitRepository.GetAll().Where(x => x.Type == type).Select(x => x.ParentId ?? 0).Distinct().ToListAsync();
+                    var users = await _userOrganizationUnitRepository.GetAll().
+                        Where(x => ids.Contains(x.OrganizationUnitId))
+                        .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                        .ToListAsync();
+                    return users;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.ToJsonString());
+                return null;
+            }
+        }
 
         private async Task<List<APP_ORGANIZATION_TYPE>> CheckOrganizationUnitType(long id, int? tenantId)
         {
@@ -363,8 +382,6 @@ namespace Yootek.Authorization.Users
                
             });
         }
-
-
         #endregion
 
         #region Cache OrganizationUnit accessible

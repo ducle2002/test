@@ -221,7 +221,7 @@ namespace Yootek.Services
                 if (query != null)
                 {
                     var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-                    foreach(var item in result)
+                    foreach (var item in result)
                     {
                         item.HandlersName = await GetUsersOrganizationNameAsync(item.ListHandleUserIds);
                     }
@@ -411,7 +411,9 @@ namespace Yootek.Services
                 }
                 else
                 {
-                    var insertInput = input.MapTo<CitizenReflectComment>();
+                    var insertInput = ObjectMapper.Map<CitizenReflectComment>(input);
+                    var checkReflect = await _citizenReflectRepos.FirstOrDefaultAsync(x => x.Id == input.FeedbackId);
+                    if(checkReflect == null) return DataResult.ResultCode(input, "Reflect not found!", 404);
                     insertInput.ReadState = 1;
                     long id = await _citizenReflectCommentRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
@@ -424,6 +426,7 @@ namespace Yootek.Services
                         _notificationCommunicator.SendCommentFeedbackToUserTenant(clients, insertInput);
                     }
 
+                    await NotifierCommentCitizenReflect(insertInput, checkReflect.Name, new UserIdentifier[] { citizen });
                     mb.statisticMetris(t1, 0, "is_noti");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -932,24 +935,22 @@ namespace Yootek.Services
                         TypeAction.Detail,
                         $"Phản ánh {reflect.Name} của bạn đã bị từ chối. Nhấn để xem chi tiết !",
                         detailUrlApp,
-                        detailUrlWADeclined,
-                        "",
-                        "",
-                        0
+                        detailUrlWADeclined
 
 
                     );
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã bị từ chối. Nhấn để xem chi tiết !",
                         detailUrlApp,
                         detailUrlWADeclined,
                         new UserIdentifier[]
                         {
                             new UserIdentifier(reflect.TenantId,
-                                reflect.CreatorUserId.HasValue ? reflect.CreatorUserId.Value : 0)
+                                reflect.CreatorUserId ?? 0)
                         },
-                        messageDeclined);
+                        messageDeclined,
+                        AppType.USER);
                     break;
 
                 case (int?)UserFeedbackEnum.STATE_FEEDBACK.HANDLING:
@@ -960,13 +961,10 @@ namespace Yootek.Services
                         TypeAction.Detail,
                         $"Phản ánh {reflect.Name} của bạn đã được tiếp nhận !",
                         detailUrlApp,
-                        detailUrlWAHandling,
-                        "",
-                        "",
-                        0
+                        detailUrlWAHandling
                     );
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                         "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã được tiếp nhận !",
                         detailUrlApp,
                         detailUrlWAHandling,
@@ -975,7 +973,8 @@ namespace Yootek.Services
                             new UserIdentifier(reflect.TenantId,
                                 reflect.CreatorUserId.HasValue ? reflect.CreatorUserId.Value : 0)
                         },
-                        messageHandling);
+                        messageHandling,
+                        AppType.USER);
                     break;
 
                 case (int?)UserFeedbackEnum.STATE_FEEDBACK.ADMIN_CONFIRMED:
@@ -986,14 +985,11 @@ namespace Yootek.Services
                         TypeAction.Detail,
                         $"Phản ánh {reflect.Name} của bạn đã được hoàn thành !",
                         detailUrlApp,
-                        detailUrlWAConfirm,
-                        "",
-                        "",
-                        0
+                        detailUrlWAConfirm
 
                     );
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã được hoàn thành !",
                         detailUrlApp,
                         detailUrlWAConfirm,
@@ -1002,9 +998,34 @@ namespace Yootek.Services
                             new UserIdentifier(reflect.TenantId,
                                 reflect.CreatorUserId.HasValue ? reflect.CreatorUserId.Value : 0)
                         },
-                        messageConfirm);
+                        messageConfirm,
+                        AppType.USER);
                     break;
             }
+        }
+
+        private async Task NotifierCommentCitizenReflect(CitizenReflectComment comment, string reflectName, UserIdentifier[] user)
+        {
+            var detailUrlApp = $"yoolife://app/feedback/comment?id={comment.FeedbackId}";
+            var detailUrlWA = $"/feedbacks/comment?id={comment.FeedbackId}";
+            var messageDeclined = new NotificationWithContentIdDatabase(
+            comment.Id,
+            AppNotificationAction.CommentReflectCitizen,
+            AppNotificationIcon.CommentReflectCitizenSuccessIcon,
+            TypeAction.Detail,
+            $"Tin nhắn phản ánh {reflectName} !",
+            detailUrlApp,
+            detailUrlWA
+            );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Tin nhắn phản ánh {reflectName} !",
+                $"Bạn có 1 tin nhắn tới phản ánh {reflectName}. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                user,
+                messageDeclined,
+                AppType.USER);
+
         }
 
         #endregion

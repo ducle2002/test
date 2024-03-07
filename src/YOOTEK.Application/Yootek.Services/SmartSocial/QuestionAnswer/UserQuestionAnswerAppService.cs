@@ -14,6 +14,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.CommonENum;
+using Yootek.Notifications;
+using Abp;
+using Yootek.Organizations;
+using Abp.Runtime.Session;
 
 namespace Yootek.Services
 {
@@ -23,11 +27,20 @@ namespace Yootek.Services
         private readonly IRepository<QuestionAnswer, long> _forumRepos;
         private readonly IRepository<QAComment, long> _forumCommentRepos;
         private readonly IRepository<User, long> _userRepos;
-        public UserQuestionAnswerAppService(IRepository<QuestionAnswer, long> forumRepos, IRepository<QAComment, long> forumCommentRepos, IRepository<User, long> userRepos)
+        private readonly IAppNotifier _appNotifier;
+
+
+        public UserQuestionAnswerAppService(
+            IRepository<QuestionAnswer, long> forumRepos, 
+            IRepository<QAComment, long> forumCommentRepos, 
+            IRepository<User, long> userRepos,
+            IAppNotifier appNotifier
+            )
         {
             _forumRepos = forumRepos;
             _forumCommentRepos = forumCommentRepos;
             _userRepos = userRepos;
+            _appNotifier = appNotifier;
         }
 
         protected IQueryable<QuestionAnswerDto> QueryDataQNA(GetAllQASocialInput input)
@@ -202,7 +215,9 @@ namespace Yootek.Services
                     var insertInput = input.MapTo<QuestionAnswer>();
                     insertInput.State = (int)CommonENumForum.FORUM_STATE.NEW;
                     long id = await _forumRepos.InsertAndGetIdAsync(insertInput);
-
+                    var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.VOTE);
+                    var user = await UserManager.GetUserOrNullAsync(AbpSession.ToUserIdentifier());
+                    await NotifierNewFnQ(insertInput, admins.ToArray(), user?.FullName ?? "Người dùng");
                     mb.statisticMetris(t1, 0, "insert_forum");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -288,6 +303,31 @@ namespace Yootek.Services
                 Logger.Fatal(ex.Message, ex);
                 throw;
             }
+        }
+
+        private async Task NotifierNewFnQ(QuestionAnswer data, UserIdentifier[] admin, string creatorName)
+        {
+            var detailUrlApp = $"yooioc://app/fnq/detail?id={data.Id}";
+            var detailUrlWA = $"/fnq?id={data.Id}";
+            var message = new UserMessageNotificationDataBase(
+                            AppNotificationAction.ReflectCitizenNew,
+                            AppNotificationIcon.ReflectCitizenNewIcon,
+                            TypeAction.Detail,
+                            $"{creatorName} đã tạo một câu hỏi mới. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife hỏi đáp số!",
+                $"{creatorName} đã tạo một câu hỏi mới. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                admin.ToArray(),
+                message,
+                AppType.IOC
+                );
+
         }
     }
 }

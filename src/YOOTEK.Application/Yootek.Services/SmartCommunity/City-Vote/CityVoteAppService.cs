@@ -828,10 +828,9 @@ namespace Yootek.Services
             var detailUrlApp = $"yoolife://app/evote/detail?id={vote.Id}";
             var citizens = (from cz in _citizenRepos.GetAll()
                             where cz.State == STATE_CITIZEN.ACCEPTED
-                            select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).ToList();
+                            select new UserIdentifier(cz.TenantId, cz.AccountId ?? 0)).ToList();
 
-            var messageDeclined = new NotificationWithContentIdDatabase(
-                             vote.Id,
+            var messageDeclined = new UserMessageNotificationDataBase(
                              AppNotificationAction.CityVoteNew,
                              AppNotificationIcon.CityVoteNewIcon,
                               TypeAction.Detail,
@@ -851,13 +850,6 @@ namespace Yootek.Services
                  messageDeclined,
                  AppType.USER
                 );
-            //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //     "Thông báo khảo sát cư dân!",
-            //     $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
-            //     detailUrlApp,
-            //     "",
-            //     citizens.ToArray(),
-            //     messageDeclined);
         }
         #endregion
 

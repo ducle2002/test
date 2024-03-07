@@ -32,6 +32,9 @@
 
         public const string CityNotificationComment = "App.CityNotificationComment";
 
+        //Administrative
+        public const string StateAdministrative = "App.StateAdministrative";
+
         public const string ChatMessage = "App.ChatMessage";
         public const string BillPaymentSuccess = "App.BillPaymentSuccess";
         public const string BillPaymentCancel = "App.BillPaymentCancel";
@@ -90,7 +93,7 @@
         public const string CityNotificationCommentIcon = "App.CityNotificationCommentIcon";
 
         public const string ChatMessageIcon = "App.ChatMessageIcon";
-
+        public const string StateAdministrativeIcon = "App.StateAdministrativeIcon";
         public const string BillPaymentSuccessIcon = "App.BillPaymentSuccessIcon";
         public const string BillPaymentCancelIcon = "App.BillPaymentCancelIcon";
 

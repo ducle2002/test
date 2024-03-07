@@ -334,7 +334,6 @@ namespace Yootek.Services
                             break;
                     }
 
-
                     feedbackComment.ReadState = 1;
                     feedbackComment.OrganizationUnitId = updateData.OrganizationUnitId;
                     await _citizenReflectCommentRepos.InsertAndGetIdAsync(feedbackComment);
@@ -567,7 +566,7 @@ namespace Yootek.Services
                             detailUrlWADeclined
                             );
                     await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                        "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã bị từ chối. Nhấn để xem chi tiết !",
                         detailUrlApp,
                         detailUrlWADeclined,
@@ -586,7 +585,7 @@ namespace Yootek.Services
                            detailUrlWAHandling
                            );
                     await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                        "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã được tiếp nhận !",
                         detailUrlApp,
                         detailUrlWAHandling,
@@ -605,7 +604,7 @@ namespace Yootek.Services
                           detailUrlConfirm
                           );
                     await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                         "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã được hoàn thành !",
                         detailUrlApp,
                         detailUrlConfirm,

@@ -1197,8 +1197,8 @@ namespace Yootek.Services
 
                         );
                         await _appNotifier.SendUserMessageNotifyFullyAsync(
-                            "Thông báo xác minh cư dân",
-                            "Thông tin cư dân của bạn đã được xác minh thành công!",
+                            "Yoolife xác minh cư dân !",
+                            "Thông tin cư dân của bạn đã được xác minh thành công !",
                             detailUrlApp,
                             detailUrlWA,
                             new UserIdentifier[] { new UserIdentifier(citizen.TenantId, citizen.CreatorUserId.Value) },
@@ -1219,7 +1219,7 @@ namespace Yootek.Services
                             0
                         );
                         await _appNotifier.SendUserMessageNotifyFullyAsync(
-                            "Thông báo xác minh cư dân",
+                            "Yoolife xác minh cư dân !",
                             "Thông tin xác minh cư dân của bạn đã bị từ chối. Nhấn để xem chi tiết !",
                             detailUrlApp,
                             detailUrlWA,
@@ -1242,7 +1242,7 @@ namespace Yootek.Services
 
                         );
                         await _appNotifier.SendUserMessageNotifyFullyAsync(
-                            "Thông báo xác minh cư dân",
+                            "Yoolife xác minh cư dân !",
                             "Thông tin xác minh cư dân của bạn được yêu cầu chỉnh sửa. Hãy bổ sung thêm !",
                             detailUrlApp,
                             detailUrlWA,
