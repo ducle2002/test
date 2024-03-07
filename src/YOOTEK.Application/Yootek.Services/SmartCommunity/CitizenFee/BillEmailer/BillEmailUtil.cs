@@ -5487,8 +5487,6 @@ namespace Yootek.Services
                     bill.LastCost.HasValue &&
                     bill.BillType == billType)
                 .Where(bill =>
-                    (bill.Period.Value.Month == periodDebt.Month &&
-                    bill.Period.Value.Year == periodDebt.Year) &&
                     bill.Status == UserBillStatus.Debt)
                 .Sum(bill => (bill.DebtTotal > 0 ? (double)bill.DebtTotal.Value : bill.LastCost.Value)) ?? 0;
         }
