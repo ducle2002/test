@@ -9,6 +9,10 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Yootek.EntityDb;
+using Microsoft.AspNetCore.Mvc;
+using Yootek.Common.DataResult;
+using Abp.Domain.Repositories;
+using Yootek.Core.Dto;
 
 namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
 {
@@ -31,6 +35,8 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         Task<MicroserviceResultDto<bool>> DeleteWork(DeleteWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteManyWork(DeleteManyWorkDto input);
         Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input);
+        Task<MicroserviceResultDto<List<WorkExcelDto>>> GetListWorkExcel(GetExcelWorkDto input);
+
         #endregion
 
         #region IWorkTypeService
@@ -78,6 +84,8 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         Task<MicroserviceResultDto<bool>> CreateWorkComment(CreateWorkCommentDto input);
         Task<MicroserviceResultDto<bool>> UpdateWorkComment(UpdateWorkCommentDto input);
         Task<MicroserviceResultDto<bool>> DeleteWorkComment(DeleteWorkCommentDto input);
+        
+
         #endregion
 
         #region IWorkTurnService
@@ -267,6 +275,16 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
             request.HandleDeleteAsJson(input, _session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+        }
+
+        public async Task<MicroserviceResultDto<List<WorkExcelDto>>> GetListWorkExcel(GetExcelWorkDto input)
+        {
+            var query = "api/v1/work/get-list-work-excel" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            var result= await response.ReadContentAs<MicroserviceResultDto<List<WorkExcelDto>>>();
+            return result;
         }
         #endregion
 
@@ -697,6 +715,10 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
                 // );
             }
         }
+
+        
+
+
         #endregion
     }
 }

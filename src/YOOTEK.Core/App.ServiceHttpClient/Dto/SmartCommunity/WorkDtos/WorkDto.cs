@@ -5,6 +5,8 @@ using Yootek.EntityDb;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
+using static Yootek.Common.Enum.CommonENum;
 
 namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
 {
@@ -42,7 +44,39 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public DateTime CreationTime { get; set; }
         public string? QrCode { get; set; }
         public QRObjectDto? QRObject { get; set; }
-        public string? QRAction { get; set; }
+        public string? QRAction { get; set; }               
+    }
+
+    public class WorkExcelDto
+    {
+        public long Id { get; set; }
+        public int? TenantId { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public List<string>? ImageUrls { get; set; }
+        public string? Note { get; set; }
+        public DateTime? DateStart { get; set; }
+        public DateTime? DateExpected { get; set; }
+        public DateTime? DateFinish { get; set; }
+        public long? UserId { get; set; }
+        public int? Status { get; set; }
+        public long? WorkTypeId { get; set; }
+        public long CreatorUserId { get; set; }
+        public DateTime CreationTime { get; set; }
+        public int? Frequency { get; set; }
+        public string? FrequencyOption { get; set; }
+        public List<WorkDetail>? ListWorkDetails { get; set; }
+        public WorkDetailUserDto? CreatorUser { get; set; }
+        public List<WorkDetailUserDto>? RecipientUsers { get; set; }
+        public List<WorkDetailUserDto>? SupervisorUsers { get; set; }
+        public List<long> RecipientIds { get; set; }
+        public List<long> SupervisorIds { get; set; }
+        public List<WorkLogTime> WorkLogTimes { get; set; }
+    }    
+    public class WorkDetailExcelDto: WorkDetail
+    {
+        public int TotalLogTime { get; set; }
+        public int LogTimeComplete { get; set; }
     }
 
     // Get by id
@@ -122,6 +156,14 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public int? FormId { get; set; }
         public int? Status { get; set; }
         public long? WorkTypeId { get; set; }
+    }
+    public class GetExcelWorkDto
+    {
+        public int? FormId { get; set; }
+        public int? Status { get; set; }
+        public long? WorkTypeId { get; set; }
+        [CanBeNull] public string Keyword { get; set; }
+        public SortBy SortBy { get; set; }
     }
     public class GetAllWorksNotifyQuery
     {
