@@ -180,7 +180,6 @@ namespace Yootek.Authorization.Accounts
             };
         }
 
-
         public async Task<object> SendPasswordResetCode(SendPasswordResetCodeInput input)
         {
             try
