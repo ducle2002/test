@@ -130,6 +130,7 @@ namespace Yootek.Organizations
         public const string AppUser_QnA = "yoolife://app/qna";
         public const string AppUser_Hotline = "yoolife://app/hotline";
         public const string AppUser_ChatUser = "yoolife://app/chat-user";
+        public const string AppUser_ChatOrganization = "yoolife://app/chat-organization";
         public const string AppUser_ChatSeller = "yoolife://app/chat-seller";
 
         public const string AppUser_Social_Shopping = "yoolife://app/smartsocial-shopping";

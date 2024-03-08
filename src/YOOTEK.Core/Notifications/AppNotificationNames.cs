@@ -136,6 +136,6 @@
         public const string DigitalServiceOrder = "App.DigitalServiceOrderIcon";
 
         // friend chat
-        public const string FriendRequestIcon = "App.FriendRequestIcon";
+        public const string FriendShipIcon = "App.FriendShipIcon";
     }
 }

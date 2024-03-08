@@ -252,9 +252,9 @@ namespace Yootek.Friendships
             }
         }
         
-        public async Task ChangeFriendShip(UserIdentifier userIdentifier, UserIdentifier probableFriend, FriendshipState friendshipState, FollowState followState)
+        public async Task<Friendship> ChangeFriendShip(UserIdentifier userIdentifier, UserIdentifier probableFriend, FriendshipState friendshipState, FollowState followState)
         {
-            await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+            return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
             {
                 var friendship = (await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend));
                 if (friendship == null)
@@ -265,6 +265,7 @@ namespace Yootek.Friendships
                 friendship.State = friendshipState;
                 friendship.FollowState = followState;
                 await _friendshipManager.UpdateFriendshipAsync(friendship);
+                return friendship;
             });
         }
 
@@ -358,7 +359,7 @@ namespace Yootek.Friendships
                     var sourceFriendshipRequest = sourceFriendship.MapTo<FriendDto>();
                     sourceFriendshipRequest.IsOnline =
                         (await _onlineClientManager.GetAllByUserIdAsync(probableFriend)).Any();
-
+                    await NotifierNewFriendship(targetFriendship, new[] { probableFriend });
                     return sourceFriendshipRequest;
                 }
             }
@@ -774,7 +775,8 @@ namespace Yootek.Friendships
                             follow = (FollowState)friendShip.FollowState;
                         }
                         await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.Accepted, follow);
-                        await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.Accepted, follow);
+                        var friend = await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.Accepted, follow);
+                        await NotifierFriendshipAccepted(friend, new[] { probableFriend } );
                     }
                 }
                 else
@@ -1080,13 +1082,13 @@ namespace Yootek.Friendships
           }
         }
 
-        private async Task NotifierNewFriendship(Friendship data, UserIdentifier[] admin)
+        private async Task NotifierNewFriendship(Friendship data, UserIdentifier[] user)
         {
             var detailUrlApp = $"yoolife://app/friend-request";
             var detailUrlWA = $"yoolife://app/friend-request";
             var message = new UserMessageNotificationDataBase(
                             AppNotificationAction.FriendRequest,
-                            AppNotificationIcon.FriendRequestIcon,
+                            AppNotificationIcon.FriendShipIcon,
                             TypeAction.Detail,
                             $"{data.FriendUserName} đã gửi một lời mời kết bạn. Nhấn để xem chi tiết !",
                             detailUrlApp,
@@ -1094,13 +1096,38 @@ namespace Yootek.Friendships
                             );
 
             await _appNotifier.SendMessageNotificationInternalAsync(
-                "Lời mời kết bạn !",
+               "Yoolife kết bạn !",
                 $"{data.FriendUserName} đã gửi một lời mời kết bạn. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 detailUrlWA,
-                admin.ToArray(),
+                user,
                 message,
-                AppType.IOC
+                AppType.USER
+                );
+
+        }
+
+        private async Task NotifierFriendshipAccepted(Friendship data, UserIdentifier[] user)
+        {
+            var detailUrlApp = $"yoolife://app/friend-accepted";
+            var detailUrlWA = $"yoolife://app/friend-accepted";
+            var message = new UserMessageNotificationDataBase(
+                            AppNotificationAction.FriendRequest,
+                            AppNotificationIcon.FriendShipIcon,
+                            TypeAction.Detail,
+                            $"{data.FriendUserName} chấp nhận lời mời kết bạn của bạn !. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife kết bạn !",
+                $"{data.FriendUserName} chấp nhận lời mời kết bạn của bạn !",
+                detailUrlApp,
+                detailUrlWA,
+                user,
+                message,
+                AppType.USER
                 );
 
         }
