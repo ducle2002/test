@@ -37,7 +37,7 @@ namespace Yootek.Services
         Task<DataResult> UpdateStateWorkAsync([FromBody] UpdateStateWorkDto input);
         Task<DataResult> DeleteWorkAsync([FromQuery] DeleteWorkDto input);
         Task<DataResult> DeleteManyWorkAsync([FromQuery] List<long> ids);
-        Task<DataResult> ExportExcel([FromBody] GetExcelWorkDto input);
+        
     }
     public class WorkAppService : YootekAppServiceBase, IWorkAppService
     {
@@ -316,7 +316,7 @@ namespace Yootek.Services
             return (user?.FullName ?? string.Empty) + " (" + (user?.UserName ?? string.Empty) + ")";
         }
                 
-        public async Task<DataResult> ExportExcel([FromBody] GetExcelWorkDto input)
+        public async Task<object> ExportExcel([FromBody] GetExcelWorkDto input)
         {
             try
             {
