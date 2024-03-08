@@ -96,48 +96,48 @@ namespace Yootek.Services.ExportData
                             ("Trạng thái công việc"),
                             ("Công việc chi tiết")
                         );
-                        string time = (item.DateStart.HasValue ? item.DateStart.Value.ToString("dd/MM/yyyy HH:mm") : "") + "-" + (item.DateExpected.HasValue ? item.DateExpected.Value.ToString("dd/MM/yyyy HH:mm") : "");
-                        string nhacviec = GetValueFrequency(item.Frequency, item.FrequencyOption);
-                        CreateCellMerge(sheet, item.Content, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, item.CreatorUser.FullName, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, string.Join(", ", item.RecipientUsers.Select(x => x.FullName)), rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, string.Join(", ", item.SupervisorUsers.Select(x => x.FullName)), rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, time, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, nhacviec, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, statusList.Find(x => x.Value == item.Status.Value)?.Label, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        CreateCellMerge(sheet, "", rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //Công việc chi tiết
-                        AddHeaderRow(sheet, columnIndex, rowIndex,
-                         new StyleCellDto()
-                         {
-                             FillForegroundColor = IndexedColors.Grey25Percent.Index,
-                             ColumnWidth = 25,
-                             HeightInPoints = 30,
-                             IsBold = true,
-                         },
-                         "Tên công việc",
-                         "Mô tả",
-                         "Số lần logtime",
-                         "Logtime hoàn thành"
-                        );
-                        rowIndex++;
-                        foreach (var workDetail in item.ListWorkDetails)
-                        {
-                            AddHeaderRow(sheet, columnIndex, rowIndex,
-                             new StyleCellDto()
-                             {
-                                 FillForegroundColor = IndexedColors.White.Index,
-                                 ColumnWidth = 25,
-                                 HeightInPoints = 30,
-                                 IsBold = false,
-                             },
-                             (workDetail.Name),
-                             (workDetail.Description),
-                             (item.WorkLogTimes.Count(x => x.Status == LogTimeStatus.COMPLETED && x.WorkDetailId == workDetail.Id).ToString()),
-                             (item.WorkLogTimes.Count(x => x.WorkDetailId == workDetail.Id).ToString())                             
-                            );
-                            rowIndex++;
-                        }
+                        //string time = (item.DateStart.HasValue ? item.DateStart.Value.ToString("dd/MM/yyyy HH:mm") : "") + "-" + (item.DateExpected.HasValue ? item.DateExpected.Value.ToString("dd/MM/yyyy HH:mm") : "");
+                        //string nhacviec = GetValueFrequency(item.Frequency, item.FrequencyOption);
+                        //CreateCellMerge(sheet, item.Content, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, item.CreatorUser.FullName, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, string.Join(", ", item.RecipientUsers.Select(x => x.FullName)), rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, string.Join(", ", item.SupervisorUsers.Select(x => x.FullName)), rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, time, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, nhacviec, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, statusList.Find(x => x.Value == item.Status.Value)?.Label, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        //CreateCellMerge(sheet, "", rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
+                        ////Công việc chi tiết
+                        //AddHeaderRow(sheet, columnIndex, rowIndex,
+                        // new StyleCellDto()
+                        // {
+                        //     FillForegroundColor = IndexedColors.Grey25Percent.Index,
+                        //     ColumnWidth = 25,
+                        //     HeightInPoints = 30,
+                        //     IsBold = true,
+                        // },
+                        // "Tên công việc",
+                        // "Mô tả",
+                        // "Số lần logtime",
+                        // "Logtime hoàn thành"
+                        //);
+                        //rowIndex++;
+                        //foreach (var workDetail in item.ListWorkDetails)
+                        //{
+                        //    AddHeaderRow(sheet, columnIndex, rowIndex,
+                        //     new StyleCellDto()
+                        //     {
+                        //         FillForegroundColor = IndexedColors.White.Index,
+                        //         ColumnWidth = 25,
+                        //         HeightInPoints = 30,
+                        //         IsBold = false,
+                        //     },
+                        //     (workDetail.Name),
+                        //     (workDetail.Description),
+                        //     (item.WorkLogTimes.Count(x => x.Status == LogTimeStatus.COMPLETED && x.WorkDetailId == workDetail.Id).ToString()),
+                        //     (item.WorkLogTimes.Count(x => x.WorkDetailId == workDetail.Id).ToString())                             
+                        //    );
+                        //    rowIndex++;
+                        //}
                         rowIndex++;
                     }
 

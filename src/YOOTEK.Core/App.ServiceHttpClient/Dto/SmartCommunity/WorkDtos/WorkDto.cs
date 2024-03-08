@@ -163,7 +163,7 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public int? Status { get; set; }
         public long? WorkTypeId { get; set; }
         [CanBeNull] public string Keyword { get; set; }
-        public SortBy SortBy { get; set; }
+        public SortBy? SortBy { get; set; }
     }
     public class GetAllWorksNotifyQuery
     {
