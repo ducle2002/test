@@ -265,7 +265,7 @@ namespace Yootek.Services
                     if(qa ==  null) return DataResult.ResultSuccess(input, "Insert success !");
                     insertInput.IsAdmin = true;
                     long id = await _questionAnswerCommentRepos.InsertAndGetIdAsync(insertInput);
-                    await NotifierCommentFnQ(qa, new UserIdentifier(qa.TenantId, qa.CreatorUserId ?? 0));
+                    await NotifierCommentFaQ(qa, new UserIdentifier(qa.TenantId, qa.CreatorUserId ?? 0));
                     mb.statisticMetris(t1, 0, "insert_questionAnswer");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -529,10 +529,10 @@ namespace Yootek.Services
             }
         }
 
-        private async Task NotifierCommentFnQ(QuestionAnswer data, UserIdentifier user)
+        private async Task NotifierCommentFaQ(QuestionAnswer data, UserIdentifier user)
         {
-            var detailUrlApp = $"yoolife://app/fnq/detail?id={data.Id}";
-            var detailUrlWA = $"/fnq?id={data.Id}";
+            var detailUrlApp = $"yoolife://app/faq/detail?id={data.Id}";
+            var detailUrlWA = $"/faq?id={data.Id}";
             var message = new UserMessageNotificationDataBase(
                             AppNotificationAction.ReflectCitizenNew,
                             AppNotificationIcon.ReflectCitizenNewIcon,

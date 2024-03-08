@@ -71,6 +71,9 @@
 
         // digital service order
         public const string DigitalServiceOrder = "App.DigitalServiceOrderAction";
+
+        // friend chat
+        public const string FriendRequest = "App.FriendRequest";
     }
 
     public static class AppNotificationIcon
@@ -131,5 +134,8 @@
 
         // digital service order
         public const string DigitalServiceOrder = "App.DigitalServiceOrderIcon";
+
+        // friend chat
+        public const string FriendRequestIcon = "App.FriendRequestIcon";
     }
 }

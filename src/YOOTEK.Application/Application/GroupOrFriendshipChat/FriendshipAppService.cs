@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +26,8 @@ using Yootek.Friendships.Cache;
 using Yootek.Friendships.Dto;
 using Yootek.Users.Dto;
 using Abp.Linq.Extensions;
+using Yootek.Notifications;
+using Yootek.EntityDb;
 
 namespace Yootek.Friendships
 {
@@ -41,7 +43,7 @@ namespace Yootek.Friendships
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<Friendship, long> _friendshipRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IAppNotifier _appNotifier;
 
         public FriendshipAppService(
             IFriendshipManager friendshipManager,
@@ -52,7 +54,8 @@ namespace Yootek.Friendships
             IUserFriendsCache userFriendsCache,
             IRepository<User, long> userRepository,
             IRepository<Friendship, long> friendshipRepository,
-            IUnitOfWorkManager unitOfWorkManager
+            IUnitOfWorkManager unitOfWorkManager,
+            IAppNotifier appNotifier
         )
         {
             _friendshipManager = friendshipManager;
@@ -64,6 +67,7 @@ namespace Yootek.Friendships
             _userRepository = userRepository;
             _friendshipRepository = friendshipRepository;
             _unitOfWorkManager = unitOfWorkManager;
+            _appNotifier = appNotifier;
         }
 
         public async Task<DataResult> GetFriendRequestingList(GetAllFriendInput input)
@@ -1074,6 +1078,31 @@ namespace Yootek.Friendships
               Logger.Fatal(e.Message);
               throw;
           }
+        }
+
+        private async Task NotifierNewFriendship(Friendship data, UserIdentifier[] admin)
+        {
+            var detailUrlApp = $"yoolife://app/friend-request";
+            var detailUrlWA = $"yoolife://app/friend-request";
+            var message = new UserMessageNotificationDataBase(
+                            AppNotificationAction.FriendRequest,
+                            AppNotificationIcon.FriendRequestIcon,
+                            TypeAction.Detail,
+                            $"{data.FriendUserName} đã gửi một lời mời kết bạn. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Lời mời kết bạn !",
+                $"{data.FriendUserName} đã gửi một lời mời kết bạn. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                admin.ToArray(),
+                message,
+                AppType.IOC
+                );
+
         }
     }
 }

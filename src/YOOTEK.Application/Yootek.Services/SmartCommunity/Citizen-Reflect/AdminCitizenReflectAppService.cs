@@ -819,7 +819,6 @@ namespace Yootek.Services
             }
         }
 
-
         public async Task<int> QueryGetAllCitizenReflectCommentByMonth(int month, int year, long? organizationUnitId)
         {
             try

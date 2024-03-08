@@ -217,7 +217,7 @@ namespace Yootek.Services
                     long id = await _forumRepos.InsertAndGetIdAsync(insertInput);
                     var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.VOTE);
                     var user = await UserManager.GetUserOrNullAsync(AbpSession.ToUserIdentifier());
-                    await NotifierNewFnQ(insertInput, admins.ToArray(), user?.FullName ?? "Người dùng");
+                    await NotifierNewFaQ(insertInput, admins.ToArray(), user?.FullName ?? "Người dùng");
                     mb.statisticMetris(t1, 0, "insert_forum");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -305,10 +305,10 @@ namespace Yootek.Services
             }
         }
 
-        private async Task NotifierNewFnQ(QuestionAnswer data, UserIdentifier[] admin, string creatorName)
+        private async Task NotifierNewFaQ(QuestionAnswer data, UserIdentifier[] admin, string creatorName)
         {
-            var detailUrlApp = $"yooioc://app/fnq/detail?id={data.Id}";
-            var detailUrlWA = $"/fnq?id={data.Id}";
+            var detailUrlApp = $"yooioc://app/faq/detail?id={data.Id}";
+            var detailUrlWA = $"/faq?id={data.Id}";
             var message = new UserMessageNotificationDataBase(
                             AppNotificationAction.ReflectCitizenNew,
                             AppNotificationIcon.ReflectCitizenNewIcon,

@@ -301,15 +301,15 @@ namespace Yootek.Chat
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
                           friend.FriendImageUrl
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendName + " đã gửi 1 tin nhắn !",
                 message.Message,
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + user.ToUserIdentifierString(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
                 new UserIdentifier[] { receiver },
                 messageData,
                 apptype
