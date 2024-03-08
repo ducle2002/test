@@ -2,7 +2,6 @@
 using Abp.Modules;
 using Abp.Reflection.Extensions;
 using Abp.Zero.EntityFrameworkCore;
-using System;
 using Yootek.EntityFrameworkCore.Seed;
 
 namespace Yootek.EntityFrameworkCore
@@ -21,24 +20,24 @@ namespace Yootek.EntityFrameworkCore
         {
             if (!SkipDbContextRegistration)
             {
-                 Configuration.Modules.AbpEfCore().AddDbContext<YootekDbContext>(options =>                     
-                 {
-                     if (options.ExistingConnection != null)
-                     {
-                         YootekDbContextConfigurer.Configure(options.DbContextOptions, options.ExistingConnection);
-                     }
-                     else
-                     {
-                         YootekDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
-                     }
-                 });
+                Configuration.Modules.AbpEfCore().AddDbContext<YootekDbContext>(options =>
+                {
+                    if (options.ExistingConnection != null)
+                    {
+                        YootekDbContextConfigurer.Configure(options.DbContextOptions, options.ExistingConnection);
+                    }
+                    else
+                    {
+                        YootekDbContextConfigurer.Configure(options.DbContextOptions, options.ConnectionString);
+                    }
+                });
             }
         }
 
         public override void Initialize()
         {
             IocManager.RegisterAssemblyByConvention(typeof(YootekEntityFrameworkModule).GetAssembly());
-           
+
         }
 
         public override void PostInitialize()
