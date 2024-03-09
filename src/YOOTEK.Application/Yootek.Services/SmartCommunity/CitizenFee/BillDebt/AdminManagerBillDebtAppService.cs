@@ -154,7 +154,6 @@ namespace Yootek.Services
             }
         }
 
-
         public async Task<DataResult> CreateOrUpdateBillDebtAsync(BillDebtDto input)
         {
             try
@@ -240,7 +239,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
 
         public async Task<object> VerifyListPaymentBillDebt(List<VerifyPaymentBillDebtInput> input)
         {
@@ -371,7 +369,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
 
         private List<UserBillDebtDto> ExtractExcelBillDebt(ExcelPackage package, int? tenantId)
         {
@@ -554,7 +551,6 @@ namespace Yootek.Services
             return listDebt;
         }
 
-
         private async Task CreateListBillDebtAsync(List<UserBillDebtDto> billDebts)
         {
             try
@@ -625,7 +621,6 @@ namespace Yootek.Services
             return query;
         }
 
-
         public async Task<object> GetAllBillDebtByUserBillAsync(GetAllBillDebtInputDto input)
         {
             try
@@ -658,9 +653,7 @@ namespace Yootek.Services
                 throw;
             }
         }
-
-
-       
+     
         public string GetCitizenNameFromApartmentCode(string apartmentCode)
         {
             var citizens = _citizenTempRepo.GetAll().Select(x => new

@@ -90,11 +90,10 @@ namespace Yootek.Services.BillEmailer
 
                 foreach (var bill in input)
                 {
-
                     try
                     {
                         var citizens = await _citizenRepository.GetAll().Where(x => x.ApartmentCode == bill.ApartmentCode && x.State == STATE_CITIZEN.ACCEPTED && x.AccountId.HasValue).Select(x => x.AccountId.Value).ToListAsync();
-                        await NotificationUserBill(bill.ApartmentCode, bill.Period, citizens, AbpSession.TenantId);
+                        await NotificationUserBill(bill, citizens, AbpSession.TenantId);
                     }
                     catch { }
                 }
@@ -138,35 +137,36 @@ namespace Yootek.Services.BillEmailer
             }
         }
 
-        private async Task NotificationUserBill(string apartmentCode, DateTime period, List<long> userIds, int? tenantId)
+        private async Task NotificationUserBill(SendUserBillNotificationInput bill, List<long> userIds, int? tenantId)
         {
             var users = userIds.Select(x => new UserIdentifier(tenantId, x)).ToArray();
-            var detailUrlApp = $"yoolife://app/receipt?apartmentCode={apartmentCode}&formId=1";
-            var detailUrlWA = $"/monthly?apartmentCode={apartmentCode}&formId=1";
+            var formId = 1;
+            switch(bill.Status)
+            {
+                case UserBillStatus.Pending: formId = 1; break;
+                case UserBillStatus.Paid: formId = 2; break;
+                case UserBillStatus.Debt: formId = 3; break;
+                default: break;
+            }
+            var detailUrlApp = $"yoolife://app/receipt?apartmentCode={bill.ApartmentCode}&formId={formId}";
+            var detailUrlWA = $"/monthly?apartmentCode={bill.ApartmentCode}&formId={formId}";
             var messageSuccess = new UserMessageNotificationDataBase(
                                AppNotificationAction.UserBill,
                                AppNotificationIcon.UserBill,
                                TypeAction.Detail,
-                               $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+                               $"Bạn có hóa đơn tháng {bill.Period.Month}/{bill.Period.Year} của căn hộ {bill.ApartmentCode}. Nhấn để xem chi tiết !",
                                detailUrlApp,
                                detailUrlWA
                                );
             await _appNotifier.SendMessageNotificationInternalAsync(
-                $"Thông báo hóa đơn mới!",
-                $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+                $"Yoolife thông báo hóa đơn!",
+                $"Bạn có hóa đơn tháng {bill.Period.Month}/{bill.Period.Year} của căn hộ {bill.ApartmentCode}. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 detailUrlWA,
                 users,
                 messageSuccess,
                 AppType.USER
                 );
-            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //      $"Thông báo hóa đơn mới!",
-            //      $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
-            //      detailUrlApp,
-            //      detailUrlWA,
-            //      users,
-            //      messageSuccess);
             return;
         }
 
