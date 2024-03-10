@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Yootek.EntityDb;
+using Yootek.Authorization.Users;
+using System.Linq;
 
 namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
 {
@@ -215,7 +217,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
                     try
                     {
                         // Sau khi công việc đã được tạo, gửi thông báo cho RecipientIds và SupervisorIds
-                        await SendWorkNotification(result.Result.Value, input.RecipientIds, input.SupervisorIds, $"yooioc://work/detail?id={result.Result.Value}&tenantId={_session.TenantId}", $"/tasks?id={result.Result.Value}&tenantId={_session.TenantId}");
+                        await SendWorkNotification(result.Result.Value, input.RecipientIds, input.SupervisorIds, $"yooioc://app/work/detail?id={result.Result.Value}", $"/tasks?id={result.Result.Value}&tenantId={_session.TenantId}");
                     }
                     catch
                     {
@@ -637,7 +639,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         #region helpers method 
         private async Task SendWorkNotification(long workId, List<long> recipientIds, List<long> supervisorIds, string detailUrlApp, string detailUrlWA)
         {
-            var message = "Thông báo giao việc!";
+            var message = "Thông báo quản lý công việc !";
             var notification = new NotificationWithContentIdDatabase(
                 workId,
                 AppNotificationAction.WorkNotification,
@@ -647,56 +649,33 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
                 detailUrlApp,
                 detailUrlWA,
                 "",
-                ""
-
+            ""
             );
 
-            foreach (var userId in recipientIds)
-            {
+            var recipients = recipientIds.Select(x => new UserIdentifier(_session.TenantId, x)).ToList();
 
-                var recipients = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
-                
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    message,
-                    "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                    detailUrlApp,
-                    detailUrlWA,
-                    recipients.ToArray(),
-                    notification,
-                    AppType.USER
-                );
-                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     message,
-                //     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     recipients.ToArray(),
-                //     notification
-                // );
-            }
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                message,
+                "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+                detailUrlApp,
+                detailUrlWA,
+                recipients.ToArray(),
+                notification,
+                AppType.IOC
+            );
 
-            foreach (var userId in supervisorIds)
-            {
-                var supervisors = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    message,
-                    "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                    detailUrlApp,
-                    detailUrlWA,
-                    supervisors.ToArray(),
-                    notification,
-                    AppType.USER
-                );
-                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     message,
-                //     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     supervisors.ToArray(),
-                //     notification
-                // );
-            }
+            var supervisors = supervisorIds.Select(x => new UserIdentifier(_session.TenantId, x)).ToList();
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                message,
+                "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+                detailUrlApp,
+                detailUrlWA,
+                supervisors.ToArray(),
+                notification,
+                AppType.IOC
+            );
         }
+
         #endregion
     }
 }

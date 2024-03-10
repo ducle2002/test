@@ -137,5 +137,8 @@
 
         // friend chat
         public const string FriendShipIcon = "App.FriendShipIcon";
+
+        // friend chat
+        public const string TenantBusinessIcon = "App.TenantBusinessIcon";
     }
 }

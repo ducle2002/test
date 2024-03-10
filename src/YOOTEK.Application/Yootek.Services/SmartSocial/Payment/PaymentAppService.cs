@@ -115,7 +115,8 @@ namespace Yootek.Yootek.Services.Yootek.DichVu.Payment
                             {
                                 x.TenantId,
                                 x.ApartmentCode,
-                            }).GroupBy(x => new { x.TenantId, x.ApartmentCode }).Select(x => x.First()).ToList();
+                                x.Period
+                            }).GroupBy(x => new { x.TenantId, x.ApartmentCode, x.Period }).Select(x => x.First()).ToList();
 
 
 
@@ -125,22 +126,12 @@ namespace Yootek.Yootek.Services.Yootek.DichVu.Payment
 
                                 foreach (var x in prepareToPayBillsNeedNotifies)
                                 {
-                                    await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
-                                    {
-                                        Title = L("BillNotification"),
-                                        Body = L("BillNotificationComingDueBody"),
-                                        Data = JsonConvert.SerializeObject(new
-                                        {
-                                            action = "payment"
-                                        }),
-                                        GroupName = string.Format("apartment_{0}_{1}", x.TenantId, x.ApartmentCode)
-                                    });
-
+ 
                                     var users = await _citizenRepos.GetAllListAsync(c => c.ApartmentCode == x.ApartmentCode && c.AccountId.HasValue);
                                     if (users != null & users.Count > 0)
                                     {
-                                        var userIds = users.Select(x => x.AccountId.Value).ToList();
-                                        await NotificationUserBill(x.ApartmentCode, today, userIds, x.TenantId);
+                                        var userIds = users.Select(x => new UserIdentifier(x.TenantId, x.AccountId.Value)).ToList();
+                                        await NotificationUserBill(x.ApartmentCode, x.Period.Value, userIds.ToArray());
                                     }
                                 }
                             }
@@ -364,23 +355,28 @@ namespace Yootek.Yootek.Services.Yootek.DichVu.Payment
             }
         }
 
-        private async Task NotificationUserBill(string apartmentCode, DateTime period, List<long> userIds, int? tenantId)
+        private async Task NotificationUserBill(string apartmentCode, DateTime period, UserIdentifier[] users)
         {
-            var users = userIds.Select(x => new UserIdentifier(tenantId, x)).ToArray();
             var detailUrlApp = $"yoolife://app/receipt?apartmentCode={apartmentCode}&formId=1";
             var detailUrlWA = $"/monthly?apartmentCode={apartmentCode}&formId=1";
+
             var messageSuccess = new UserMessageNotificationDataBase(
-                               AppNotificationAction.UserBill,
-                               AppNotificationIcon.UserBill,
-                               TypeAction.Detail,
-                               $"Ban quản lý đã gửi thông báo hóa đơn tháng {period.Month}/{period.Year} tới căn hộ {apartmentCode} !",
-                               detailUrlApp,
-                               detailUrlWA
-                               );
-            await _appNotifier.SendUserMessageOnlySaveAsync(
-                 $"Thông báo hóa đơn mới!",
-                 users,
-                 messageSuccess);
+                             AppNotificationAction.UserBill,
+                             AppNotificationIcon.UserBill,
+                             TypeAction.Detail,
+                             $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode}. Nhấn để xem chi tiết !",
+                             detailUrlApp,
+                             detailUrlWA
+                             );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Yoolife thông báo hóa đơn!",
+                $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode}. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                users,
+                messageSuccess,
+                AppType.USER
+                );
             return;
         }
     }

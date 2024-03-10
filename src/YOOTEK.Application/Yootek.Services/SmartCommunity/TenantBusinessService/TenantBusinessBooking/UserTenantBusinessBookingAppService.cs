@@ -31,6 +31,7 @@ namespace Yootek.Services
         private readonly IRepository<ObjectPartner, long> _storeBookingRepos;
         private readonly IOnlineClientManager _onlineClientManager;
         private readonly IRepository<BookingHistory, long> _bookingHistoryRepos;
+        private readonly IAppNotifier _appNotifier;
        // private readonly ITenantBookingCommunicator _tenantBookingCommunicator;
 
         public UserTenantBusinessBookingAppService(
@@ -38,7 +39,8 @@ namespace Yootek.Services
             IRepository<ItemBooking, long> itemBookingRepos,
             IRepository<ObjectPartner, long> storeBookingRepos,
             IOnlineClientManager onlineClientManager,
-            IRepository<BookingHistory, long> bookingHistoryRepos
+            IRepository<BookingHistory, long> bookingHistoryRepos,
+            IAppNotifier appNotifier
            // ITenantBookingCommunicator TenantBookingCommunicator
             )
         {
@@ -47,6 +49,7 @@ namespace Yootek.Services
             _storeBookingRepos = storeBookingRepos;
             _onlineClientManager = onlineClientManager;
             _bookingHistoryRepos = bookingHistoryRepos;
+            _appNotifier = appNotifier;
          //   _tenantBookingCommunicator = TenantBookingCommunicator;
         }
 
@@ -210,10 +213,15 @@ namespace Yootek.Services
                 }
                 else
                 {
+                    var store = await _storeBookingRepos.FirstOrDefaultAsync(input.StoreId);
+                    if(store == null) return DataResult.ResultSuccess( "Store not found !");
+
                     input.State = StateBooking.Requesting;
-                    var insertInput = input.MapTo<Booking>();
+                    var insertInput = ObjectMapper.Map<Booking>(input);
                     long id = await _bookingRepos.InsertAndGetIdAsync(insertInput);
-                  //  await _tenantBookingCommunicator.SendNotifyTenantBusinessBookingToAdmin(insertInput);
+
+                    var admins = await UserManager.GetUserOrganizationUnitByUrban(store.UrbanId ?? 0);
+                    await NotifierNewBooking(insertInput, admins.ToArray());
                     mb.statisticMetris(t1, 0, "user_is_itembooking");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -309,11 +317,29 @@ namespace Yootek.Services
 
         }
 
-        private bool CheckBookingDay(DateTime bookingDay)
+        private async Task NotifierNewBooking(Booking booking, UserIdentifier[] admin)
         {
-
-            if (bookingDay >= DateTime.Today) return true;
-            return false;
+            try
+            {
+                var detailUrlApp = $"yooioc://app/amenities-booking/detail?id={booking.ItemBookingId}";
+                var detailUrlWA = $"/amenities-booking/detail?id={booking.ItemBookingId}";
+                var messageDeclined = new UserMessageNotificationDataBase(
+                AppNotificationAction.CitizenVerify,
+                AppNotificationIcon.TenantBusinessIcon,
+                TypeAction.Detail,
+                $"Bạn có một đơn đặt tiện ích nội khu mới. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA);
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    "Yoolife tiện ích nội khu!",
+                       $"Bạn có một đơn đặt tiện ích nội khu mới. Nhấn để xem chi tiết !",
+                     detailUrlApp,
+                     detailUrlWA,
+                    admin.ToArray(),
+                    messageDeclined,
+                    AppType.IOC);
+            }
+            catch { }
         }
 
         #endregion
