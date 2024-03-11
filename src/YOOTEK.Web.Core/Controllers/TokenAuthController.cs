@@ -139,14 +139,14 @@ namespace Yootek.Controllers
                 {
                     AccessToken = accessToken,
                     EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
-                    ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds,
+                    ExpireInSeconds = 30,
                     UserId = loginResult.User.Id,
                     EmailAddress = loginResult.User.EmailAddress,
                     TenantId = loginResult.Tenant != null ? loginResult.Tenant.Id : 0,
                     ThirdAccounts = loginResult.User.ThirdAccounts,
                     MobileConfig = loginResult.Tenant != null ? loginResult.Tenant.MobileConfig : mobileConfig,
                     RefreshToken = refreshToken.token,
-                    RefreshTokenExpireInSeconds = (int)_configuration.RefreshTokenExpiration.TotalSeconds,
+                    RefreshTokenExpireInSeconds = 60,
                 };
 
                 Logger.Fatal(JsonConvert.SerializeObject(result));

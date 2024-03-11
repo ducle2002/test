@@ -246,6 +246,16 @@ namespace Yootek.Services
             {
                 CitizenReflect citizenReflect = await _citizenReflectRepos.GetAsync(id);
                 CitizenReflectDto citizenReflectDto = ObjectMapper.Map<CitizenReflectDto>(citizenReflect);
+                if (citizenReflect.CreatorUserId != null)
+                {
+                    User userReflectDto = await _userRepos.GetAsync((long)citizenReflect.CreatorUserId);
+                    Citizen citizen =
+                        await _citizenRepos.GetAll().Where(x => x.AccountId == citizenReflect.CreatorUserId).FirstOrDefaultAsync();
+                    citizenReflectDto.FullName = userReflectDto.FullName;
+                    citizenReflectDto.UserName = userReflectDto.UserName;
+                    citizenReflectDto.ImageUrl = userReflectDto.ImageUrl;
+                    citizenReflectDto.ApartmentCode = citizen.ApartmentCode;
+                }
                 citizenReflectDto.BuildingName = GetOrganizationName(citizenReflect.BuildingId);
                 citizenReflectDto.UrbanName = GetOrganizationName(citizenReflect.UrbanId);
                 citizenReflectDto.HandlersName = await GetUsersOrganizationNameAsync(citizenReflect.ListHandleUserIds);

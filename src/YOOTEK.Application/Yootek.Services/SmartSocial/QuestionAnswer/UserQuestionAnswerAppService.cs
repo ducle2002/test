@@ -12,6 +12,7 @@ using Yootek.Services.Dto;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.CommonENum;
 
@@ -107,6 +108,49 @@ namespace Yootek.Services
             return query;
         }
 
+        public async Task<object> GetQuestionById(long id)
+        {
+            try
+            {
+                var query = (from fr in _forumRepos.GetAll()
+                    join us in _userRepos.GetAll() on fr.CreatorUserId equals us.Id into tb_us
+                    from us in tb_us.DefaultIfEmpty()
+                    select new QuestionAnswerDto
+                    {
+                        Id = fr.Id,
+                        FileUrl = fr.FileUrl,
+                        Type = fr.Type,
+                        Content = fr.Content,
+                        State = fr.State,
+                        CreationTime = fr.CreationTime,
+                        CreatorAvatar = us.ImageUrl,
+                        CreatorName = us.FullName,
+                        CreatorUserId = fr.CreatorUserId,
+                        LastModificationTime = fr.LastModificationTime,
+                        LastModifierUserId = fr.LastModifierUserId,
+                        Tags = fr.Tags,
+                        TenantId = fr.TenantId,
+                        ThreadTitle = fr.ThreadTitle,
+                        TypeTitle = fr.TypeTitle,
+                        CommentCount = (from cm in _forumCommentRepos.GetAll()
+                            where cm.ForumId == fr.Id
+                            select cm).Count(),
+                        OrganizationUnitId = fr.OrganizationUnitId,
+                        IsAdminAnswered =
+                            ((from cm in _forumCommentRepos.GetAll()
+                                where (cm.ForumId == fr.Id && cm.IsAdmin.Value)
+                                select cm).Count()) > 0
+                    }).Where(x => x.Id == id).AsQueryable();
+                return DataResult.ResultSuccess(query.FirstOrDefault(), "Success");
+                
+            }
+            catch (Exception ex)
+            {
+                var data = DataResult.ResultError(ex.ToString(), "Exception");
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
         public async Task<object> GetAllQuestionAnswerSocialAsync(GetAllQASocialInput input)
         {
             try
