@@ -693,23 +693,26 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Vote
                             where cz.State == STATE_CITIZEN.ACCEPTED
                             select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).ToList();
 
-            var messageDeclined = new NotificationWithContentIdDatabase(
-                             vote.Id,
-                             AppNotificationAction.CityVoteNew,
-                             AppNotificationIcon.CityVoteNewIcon,
-                              TypeAction.Detail,
-                                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
-                                "",
-                                "",
-                                detailUrlApp
-                             );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                "Yoolife khảo sát số!",
-                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
-                detailUrlApp,
-                "",
-                citizens.ToArray(),
-                messageDeclined);
+            var messageDeclined = new UserMessageNotificationDataBase(
+                            AppNotificationAction.CityVoteNew,
+                            AppNotificationIcon.CityVoteNewIcon,
+                             TypeAction.Detail,
+                               $"{creatername} đã tạo một khảo sát mới. Nhấn để xem chi tiết !",
+                               detailUrlApp,
+                               "",
+                               "",
+                               ""
+
+                            );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife khảo sát số !",
+                $"{creatername} đã tạo một khảo sát mới. Nhấn để xem chi tiết !",
+                 detailUrlApp,
+                 "",
+                 citizens.ToArray(),
+                 messageDeclined,
+                 AppType.USER
+                );
         }
         #endregion
 

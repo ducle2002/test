@@ -45,8 +45,9 @@ namespace Yootek.Services.BillEmailer
              IRepository<Apartment, long> apartmentRepository,
              IAppNotifier appNotifier,
              IAppConfigurationAccessor configurationAccessor
-            ) {
-          
+            )
+        {
+
             _backgroundJobManager = backgroundJobManager;
             _billEmailUtil = billEmailUtil;
             _apartmentRepository = apartmentRepository;
@@ -100,7 +101,7 @@ namespace Yootek.Services.BillEmailer
 
 
             }
-            catch(Exception e )
+            catch (Exception e)
             {
                 Logger.Fatal("send mail bills :" + e.Message);
                 throw;
@@ -109,7 +110,7 @@ namespace Yootek.Services.BillEmailer
 
         public async Task SendListEmailUserBillMonthlyAsync(SendEmailUserBillJobArgs input)
         {
-            if(input.ApartmentCodes == null || input.ApartmentCodes.Count == 0) return;
+            if (input.ApartmentCodes == null || input.ApartmentCodes.Count == 0) return;
             var period = input.Period != null ? input.Period.Value : DateTime.Now;
             foreach (string code in input.ApartmentCodes)
             {
@@ -129,7 +130,7 @@ namespace Yootek.Services.BillEmailer
         {
             try
             {
-               await _billEmailUtil.SendEmailToApartmentAsync(apartmentCode, tim, tenantId);
+                await _billEmailUtil.SendEmailToApartmentAsync(apartmentCode, tim, tenantId);
             }
             catch (Exception exception)
             {
@@ -141,7 +142,7 @@ namespace Yootek.Services.BillEmailer
         {
             var users = userIds.Select(x => new UserIdentifier(tenantId, x)).ToArray();
             var formId = 1;
-            switch(bill.Status)
+            switch (bill.Status)
             {
                 case UserBillStatus.Pending: formId = 1; break;
                 case UserBillStatus.Paid: formId = 2; break;

@@ -18,6 +18,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.UserFeedbackEnum;
+using Yootek.Core.Dto;
+using Yootek.Services.ExportData;
 
 namespace Yootek.Services
 {
@@ -35,6 +37,7 @@ namespace Yootek.Services
         Task<DataResult> UpdateStateWorkAsync([FromBody] UpdateStateWorkDto input);
         Task<DataResult> DeleteWorkAsync([FromQuery] DeleteWorkDto input);
         Task<DataResult> DeleteManyWorkAsync([FromQuery] List<long> ids);
+        
     }
     public class WorkAppService : YootekAppServiceBase, IWorkAppService
     {
@@ -42,13 +45,14 @@ namespace Yootek.Services
         private readonly IRepository<User, long> _userRepository;
         private readonly IAdminCitizenReflectAppService _adminCitizenReflectAppService;
         private readonly IDigitalServiceOrderAppService _digitalServiceOrderAppService;
+        private readonly IWorkExcelExporter _repositoryExcelExporter;
         private readonly UserManager _userManager;
         private readonly IAppNotifier _appNotifier;
         public WorkAppService(
             IHttpWorkAssignmentService httpWorkAssignmentService,
             IRepository<User, long> userRepository,
              UserManager userManager,
-            IAdminCitizenReflectAppService adminCitizenReflectAppService, IDigitalServiceOrderAppService digitalServiceOrderAppService, IAppNotifier appNotifier)
+            IAdminCitizenReflectAppService adminCitizenReflectAppService, IDigitalServiceOrderAppService digitalServiceOrderAppService, IAppNotifier appNotifier, IWorkExcelExporter repositoryExcelExporter)
         {
             _httpWorkAssignmentService = httpWorkAssignmentService;
             _userRepository = userRepository;
@@ -56,6 +60,7 @@ namespace Yootek.Services
             _digitalServiceOrderAppService = digitalServiceOrderAppService;
             _userManager = userManager;
             _appNotifier = appNotifier;
+            _repositoryExcelExporter = repositoryExcelExporter;
         }
         /*public async Task<DataResult> GetListWorkByAdminAsync([FromQuery] GetListWorkInput input)
         {
@@ -310,6 +315,65 @@ namespace Yootek.Services
             User user = _userManager.Users.FirstOrDefault(x => x.Id == userId);
             return (user?.FullName ?? string.Empty) + " (" + (user?.UserName ?? string.Empty) + ")";
         }
+                
+        public async Task<object> ExportExcel([FromBody] GetExcelWorkDto input)
+        {
+            try
+            {
+                var result = await _httpWorkAssignmentService.GetListWorkExcel(input);
+                var data = result.Result;
+                var query = _userRepository.GetAll().AsQueryable();
+                for (int i=0;i<data.Count();i++)
+                {
+                    
+                    WorkDetailUserDto creatorUser = query.Where(x => x.Id == data[i].CreatorUserId).Select(
+                        x => new WorkDetailUserDto()
+                        {
+                            Id = x.Id,
+                            FullName = x.FullName,
+                            AvatarUrl = x.ImageUrl,
+                            TenantId = x.TenantId,
+                            UserName = x.UserName,
+                            EmailAddress = x.EmailAddress
+                        }
+                    ).FirstOrDefault();
+                    List<WorkDetailUserDto> recipientUser = query.Where(x => data[i].RecipientIds.Contains(x.Id)).Select(
+                        x => new WorkDetailUserDto()
+                        {
+                            Id = x.Id,
+                            FullName = x.FullName,
+                            AvatarUrl = x.ImageUrl,
+                            TenantId = x.TenantId,
+                            UserName = x.UserName,
+                            EmailAddress = x.EmailAddress
+                        }
+                    ).ToList();
+                    List<WorkDetailUserDto> supervisorUser = query.Where(x => data[i].SupervisorIds.Contains(x.Id)).Select(
+                        x => new WorkDetailUserDto()
+                        {
+                            Id = x.Id,
+                            FullName = x.FullName,
+                            AvatarUrl = x.ImageUrl,
+                            TenantId = x.TenantId,
+                            UserName = x.UserName,
+                            EmailAddress = x.EmailAddress
+                        }
+                    ).ToList();
+
+                    data[i].CreatorUser = creatorUser;
+                    data[i].RecipientUsers = recipientUser;
+                    data[i].SupervisorUsers = supervisorUser;
+                }                
+                FileDto file = _repositoryExcelExporter.ExportToFile(data);
+                return DataResult.ResultSuccess(file, "Export excel success!");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw new AbpException(e.Message);
+            }
+        }
+
         private async Task<object> GetWorkUserInfor(MicroserviceResultDto<WorkDetailDto> input)
         {
             var query = _userRepository.GetAll().AsQueryable();

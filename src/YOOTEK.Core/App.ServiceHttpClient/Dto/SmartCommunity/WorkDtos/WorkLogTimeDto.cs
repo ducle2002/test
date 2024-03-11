@@ -22,6 +22,7 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public long? WorkTurnId { get; set; }
         public DateTime CreationTime { get; set; }
         public long CreatorUserId { get; set; }
+        public int? QualityWork { get; set; }
     }
     public class GetAllWorkLogTimeDto : CommonInputDto
     {
@@ -89,6 +90,7 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public int? Status { get; set; }
         public string? Note { get; set; }
         public List<string>? ImageUrls { get; set; }
+        public int? QualityWork { get; set; }
     }
     public class UpdateStatusWorkLogTimeDto
     {
