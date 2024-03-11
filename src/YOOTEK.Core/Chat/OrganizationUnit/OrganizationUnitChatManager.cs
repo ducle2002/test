@@ -16,6 +16,9 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using YOOTEK.Common;
+using Yootek.Notifications;
+using Yootek.EntityDb;
 
 namespace Yootek.Chat
 {
@@ -34,6 +37,7 @@ namespace Yootek.Chat
         private readonly IUserOrganizationUnitCache _userOrganizationUnitCache;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepos;
         private readonly AppOrganizationUnitManager _appOrganizationUnitManager;
+        private readonly IAppNotifier _appNotifier;
 
         public OrganizationUnitChatManager(
             IFriendshipManager friendshipManager,
@@ -48,7 +52,9 @@ namespace Yootek.Chat
             IChatFeatureChecker chatFeatureChecker,
             IRepository<UserOrganizationUnit, long> userOrganizationUnitRepos,
             IUnitOfWorkManager unitOfWorkManager,
-            AppOrganizationUnitManager appOrganizationUnitManager)
+            AppOrganizationUnitManager appOrganizationUnitManager,
+            IAppNotifier appNotifier
+            )
         {
             _friendshipManager = friendshipManager;
             _chatCommunicator = chatCommunicator;
@@ -63,6 +69,7 @@ namespace Yootek.Chat
             _userOrganizationUnitCache = userOrganizationUnitCache;
             _userOrganizationUnitRepos = userOrganizationUnitRepos;
             _appOrganizationUnitManager = appOrganizationUnitManager;
+            _appNotifier = appNotifier;
         }
 
         public async Task DeleteMessageOrgAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId, long id)
@@ -89,7 +96,8 @@ namespace Yootek.Chat
 
         private async Task HandleUserToOrgAsync(UserIdentifier senderIdentifier, UserIdentifier receiverIdentifier, string message,string fileUrl, Guid sharedMessageId, long? messageRepliedId, int typeMessage, bool isAdmin)
         {
-            var friendshipState = (await _friendshipManager.GetFriendshipOrNullAsync(senderIdentifier, receiverIdentifier))?.State;
+            var friend = await _friendshipManager.GetFriendshipOrNullAsync(senderIdentifier, receiverIdentifier);
+            var friendshipState = friend?.State;
             if (friendshipState == null && !isAdmin)
             {
                 friendshipState = FriendshipState.Accepted;
@@ -97,8 +105,7 @@ namespace Yootek.Chat
                 var receiverTenancyName = await GetTenancyNameOrNull(receiverIdentifier.TenantId);
 
                 var receiverUser = await _appOrganizationUnitManager.GetAsync(receiverIdentifier.UserId, receiverIdentifier.TenantId);
-                await _friendshipManager.CreateFriendshipAsync(
-                    new Friendship(
+                friend = new Friendship(
                         senderIdentifier,
                         receiverIdentifier,
                         receiverTenancyName,
@@ -108,8 +115,8 @@ namespace Yootek.Chat
                         FollowState.Following,
                         true,
                         true
-                        )
-                );
+                        );
+                    await _friendshipManager.CreateFriendshipAsync(friend);
             }
 
             ChatMessage sentMessage;
@@ -140,6 +147,7 @@ namespace Yootek.Chat
                     sentMessage,
                     messRep
                     );
+                await FireNotificationMessageToUserAsync(messRep, receiverIdentifier, friend);
             }
             else
             {
@@ -169,6 +177,8 @@ namespace Yootek.Chat
                     sentMessage,
                     messRep
                     );
+
+                await FireNotificationMessageToAdminAsync(messRep, receiverIdentifier, new[] { senderIdentifier } , friend);
             }
 
 
@@ -347,7 +357,6 @@ namespace Yootek.Chat
             }
         }
 
-
         public Task<ChatMessage> FindMessageAsync(int id, long userId)
         {
             throw new NotImplementedException();
@@ -364,7 +373,6 @@ namespace Yootek.Chat
                 }
             });
         }
-
 
         private async Task<string> GetTenancyNameOrNull(int? tenantId)
         {
@@ -405,6 +413,75 @@ namespace Yootek.Chat
             }
             return null;
         }
+
+        public async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
+        {
+            var messageData = new UserMessageNotificationDataBase(
+                          AppNotificationAction.ChatMessage,
+                          AppNotificationIcon.ChatMessageIcon,
+                          TypeAction.Detail,
+                          message.Message,
+                          "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
+                          "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
+                          friend.FriendImageUrl
+                          );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                friend.FriendUserName + " " + NotificationMessageCheckType(message),
+                message.Message,
+                "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
+                "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
+                new [] { user },
+                messageData,
+                AppType.USER
+               );
+        }
+
+        public async Task FireNotificationMessageToAdminAsync(ChatMessage message, UserIdentifier user, UserIdentifier[] admins, Friendship friend)
+        {
+            var messageData = new UserMessageNotificationDataBase(
+                          AppNotificationAction.ChatMessage,
+                          AppNotificationIcon.ChatMessageIcon,
+                          TypeAction.Detail,
+                          message.Message,
+                          "yooioc://app/chat/" + user.ToUserIdentifierStringNoti(),
+                          "yooioc://app/chat/" + user.ToUserIdentifierStringNoti(),
+                          friend.FriendImageUrl
+                          );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                friend.FriendUserName + " " + NotificationMessageCheckType(message),
+                message.Message,
+               "yooioc://app/chat/" + user.ToUserIdentifierStringNoti(),
+                "yooioc://app/chat/" + user.ToUserIdentifierStringNoti(),
+                admins,
+                messageData,
+                AppType.USER
+               );
+        }
+
+        private string NotificationMessageCheckType(ChatMessage mes)
+        {
+            if (mes.TypeMessage == null) return "";
+            switch (mes.TypeMessage.Value)
+            {
+                case (int)TypeMessageEnum.File:
+                case (int)TypeMessageEnum.Files:
+                    return "đã gửi file !";
+                case (int)TypeMessageEnum.Text:
+                    return "đã gửi tin nhắn !";
+                case (int)TypeMessageEnum.Video:
+                case (int)TypeMessageEnum.Videos:
+                    return "đã gửi video !";
+                case (int)TypeMessageEnum.Image:
+                case (int)TypeMessageEnum.Images:
+                    return "đã gửi hình ảnh !";
+                case (int)TypeMessageEnum.Link:
+                    return "đã gửi 1 liên kết !";
+                default:
+                    return "";
+            }
+
+        }
+
         #endregion
     }
 }

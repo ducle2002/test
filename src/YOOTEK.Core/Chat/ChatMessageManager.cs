@@ -74,7 +74,6 @@ namespace Yootek.Chat
             _appNotifier = appNotifier;
         }
 
-
         public async Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId, long id)
         {
             CheckReceiverExists(receiver);
@@ -87,6 +86,7 @@ namespace Yootek.Chat
             await HandleDeleteMessageReceiverAsync(receiver, message);
 
         }
+
         public async Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int typeMessage = 0)
         {
              CheckReceiverExists(receiver);
@@ -144,7 +144,6 @@ namespace Yootek.Chat
         {
             return await _chatMessageRepository.FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
         }
-
 
         // Lưu và gửi tin nhắn cho chính người gửi
         private async Task HandleSenderToReceiverAsync(UserIdentifier senderIdentifier, UserIdentifier receiverIdentifier, string message,string fileUrl, Guid sharedMessageId, long? messageRepliedId, int typeMessage)
@@ -295,7 +294,6 @@ namespace Yootek.Chat
             _userFriendsCache.UpdateFriend(receiver, senderAsFriend);
         }
 
-
         public async Task HandleDeleteMessageSenderAsync(UserIdentifier sender, ChatMessage message)
         {
             await _chatMessageRepository.DeleteAsync(message.Id);
@@ -332,7 +330,6 @@ namespace Yootek.Chat
             return null;
         }
 
-
         #region Common
         private int CheckTypeMessage(string message)
         {
@@ -363,7 +360,7 @@ namespace Yootek.Chat
             return null;
         }
 
-        public async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
+        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
         {
             var messageData = new UserMessageNotificationDataBase(
                           AppNotificationAction.ChatMessage,
@@ -379,13 +376,13 @@ namespace Yootek.Chat
                 message.Message,
                 AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
                 AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                new UserIdentifier[] {user},
+                new [] {user},
                 messageData,
                 AppType.USER
                );
         }
 
-        public string NotificationMessageCheckType(ChatMessage mes)
+        private string NotificationMessageCheckType(ChatMessage mes)
         {
             if (mes.TypeMessage == null) return "";
             switch(mes.TypeMessage.Value)

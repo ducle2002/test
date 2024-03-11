@@ -384,16 +384,10 @@ namespace Yootek.Services
 
                         var admins = await _store.GetAllChatCitizenManagerTenantAsync(feedback.UrbanId, AbpSession.TenantId);
                         var adminIds = admins.Select(a => new UserIdentifier(a.TenantId, a.Id)).ToArray();
-                        var processName = "Ban quản trị";
-                        if (feedback.OrganizationUnitId.HasValue)
-                        {
-                            var org = _appOrganizationUnitRepos.FirstOrDefault(x => x.Id == feedback.OrganizationUnitId);
-                            if (org != null) processName = org.DisplayName;
-                        }
                         if (admins != null && admins.Any())
                         {
                             _notificationCommunicator.SendCommentFeedbackToAdminTenant(admins, insertInput);
-                            await NotifierCommentCitizenReflect(insertInput, feedback.Name, processName, adminIds);                                                                                    //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
+                            await NotifierCommentCitizenReflect(insertInput, feedback.Name, adminIds);                                                                                    //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
                         }
                         mb.statisticMetris(t1, 0, "is_noti");
                         var data = DataResult.ResultSuccess(insertInput, "Insert success !");
@@ -648,30 +642,34 @@ namespace Yootek.Services
                 throw;
             }
         }
+        
         #region common
-        private async Task NotifierCommentCitizenReflect(CitizenReflectComment comment, string reflectName, string processName, UserIdentifier[] admin)
+        private async Task NotifierCommentCitizenReflect(CitizenReflectComment comment, string reflectName, UserIdentifier[] admin)
         {
+            var detailUrlApp = $"yooioc://app/feedback/comment?id={comment.FeedbackId}";
+            var detailUrlWA = $"/feedbacks/comment?id={comment.FeedbackId}";
             var messageDeclined = new NotificationWithContentIdDatabase(
             comment.Id,
             AppNotificationAction.CommentReflectCitizen,
             AppNotificationIcon.CommentReflectCitizenSuccessIcon,
             TypeAction.Detail,
-            $"Giao tiếp phản ánh {reflectName} tới {processName}. Nhấn để xem chi tiết !",
-            "",
-            ""
+            $"Bạn có 1 tin nhắn phản ánh {reflectName} mới. Nhấn để xem chi tiết !",
+            detailUrlApp,
+            detailUrlWA
             );
-            await _appNotifier.SendUserMessageNotifyFireBaseCheckOnlineAsync(
-                "Thông báo tin nhắn của phản ánh cư dân!",
-                $"Giao tiếp phản ánh {reflectName} tới {processName}. Nhấn để xem chi tiết !",
-                "",
-                "",
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Tin nhắn phản ánh số!",
+                $"Bạn có 1 tin nhắn phản ánh {reflectName} mới. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
                 admin.ToArray(),
-                messageDeclined);
+                messageDeclined,
+                AppType.IOC);
 
         }
         private async Task NotifierNewNotificationReflect(CitizenReflect data, UserIdentifier[] admin, string creatorName)
         {
-            var detailUrlApp = $"yoolife://app/feedback/detail?id={data.Id}";
+            var detailUrlApp = $"yooioc://app/feedback/detail?id={data.Id}";
             var detailUrlWA = $"/feedbacks?id={data.Id}";
             var messageDeclined = new NotificationWithContentIdDatabase(
                             data.Id,
@@ -690,17 +688,8 @@ namespace Yootek.Services
                 detailUrlWA,
                 admin.ToArray(),
                 messageDeclined,
-                AppType.USER
+                AppType.IOC
                 );
-
-            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //      "Yoolife phản ánh số!",
-            //      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-            //      detailUrlApp,
-            //      detailUrlWA,
-            //      admin.ToArray(),
-            //    messageDeclined);
-
 
         }
         #endregion

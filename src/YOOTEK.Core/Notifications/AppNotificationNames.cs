@@ -32,6 +32,9 @@
 
         public const string CityNotificationComment = "App.CityNotificationComment";
 
+        //Administrative
+        public const string StateAdministrative = "App.StateAdministrative";
+
         public const string ChatMessage = "App.ChatMessage";
         public const string BillPaymentSuccess = "App.BillPaymentSuccess";
         public const string BillPaymentCancel = "App.BillPaymentCancel";
@@ -68,6 +71,9 @@
 
         // digital service order
         public const string DigitalServiceOrder = "App.DigitalServiceOrderAction";
+
+        // friend chat
+        public const string FriendRequest = "App.FriendRequest";
     }
 
     public static class AppNotificationIcon
@@ -90,7 +96,7 @@
         public const string CityNotificationCommentIcon = "App.CityNotificationCommentIcon";
 
         public const string ChatMessageIcon = "App.ChatMessageIcon";
-
+        public const string StateAdministrativeIcon = "App.StateAdministrativeIcon";
         public const string BillPaymentSuccessIcon = "App.BillPaymentSuccessIcon";
         public const string BillPaymentCancelIcon = "App.BillPaymentCancelIcon";
 
@@ -128,5 +134,11 @@
 
         // digital service order
         public const string DigitalServiceOrder = "App.DigitalServiceOrderIcon";
+
+        // friend chat
+        public const string FriendShipIcon = "App.FriendShipIcon";
+
+        // friend chat
+        public const string TenantBusinessIcon = "App.TenantBusinessIcon";
     }
 }

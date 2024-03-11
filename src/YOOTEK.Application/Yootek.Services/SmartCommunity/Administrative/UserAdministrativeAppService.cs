@@ -11,6 +11,9 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
+using Yootek.Notifications;
+using Abp;
 
 namespace Yootek.Services
 {
@@ -32,6 +35,7 @@ namespace Yootek.Services
         private readonly IRepository<Administrative, long> _administrativeRepos;
         private readonly IRepository<Citizen, long> _citizenRepos;
         private readonly IRepository<AdministrativeValue, long> _valueAdministrativeRepos;
+        private readonly IAppNotifier _appNotifier;
         private readonly ISqlExecuter _sqlExecute;
 
         public UserAdministrativeAppService(
@@ -39,13 +43,15 @@ namespace Yootek.Services
             IRepository<Administrative, long> administrativeRepos,
             IRepository<Citizen, long> citizenRepos,
             IRepository<AdministrativeValue, long> valueAdministrativeRepos,
-            ISqlExecuter sqlExecute)
+            ISqlExecuter sqlExecute,
+            IAppNotifier appNotifier)
         {
             _typeAdministrativeRepos = typeAdministrativeRepos;
             _administrativeRepos = administrativeRepos;
             _citizenRepos = citizenRepos;
             _valueAdministrativeRepos = valueAdministrativeRepos;
             _sqlExecute = sqlExecute;
+            _appNotifier = appNotifier;
         }
 
 
@@ -252,6 +258,35 @@ namespace Yootek.Services
                 throw;
             }
         }
+
+        #region Common
+
+        private async Task NotifierNewAdministrative(Administrative data, UserIdentifier[] admin, string creatorName)
+        {
+            var detailUrlApp = $"yooioc://app/feedback/detail?id={data.Id}";
+            var detailUrlWA = $"/feedbacks?id={data.Id}";
+            var messageDeclined = new UserMessageNotificationDataBase(
+                            AppNotificationAction.ReflectCitizenNew,
+                            AppNotificationIcon.ReflectCitizenNewIcon,
+                            TypeAction.Detail,
+                            $"{creatorName} đã gửi 1 form hành chính số mới. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife hành chính số!",
+                $"{creatorName} đã tạo một phản ánh mới. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                admin.ToArray(),
+                messageDeclined,
+                AppType.IOC
+                );
+
+        }
+
+        #endregion
 
     }
 }
