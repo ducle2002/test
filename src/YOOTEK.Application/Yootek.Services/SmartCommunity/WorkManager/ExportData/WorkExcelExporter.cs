@@ -11,6 +11,7 @@ using System.Text.Json.Nodes;
 using Newtonsoft.Json;
 using System.Reflection.Emit;
 using Yootek.EntityDb;
+using DocumentFormat.OpenXml.Drawing;
 
 namespace Yootek.Services.ExportData
 {
@@ -34,122 +35,83 @@ namespace Yootek.Services.ExportData
             statusList.Add(new OptionItem() { Label = "Hoàn thành", Value = 4 });
             statusList.Add(new OptionItem() { Label = "Công việc đóng", Value = 5 });
             return CreateExcelPackage(
-                "WorkList" + DateTime.Now.ToString() + ".xlsx",
+                "WorkList.xlsx",
                 excelPackage =>
                 {
                     ISheet sheet = excelPackage.CreateSheet("WorkList");
-                    string nameArea = string.Empty;
+                    sheet.SetColumnWidth(0, 22 * 256);
+                    sheet.SetColumnWidth(1, 18 * 256);
+                    sheet.SetColumnWidth(2, 18 * 256);
+                    sheet.SetColumnWidth(3, 18 * 256);
+
                     int rowIndex = 0;
                     int columnIndex = 0;
                     // header row
-                    AddHeaderRow(sheet, columnIndex, rowIndex,
-                        new StyleCellDto()
-                        {
-                            IsBold = true,
-                            HeightInPoints = 35,
-                            //FillForegroundColor = IndexedColors.Green.Index,
-                            AlignmentHorizontal = HorizontalAlignment.Center,
-                            AlignmentVertical = VerticalAlignment.Center,
-                            Pattern = FillPattern.SolidForeground,
-                            Border = new(),
-                        },
-                        "DANH SÁCH CÔNG VIỆC"
-                    );
+                    IRow aptRow = sheet.CreateRow(rowIndex);
+                    CreateClsExcel(sheet, rowIndex, columnIndex, "DANH SÁCH CÔNG VIỆC", HorizontalAlignment.Center, VerticalAlignment.Center, true, false, false, 12, "Times New Roman", true, rowIndex, rowIndex, columnIndex, columnIndex + 3);
                     rowIndex += 2;
                     int index = 0;
-                    var normalFont = new StyleCellDto()
-                    {
-                        FillForegroundColor = rowIndex == 1 ? IndexedColors.LightYellow.Index : IndexedColors.White.Index,
-                        ColumnWidth = 25,
-                        HeightInPoints = 30,
-                    };
-                    var boldFont = new StyleCellDto()
-                    {
-                        FillForegroundColor = rowIndex == 1 ? IndexedColors.LightYellow.Index : IndexedColors.White.Index,
-                        ColumnWidth = 25,
-                        HeightInPoints = 30,
-                        IsBold = true,
-                    };
+
                     foreach (var item in items)
                     {
                         index++;
-                        CreateCellMerge(sheet, index + "." + item.Title, rowIndex, rowIndex, columnIndex, columnIndex + 3, new StyleCellDto()
-                        {
-                            AlignmentHorizontal = HorizontalAlignment.Left,
-                            AlignmentVertical = VerticalAlignment.Center,
-                            FillForegroundColor = IndexedColors.Grey25Percent.Index,
-                            WrapText = true,
-                            Border = new(),
-                            IsBold = true,
-                        });
-                        rowIndex++;
-                        columnIndex = 0;
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, index + ". " + item.Title, HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 12, "Times New Roman", true, rowIndex, rowIndex, columnIndex, columnIndex + 3, null, IndexedColors.LightYellow.Index); rowIndex++;
+
                         //Thông tin công việc
-                        AddHeaderCol(sheet, columnIndex, rowIndex,
-                            boldFont,
-                            ("Nội dung"),
-                            ("Người tạo"),
-                            ("Người xử lý"),
-                            ("Người giám sát"),
-                            ("Thời gian xử lý"),
-                            ("Nhắc việc"),
-                            ("Trạng thái công việc"),
-                            ("Công việc chi tiết")
-                        );
-                        //string time = (item.DateStart.HasValue ? item.DateStart.Value.ToString("dd/MM/yyyy HH:mm") : "") + "-" + (item.DateExpected.HasValue ? item.DateExpected.Value.ToString("dd/MM/yyyy HH:mm") : "");
-                        //string nhacviec = GetValueFrequency(item.Frequency, item.FrequencyOption);
-                        //CreateCellMerge(sheet, item.Content, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, item.CreatorUser.FullName, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, string.Join(", ", item.RecipientUsers.Select(x => x.FullName)), rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, string.Join(", ", item.SupervisorUsers.Select(x => x.FullName)), rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, time, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, nhacviec, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, statusList.Find(x => x.Value == item.Status.Value)?.Label, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        //CreateCellMerge(sheet, "", rowIndex, rowIndex, columnIndex + 1, columnIndex + 3, normalFont); rowIndex++;
-                        ////Công việc chi tiết
-                        //AddHeaderRow(sheet, columnIndex, rowIndex,
-                        // new StyleCellDto()
-                        // {
-                        //     FillForegroundColor = IndexedColors.Grey25Percent.Index,
-                        //     ColumnWidth = 25,
-                        //     HeightInPoints = 30,
-                        //     IsBold = true,
-                        // },
-                        // "Tên công việc",
-                        // "Mô tả",
-                        // "Số lần logtime",
-                        // "Logtime hoàn thành"
-                        //);
-                        //rowIndex++;
-                        //foreach (var workDetail in item.ListWorkDetails)
-                        //{
-                        //    AddHeaderRow(sheet, columnIndex, rowIndex,
-                        //     new StyleCellDto()
-                        //     {
-                        //         FillForegroundColor = IndexedColors.White.Index,
-                        //         ColumnWidth = 25,
-                        //         HeightInPoints = 30,
-                        //         IsBold = false,
-                        //     },
-                        //     (workDetail.Name),
-                        //     (workDetail.Description),
-                        //     (item.WorkLogTimes.Count(x => x.Status == LogTimeStatus.COMPLETED && x.WorkDetailId == workDetail.Id).ToString()),
-                        //     (item.WorkLogTimes.Count(x => x.WorkDetailId == workDetail.Id).ToString())                             
-                        //    );
-                        //    rowIndex++;
-                        //}
+                        string time = (item.DateStart.HasValue ? item.DateStart.Value.ToString("dd/MM/yyyy HH:mm") : "") + "-" + (item.DateExpected.HasValue ? item.DateExpected.Value.ToString("dd/MM/yyyy HH:mm") : "");
+                        string nhacviec = GetValueFrequency(item.Frequency, item.FrequencyOption);
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Nội dung", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, item.Content, HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Người tạo", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, item.CreatorUser.FullName, HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Người xử lý", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, string.Join(", ", item.RecipientUsers.Select(x => x.FullName)), HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Người giám sát", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, string.Join(", ", item.SupervisorUsers.Select(x => x.FullName)), HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Thời gian xử lý", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, time, HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Nhắc việc", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, nhacviec, HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Trạng thái công việc", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, statusList.Find(x => x.Value == item.Status.Value)?.Label, HorizontalAlignment.Left, VerticalAlignment.Center, false, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex + 1, columnIndex + 3); rowIndex++;
+
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Danh sách công việc chi tiết", HorizontalAlignment.Left, VerticalAlignment.Center, true, false, false, 11, "Times New Roman", true, rowIndex, rowIndex, columnIndex, columnIndex + 3); rowIndex++;
+
+
+                        //Công việc chi tiết
+                        aptRow = sheet.CreateRow(rowIndex);
+                        CreateClsExcel(sheet, rowIndex, columnIndex, "Tên công việc", HorizontalAlignment.Center, VerticalAlignment.Center, true, true, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 1, "Mô tả", HorizontalAlignment.Center, VerticalAlignment.Center, true, true, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 2, "Logtime HT", HorizontalAlignment.Center, VerticalAlignment.Center, true, true, false, 11);
+                        CreateClsExcel(sheet, rowIndex, columnIndex + 3, "Số lần logtime", HorizontalAlignment.Center, VerticalAlignment.Center, true, true, false, 11);
+                        rowIndex++;
+                        foreach (var workDetail in item.ListWorkDetails)
+                        {
+                            aptRow = sheet.CreateRow(rowIndex);
+                            CreateClsExcel(sheet, rowIndex, columnIndex, workDetail.Name, HorizontalAlignment.Left, VerticalAlignment.Center, false, true, false, 11);
+                            CreateClsExcel(sheet, rowIndex, columnIndex + 1, workDetail.Description, HorizontalAlignment.Left, VerticalAlignment.Center, false, true, false, 11);
+                            CreateClsExcel(sheet, rowIndex, columnIndex + 2, item.WorkLogTimes.Count(x => x.Status == LogTimeStatus.COMPLETED && x.WorkDetailId == workDetail.Id).ToString(), HorizontalAlignment.Center, VerticalAlignment.Center, false, true, false, 11);
+                            CreateClsExcel(sheet, rowIndex, columnIndex + 3, item.WorkLogTimes.Count(x => x.WorkDetailId == workDetail.Id).ToString(), HorizontalAlignment.Center, VerticalAlignment.Center, false, true, false, 11);
+                            rowIndex++;
+                        }
                         rowIndex++;
                     }
-
-                    //// format
-                    //SetColumnStyle(sheet, 0, 0, 0, new StyleCellDto()
-                    //{
-                    //    AlignmentHorizontal = HorizontalAlignment.Center,
-                    //    AlignmentVertical = VerticalAlignment.Center,
-                    //    ColumnWidth = 25,
-                    //    HeightInPoints = 30,
-                    //});
-                    //SetAutoSizeColumn(sheet, 1, sheet.GetRow(0).LastCellNum);
                 });
         }
 
