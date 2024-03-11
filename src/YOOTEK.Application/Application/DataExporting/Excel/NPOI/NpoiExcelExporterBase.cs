@@ -12,6 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using IndexedColors = NPOI.SS.UserModel.IndexedColors;
+using MailKit;
+using OfficeOpenXml.Style;
+using System.Drawing;
 
 namespace Yootek.DataExporting.Excel.NPOI
 {
@@ -189,7 +192,7 @@ namespace Yootek.DataExporting.Excel.NPOI
             if (DateTime.TryParse(cell.StringCellValue, out var datetime))
                 cell.SetCellValue(datetime);
         }
-        
+
         protected void CreateCellMerge(ISheet sheet, string value, int firstRow, int lastRow, int firstCol, int lastCol, StyleCellDto styleCell)
         {
             CreateMultipleRow(sheet, firstRow, lastRow);
@@ -235,8 +238,8 @@ namespace Yootek.DataExporting.Excel.NPOI
         protected void CreateCellMergeHeader(ISheet sheet, IRow aptRow, string value, int firstRow, int lastRow, int firstCol, int lastCol)
         {
             ICell cell = aptRow.CreateCell(firstCol);
-           
-            if(!(firstRow == lastRow && lastCol == firstCol))
+
+            if (!(firstRow == lastRow && lastCol == firstCol))
             {
                 CellRangeAddress celAptMerge = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
                 sheet.AddMergedRegion(celAptMerge);
@@ -249,18 +252,69 @@ namespace Yootek.DataExporting.Excel.NPOI
             font.FontName = "Times New Roman";
             cellStyle.SetFont(font);
             cellStyle.Alignment = HorizontalAlignment.Center;
-           
+
             cellStyle.WrapText = true;
 
             cell.CellStyle = cellStyle;
             cell.SetCellValue(value);
         }
+        
+        protected void CreateClsExcel(ISheet sheet, int row, int col, string value, HorizontalAlignment horAlign = HorizontalAlignment.Left, VerticalAlignment verAlign = VerticalAlignment.Center, bool isBold = false, bool isBorder = true, bool isWrapText = false, int fontSize = 12, string fontName = "Times New Roman", bool isMersg = false, int firstRow = 0, int lastRow = 0, int firstCol = 0, int lastCol = 0, object color = null, object bgcolor = null)
+        {
+            IRow aptRow = sheet.GetRow(row);
+            ICell cell = aptRow.CreateCell(col);
+            CellRangeAddress celAptMerge = null;
+            if (isMersg)
+            {
+                celAptMerge = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+                sheet.AddMergedRegion(celAptMerge);
+            }
+            ICellStyle cellStyle = cell.Sheet.Workbook.CreateCellStyle();
+
+            // font
+            IFont font = cell.Sheet.Workbook.CreateFont();
+            font.IsBold = isBold;
+            font.FontHeightInPoints = fontSize;
+            font.FontName = fontName;            
+            if (color != null)
+                font.Color = (short)color;
+            cellStyle.SetFont(font);
+            if (bgcolor != null)
+                cellStyle.FillForegroundColor = (short)bgcolor;
+            // alignment
+            cellStyle.Alignment = horAlign;
+            cellStyle.VerticalAlignment = verAlign;
+            // border 
+
+            if (isBorder)
+            {
+                cellStyle.BorderBottom = BorderStyle.Thin;
+                cellStyle.BorderRight = BorderStyle.Thin;
+                cellStyle.BorderLeft = BorderStyle.Thin;
+                cellStyle.BorderTop = BorderStyle.Thin;
+                if (isMersg)
+                {
+                    RegionUtil.SetBorderTop((int)BorderStyle.Thin, celAptMerge, sheet);
+                    RegionUtil.SetBorderBottom((int)BorderStyle.Thin, celAptMerge, sheet);
+                    RegionUtil.SetBorderLeft((int)BorderStyle.Thin, celAptMerge, sheet);
+                    RegionUtil.SetBorderRight((int)BorderStyle.Thin, celAptMerge, sheet);
+                }   
+            }
+
+            // wrap
+            cellStyle.WrapText = isWrapText;
+            cell.CellStyle = cellStyle;
+            cell.SetCellValue(value);
+
+        }
+
+
 
         protected void CreateCellHeader(ISheet sheet, IRow aptRow, string value, int firstCol)
         {
-           
+
             ICell cell = aptRow.CreateCell(firstCol);
-          
+
             ICellStyle cellStyle = cell.Sheet.Workbook.CreateCellStyle();
 
             IFont font = cell.Sheet.Workbook.CreateFont();
@@ -388,13 +442,16 @@ namespace Yootek.DataExporting.Excel.NPOI
             cellStyle.FillPattern = (FillPattern)styleCell.Pattern;
 
             // border 
+
             cellStyle.BorderBottom = BorderStyle.Thin;
+
             // wrap
             cellStyle.WrapText = (bool)styleCell.WrapText;
 
             cell.CellStyle = cellStyle;
         }
-        private void AddHeaderCell(ISheet sheet, int columnIndex, int rowIndex, string headerText, StyleCellDto styleCell)
+        
+        public void AddHeaderCell(ISheet sheet, int columnIndex, int rowIndex, string headerText, StyleCellDto styleCell)
         {
             IRow row = sheet.GetRow(rowIndex);
             ICell cell = row.CreateCell(columnIndex);
@@ -421,8 +478,7 @@ namespace Yootek.DataExporting.Excel.NPOI
             public StyleCellDto()
             {
 
-            }
-
+            }            
             public StyleCellDto(StyleCellDto data)
             {
                 FontHeightInPoints = data.FontHeightInPoints;
