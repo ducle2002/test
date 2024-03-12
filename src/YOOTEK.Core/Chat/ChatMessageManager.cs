@@ -362,24 +362,27 @@ namespace Yootek.Chat
 
         private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
         {
-            var messageData = new UserMessageNotificationDataBase(
-                          AppNotificationAction.ChatMessage,
-                          AppNotificationIcon.ChatMessageIcon,
-                          TypeAction.Detail,
-                          message.Message,
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                          friend.FriendImageUrl                           
-                          );
-            await _appNotifier.SendMessageNotificationInternalAsync(
-                friend.FriendUserName + " " + NotificationMessageCheckType(message),
-                message.Message,
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                new [] {user},
-                messageData,
-                AppType.USER
-               );
+            try
+            {
+                var messageData = new UserMessageNotificationDataBase(
+                         AppNotificationAction.ChatMessage,
+                         AppNotificationIcon.ChatMessageIcon,
+                         TypeAction.Detail,
+                         message.Message,
+                         AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                         AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                         friend.FriendImageUrl
+                         );
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    friend.FriendUserName + " " + NotificationMessageCheckType(message),
+                    message.Message,
+                    AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                    AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                    new[] { user },
+                    messageData,
+                    AppType.USER
+                   );
+            }catch { }
         }
 
         private string NotificationMessageCheckType(ChatMessage mes)

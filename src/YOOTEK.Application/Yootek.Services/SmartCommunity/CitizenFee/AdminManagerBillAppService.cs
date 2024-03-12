@@ -601,7 +601,7 @@ namespace Yootek.Services
 
                 foreach (var item in result)
                 {
-                    _billUtilAppService.SendUserBillToClient(result.ToArray());
+                    await _billUtilAppService.SendUserBillToClient(result.ToArray());
                 }
             }
             catch (Exception e)
@@ -2239,7 +2239,6 @@ namespace Yootek.Services
         #endregion
 
 
-
         #region Tạo hoá đơn của đồng hồ công tơ
         public async Task<object> CreateBillMeterMonthly(List<CreateBillMeterMonthlyInput> inputs)
         {
@@ -2539,7 +2538,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
 
         #endregion
 

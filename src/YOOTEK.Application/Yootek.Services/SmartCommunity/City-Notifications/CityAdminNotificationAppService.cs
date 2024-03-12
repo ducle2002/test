@@ -599,7 +599,7 @@ namespace Yootek.Services
                 if (data.ReceiveAll == RECEIVE_TYPE.TENANT_ALL)
                 {
                     var citizens = (from cz in _citizenRepos.GetAll()
-                                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                     await _appNotifier.SendMessageNotificationInternalAsync(
                         "Yoolife thông báo số !",
                         $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
@@ -623,7 +623,7 @@ namespace Yootek.Services
                     var citizens = (from cz in _citizenRepos.GetAll()
                                     join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
                                     where buIds.Contains((long)cz.UrbanId)
-                                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                     await _appNotifier.SendMessageNotificationInternalAsync(
                         "Yoolife thông báo số !",
                         $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
@@ -652,7 +652,7 @@ namespace Yootek.Services
                         var listCitizens = (from cz in _citizenRepos.GetAll()
                                             join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
                                             where cz.OrganizationUnitId == building && buIds.Contains(cz.BuildingId ?? 0)
-                                            select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                            select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                         citizens.Add(listCitizens);
                     }
 
@@ -688,7 +688,7 @@ namespace Yootek.Services
                                              join sh in _smartHomeRepos.GetAll()
                                              on cz.ApartmentCode equals sh.ApartmentCode
                                              where cz.State == STATE_CITIZEN.ACCEPTED && data.ReceiverGroupCode.Contains(cz.ApartmentCode) && buIds.Contains((long)cz.UrbanId) && buIds.Contains((long)cz.BuildingId)
-                                             select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                             select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                     await _appNotifier.SendMessageNotificationInternalAsync(
                         "Yoolife thông báo số !",
                         $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
