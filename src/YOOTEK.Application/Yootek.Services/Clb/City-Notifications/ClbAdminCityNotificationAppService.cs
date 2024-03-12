@@ -517,7 +517,7 @@ namespace Yootek.Services
             if (data.ReceiveAll == RECEIVE_TYPE.TENANT_ALL)
             {
                 var citizens = (from cz in _citizenRepos.GetAll()
-                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                 await _appNotifier.SendUserMessageNotifyFireBaseAsync(
                      "Yoolife thông báo số !",
                      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
@@ -530,7 +530,7 @@ namespace Yootek.Services
             else if (data.ReceiveAll == RECEIVE_TYPE.URBAN_ALL)
             {
                 var citizens = (from cz in _citizenRepos.GetAll()
-                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                 await _appNotifier.SendUserMessageNotifyFireBaseAsync(
                      "Yoolife thông báo số !",
                      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
@@ -543,7 +543,7 @@ namespace Yootek.Services
             else if (data.ReceiveAll == RECEIVE_TYPE.BUIDING_ALL)
             {
                 var citizens = (from cz in _citizenRepos.GetAll()
-                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                 await _appNotifier.SendUserMessageNotifyFireBaseAsync(
                      "Yoolife thông báo số !",
                      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
@@ -559,7 +559,7 @@ namespace Yootek.Services
                                          join sh in _smartHomeRepos.GetAll()
                                          on cz.ApartmentCode equals sh.ApartmentCode
                                          where cz.State == STATE_CITIZEN.ACCEPTED && data.ReceiverGroupCode.Contains(cz.ApartmentCode)
-                                         select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                                         select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
                 await _appNotifier.SendUserMessageNotifyFireBaseAsync(
                      "Yoolife thông báo số !",
                      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",

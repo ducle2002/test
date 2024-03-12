@@ -25,6 +25,7 @@ using Yootek.Application.Chat.Dto;
 using Yootek.Authorization.Users;
 using Abp.UI;
 using Abp.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Yootek.Chat
 {
@@ -64,22 +65,50 @@ namespace Yootek.Chat
         }
 
 
-        //public async Task<bool> SendMessage(SendChatMessageInput input)
-        //{
-        //    var sender = AbpSession.ToUserIdentifier();
-        //    var receiver = new UserIdentifier(input.TenantId, input.UserId);
-        //    try
-        //    {
-        //        await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Warn("Could not send chat message to user: " + receiver);
-        //        Logger.Warn(ex.ToString(), ex);
-        //        return false;
-        //    }
-        //}
+        public async Task<bool> SendMessage(SendChatMessageInput input)
+        {
+            var sender = AbpSession.ToUserIdentifier();
+            var receiver = new UserIdentifier(input.TenantId, input.UserId);
+            try
+            {
+                await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn(ex.ToString(), ex);
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public async Task<bool> DeleteMessage(DeleteChatMessageInput input)
+        {
+            var sender = AbpSession.ToUserIdentifier();
+            var receiver = new UserIdentifier(input.TenantId, input.UserId);
+
+            try
+            {
+                using (AbpSession.Use(AbpSession.GetTenantId(), AbpSession.GetUserId()))
+                {
+                    await _chatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId, input.Id);
+                    return true;
+                }
+            }
+            catch (UserFriendlyException ex)
+            {
+                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn(ex.ToString(), ex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn(ex.ToString(), ex);
+                return false;
+            }
+        }
 
         public async Task<DataResult> CountMessageUnreadUser()
         {
@@ -322,4 +351,13 @@ namespace Yootek.Chat
         public int TypeMessage { get; set; }
         public bool IsAdmin { get; set; }
     }
+
+    public class DeleteChatMessageInput
+    {
+        public long Id { get; set; }
+        public int? TenantId { get; set; }
+        public Guid SharedMessageId { get; set; }
+        public long UserId { get; set; }
+    }
+
 }

@@ -22,8 +22,6 @@ using Abp.MultiTenancy;
 using System.Security.Claims;
 using Yootek.Organizations.Cache;
 using Abp.Runtime.Session;
-using Yootek.Friendships.Cache;
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Yootek.Organizations.OrganizationStructure;
 using Yootek.Organizations.Cache.Dto;

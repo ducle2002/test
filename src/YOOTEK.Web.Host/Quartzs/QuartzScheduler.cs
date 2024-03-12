@@ -128,7 +128,6 @@ namespace Yootek.Web.Host
             return Task.CompletedTask;
         }
 
-
     }
 
 }

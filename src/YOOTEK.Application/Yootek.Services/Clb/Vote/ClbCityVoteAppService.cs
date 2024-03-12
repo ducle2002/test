@@ -367,6 +367,7 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Vote
                 throw;
             }
         }
+
         public Task<DataResult> DeleteMultipleCityVote([FromBody] List<long> ids)
         {
             try
@@ -691,7 +692,7 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Vote
             var detailUrlApp = $"yoolife://app/evote/detail?id={vote.Id}";
             var citizens = (from cz in _citizenRepos.GetAll()
                             where cz.State == STATE_CITIZEN.ACCEPTED
-                            select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).ToList();
+                            select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).Distinct().ToList();
 
             var messageDeclined = new UserMessageNotificationDataBase(
                             AppNotificationAction.CityVoteNew,
