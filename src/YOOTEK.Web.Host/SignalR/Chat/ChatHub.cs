@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Json;
 
 namespace Yootek.Web.Host.Chat
 {
@@ -93,8 +94,8 @@ namespace Yootek.Web.Host.Chat
             }
             catch (Exception ex)
             {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
+                Logger.Fatal("Could not send chat message to user: " + receiver);
+                Logger.Fatal(ex.ToJsonString());
                 return false;
             }
         }
@@ -113,16 +114,10 @@ namespace Yootek.Web.Host.Chat
                     return true;
                 }
             }
-            catch (UserFriendlyException ex)
-            {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
-                return false;
-            }
             catch (Exception ex)
             {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
+                Logger.Fatal("Could not send chat message to user: " + receiver);
+                Logger.Fatal(ex.ToJsonString());
                 return false;
             }
         }
