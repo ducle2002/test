@@ -538,7 +538,7 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Event
             );
             
             var member = (from cz in _memberRepos.GetAll()
-                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
             
             await _appNotifier.SendUserMessageNotifyFireBaseAsync(
                 "Yoolife thông báo số !",
