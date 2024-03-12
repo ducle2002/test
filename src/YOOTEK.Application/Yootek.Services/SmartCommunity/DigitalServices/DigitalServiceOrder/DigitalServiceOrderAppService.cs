@@ -336,7 +336,6 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                             AppType.USER);
                         break;
                     case (int)TypeActionUpdateStateServiceOrder.FEEDBACK:
-                        detailUrlApp = "yoolife://app/digital-service-order";
                         var messageAcceptFeed = new UserMessageNotificationDataBase(
                              AppNotificationAction.DigitalServiceOrder,
                             AppNotificationIcon.DigitalServiceOrder,
@@ -356,7 +355,6 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                             AppType.USER);
                         break;
                     case (int)TypeActionUpdateStateServiceOrder.COMPLETE:
-                        detailUrlApp = "yoolife://app/digital-service-order";
                         var messageAcceptCom = new UserMessageNotificationDataBase(
                              AppNotificationAction.DigitalServiceOrder,
                             AppNotificationIcon.DigitalServiceOrder,

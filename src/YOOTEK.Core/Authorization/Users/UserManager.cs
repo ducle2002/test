@@ -27,6 +27,7 @@ using Yootek.Organizations.OrganizationStructure;
 using Yootek.Organizations.Cache.Dto;
 using Abp.AutoMapper;
 using Abp.Json;
+using Abp.Linq.Extensions;
 
 namespace Yootek.Authorization.Users
 {
@@ -347,13 +348,19 @@ namespace Yootek.Authorization.Users
             );
         }
 
-        public async Task<List<UserIdentifier>> GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE type)
+        public async Task<List<UserIdentifier>> GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE type, long? parentId = null)
         {
             try
             {
                 using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
                 {
-                    var ids = await _organizationUnitRepository.GetAll().Where(x => x.Type == type).Select(x => x.ParentId ?? 0).Distinct().ToListAsync();
+                    var parent = await _organizationUnitRepository.FirstOrDefaultAsync(parentId?? 0);
+                    var ids = await _organizationUnitRepository.GetAll()
+                        .Where(x => x.Type == type)
+                        .WhereIf(parentId.HasValue && parent != null, x => x.Code.StartsWith(parent.Code))
+                        .Select(x => x.ParentId ?? 0)
+                        .Distinct()
+                        .ToListAsync();
                     var users = await _userOrganizationUnitRepository.GetAll().
                         Where(x => ids.Contains(x.OrganizationUnitId))
                         .Select(x => new UserIdentifier(x.TenantId, x.UserId))

@@ -32,7 +32,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         Task<MicroserviceResultDto<List<UpdateStateRelateDto>>> UpdateStateWork(UpdateStateWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteWork(DeleteWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteManyWork(DeleteManyWorkDto input);
-        Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input);
+        Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotify(GetAllWorksNotifyQuery input);
         Task<MicroserviceResultDto<List<WorkExcelDto>>> GetListWorkExcel(GetExcelWorkDto input);
 
         #endregion
@@ -137,7 +137,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<WorkDto>>>();
         }
-        public async Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input)
+        public async Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotify(GetAllWorksNotifyQuery input)
         {
             var query = "api/v1/work/get-list-work-notify" + input.GetStringQueryUri();
             using var request = new HttpRequestMessage(HttpMethod.Get, query);

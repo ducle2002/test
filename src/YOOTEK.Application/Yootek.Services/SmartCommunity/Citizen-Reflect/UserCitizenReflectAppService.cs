@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.UserFeedbackCommentEnum;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Yootek.Services
 {
@@ -316,7 +317,7 @@ namespace Yootek.Services
                 citizenInsert.Name = "PA0" + id.ToString();
                 citizenInsert.Id = id;
 
-                Citizen? citizen = (from us in _citizenRepos.GetAll()
+                Citizen citizen = (from us in _citizenRepos.GetAll()
                                     where AbpSession.UserId == us.AccountId
                                     select us).FirstOrDefault();
                 if (citizen != null)
@@ -335,11 +336,11 @@ namespace Yootek.Services
                 await _citizenReflectCommentRepos.InsertAndGetIdAsync(feedbackComment);
                 await CurrentUnitOfWork.SaveChangesAsync();
 
-                List<User>? admins = await _store.GetUserByOrganizationUnitIdAsync(0, AbpSession.TenantId);
+                var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.FEEDBACK, input.UrbanId);
 
                 if (admins != null && admins.Any())
-                {
-                    _notificationCommunicator.SendNotificationToAdminTenant(admins, citizenInsert);
+                {       
+                    await NotifierNewNotificationReflect(citizenInsert, admins.ToArray(), citizen.FullName);
                 }
                 return DataResult.ResultSuccess(citizenInsert, "Insert success !");
             }
