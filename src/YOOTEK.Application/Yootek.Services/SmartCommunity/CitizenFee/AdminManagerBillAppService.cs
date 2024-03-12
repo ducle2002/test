@@ -2138,7 +2138,7 @@ namespace Yootek.Services
                 result = pctotal + result;
             }
 
-            return (int)result;
+            return (double)(int)result;
         }
 
         #endregion
@@ -2566,7 +2566,8 @@ namespace Yootek.Services
                 result = countCitizen * priceM.Value;
             }
 
-            return (int)result;
+            return (double)(int)result;
+
         }
         #endregion
         #region BillEmailHistory
