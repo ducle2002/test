@@ -1,3 +1,9 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Authorization;
 using Abp.Authorization.Users;
@@ -7,6 +13,11 @@ using Abp.Domain.Repositories;
 using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Abp.UI;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using OfficeOpenXml;
 using Yootek.Application;
 using Yootek.Authorization;
 using Yootek.Authorization.Users;
@@ -14,26 +25,13 @@ using Yootek.Common.DataResult;
 using Yootek.Common.Enum;
 using Yootek.Configuration;
 using Yootek.EntityDb;
-using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
 using Yootek.Notifications;
 using Yootek.Organizations;
 using Yootek.QueriesExtension;
 using Yootek.Services.Dto;
 using Yootek.Services.SmartCommunity.ExcelBill.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
-using OfficeOpenXml;
-using Org.BouncyCastle.Math;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.IO.Packaging;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
+using YOOTEK.Yootek.Services;
 
 
 namespace Yootek.Services
@@ -59,6 +57,7 @@ namespace Yootek.Services
         private readonly IRepository<MeterMonthly, long> _meterMonthlyRepository;
         private readonly IRepository<Meter, long> _meterRepository;
         private readonly IRepository<MeterType, long> _meterTypeRepository;
+        private readonly IRepository<BillEmailHistory, long> _billEmailHistoryRepository;
 
         private readonly BillUtilAppService _billUtilAppService;
         private readonly IRepository<UserBillVehicleInfo, long> _billVehicleInfoRepository;
@@ -82,6 +81,7 @@ namespace Yootek.Services
             IRepository<Meter, long> meterRepository,
             IRepository<MeterType, long> meterTypeRepository,
             IRepository<CitizenTemp, long> citizenTempRepo,
+             IRepository<BillEmailHistory, long> billEmailHistoryRepository,
             BillUtilAppService billUtilAppService,
             IRepository<UserBillVehicleInfo, long> billVehicleInfoRepository,
             IAppNotifier appNotifier,
@@ -93,6 +93,7 @@ namespace Yootek.Services
             IAppConfigurationAccessor configurationAccessor,
             IRepository<CitizenParking, long> citizenParkingRepository)
         {
+            _billEmailHistoryRepository = billEmailHistoryRepository;
             _userBillRepo = userBillRepo;
             _citizenTempRepo = citizenTempRepo;
             _billDebtRepository = billDebtRepository;
@@ -1062,7 +1063,7 @@ namespace Yootek.Services
                     userBill.LastCost = double.Parse(worksheet.Cells[row, LAST_INDEX].Value.ToString());
                 }
 
-                if(userBill.MonthNumber > 1)
+                if (userBill.MonthNumber > 1)
                 {
                     userBill.LastCost = userBill.MonthNumber * userBill.LastCost;
                 }
@@ -1424,7 +1425,7 @@ namespace Yootek.Services
                     formulaDetails = formulas.ToArray(),
                     pricesType = 5,
                     vehicleFormulaDetail = billConfig
-                    
+
                 };
 
                 if (citizens.Any())
@@ -1514,9 +1515,9 @@ namespace Yootek.Services
                         userBill.LastCost = (userBill.CarNumber ?? 0) * billConfigProperties.Prices[0].Value
                             + (userBill.MotorbikeNumber ?? 0) * billConfigProperties.Prices[1].Value
                              + (userBill.BicycleNumber ?? 0) * billConfigProperties.Prices[2].Value
-                             //+ (userBill.ECarNumber ?? 0) * billConfigProperties.Prices[3].Value
-                             //+ (userBill.EMotorNumber ?? 0) * billConfigProperties.Prices[4].Value
-                             //+ (userBill.EBikeNumber ?? 0) * billConfigProperties.Prices[5].Value
+                              //+ (userBill.ECarNumber ?? 0) * billConfigProperties.Prices[3].Value
+                              //+ (userBill.EMotorNumber ?? 0) * billConfigProperties.Prices[4].Value
+                              //+ (userBill.EBikeNumber ?? 0) * billConfigProperties.Prices[5].Value
                               + (userBill.OtherVehicleNumber ?? 0) * billConfigProperties.Prices[3].Value;
                     }
                     catch { }
@@ -1693,7 +1694,7 @@ namespace Yootek.Services
             try
             {
                 if (userBills == null || userBills.Count() == 0) return;
-                
+
 
                 foreach (UserBill userBill in userBills)
                 {
@@ -1837,7 +1838,7 @@ namespace Yootek.Services
                                          "" + DateTime.Now.Year;
                         if (userBill1.BillType == BillType.Parking)
                         {
-                           await  CreateBillVehicleInfos(userBill1);
+                            await CreateBillVehicleInfos(userBill1);
                         }
                     }
                 }
@@ -1877,7 +1878,7 @@ namespace Yootek.Services
         {
             try
             {
-                 string listVehiclesString = JsonConvert.DeserializeObject<dynamic>(bill.Properties)?.vehicles?.ToString() ?? null;
+                string listVehiclesString = JsonConvert.DeserializeObject<dynamic>(bill.Properties)?.vehicles?.ToString() ?? null;
                 if (listVehiclesString != null)
                 {
                     var vehicles = JsonConvert.DeserializeObject<List<CitizenVehiclePas>>(listVehiclesString);
@@ -1899,7 +1900,8 @@ namespace Yootek.Services
                 }
 
 
-            }catch { }
+            }
+            catch { }
         }
 
         protected async Task<IEnumerable<KeyValuePair<string, List<UserBill>>>> QueryUserBillByMonth(GetAllBillsByMonthDto input)
@@ -2049,7 +2051,7 @@ namespace Yootek.Services
                 || type.ToLower().Contains("bike")
                 || type.ToLower().Contains("xe đạp")
                 || type.ToLower().Contains("자전거".ToLower())) return VehicleType.Bicycle;
-            
+
             return VehicleType.Other;
         }
 
@@ -2136,7 +2138,7 @@ namespace Yootek.Services
                 result = pctotal + result;
             }
 
-            return (double)(int)result;
+            return (int)result;
         }
 
         #endregion
@@ -2308,7 +2310,7 @@ namespace Yootek.Services
                         }
                         else userBill.DueDate = DateTime.Now;
 
-                        var listBillConfig = apartment.BillConfig;    
+                        var listBillConfig = apartment.BillConfig;
                         if (listBillConfig == null)
                         {
 
@@ -2566,7 +2568,50 @@ namespace Yootek.Services
                 result = countCitizen * priceM.Value;
             }
 
-            return (double)(int)result;
+            return (int)result;
+        }
+        #endregion
+        #region BillEmailHistory
+        public async Task<object> GetAllBillEmailHistory(BillEmailHistoryInput input)
+        {
+            try
+            {
+                IQueryable<GetAllBillEmailHistory> query = (from u in _billEmailHistoryRepository.GetAll()
+                                                            join cz in _citizenTempRepo.GetAll() on u.CitizenTempId equals cz.Id into tb_cz
+                                                            from cz in tb_cz.DefaultIfEmpty()
+                                                            select new GetAllBillEmailHistory()
+                                                            {
+                                                                Id = u.Id,
+                                                                BuildingId = cz.BuildingId,
+                                                                UrbanId = cz.UrbanId,
+                                                                BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == cz.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
+                                                                UrbanName = _organizationUnitRepository.GetAll().Where(x => x.Id == cz.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
+                                                                ApartmentCode = u.ApartmentCode,
+                                                                OwnerName = cz.FullName,
+                                                                Period = u.Period,
+                                                                EmailTemplate = u.EmailTemplate,
+                                                                CreationTime = u.CreationTime,
+                                                                CreatorUserId = u.CreatorUserId,
+                                                                CreatorUserName = _userRepos.GetAll().Where(x => x.Id == u.CreatorUserId).Select(x => x.FullName).FirstOrDefault(),
+
+                                                            })
+          .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                 .WhereIf(!input.ApartmentCode.IsNullOrEmpty(), x => x.ApartmentCode == input.ApartmentCode)
+          .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+          .WhereIf(input.CreationTime.HasValue, x => x.CreationTime.Date == input.CreationTime.Value.Date)
+         .WhereIf(input.Period.HasValue, x => x.Period.Month == input.Period.Value.Month && x.Period.Year == input.Period.Value.Year)
+         .ApplySearchFilter(input.Keyword, u => u.OwnerName, u => u.BuildingName, u => u.UrbanName, u => u.ApartmentCode)
+         .AsQueryable();
+                var result = await query.PageBy(input).ToListAsync();
+                var data = DataResult.ResultSuccess(result, "Get success", query.Count());
+
+                return data;
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
         }
         #endregion
     }
