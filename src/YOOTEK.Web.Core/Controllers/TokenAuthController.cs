@@ -1,4 +1,4 @@
-﻿using Abp;
+using Abp;
 using Abp.Auditing;
 using Abp.Authorization;
 using Abp.Authorization.Users;
@@ -139,14 +139,14 @@ namespace Yootek.Controllers
                 {
                     AccessToken = accessToken,
                     EncryptedAccessToken = GetEncryptedAccessToken(accessToken),
-                    ExpireInSeconds = 30,
+                    ExpireInSeconds = (int)_configuration.AccessTokenExpiration.TotalSeconds,
                     UserId = loginResult.User.Id,
                     EmailAddress = loginResult.User.EmailAddress,
                     TenantId = loginResult.Tenant != null ? loginResult.Tenant.Id : 0,
                     ThirdAccounts = loginResult.User.ThirdAccounts,
                     MobileConfig = loginResult.Tenant != null ? loginResult.Tenant.MobileConfig : mobileConfig,
                     RefreshToken = refreshToken.token,
-                    RefreshTokenExpireInSeconds = 60,
+                    RefreshTokenExpireInSeconds = (int)_configuration.RefreshTokenExpiration.TotalSeconds,
                 };
 
                 Logger.Fatal(JsonConvert.SerializeObject(result));
