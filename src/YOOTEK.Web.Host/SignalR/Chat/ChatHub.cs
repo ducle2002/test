@@ -86,11 +86,8 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
-                    return true;
-                }
+                await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
+                return true;
             }
             catch (Exception ex)
             {
@@ -108,11 +105,8 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _chatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId, input.Id);
-                    return true;
-                }
+                await _chatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId, input.Id);
+                return true;
             }
             catch (Exception ex)
             {

@@ -76,34 +76,40 @@ namespace Yootek.Chat
 
         public async Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId, long id)
         {
-            CheckReceiverExists(receiver);
-            var message = await _chatMessageRepository.FirstOrDefaultAsync(x => (x.Id == id || x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
-            if (message == null)
+            using(var uow = UnitOfWorkManager.Begin())
             {
-                return;
+                CheckReceiverExists(receiver);
+                var message = await _chatMessageRepository.FirstOrDefaultAsync(x => (x.Id == id || x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
+                if (message == null)
+                {
+                    return;
+                }
+                await HandleDeleteMessageSenderAsync(sender, message);
+                await HandleDeleteMessageReceiverAsync(receiver, message);
+                await uow.CompleteAsync();
             }
-            await HandleDeleteMessageSenderAsync(sender, message);
-            await HandleDeleteMessageReceiverAsync(receiver, message);
 
         }
 
         public async Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int typeMessage = 0)
         {
-             CheckReceiverExists(receiver);
-
-            // _chatFeatureChecker.CheckChatFeatures(sender.TenantId, receiver.TenantId);
-
-            var friendshipState = (await _friendshipManager.GetFriendshipOrNullAsync(sender, receiver))?.State;
-            if (friendshipState == FriendshipState.Blocked)
+            using (var uow = UnitOfWorkManager.Begin())
             {
-                throw new UserFriendlyException(L("UserIsBlocked"));
+                CheckReceiverExists(receiver);
+
+                var friendshipState = (await _friendshipManager.GetFriendshipOrNullAsync(sender, receiver))?.State;
+                if (friendshipState == FriendshipState.Blocked)
+                {
+                    throw new UserFriendlyException(L("UserIsBlocked"));
+                }
+
+                var sharedMessageId = Guid.NewGuid();
+
+                await HandleSenderToReceiverAsync(sender, receiver, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+                await HandleReceiverToSenderAsync(sender, receiver, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+                await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderImageUrl);
+                await uow.CompleteAsync();
             }
-
-            var sharedMessageId = Guid.NewGuid();
-
-            await HandleSenderToReceiverAsync(sender, receiver, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await HandleReceiverToSenderAsync(sender, receiver, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderImageUrl);
         }
 
         private void CheckReceiverExists(UserIdentifier receiver)
