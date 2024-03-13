@@ -792,7 +792,7 @@ namespace Yootek.Services
 
         private async Task NotifierVerifyCitizen(Citizen citizen, string citizenName, UserIdentifier[] admin)
         {
-            var detailUrlApp = $"yooioc://app/feedback/detail?id={citizen.Id}";
+            var detailUrlApp = $"yooioc://app/verify-citizen/detail?id={citizen.Id}";
             var detailUrlWA = $"/citizens/verify/id={citizen.Id}";
             var messageDeclined = new UserMessageNotificationDataBase(
             AppNotificationAction.CitizenVerify,
