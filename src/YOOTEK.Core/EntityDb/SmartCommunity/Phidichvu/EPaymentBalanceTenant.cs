@@ -17,11 +17,18 @@ namespace YOOTEK.EntityDb
         public UserBillPaymentMethod Method { get; set; }
         public EBalanceAction EBalanceAction { get; set; }
         public int? TenantId { get; set; }       
+        public EbalancePaymentType EbalancePaymentType { get; set; }
     }
 
     public enum EBalanceAction
     {
         Add = 1,
         Sub = 2
+    }
+
+    public enum EbalancePaymentType
+    {
+        UserBill = 0,
+        DigitalService = 1
     }
 }

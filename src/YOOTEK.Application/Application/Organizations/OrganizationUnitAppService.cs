@@ -388,7 +388,6 @@ namespace Yootek.Service
             return await CreateOrganizationUnitDto(organizationUnit);
         }
 
-
         public async Task<OrganizationUnitDto> MoveOrganizationUnit(MoveOrganizationUnitInput input)
         {
             await _organizationUnitManager.MoveAsync(input.Id, input.NewParentId);
@@ -397,7 +396,6 @@ namespace Yootek.Service
                 await _organizationUnitRepository.GetAsync(input.Id)
                 );
         }
-
 
         public async Task DeleteFeature(EntityDto<long> input)
         {
@@ -411,14 +409,10 @@ namespace Yootek.Service
             await _organizationUnitManager.DeleteAsync(input.Id);
         }
 
-
-
-
         public async Task RemoveUserFromOrganizationUnit(UserToOrganizationUnitInput input)
         {
             await UserManager.RemoveFromOrganizationUnitAsync(input.UserId, input.OrganizationUnitId);
         }
-
 
         public async Task RemoveRoleFromOrganizationUnit(RoleToOrganizationUnitInput input)
         {
@@ -661,7 +655,6 @@ namespace Yootek.Service
             return dto;
         }
 
-
         public async Task<object> GetOrganizationUnitByType(OrganizationUnitInput input)
         {
             try
@@ -795,7 +788,6 @@ namespace Yootek.Service
                 throw;
             }
         }
-
 
         private Tuple<List<APP_ORGANIZATION_TYPE>, List<APP_ORGANIZATION_TYPE>> CompareArrays(APP_ORGANIZATION_TYPE[] news, APP_ORGANIZATION_TYPE[] olds)
         {

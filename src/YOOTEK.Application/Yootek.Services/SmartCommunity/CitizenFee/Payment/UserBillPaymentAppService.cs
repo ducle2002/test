@@ -54,7 +54,7 @@ namespace Yootek.Services
             IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepo,
             HandlePaymentUtilAppService handlePaymentUtilAppService,
             IRepository<EPaymentBalanceTenant, long> epaymentBanlanceRepository,
-             YootekHttpClient yootekHttpClient
+            YootekHttpClient yootekHttpClient
         )
         {
             _userBillPaymentRepo = userBillPaymentRepo;
