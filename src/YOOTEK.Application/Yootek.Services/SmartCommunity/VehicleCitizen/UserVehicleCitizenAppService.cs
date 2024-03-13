@@ -20,12 +20,15 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
     {
         private readonly IRepository<CitizenVehicle, long> _citizenVehicleRepos;
         private readonly IRepository<CitizenTemp, long> _citizenTempRepos;
+        private readonly IRepository<CitizenParking, long> _citizenParkingRepos;
         public UserVehicleCitizenAppService(
             IRepository<CitizenVehicle, long> citizenVehicleRepos,
-            IRepository<CitizenTemp, long> citizenTempRepos)
+            IRepository<CitizenTemp, long> citizenTempRepos,
+            IRepository<CitizenParking, long> citizenParkingRepos)
         {
             _citizenVehicleRepos = citizenVehicleRepos;
             _citizenTempRepos = citizenTempRepos;
+            _citizenParkingRepos = citizenParkingRepos;
         }
 
         public async Task<object> GetVehicleByApartmentCode(GetVehicleByApartmentCode input)
@@ -51,7 +54,8 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
                                      VehicleType = vh.VehicleType,
                                      TenantId = vh.TenantId,
                                      State = vh.State,
-
+                                     ExpirationDate = vh.ExpirationDate,
+                                     RegistrationDate = vh.RegistrationDate,
                                  }).AsQueryable();
                     var paginatedData = await query.PageBy(input).ToListAsync();
 
@@ -60,6 +64,28 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
             }
             catch (Exception e)
             {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<object> GetListParkingAsync(long urbanId)
+        {
+            try
+            {
+                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+                {
+                    var query = _citizenParkingRepos.GetAll();
+                    var data = await query.Where(x => x.UrbanId == urbanId || x.UrbanId == null)    
+                        .ToListAsync();
+                    var result = data.ToList();
+
+                    return DataResult.ResultSuccess(result, "Get success!", data.Count());
+                }
+            }
+            catch (Exception e)
+            {
+                var data = DataResult.ResultError(e.ToString(), "Exception!");
                 Logger.Fatal(e.Message);
                 throw;
             }
