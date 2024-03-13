@@ -51,17 +51,22 @@ namespace Yootek.Services
             _exporter = exporter;
         }
 
-
+        /// <summary>
+        /// Hot fix get parking app user 13/03/2024
+        /// Nguyễn Minh Hiếu
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public async Task<object> GetAllAsync(GetAllCitizenParkingInput input)
         {
             try
             {
-                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+               // List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var query = _citizenParkingRepos.GetAll();
                     var paginatedData = await query
-                            .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                            //.WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                             .ApplySearchFilter(input.Keyword, x => x.ParkingName, x => x.ParkingCode)
                             .ApplySort(input.OrderBy, input.SortBy)
                             .ApplySort(OrderByCitizenParking.PARKING_CODE)
