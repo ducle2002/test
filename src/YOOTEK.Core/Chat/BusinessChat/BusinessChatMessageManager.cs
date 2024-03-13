@@ -65,39 +65,51 @@ namespace Yootek.Chat
         public async Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId)
         {
             //CheckReceiverExists(receiver);
-            var message = await _businessChatMessageRepos.FirstOrDefaultAsync(x => (x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
-            if (message == null)
+            using(var uow = UnitOfWorkManager.Begin())
             {
-                //var messReceiver = await _businessChatMessageRepos.FirstOrDefaultAsync(x => (x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Receiver);
-                //if (messReceiver == null) return;
-                //await HandleDeleteMessageSenderAsync(sender, messReceiver);
-                return;
+                var message = await _businessChatMessageRepos.FirstOrDefaultAsync(x => (x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
+                if (message == null)
+                {
+                    //var messReceiver = await _businessChatMessageRepos.FirstOrDefaultAsync(x => (x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Receiver);
+                    //if (messReceiver == null) return;
+                    //await HandleDeleteMessageSenderAsync(sender, messReceiver);
+                    return;
 
+                }
+                await HandleDeleteMessageSenderAsync(sender, message);
+                await HandleDeleteMessageReceiverAsync(receiver, message);
+                await uow.CompleteAsync();
             }
-            await HandleDeleteMessageSenderAsync(sender, message);
-            await HandleDeleteMessageReceiverAsync(receiver, message);
         }
 
         public async Task SendMessageUserToProviderAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null)
         {
-            var sharedMessageId = Guid.NewGuid();
-            var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
-            var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message,fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
-            await HandleSendToSenderAsync(receiver, sender, providerId, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await FireNotificationMessageToProviderAsync(sentMessage, sender, receiver, providerId, friendships.Item2, AppType.SELLER);
+            using (var uow = UnitOfWorkManager.Begin())
+            {
+                var sharedMessageId = Guid.NewGuid();
+                var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
+                var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message, fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
+                await HandleSendToSenderAsync(receiver, sender, providerId, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+                await FireNotificationMessageToProviderAsync(sentMessage, sender, receiver, providerId, friendships.Item2, AppType.SELLER);
+                await uow.CompleteAsync();
+            }
+          
         }
 
         public async Task SendMessageProviderToUserAsync(UserIdentifier sender, UserIdentifier receiver, long providerId, string message, string fileUrl, string receiverImageUrl, long? messageRepliedId, int typeMessage = 0, string friendName = null)
         {
-            var sharedMessageId = Guid.NewGuid();
+            using (var uow = UnitOfWorkManager.Begin())
+            {
+                var sharedMessageId = Guid.NewGuid();
+                var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
 
+                var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message, fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
+                await HandleSendToSenderAsync(receiver, sender, providerId, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
 
-            var friendships = await CheckBusinessFriendshipAsync(receiver, sender, providerId, friendName, receiverImageUrl);
-
-            var sentMessage = await HandleSendToReceiverAsync(sender, receiver, providerId, message, fileUrl, receiverImageUrl, sharedMessageId, messageRepliedId, typeMessage, friendName);
-            await HandleSendToSenderAsync(receiver, sender, providerId, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-
-            await FireNotificationMessageToUserAsync(sentMessage, receiver, providerId, friendships.Item1, AppType.USER);
+                await FireNotificationMessageToUserAsync(sentMessage, receiver, providerId, friendships.Item1, AppType.USER);
+                await uow.CompleteAsync();
+            }
+           
         }
 
         private async Task<Tuple<UserProviderFriendship, UserProviderFriendship>> CheckBusinessFriendshipAsync(UserIdentifier user, UserIdentifier userShop, long providerId, string providerName, string providerImageUrl)
