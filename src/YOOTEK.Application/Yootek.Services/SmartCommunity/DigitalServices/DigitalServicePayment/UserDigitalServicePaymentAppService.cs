@@ -24,6 +24,7 @@ using System.Net.Http;
 using Yootek.Lib.CrudBase;
 using Yootek.Extensions;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc;
 
 namespace YOOTEK.Yootek.Services
 {
@@ -48,7 +49,6 @@ namespace YOOTEK.Yootek.Services
              IRepository<ThirdPartyPayment, int> thirdPartyPaymentRepo,
              DigitalServicePaymentUtil digitalServicePaymentUtil,
              YootekHttpClient yootekHttpClient,
-             IRepository<UserBillPaymentValidation, long> userBillPaymentValidationRepo,
              IConfiguration configuration
             )
         {
@@ -59,7 +59,7 @@ namespace YOOTEK.Yootek.Services
             _httpClient = yootekHttpClient.GetHttpClient(configuration["ApiSettings:Payments"]);
         }
 
-        public async Task<DataResult> GetAllAsync(GetAllDigitalServicePaymentInput input)
+        public async Task<DataResult> GetAllAsync(UserGetAllDigitalServicePaymentInput input)
         {
             try
             {
@@ -86,8 +86,7 @@ namespace YOOTEK.Yootek.Services
                                                         x => x.ApartmentCode.ToLower().Contains(input.Keyword.ToLower())
                                                         || x.Code.ToLower().Contains(input.Keyword.ToLower())
                                                         || x.Note.ToLower().Contains(input.Keyword.ToLower()))
-                                                        .WhereIf(input.UrbanId > 0, x => x.UrbanId == input.UrbanId)
-                                                        .WhereIf(input.BuildingId > 0, x => x.BuildingId == input.BuildingId);
+                                                        .AsQueryable();
 
                 var data = await query.PageBy(input).ToListAsync();
                 return DataResult.ResultSuccess(data, "", query.Count());
@@ -114,23 +113,43 @@ namespace YOOTEK.Yootek.Services
                 throw;
             }
         }
-
-
-        public async Task<DataResult> HandlePaymentForThirdParty(HandPaymentForThirdPartyInput dto)
+        public async Task<DataResult> RequestValidationDigitalServicePayment(RequestPaymentDigitalServiceInput request)
         {
             try
             {
-                var paymentTransaction = _thirdPartyPaymentRepo.FirstOrDefault(x => x.Id == dto.Id);
+                using(CurrentUnitOfWork.SetTenantId(request.TenantId))
+                {
+                    var all = await _digitalServiceOrderRepository.GetAllListAsync();
+                    var session = AbpSession;
+                    if (request.Amount == 0) throw new UserFriendlyException("Amount is invalid");
+                    var order = await _digitalServiceOrderRepository.FirstOrDefaultAsync(x => x.Id == request.TransactionId 
+                    && (x.PaymentState == DigitalServicePaymentState.Pending || x.PaymentState == DigitalServicePaymentState.Debt));
+                    if (order == null) throw new UserFriendlyException("Data not found");
+
+                    return DataResult.ResultSuccess("");
+                }
+            }catch(Exception e)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public async Task<DataResult> HandlePaymentForThirdParty(HandPaymentDigitalServiceForThirdPartyInput input)
+        {
+            try
+            {
+                var paymentTransaction = _thirdPartyPaymentRepo.FirstOrDefault(x => x.Id == input.Id);
                 if (paymentTransaction == null) throw new UserFriendlyException("Data not found");
 
                 var requestPayment = new
                 {
-                    id = dto.Id,
+                    id = input.Id,
                     internalState = 2,
                     isManuallyVerified = true
                 };
 
-                switch (dto.Status)
+                switch (input.Status)
                 {
                     case EPrepaymentStatus.SUCCESS:
                         var pm = await _digitalServicePaymentUtil.HandlePaymentSuccess(
@@ -142,7 +161,7 @@ namespace YOOTEK.Yootek.Services
                             );
 
                         var res = await _httpClient.SendAsync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
-                        await CreateEPaymentBalance(pm.Id, dto.Id, paymentTransaction.Amount, pm.TenantId, (UserBillPaymentMethod)pm.Method);
+                        await CreateEPaymentBalance(pm.Id, input.Id, paymentTransaction.Amount, pm.TenantId, (UserBillPaymentMethod)pm.Method);
                         return DataResult.ResultSuccess(pm.Id, "");
                     case EPrepaymentStatus.FAILED:
                         await _httpClient.SendAsync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
@@ -160,7 +179,7 @@ namespace YOOTEK.Yootek.Services
             }
         }
 
-        protected async Task CreateEPaymentBalance(long billPaymentId, int epaymentId, double amount, int? tenantId, UserBillPaymentMethod method)
+        private async Task CreateEPaymentBalance(long billPaymentId, int epaymentId, double amount, int? tenantId, UserBillPaymentMethod method)
         {
             var payment = new EPaymentBalanceTenant()
             {

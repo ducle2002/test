@@ -19,24 +19,25 @@ namespace YOOTEK.Yootek.Services
 
         private readonly IRepository<DigitalServicePayment, long> _digitalServicePaymentRepository;
         private readonly IRepository<DigitalServiceOrder, long> _digitalServiceOrderRepository;
-        
+
 
         public DigitalServicePaymentUtil(
              IRepository<DigitalServicePayment, long> digitalServicePaymentRepository,
              IRepository<DigitalServiceOrder, long> digitalServiceOrderRepository
-          
+
             )
         {
             _digitalServicePaymentRepository = digitalServicePaymentRepository;
             _digitalServiceOrderRepository = digitalServiceOrderRepository;
-          
+
         }
 
+        [RemoteService(false)]
         public async Task<DigitalServicePayment> HandlePaymentSuccess(long orderId, decimal paymentAmount, DigitalServicePaymentMethod method, string note, string properties)
         {
             try
             {
-                var  order = await _digitalServiceOrderRepository.FirstOrDefaultAsync(x => x.Id == orderId 
+                var order = await _digitalServiceOrderRepository.FirstOrDefaultAsync(x => x.Id == orderId
                 && (x.PaymentState == DigitalServicePaymentState.Pending || x.PaymentState == DigitalServicePaymentState.Debt));
                 if (order == null) throw new UserFriendlyException("Data not found");
 
@@ -61,7 +62,7 @@ namespace YOOTEK.Yootek.Services
                     order.PaymentState = DigitalServicePaymentState.Paid;
                     order.TotalDebtOrBalance = 0;
                 }
-                else if(amountMustPay > paymentAmount)
+                else if (amountMustPay > paymentAmount)
                 {
                     order.PaymentState = DigitalServicePaymentState.Debt;
                     order.TotalDebtOrBalance = amountMustPay - paymentAmount;
@@ -77,7 +78,8 @@ namespace YOOTEK.Yootek.Services
 
                 return payment;
 
-            }catch( Exception ex )
+            }
+            catch (Exception ex)
             {
                 Logger.Fatal(ex.Message, ex);
                 throw;

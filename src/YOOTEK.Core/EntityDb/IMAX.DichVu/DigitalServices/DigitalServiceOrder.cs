@@ -17,7 +17,6 @@ namespace Yootek.EntityDb
     {
 
         [StringLength(256)]
-        [Required]
         public string ApartmentCode { get; set; }
         /// <summary>
         /// Địa chỉ nhận
@@ -36,7 +35,6 @@ namespace Yootek.EntityDb
         /// <summary>
         /// Trạng thái thanh toán
         /// </summary>
-        [Required]
         public DigitalServicePaymentState PaymentState { get; set; }
         /// <summary>
         /// Khu đô thị
@@ -51,7 +49,7 @@ namespace Yootek.EntityDb
         /// <summary>
         /// Dư nợ
         /// </summary>
-        public decimal TotalDebtOrBalance { get; set; }
+        public decimal? TotalDebtOrBalance { get; set; }
         /// <summary>
         /// Nội dung phản hồi
         /// </summary>
