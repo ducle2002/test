@@ -32,6 +32,7 @@ using Yootek.Yootek.EntityDb.Yootek.DichVu.CheckingObj;
 using Yootek.Yootek.EntityDb.Yootek.Metrics;
 using Yootek.Yootek.EntityDb.Yootek.MobileAppFeedback;
 using YOOTEK.EntityDb;
+using YOOTEK.EntityDb.IMAX.DichVu.DigitalServices;
 using ClbCityNotificationComment = Yootek.Yootek.EntityDb.Clb.City_Notification.ClbCityNotificationComment;
 
 namespace Yootek.EntityFrameworkCore
@@ -300,6 +301,7 @@ namespace Yootek.EntityFrameworkCore
         public virtual DbSet<DigitalServiceCategory> DigitalServiceCategory { get; set; }
         public virtual DbSet<DigitalServices> DigitalServices { get; set; }
         public virtual DbSet<DigitalServiceDetails> DigitalServiceDetails { get; set; }
+        public virtual DbSet<DigitalServicePayment> DigitalServicePayments { get; set; }
 
         #endregion
 

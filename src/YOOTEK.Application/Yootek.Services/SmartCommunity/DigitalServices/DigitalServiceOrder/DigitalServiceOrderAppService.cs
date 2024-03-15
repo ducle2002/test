@@ -48,8 +48,13 @@ namespace Yootek.Services
         private readonly IRepository<Citizen, long> _citizenRepos;
         private readonly IHttpWorkAssignmentService _httpWorkAssignmentService;
         private readonly IAppNotifier _appNotifier;
-        public DigitalServiceOrderAppService(IRepository<DigitalServiceOrder, long> repository,
-IRepository<DigitalServices, long> digitalServicesRepository, IRepository<Citizen, long> citizenRepos, IHttpWorkAssignmentService httpWorkAssignmentService, IAppNotifier appNotifier)
+        public DigitalServiceOrderAppService(
+            IRepository<DigitalServiceOrder, long> repository,
+            IRepository<DigitalServices, long> digitalServicesRepository, 
+            IRepository<Citizen, long> citizenRepos, 
+            IHttpWorkAssignmentService httpWorkAssignmentService, 
+            IAppNotifier appNotifier
+            )
         {
             _repository = repository;
             _digitalServicesRepository = digitalServicesRepository;
@@ -57,6 +62,7 @@ IRepository<DigitalServices, long> digitalServicesRepository, IRepository<Citize
             _httpWorkAssignmentService = httpWorkAssignmentService;
             _appNotifier = appNotifier;
         }
+
         public async Task<DataResult> GetAllAsync(GetAllDigitalServiceOrderInputDto input)
         {
             try
@@ -83,13 +89,12 @@ IRepository<DigitalServices, long> digitalServicesRepository, IRepository<Citize
                                                                 CreatorUserId = o.CreatorUserId,
                                                                 OrderDate = o.OrderDate
                                                             })
-    .Where(x => x.CreatorUserId == AbpSession.UserId)
-                    .WhereIf(!string.IsNullOrEmpty(input.Keyword), x =>
-x.Address.ToLower().Contains(input.Keyword.ToLower()))
-    .WhereIf(input.Status > 0, x => x.Status == input.Status)
-    .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1 ? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE : input.StatusTab == 2 ? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
-    .WhereIf(input.ServiceId > 0, x => x.ServiceId == input.ServiceId)
-;
+                                                            .Where(x => x.CreatorUserId == AbpSession.UserId)
+                                                            .WhereIf(!string.IsNullOrEmpty(input.Keyword), x => x.Address.ToLower().Contains(input.Keyword.ToLower()))
+                                                            .WhereIf(input.Status > 0, x => x.Status == input.Status)
+                                                            .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1 ? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE : input.StatusTab == 2 ? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
+                                                            .WhereIf(input.ServiceId > 0, x => x.ServiceId == input.ServiceId);
+
                 List<DigitalServiceOrderDto> result = await query.ApplySort(input.OrderBy, (SortBy)input.SortBy).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
                 return DataResult.ResultSuccess(result, Common.Resource.QuanLyChung.GetAllSuccess, query.Count());
             }
@@ -125,13 +130,15 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                                                                 WorkTypeId = _digitalServicesRepository.GetAll().Where(x => x.Id == o.ServiceId).Select(x => x.WorkTypeId).FirstOrDefault(),
                                                                 OrderDate = o.OrderDate,
                                                             })
-                    .WhereIf(!string.IsNullOrEmpty(input.Keyword), x =>
-x.Address.ToLower().Contains(input.Keyword.ToLower()))
-                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
-    .WhereIf(input.Status > 0, x => x.Status == input.Status)
-    .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1 ? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE : input.StatusTab == 2 ? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
-    .WhereIf(input.ServiceId > 0, x => x.ServiceId == input.ServiceId)
-;
+                                                            .WhereIf(!string.IsNullOrEmpty(input.Keyword), x => x.Address.ToLower().Contains(input.Keyword.ToLower()))
+                                                            .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
+                                                            .WhereIf(input.Status > 0, x => x.Status == input.Status)
+                                                            .WhereIf(input.StatusTab > 0, x => input.StatusTab == 1 
+                                                            ? x.Status == (int)TypeActionUpdateStateServiceOrder.CREATE : input.StatusTab == 2
+                                                            ? (x.Status > (int)TypeActionUpdateStateServiceOrder.CREATE && x.Status < (int)TypeActionUpdateStateServiceOrder.COMPLETE) 
+                                                            : x.Status > (int)TypeActionUpdateStateServiceOrder.FEEDBACK)
+                                                            .WhereIf(input.ServiceId > 0, x => x.ServiceId == input.ServiceId);
+
                 List<DigitalServiceOrderDto> result = await query.ApplySort(input.OrderBy, (SortBy)input.SortBy).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
                 return DataResult.ResultSuccess(result, Common.Resource.QuanLyChung.GetAllSuccess, query.Count());
             }
@@ -157,6 +164,7 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                         RelatedId = id,
                         RelationshipType = WorkAssociationType.DIGITAL_SERVICES,
                     });
+
                     if (result != null)
                     {
                         data.WorkOrder = result.Result;
@@ -316,7 +324,7 @@ x.Address.ToLower().Contains(input.Keyword.ToLower()))
                 switch (oDigitalServiceOrder.Status)
                 {
                     case (int)TypeActionUpdateStateServiceOrder.RECEIVE:
-                       
+
                         var messageAccept = new UserMessageNotificationDataBase(
                             AppNotificationAction.DigitalServiceOrder,
                             AppNotificationIcon.DigitalServiceOrder,

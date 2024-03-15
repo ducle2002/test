@@ -40,10 +40,13 @@ namespace Yootek.Services
         private readonly IRepository<AppOrganizationUnit, long> _abpOrganizationUnitsRepository;
         private readonly IRepository<DigitalServiceCategory, long> _digitalServiceCategoryRepository;
         private readonly IHttpWorkAssignmentService _httpWorkAssignmentService;
-        public DigitalServicesAppService(IRepository<DigitalServices, long> repository,
-IRepository<AppOrganizationUnit, long> abpOrganizationUnitsRepository,
-IRepository<DigitalServiceCategory, long> digitalServiceCategoryRepository, IRepository<DigitalServiceDetails, long> repositoryServiceDetails,
-IHttpWorkAssignmentService httpWorkAssignmentService)
+        public DigitalServicesAppService(
+            IRepository<DigitalServices, long> repository,
+            IRepository<AppOrganizationUnit, long> abpOrganizationUnitsRepository,
+            IRepository<DigitalServiceCategory, long> digitalServiceCategoryRepository, 
+            IRepository<DigitalServiceDetails, long> repositoryServiceDetails,
+            IHttpWorkAssignmentService httpWorkAssignmentService
+            )
         {
             _repository = repository;
             _abpOrganizationUnitsRepository = abpOrganizationUnitsRepository;
@@ -51,6 +54,7 @@ IHttpWorkAssignmentService httpWorkAssignmentService)
             _repositoryServiceDetails = repositoryServiceDetails;
             _httpWorkAssignmentService = httpWorkAssignmentService;
         }
+
         public async Task<DataResult> GetAllAsync(GetAllDigitalServicesInputDto input)
         {
             try
@@ -74,12 +78,12 @@ IHttpWorkAssignmentService httpWorkAssignmentService)
                                                             UrbanText = _abpOrganizationUnitsRepository.GetAll().Where(x => x.Id == o.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
                                                             CategoryText = _digitalServiceCategoryRepository.GetAll().Where(x => x.Id == o.Category).Select(x => x.Title).FirstOrDefault(),
                                                         })
-                    .WhereIf(!string.IsNullOrEmpty(input.Keyword), x =>
-x.Title.ToLower().Contains(input.Keyword.ToLower()) || x.Code.ToLower().Contains(input.Keyword.ToLower()) || x.Address.ToLower().Contains(input.Keyword.ToLower()))
-    .WhereIf(input.UrbanId > 0, x => x.UrbanId == input.UrbanId)
-
-    .WhereIf(input.Category > 0, x => x.Category == input.Category)
-;
+                                                        .WhereIf(!string.IsNullOrEmpty(input.Keyword),
+                                                        x => x.Title.ToLower().Contains(input.Keyword.ToLower()) 
+                                                        || x.Code.ToLower().Contains(input.Keyword.ToLower()) 
+                                                        || x.Address.ToLower().Contains(input.Keyword.ToLower()))
+                                                        .WhereIf(input.UrbanId > 0, x => x.UrbanId == input.UrbanId)
+                                                        .WhereIf(input.Category > 0, x => x.Category == input.Category);
                 List<DigitalServicesDto> result = await query.ApplySort(input.OrderBy, (SortBy)input.SortBy).Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
                 return DataResult.ResultSuccess(result, Common.Resource.QuanLyChung.GetAllSuccess, query.Count());
             }
@@ -89,6 +93,7 @@ x.Title.ToLower().Contains(input.Keyword.ToLower()) || x.Code.ToLower().Contains
                 throw;
             }
         }
+
         public async Task<DataResult> GetById(long id)
         {
             try
@@ -113,6 +118,7 @@ x.Title.ToLower().Contains(input.Keyword.ToLower()) || x.Code.ToLower().Contains
                 throw;
             }
         }
+
         public async Task<DataResult> Create(DigitalServicesDto dto)
         {
             try
@@ -123,19 +129,19 @@ x.Title.ToLower().Contains(input.Keyword.ToLower()) || x.Code.ToLower().Contains
                     Name = dto.Title,
                     Type = (int)TypeWork.DigitalServices,
                     Description = dto.Title,
-                    WorkDetails = dto.ServiceDetails != null && dto.ServiceDetails.Count > 0? dto.ServiceDetails.Select(x =>
+                    WorkDetails = dto.ServiceDetails != null && dto.ServiceDetails.Count > 0 ? dto.ServiceDetails.Select(x =>
                     {
                         return new WorkDetainInCreateWorkTypeDto
                         {
                             Name = x.Title,
                             Description = x.Description
                         };
-                    }).ToList():null,
+                    }).ToList() : null,
                 };
                 MicroserviceResultDto<long> result = await _httpWorkAssignmentService.CreateWorkType(oCreateWorkTypeDto);
                 if (result.Result > 0)
                     dto.WorkTypeId = result.Result;
-                    #endregion
+                #endregion
                 DigitalServices item = dto.MapTo<DigitalServices>();
                 item.TenantId = AbpSession.TenantId;
                 var serviceId = await _repository.InsertAndGetIdAsync(item);
@@ -144,7 +150,7 @@ x.Title.ToLower().Contains(input.Keyword.ToLower()) || x.Code.ToLower().Contains
                     await InsertOrUpdateServiceDetails(serviceId, dto.ServiceDetails);
 
                 }
-                
+
                 return DataResult.ResultSuccess(Common.Resource.QuanLyChung.InsertSuccess);
             }
             catch (Exception e)
@@ -184,7 +190,7 @@ x.Title.ToLower().Contains(input.Keyword.ToLower()) || x.Code.ToLower().Contains
                 DigitalServices item = await _repository.GetAsync(id);
                 await _repository.DeleteAsync(id);
                 if (item.WorkTypeId.HasValue && item.WorkTypeId.Value > 0)
-                    await _httpWorkAssignmentService.DeleteWorkType(new DeleteWorkTypeDto { Id = item.WorkTypeId.Value});
+                    await _httpWorkAssignmentService.DeleteWorkType(new DeleteWorkTypeDto { Id = item.WorkTypeId.Value });
                 var data = DataResult.ResultSuccess(Common.Resource.QuanLyChung.DeleteSuccess);
                 return data;
             }
