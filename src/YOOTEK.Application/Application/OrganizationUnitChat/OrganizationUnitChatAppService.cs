@@ -405,7 +405,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     m.UserId == input.SenderId &&
                     m.TargetTenantId == input.TenantId &&
                     m.TargetUserId == input.UserId &&
-                    m.ReadState == ChatMessageReadState.Unread)
+                   (m.ReadState == ChatMessageReadState.Unread || m.ReceiverReadState == ChatMessageReadState.Unread))
                 .ToListAsync();
 
             if (!messages.Any())
@@ -416,6 +416,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             foreach (var message in messages)
             {
                 message.ChangeReadState(ChatMessageReadState.Read);
+                message.ChangeReceiverReadState(ChatMessageReadState.Read);
             }
 
             var userIdentifier = AbpSession.ToUserIdentifier();

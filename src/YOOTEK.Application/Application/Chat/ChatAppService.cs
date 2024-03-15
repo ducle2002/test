@@ -306,7 +306,6 @@ namespace Yootek.Chat
             }
         }
 
-
         [DisableAuditing]
         public async Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input)
         {
@@ -362,7 +361,7 @@ namespace Yootek.Chat
                 .Where(m =>
                     m.UserId == userId &&
                     m.TargetUserId == input.UserId &&
-                    m.ReadState == ChatMessageReadState.Unread)
+                   (m.ReadState == ChatMessageReadState.Unread || m.ReceiverReadState == ChatMessageReadState.Unread))
                 .ToListAsync();
 
             if (!messages.Any())
@@ -373,6 +372,7 @@ namespace Yootek.Chat
             foreach (var message in messages)
             {
                 message.ChangeReadState(ChatMessageReadState.Read);
+                message.ChangeReceiverReadState(ChatMessageReadState.Read);
             }
 
             var userIdentifier = AbpSession.ToUserIdentifier();
