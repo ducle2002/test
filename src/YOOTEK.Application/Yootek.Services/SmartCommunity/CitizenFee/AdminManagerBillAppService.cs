@@ -1772,7 +1772,6 @@ namespace Yootek.Services
             }
         }
 
-
         [Obsolete]
         public async Task<object> CreateOrUpdateMonthlyUserBill(CreateOrUpdateMonthlyInvoice input)
         {
@@ -2026,7 +2025,6 @@ namespace Yootek.Services
         }
         #region Common
 
-
         protected VehicleType GetVehicleTypeNumber(string type)
         {
             if (type.ToLower().Contains("electric car")
@@ -2054,7 +2052,6 @@ namespace Yootek.Services
 
             return VehicleType.Other;
         }
-
 
         private double CalculateDependOnLevel(BillPriceDto[] levels, List<decimal> percents, decimal amount)
         {
@@ -2142,7 +2139,6 @@ namespace Yootek.Services
         }
 
         #endregion
-
 
         #region Bill by Apartment
 

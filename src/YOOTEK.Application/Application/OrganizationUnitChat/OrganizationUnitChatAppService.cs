@@ -37,6 +37,8 @@ using Yootek.Services;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Count;
 using YOOTEK.Application.OrganizationUnitChat.Dto;
 using Abp.Linq.Extensions;
+using Abp.Json;
+using Yootek.Authorization.Users;
 
 namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
 {
@@ -50,6 +52,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
         private readonly IRepository<Friendship, long> _friendshipRepos;
         private readonly IRepository<AppOrganizationUnit, long> _organizationRepos;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationRepos;
+        private readonly IRepository<User, long> _userRepository;
         private readonly IOnlineClientManager _onlineClientManager;
         private readonly IChatCommunicator _chatCommunicator;
         private readonly IUserFriendsCache _userFriendsCache;
@@ -67,7 +70,8 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             IRepository<Friendship, long> friendshipRepos,
             IRepository<UserOrganizationUnit, long> userOrganizationRepos,
             AppOrganizationUnitManager appOrganizationUnitManager,
-            IRepository<Citizen, long> citizenRepos
+            IRepository<Citizen, long> citizenRepos,
+            IRepository<User, long> userRepository
             )
         {
             _userFriendsCache = userFriendsCache;
@@ -80,6 +84,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             _userOrganizationRepos = userOrganizationRepos;
             _appOrganizationUnitManager = appOrganizationUnitManager;
             _citizenRepos = citizenRepos;
+            _userRepository = userRepository;
         }
 
         public async Task<object> GetOrganizationUnitIdByUser(GetOrganizationUnitIdByUserInput input)
@@ -280,6 +285,58 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
             catch (Exception e)
             {
+                throw;
+            }
+        }
+        public async Task<DataResult> GetUserChat(GetUserChatInput input)
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
+                //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
+                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
+
+                var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId || x.FriendTenantId == input.TenantId);
+
+                if (item == null)
+                {
+                    using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                    {
+                        item = _userRepository.GetAll().Where(x => x.Id == input.UserId)
+                       .Select(x => new FriendCacheItem()
+                       {
+                           FriendUserId = input.UserId,
+                           FriendImageUrl = x.ImageUrl,
+                           FriendTenantId = input.TenantId,
+                           FriendUserName = x.FullName,
+                           State = FriendshipState.Stranger
+                       })
+                       .FirstOrDefault();
+                    }
+                }
+
+                if (item == null) return DataResult.ResultSuccess("get success");
+
+                var friend = ObjectMapper.Map<FriendDto>(item);
+
+                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                         new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                     );
+
+                friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
+
+                if (friend.State == FriendshipState.IsDeleted)
+                {
+                    friend.FriendUserName = "Người dùng yoolife";
+                    friend.FriendImageUrl = null;
+                }
+
+                return DataResult.ResultSuccess(friend, "get success");
+
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal("GetUserChatFriendsWithSettings : " + e.ToJsonString());
                 throw;
             }
         }
