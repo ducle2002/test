@@ -261,7 +261,7 @@ namespace Yootek.Chat
                 //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
                 var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
 
-                var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId || x.FriendTenantId == input.TenantId);
+                var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId && x.FriendTenantId == input.TenantId);
 
                 if(item == null)
                 {
