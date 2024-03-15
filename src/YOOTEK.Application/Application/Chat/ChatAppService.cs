@@ -280,7 +280,7 @@ namespace Yootek.Chat
                         {
                             if (mes.MessageRepliedId != null)
                             {
-                                var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == userId);
+                                var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId);
                                 if (rep != null)
                                 {
                                     mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
