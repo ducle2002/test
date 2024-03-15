@@ -75,22 +75,30 @@ namespace Yootek.Chat
         public async Task DeleteMessageOrgAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId, long id)
         {
             //CheckReceiverExists(receiver);
-            var message = await _chatMessageRepository.FirstOrDefaultAsync(x => (x.Id == id || x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
-            if (message == null)
+            using(var uow = UnitOfWorkManager.Begin())
             {
-                return;
+                var message = await _chatMessageRepository.FirstOrDefaultAsync(x => (x.Id == id || x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
+                if (message == null)
+                {
+                    return;
+                }
+                await HandleDeleteMessageSenderAsync(sender, message);
+                await HandleDeleteMessageReceiverAsync(receiver, message);
+                await uow.CompleteAsync();
             }
-            await HandleDeleteMessageSenderAsync(sender, message);
-            await HandleDeleteMessageReceiverAsync(receiver, message);
         }
 
         public async Task SendMessageOrgAsync(UserIdentifier user, UserIdentifier organization, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int typeMessage = 0, bool isAdmin = false)
         {
 
-            var sharedMessageId = Guid.NewGuid();
+            using(var uow = UnitOfWorkManager.Begin())
+            {
+                var sharedMessageId = Guid.NewGuid();
 
-            await HandleUserToOrgAsync(user, organization, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage, isAdmin);
-            await HandleOrgToUserAsync(organization, user, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage, isAdmin);
+                await HandleUserToOrgAsync(user, organization, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage, isAdmin);
+                await HandleOrgToUserAsync(organization, user, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage, isAdmin);
+                await uow.CompleteAsync();
+            }
             // await HandleOrgUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderProfilePictureId);
         }
 
@@ -414,7 +422,7 @@ namespace Yootek.Chat
             return null;
         }
 
-        public async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
+        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
         {
             var messageData = new UserMessageNotificationDataBase(
                           AppNotificationAction.ChatMessage,
@@ -436,7 +444,7 @@ namespace Yootek.Chat
                );
         }
 
-        public async Task FireNotificationMessageToAdminAsync(ChatMessage message, UserIdentifier user, UserIdentifier[] admins, Friendship friend)
+        private async Task FireNotificationMessageToAdminAsync(ChatMessage message, UserIdentifier user, UserIdentifier[] admins, Friendship friend)
         {
             var messageData = new UserMessageNotificationDataBase(
                           AppNotificationAction.ChatMessage,

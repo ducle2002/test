@@ -24,6 +24,19 @@ using System.Threading.Tasks;
 
 namespace Yootek.Application.BusinessChat
 {
+    public class UserSendMessageProviderInput
+    {
+        public long ProviderId { get; set; }
+        public long ProviderUserId { get; set; }
+        public int? ProviderTenantId { get; set; }
+        public string ProviderImageUrl { get; set; }
+        public string ProviderName { get; set; }
+        public long? MessageRepliedId { get; set; }
+        public string Message { get; set; }
+        public string FileUrl { get; set; }
+        public int TypeMessage { get; set; }
+    }
+
     public interface IProviderBusinessChatAppService : IApplicationService
     {
         Task<DataResult> GetUserFriendshipChats(GetUserFriendshipInput input);
@@ -36,18 +49,37 @@ namespace Yootek.Application.BusinessChat
         private readonly IRepository<BusinessChatMessage, long> _businessChatMessageRepos;
         private readonly IRepository<UserProviderFriendship, long> _userProviderFriendshipRepos;
         private readonly IBusinessChatCommunicator _businessChatCommunicator;
+        private readonly IBusinessChatMessageManager _busniessChatMessageManager;
 
         public ProviderBusinessChatAppService(
             IRepository<UserProviderFriendship, long> userProviderFriendshipRepos,
             IRepository<BusinessChatMessage, long> businessChatMessageRepos,
             IBusinessChatCommunicator businessChatCommunicator,
-            IOnlineClientManager onlineClientManager
+            IOnlineClientManager onlineClientManager,
+            IBusinessChatMessageManager busniessChatMessageManager
             )
         {
             _onlineClientManager = onlineClientManager;
             _businessChatMessageRepos = businessChatMessageRepos;
             _userProviderFriendshipRepos = userProviderFriendshipRepos;
             _businessChatCommunicator = businessChatCommunicator;
+            _busniessChatMessageManager = busniessChatMessageManager;
+        }
+
+        public async Task SendMessageBusiness(UserSendMessageProviderInput input)
+        {
+            var sender = AbpSession.ToUserIdentifier();
+            var receiver = new UserIdentifier(input.ProviderTenantId, input.ProviderUserId);
+
+            try
+            {
+                await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message, input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
+               
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<DataResult> GetUserFriendshipChats(GetUserFriendshipInput input)
