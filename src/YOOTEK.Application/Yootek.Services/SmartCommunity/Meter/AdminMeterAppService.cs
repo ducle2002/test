@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
+using IronBarCode;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +18,12 @@ using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using Yootek.Application;
 using Yootek.Authorization;
 using Yootek.Common.DataResult;
+using Yootek.Core.Dto;
 using Yootek.EntityDb;
+using Yootek.Net.MimeTypes;
 using Yootek.Organizations;
 using Yootek.QueriesExtension;
+using Yootek.Storage;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Meter.dto;
 
 namespace Yootek.Services
@@ -41,16 +46,18 @@ namespace Yootek.Services
         private readonly IRepository<MeterType, long> _meterTypeRepository;
         private readonly IHttpQRCodeService _httpQRCodeService;
         private readonly IRepository<AppOrganizationUnit, long> _organizationUnitRepository;
+        private readonly ITempFileCacheManager _tempFileCacheManager;
         public AdminMeterAppService(
             IRepository<Meter, long> meterRepository,
             IRepository<MeterType, long> meterTypeRepository,
             IHttpQRCodeService httpQrCodeService,
-            IRepository<AppOrganizationUnit, long> organizationUnitRepository)
+            IRepository<AppOrganizationUnit, long> organizationUnitRepository, ITempFileCacheManager tempFileCacheManager)
         {
             _meterRepository = meterRepository;
             _meterTypeRepository = meterTypeRepository;
             _httpQRCodeService = httpQrCodeService;
             _organizationUnitRepository = organizationUnitRepository;
+            _tempFileCacheManager = tempFileCacheManager;
         }
 
 
@@ -346,6 +353,91 @@ namespace Yootek.Services
                 var result = query.FirstOrDefault();
 
                 return DataResult.ResultSuccess(result, "Get success!", query.Count());
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> ExportQRcode([FromBody] GetAllMeterDto input)
+        {
+            try
+            {
+                var tenantId = AbpSession.TenantId;
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+                IQueryable<MeterDto> query = (from sm in _meterRepository.GetAll()
+                                              select new MeterDto
+                                              {
+                                                  Id = sm.Id,
+                                                  TenantId = sm.TenantId,
+                                                  Name = sm.Name,
+                                                  ApartmentCode = sm.ApartmentCode,
+                                                  MeterTypeId = sm.MeterTypeId,
+                                                  Code = sm.Code,
+                                                  QrCode = sm.QrCode,
+                                                  UrbanId = sm.UrbanId,
+                                                  BuildingId = sm.BuildingId,
+                                                  CreationTime = sm.CreationTime,
+                                                  CreatorUserId = sm.CreatorUserId ?? 0,
+                                                  BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
+                                                  UrbanName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
+                                              })
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
+                    .WhereIf(input.MeterTypeId != null, m => m.MeterTypeId == input.MeterTypeId)
+                    .WhereIf(input.UrbanId != null, m => m.UrbanId == input.UrbanId)
+                    .WhereIf(input.BuildingId != null, m => m.BuildingId == input.BuildingId)
+                    .WhereIf(input.ApartmentCode != null, m => m.ApartmentCode == input.ApartmentCode)
+                    .ApplySearchFilter(input.Keyword, x => x.Name, x => x.ApartmentCode);
+
+                List<MeterDto> result = await query
+                    .Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
+                string zipFileName = "QRCodeImages.zip";
+                string outputDirectory = "QRCodeImages";
+                if (File.Exists(zipFileName))
+                {
+                    // Nếu đã tồn tại, xóa tệp đó
+                    File.Delete(zipFileName);
+                }
+                if (Directory.Exists(outputDirectory))
+                {
+                    // Nếu đã tồn tại, xóa thư mục đó
+                    Directory.Delete(outputDirectory, true);
+                }
+                string logoPath = "logo.png";
+                string fullPath = "";
+                if (File.Exists(logoPath))
+                    fullPath = Path.GetFullPath(logoPath);
+
+                Directory.CreateDirectory(outputDirectory);
+                if (result.Count > 0)
+                {
+
+                    foreach (var item in result)
+                    {
+                        item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
+                        GeneratedBarcode qrCode = QRCodeWriter.CreateQrCode(item.QRAction, 350); ;
+                        //GeneratedBarcode qrCode = null;
+                        //if (string.IsNullOrEmpty(fullPath))
+                        //    qrCode= QRCodeWriter.CreateQrCode(item.QRAction, 350);
+                        //else
+                        //{
+                        //    qrCode= QRCodeWriter.CreateQrCodeWithLogo(item.QRAction, fullPath, 350);
+                        //}
+
+                        //qrCode.AddBarcodeValueTextBelowBarcode();
+                        //qrCode.AddBarcodeValueTextAboveBarcode("My barcode");
+                        string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code??item.QrCode}.png");
+                        qrCode.SaveAsPng(qrCodeFilePath);
+
+                    }
+                }
+
+                ZipFile.CreateFromDirectory(outputDirectory, zipFileName);
+                byte[] fileBytes = System.IO.File.ReadAllBytes(zipFileName);
+                var file = new FileDto(zipFileName, MimeTypeNames.ApplicationZip);
+                _tempFileCacheManager.SetFile(file.FileToken, fileBytes);
+                return DataResult.ResultSuccess(file, "Export excel success!");
             }
             catch (Exception e)
             {
