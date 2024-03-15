@@ -134,7 +134,7 @@ namespace Yootek.Chat
                     FriendName = userInfo.UserName,
                     ProviderId = providerId,
                     TenantId = user.TenantId,
-                    FriendTenantId = userFriend.TenantId,
+                    FriendTenantId = userShop.TenantId,
                     IsShop = false
 
                 };
