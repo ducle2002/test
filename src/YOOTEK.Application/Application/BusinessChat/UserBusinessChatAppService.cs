@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Yootek.Yootek.EntityDb.Yootek.DichVu.Business;
 
 namespace Yootek.Application.BusinessChat
 {
@@ -35,18 +36,21 @@ namespace Yootek.Application.BusinessChat
         private readonly IRepository<BusinessChatMessage, long> _businessChatMessageRepos;
         private readonly IRepository<UserProviderFriendship, long> _userProviderFriendshipRepos;
         private readonly IBusinessChatCommunicator _businessChatCommunicator;
+        private readonly IRepository<Provider, long> _providerRepository;
 
         public UserBusinessChatAppService(
             IRepository<UserProviderFriendship, long> userProviderFriendshipRepos,
             IRepository<BusinessChatMessage, long> businessChatMessageRepos,
             IOnlineClientManager onlineClientManager,
-            IBusinessChatCommunicator businessChatCommunicator
+            IBusinessChatCommunicator businessChatCommunicator,
+            IRepository<Provider, long> providerRepository
             )
         { 
             _onlineClientManager = onlineClientManager;
             _businessChatMessageRepos = businessChatMessageRepos;
             _userProviderFriendshipRepos = userProviderFriendshipRepos;
             _businessChatCommunicator = businessChatCommunicator;
+            _providerRepository = providerRepository;
 
         }
 
@@ -128,6 +132,53 @@ namespace Yootek.Application.BusinessChat
             catch (Exception e)
             {
                 throw new UserFriendlyException("GetUserChatMessages exception !" + e.Message);
+            }
+        }
+
+
+        public async Task<DataResult> GetProviderById(GetProviderByIdInput input)
+        {
+            try
+            {
+                var user = AbpSession.ToUserIdentifier();
+                return await UnitOfWorkManager.WithUnitOfWorkAsync(async () =>
+                {
+                    var item = await _userProviderFriendshipRepos.FirstOrDefaultAsync(x => x.UserId == user.UserId && x.IsShop && x.ProviderId == input.ProviderId);
+                    
+                    if(item == null)
+                    {
+                        item = await _providerRepository.GetAll().Where(x => x.Id == input.ProviderId)
+                        .Select(x => new UserProviderFriendship()
+                        {
+                            ProviderId = input.ProviderId,
+                            IsShop = true,
+                            FriendImageUrl = x.ImageUrls != null ? x.ImageUrls[0] : null,
+                            CreationTime = DateTime.Now,
+                            FriendName = x.Name,
+                            FriendTenantId = x.TenantId,
+                            FriendUserId = x.CreatorUserId ?? 0,
+                            UserId = user.UserId,
+                            TenantId = user.TenantId
+                        }).FirstOrDefaultAsync();
+                    }
+
+                    if(item == null) return DataResult.ResultSuccess(item, "Get success !");
+
+                    var friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
+
+                    friend.IsOnline = await _onlineClientManager.IsOnlineAsync(new UserIdentifier(null, item.FriendUserId));
+
+                    friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
+                     .Where(m => (m.UserId == user.UserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))
+                     .OrderByDescending(m => m.CreationTime)
+                     .Count();
+
+                    return DataResult.ResultSuccess(friend, "Get success !");
+                });
+            }
+            catch (Exception e)
+            {
+                throw new UserFriendlyException("GetUserChatFriendsWithSetting exception !" + e.Message);
             }
         }
 
