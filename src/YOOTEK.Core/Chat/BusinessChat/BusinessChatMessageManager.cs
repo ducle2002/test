@@ -322,7 +322,7 @@ namespace Yootek.Chat
                 message.Message,
                 AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
                 AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
-                new UserIdentifier[] { receiver },
+                new [] { receiver },
                 messageData,
                 apptype
                );
@@ -336,15 +336,15 @@ namespace Yootek.Chat
                           TypeAction.Detail,
                           message.Message,
                           AppRouterLinks.AppUser_ChatSeller + "/" + providerId,
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId,
+                          AppRouterLinks.AppUser_ChatSeller + "/" + providerId,
                           friend.FriendImageUrl
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendName + " đã gửi 1 tin nhắn !",
                 message.Message,
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId,
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId,
-                new UserIdentifier[] { user },
+                AppRouterLinks.AppUser_ChatSeller + "/" + providerId,
+                AppRouterLinks.AppUser_ChatSeller + "/" + providerId,
+                new [] { user },
                 messageData,
                 apptype
                );

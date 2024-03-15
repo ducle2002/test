@@ -50,13 +50,16 @@ namespace Yootek.Application.BusinessChat
         private readonly IRepository<UserProviderFriendship, long> _userProviderFriendshipRepos;
         private readonly IBusinessChatCommunicator _businessChatCommunicator;
         private readonly IBusinessChatMessageManager _busniessChatMessageManager;
+        private readonly IRepository<User, long> _userRepository;   
 
         public ProviderBusinessChatAppService(
             IRepository<UserProviderFriendship, long> userProviderFriendshipRepos,
             IRepository<BusinessChatMessage, long> businessChatMessageRepos,
             IBusinessChatCommunicator businessChatCommunicator,
             IOnlineClientManager onlineClientManager,
-            IBusinessChatMessageManager busniessChatMessageManager
+            IBusinessChatMessageManager busniessChatMessageManager,
+            IRepository<User, long> userRepository
+
             )
         {
             _onlineClientManager = onlineClientManager;
@@ -64,6 +67,7 @@ namespace Yootek.Application.BusinessChat
             _userProviderFriendshipRepos = userProviderFriendshipRepos;
             _businessChatCommunicator = businessChatCommunicator;
             _busniessChatMessageManager = busniessChatMessageManager;
+            _userRepository = userRepository;
         }
 
         public async Task SendMessageBusiness(UserSendMessageProviderInput input)
@@ -131,27 +135,48 @@ namespace Yootek.Application.BusinessChat
             {
                 var user = AbpSession.ToUserIdentifier();
                 var item = _userProviderFriendshipRepos.GetAll()
-                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && x.TenantId == input.TenantId && !x.IsShop)
+                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && x.FriendTenantId == input.TenantId && !x.IsShop)
                              .FirstOrDefault();
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                {
+                  
+                    if (item == null)
+                    {
+                        item = await _userRepository.GetAll()
+                            .Where(x => x.Id == input.UserId)
+                            .Select(x => new UserProviderFriendship()
+                            {
+                                FriendUserId = input.UserId,
+                                IsShop = false,
+                                FriendImageUrl = x.ImageUrl,
+                                ProviderId = input.ProviderId,
+                                TenantId = user.TenantId,
+                                UserId = user.UserId,
+                                FriendTenantId = input.TenantId,
+                                FriendName = x.FullName
 
-                if (item == null) return DataResult.ResultSuccess(null, "");
-                var friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
-                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-                    new UserIdentifier(item.TenantId, item.UserId)
-                );
+                            }).FirstOrDefaultAsync();
+                    }
 
-                friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
-                 .Where(m => (m.UserId == user.UserId && m.TargetUserId == item.UserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))
-                 .OrderByDescending(m => m.CreationTime)
-                 .Take(20)
-                 .Count();
-                friend.LastMessage = _businessChatMessageRepos.GetAll()
-                       .Where(m => (m.UserId == user.UserId && m.TargetUserId == friend.FriendUserId && m.ProviderId == friend.ProviderId))
-                       .OrderByDescending(m => m.CreationTime)
-                       .FirstOrDefault();
-                friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
+                    if (item == null) return DataResult.ResultSuccess(null, "");
+                    var friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
+                    friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                        new UserIdentifier(item.TenantId, item.UserId)
+                    );
 
-                return DataResult.ResultSuccess(friend, "Get success !");
+                    friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
+                     .Where(m => (m.UserId == user.UserId && m.TargetUserId == item.UserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))
+                     .OrderByDescending(m => m.CreationTime)
+                     .Take(20)
+                     .Count();
+                    friend.LastMessage = _businessChatMessageRepos.GetAll()
+                           .Where(m => (m.UserId == user.UserId && m.TargetUserId == friend.FriendUserId && m.ProviderId == friend.ProviderId))
+                           .OrderByDescending(m => m.CreationTime)
+                           .FirstOrDefault();
+                    friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
+
+                    return DataResult.ResultSuccess(friend, "Get success !");
+                }
 
             }
             catch (Exception e)
