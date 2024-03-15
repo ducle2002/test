@@ -253,6 +253,60 @@ namespace Yootek.Chat
             }
         }
 
+        public async Task<DataResult> GetUserChat(GetUserChatInput input)
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
+                //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
+                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
+
+                var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId || x.FriendTenantId == input.TenantId);
+
+                if(item == null)
+                {
+                    using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                    {
+                        item = _userRepository.GetAll().Where(x => x.Id == input.UserId)
+                       .Select(x => new FriendCacheItem()
+                       {
+                           FriendUserId = input.UserId,
+                           FriendImageUrl = x.ImageUrl,
+                           FriendTenantId = input.TenantId,
+                           FriendUserName = x.FullName,
+                           State = FriendshipState.Stranger
+                       })
+                       .FirstOrDefault();
+                    }
+                }
+
+                if(item == null) return DataResult.ResultSuccess( "get success");
+
+                var friend = ObjectMapper.Map<FriendDto>(item);
+
+                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                         new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                     );
+
+                friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
+
+                if (friend.State == FriendshipState.IsDeleted)
+                {
+                    friend.FriendUserName = "Người dùng yoolife";
+                    friend.FriendImageUrl = null;
+                }
+
+                return DataResult.ResultSuccess(friend, "get success");
+
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal("GetUserChatFriendsWithSettings : " + e.ToJsonString());
+                throw;
+            }
+        }
+
+
         [DisableAuditing]
         public async Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input)
         {

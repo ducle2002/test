@@ -74,11 +74,9 @@ namespace Yootek.Application.BusinessChat
         {
             var sender = AbpSession.ToUserIdentifier();
             var receiver = new UserIdentifier(input.ProviderTenantId, input.ProviderUserId);
-
             try
             {
-                await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message, input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
-               
+                await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message, input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);              
             }
             catch (Exception ex)
             {
@@ -135,7 +133,7 @@ namespace Yootek.Application.BusinessChat
             {
                 var user = AbpSession.ToUserIdentifier();
                 var item = _userProviderFriendshipRepos.GetAll()
-                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && x.FriendTenantId == input.TenantId && !x.IsShop)
+                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && !x.IsShop)
                              .FirstOrDefault();
                 using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
