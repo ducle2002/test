@@ -2146,9 +2146,9 @@ namespace Yootek.Services
         {
             try
             {
-                var userBills = _userBillRepo.GetAll().Where(x =>
+                var userBills = await _userBillRepo.GetAll().Where(x =>
                     x.ApartmentCode == apartmentCode && x.Period.Value.Month == period.Month &&
-                    x.Period.Value.Year == period.Year).ToList();
+                    x.Period.Value.Year == period.Year).ToListAsync();
 
                 var data = DataResult.ResultSuccess(userBills, "Get success");
                 return data;
