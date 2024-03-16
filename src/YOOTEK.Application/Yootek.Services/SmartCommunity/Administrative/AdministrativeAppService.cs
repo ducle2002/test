@@ -90,7 +90,7 @@ namespace Yootek.Services
             _appNotifier = appNotifier;
         }
 
-      
+
         public async Task<object> CreateOrUpdateAdministrative(AdministrativeDto input)
         {
             try
@@ -118,14 +118,14 @@ namespace Yootek.Services
                 }
                 else
                 {
-                    
+
                     var insertInput = input.MapTo<Administrative>();
                     // Only admin can send administrative request
                     //var creatorUser = _homeMemberRepos.FirstOrDefault(x => x.Id == insertInput.CreatorUserId);
                     //if (creatorUser == null) { return null; }
                     //if (!creatorUser.IsAdmin) { return null; }
                     //
-					long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
+                    long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
                     await CreateOrUpdateValueWithAdministrative(input.Properties, id, input.ADTypeId);
                     mb.statisticMetris(t1, 0, "is_administrative");
@@ -142,7 +142,7 @@ namespace Yootek.Services
 
         }
 
-      
+
         public async Task<DataResult> HandleStateUserAdministrative(HandleStateAdministrativeInput input)
         {
             try
@@ -194,7 +194,7 @@ namespace Yootek.Services
 
         }
 
-      
+
         public async Task<DataResult> DeleteAdministrative(long id)
         {
             try
@@ -237,7 +237,7 @@ namespace Yootek.Services
         }
 
 
-      
+
         public async Task<object> UpdateStateAdministrative(long id, int state)
         {
             try
@@ -267,7 +267,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public async Task<object> UpdateConfirmationOwner(long id)
         {
             try
@@ -300,7 +300,7 @@ namespace Yootek.Services
 
         #region Config
 
-      
+
         public async Task<object> CreateOrUpdateType(TypeAdministrativeDto input)
         {
             try
@@ -372,7 +372,8 @@ namespace Yootek.Services
 
                 var data = DataResult.ResultSuccess("Delete success!");
                 return Task.FromResult(data);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
@@ -483,7 +484,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public async Task<DataResult> DeleteValueWithAdministrativeIdAsync(long adId)
         {
             try
@@ -514,7 +515,7 @@ namespace Yootek.Services
         #endregion
 
         #region Property
-      
+
         public async Task<object> CreateOrUpdateProperty(ADPropetyInput input)
         {
             try
@@ -555,7 +556,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> CreateProperty(ADPropetyInput input)
         {
             try
@@ -598,7 +599,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> UpdateProperty(ADPropetyInput input)
         {
             try
@@ -654,7 +655,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> CreateOrUpdateListProperty(List<ADPropetyInput> input)
         {
             try
@@ -787,7 +788,7 @@ namespace Yootek.Services
                  message,
                  detailUrlApp,
                  detailUrlWA,
-                 new[] { user } ,
+                 new[] { user },
                  messageDeclined,
                  AppType.USER
                 );

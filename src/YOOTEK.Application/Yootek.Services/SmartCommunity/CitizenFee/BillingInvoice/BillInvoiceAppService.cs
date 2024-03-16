@@ -22,12 +22,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net.Mail;
+using Abp.Net.Mail;
+using Abp.Json;
 
 namespace Yootek.Services.SmartCommunity.BillingInvoice
 {
     public interface IBillInvoiceAppService : IApplicationService
     {
         Task<DataResult> GetBillInvoiceApartment(PrintBillInvoiceInput input);
+        Task<DataResult> GetPaymentVoucher(long id);
+        Task SendEmailReceiptToApartmentAsync(PrintBillInvoiceInput input, DateTime period);
     }
     public class BillInvoiceAppService : YootekAppServiceBase, IBillInvoiceAppService
     {
@@ -43,6 +48,10 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
         private readonly ITemplateBillAppService _templateBillAppService;
         private readonly IRepository<AppOrganizationUnit, long> _appOrganizationUnitRepository;
         private readonly UserManager _userManager;
+        private readonly IRepository<BillEmailHistory, long> _billEmailHistoryRepos;
+        private readonly IEmailSender _emailSender;
+
+
 
 
         public BillInvoiceAppService(
@@ -57,7 +66,9 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
             IRepository<CitizenParking, long> citizenParkingRepository,
             IRepository<UserBillPayment, long> paymentRepository,
             IRepository<AppOrganizationUnit, long> appOrganizationUnitRepository,
-            UserManager userManager
+            UserManager userManager,
+            IRepository<BillEmailHistory, long> billEmailHistoryRepos,
+            IEmailSender emailSender
 
             )
         {
@@ -73,6 +84,8 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
             _paymentRepository = paymentRepository;
             _appOrganizationUnitRepository = appOrganizationUnitRepository;
             _userManager = userManager;
+            _billEmailHistoryRepos = billEmailHistoryRepos;
+            _emailSender = emailSender;
         }
 
 
@@ -168,6 +181,7 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
                 int tenantId = (int)AbpSession.TenantId;
                 var creator = await _userManager.GetUserByIdAsync(AbpSession.UserId ?? 0);
                 StringBuilder billInvoiceTemplate = new(_billInvoiceTemplateProvider.GetBillPaymentTemplate(tenantId));
+                //StringBuilder billInvoiceTemplate = new(_billInvoiceTemplateProvider.GetBillInvoiceTemplate(tenantId));
                 /*StringBuilder billInvoiceTemplate = new(_templateBillAppService.GetContentOfTemplateBill(new GetTemplateOfTenantInput()
                 {
                     TenantId = tenantId,
@@ -225,6 +239,60 @@ namespace Yootek.Services.SmartCommunity.BillingInvoice
                 throw;
             }
         }
+
+        public async Task SendEmailReceiptToApartmentAsync(PrintBillInvoiceInput input, DateTime period)
+        {
+            try
+            {
+                using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
+                {
+
+                    //var template = _billEmailHistoryRepos.FirstOrDefault(x => x.ApartmentCode == apartmentCode && x.Period.Year == time.Year && x.Period.Month == time.Month);
+                    //if (template != null) return;
+                    if (period == null) return;
+                    var time = period;
+                    var currentPeriod = string.Format("{0:MM/yyyy}", period);
+
+                    var citizenTemp = _citizenTempRepository.FirstOrDefault(x => x.ApartmentCode == input.ApartmentCode && x.RelationShip == RELATIONSHIP.Contractor && x.IsStayed == true);
+                    if (citizenTemp == null)
+                    {
+                        citizenTemp = _citizenTempRepository.GetAll().Where(x => x.ApartmentCode == input.ApartmentCode && x.RelationShip == RELATIONSHIP.Contractor).OrderByDescending(x => x.OwnerGeneration).FirstOrDefault();
+
+                    }                    
+                    var emailTemplate = await GetBillInvoiceApartment(input);
+                    var history = new BillEmailHistory()
+                    {
+                        ApartmentCode = input.ApartmentCode,
+                        CitizenTempId = citizenTemp != null ? citizenTemp.Id : null,
+                        Period = period,
+                        EmailTemplate = emailTemplate.ToString(),
+                        TenantId = AbpSession.TenantId
+
+                    };
+                    await _billEmailHistoryRepos.InsertAsync(history);
+
+                    if (citizenTemp != null && !citizenTemp.Email.IsNullOrEmpty())
+                    {
+                        Logger.Fatal(_emailSender.ToJsonString());
+                        await _emailSender.SendAsync(new MailMessage
+                        {
+                            To = { citizenTemp.Email },
+                            Subject = $"Thông báo thanh toán dịch vụ tháng {currentPeriod}",
+                            Body = emailTemplate.ToString().Replace("OCTYPE html>", ""),
+                            IsBodyHtml = true
+                        });
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal("Send email bill " + input.ApartmentCode + ": " + e.Message);
+                Logger.Fatal(JsonConvert.SerializeObject(e));
+            }
+
+        }
+
+
         // hudlands
         private async Task<StringBuilder> CreateTemplateHTS(PrintBillInvoiceInput input, StringBuilder billInvoiceTemplate)
         {

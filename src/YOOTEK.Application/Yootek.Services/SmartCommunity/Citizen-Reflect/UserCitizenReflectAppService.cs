@@ -318,8 +318,8 @@ namespace Yootek.Services
                 citizenInsert.Id = id;
 
                 Citizen citizen = (from us in _citizenRepos.GetAll()
-                                    where AbpSession.UserId == us.AccountId
-                                    select us).FirstOrDefault();
+                                   where AbpSession.UserId == us.AccountId
+                                   select us).FirstOrDefault();
                 if (citizen != null)
                 {
                     citizenInsert.Phone = citizen.PhoneNumber;
@@ -339,7 +339,7 @@ namespace Yootek.Services
                 var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.FEEDBACK, input.UrbanId);
 
                 if (admins != null && admins.Any())
-                {       
+                {
                     await NotifierNewNotificationReflect(citizenInsert, admins.ToArray(), citizen.FullName);
                 }
                 return DataResult.ResultSuccess(citizenInsert, "Insert success !");
