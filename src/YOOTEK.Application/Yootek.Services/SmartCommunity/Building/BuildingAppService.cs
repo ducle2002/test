@@ -415,7 +415,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.Building
                                                    })
                             .Where(x => buildingIds.Contains(x.Id))
                             .ApplySearchFilter(input.Keyword, x => x.DisplayName, x => x.ProjectCode)
-                            .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                            .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                             .WhereIf(input.UrbanId != null, x => x.UrbanId == input.UrbanId);
 
                 var result = await query

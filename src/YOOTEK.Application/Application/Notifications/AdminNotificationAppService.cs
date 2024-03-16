@@ -35,7 +35,7 @@ namespace Yootek.Notifications
         Task SchedulerYearCreateNotificationAsync();
     }
 
-    [AbpAuthorize(PermissionNames.Pages_SmartSocial_Notification)]
+    [AbpAuthorize(IOCPermissionNames.Pages_SmartSocial_Notification)]
     public class AdminNotificationAppService : YootekAppServiceBase, IAdminNotificationAppService
     {
         private readonly INotificationDefinitionManager _notificationDefinitionManager;

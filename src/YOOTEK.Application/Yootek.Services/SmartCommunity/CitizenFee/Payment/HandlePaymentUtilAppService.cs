@@ -174,7 +174,6 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                     payment.PaymentCode = "PM-" + id + "-" + GetUniqueKey(6);
                     await  CurrentUnitOfWork.SaveChangesAsync();
 
-
                     try
                     {
                         foreach (var item in listBills)
@@ -545,6 +544,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 }
                 else
                 {
+                    billPaid.BalanceAmount = payAmount - lastCost;
                     var balance = new BillPaymentBalanceDto()
                     {
                         Amount = payAmount - lastCost,
@@ -558,6 +558,8 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         UserBillId = bill.Id
                     };
                     balances.Add(balance);
+                    bill.Status = UserBillStatus.Paid;
+                    bill.DebtTotal = 0;
                 }
 
                 if (payment.Status == UserBillPaymentStatus.Pending)
@@ -608,6 +610,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                 }
                 else
                 {
+                    billPaid.BalanceAmount = payAmount - debtTotal;
                     var balance = new BillPaymentBalanceDto()
                     {
                         Amount = payAmount - debtTotal,
@@ -621,6 +624,8 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Payment
                         UserBillId = bill.Id
                     };
                     balances.Add(balance);
+                    bill.Status = UserBillStatus.Paid;
+                    bill.DebtTotal = 0;
                 }
 
                 if (payment.Status == UserBillPaymentStatus.Pending)

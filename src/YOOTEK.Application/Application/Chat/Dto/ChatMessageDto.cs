@@ -21,7 +21,7 @@ namespace Yootek.Chat.Dto
         public ChatSide Side { get; set; }
         public Guid? SharedMessageId { get; set; }
         public ChatMessageReadState ReadState { get; set; }
-
+        public ChatMessageReadState ReceiverReadState { get; private set; }
         public string Message { get; set; }
         public string FileUrl { get; set; }
         public DateTime CreationTime { get; set; }

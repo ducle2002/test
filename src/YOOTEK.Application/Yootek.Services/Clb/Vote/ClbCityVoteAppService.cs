@@ -367,6 +367,7 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Vote
                 throw;
             }
         }
+
         public Task<DataResult> DeleteMultipleCityVote([FromBody] List<long> ids)
         {
             try
@@ -691,25 +692,28 @@ namespace Yootek.Yootek.Services.Yootek.Clb.Vote
             var detailUrlApp = $"yoolife://app/evote/detail?id={vote.Id}";
             var citizens = (from cz in _citizenRepos.GetAll()
                             where cz.State == STATE_CITIZEN.ACCEPTED
-                            select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).ToList();
+                            select new UserIdentifier(cz.TenantId, cz.AccountId.Value)).Distinct().ToList();
 
-            var messageDeclined = new NotificationWithContentIdDatabase(
-                             vote.Id,
-                             AppNotificationAction.CityVoteNew,
-                             AppNotificationIcon.CityVoteNewIcon,
-                              TypeAction.Detail,
-                                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
-                                "",
-                                "",
-                                detailUrlApp
-                             );
-            await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                "Thông báo khảo sát cư dân!",
-                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
-                detailUrlApp,
-                "",
-                citizens.ToArray(),
-                messageDeclined);
+            var messageDeclined = new UserMessageNotificationDataBase(
+                            AppNotificationAction.CityVoteNew,
+                            AppNotificationIcon.CityVoteNewIcon,
+                             TypeAction.Detail,
+                               $"{creatername} đã tạo một khảo sát mới. Nhấn để xem chi tiết !",
+                               detailUrlApp,
+                               "",
+                               "",
+                               ""
+
+                            );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife khảo sát số !",
+                $"{creatername} đã tạo một khảo sát mới. Nhấn để xem chi tiết !",
+                 detailUrlApp,
+                 "",
+                 citizens.ToArray(),
+                 messageDeclined,
+                 AppType.USER
+                );
         }
         #endregion
 

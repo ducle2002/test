@@ -105,7 +105,7 @@ namespace Yootek.Services
                             UrbanId = bd.UrbanId,
                         };
             query = query
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(input.Period.HasValue, x => x.Period.Month == input.Period.Value.Month && x.Period.Year == input.Period.Value.Year)
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Keyword), x => (x.CitizenName != null && x.CitizenName.ToLower().Contains(input.Keyword.ToLower())) || x.ApartmentCode.ToLower().Contains(input.Keyword.ToLower()))
                 .ApplySearchFilter(input.Keyword, x => x.ApartmentCode)
@@ -153,7 +153,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
 
         public async Task<DataResult> CreateOrUpdateBillDebtAsync(BillDebtDto input)
         {
@@ -240,7 +239,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
 
         public async Task<object> VerifyListPaymentBillDebt(List<VerifyPaymentBillDebtInput> input)
         {
@@ -371,7 +369,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
 
         private List<UserBillDebtDto> ExtractExcelBillDebt(ExcelPackage package, int? tenantId)
         {
@@ -554,7 +551,6 @@ namespace Yootek.Services
             return listDebt;
         }
 
-
         private async Task CreateListBillDebtAsync(List<UserBillDebtDto> billDebts)
         {
             try
@@ -618,13 +614,12 @@ namespace Yootek.Services
                         };
 
             query = query
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == input.Period.Value.Month && x.Period.Value.Year == input.Period.Value.Year)
                 .WhereIf(!string.IsNullOrWhiteSpace(input.Keyword), x => (x.CitizenName != null && x.CitizenName.ToLower().Contains(input.Keyword.ToLower())) || x.ApartmentCode.ToLower().Contains(input.Keyword.ToLower()))
                 .OrderByDescending(x => x.CreationTime).AsQueryable();
             return query;
         }
-
 
         public async Task<object> GetAllBillDebtByUserBillAsync(GetAllBillDebtInputDto input)
         {
@@ -659,9 +654,7 @@ namespace Yootek.Services
                 throw;
             }
         }
-
-
-       
+     
         public string GetCitizenNameFromApartmentCode(string apartmentCode)
         {
             var citizens = _citizenTempRepo.GetAll().Select(x => new
@@ -688,7 +681,7 @@ namespace Yootek.Services
                 int year = input.Period.HasValue ? input.Period.Value.Year : 0;
 
                 var listq = _userBillRepo.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .Where(x => x.Status == UserBillStatus.Debt)
                     .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == month && x.Period.Value.Year == year)
                     .WhereIf(!input.ApartmentCode.IsNullOrEmpty(), x => x.ApartmentCode.Contains(input.ApartmentCode))

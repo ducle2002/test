@@ -137,7 +137,7 @@ namespace Yootek.Services
                                                          BillConfig = apartment.BillConfig,
                                                          BillType = _meterTypeRepository.GetAll().Where(m => m.Id == meter.MeterTypeId).Select(m => m.BillType).FirstOrDefault(),
                                                      })
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Period.HasValue, x => x.Period.Value.Month == month && x.Period.Value.Year == year)
                     .WhereIf(input.MeterTypeId != null, x => x.MeterTypeId == input.MeterTypeId)
                     .WhereIf(input.UrbanId != null, x => x.UrbanId == input.UrbanId)
@@ -407,7 +407,7 @@ namespace Yootek.Services
                                  UrbanName = _organizationUnitRepository.GetAll().Where(o => o.Id == meter.UrbanId)
                                      .Select(b => b.DisplayName).FirstOrDefault(),
                              })
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.Ids != null && input.Ids.Count > 0, x => input.Ids.Contains(x.Id))
                     .WhereIf(input.MeterTypeId.HasValue, x => x.MeterTypeId == input.MeterTypeId)
                     .AsQueryable();

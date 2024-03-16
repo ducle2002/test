@@ -25,6 +25,7 @@ namespace Yootek.MultiTenancy.Dto
         public int? EditionId { get; set; }
 
         public bool IsActive { get; set; }
+        public TenantType? TenantType { get; set; }
 
         public DateTime? SubscriptionEndDateUtc { get; set; }
 

@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Abp.AutoMapper;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Yootek.EntityDb;
 
 namespace Yootek.Services
@@ -29,6 +30,7 @@ namespace Yootek.Services
     public class ImportCreateMeterInput
     {
         public IFormFile File { get; set; }
+        [FromQuery] public long? MeterTypeId { get; set; }
 
     }
 }

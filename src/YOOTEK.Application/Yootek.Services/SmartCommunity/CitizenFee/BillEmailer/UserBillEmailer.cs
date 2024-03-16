@@ -15,11 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Yootek.Configuration;
 using Microsoft.Extensions.Configuration;
 using Abp.Notifications;
-using Newtonsoft.Json;
-using System.Net.Mail;
-using Yootek.Services.SmartCommunity.BillingInvoice;
-using Abp.Net.Mail;
-using Yootek.Application.Configuration.Tenant;
 
 namespace Yootek.Services.BillEmailer
 {
@@ -41,11 +36,6 @@ namespace Yootek.Services.BillEmailer
 
         private readonly IRepository<Apartment, long> _apartmentRepository;
         private readonly IConfigurationRoot _appConfiguration;
-        private readonly IBillInvoiceAppService _billInvoiceAppService;
-        private readonly IRepository<BillEmailHistory, long> _billEmailHistoryRepos;
-        private readonly IEmailSender _emailSender;
-        private readonly ITenantSettingsAppService _tenantSetting;
-
 
         public UserBillEmailer(
              IBillEmailUtil billEmailUtil,
@@ -54,13 +44,7 @@ namespace Yootek.Services.BillEmailer
              IRepository<Citizen, long> citizenRepository,
              IRepository<Apartment, long> apartmentRepository,
              IAppNotifier appNotifier,
-             IAppConfigurationAccessor configurationAccessor,
-             IBillInvoiceAppService billInvoiceAppService,
-             IRepository<BillEmailHistory, long> billEmailHistoryRepos,
-             IEmailSender emailSender,
-             ITenantSettingsAppService tenantSetting
-
-
+             IAppConfigurationAccessor configurationAccessor
             )
         {
 
@@ -71,11 +55,6 @@ namespace Yootek.Services.BillEmailer
             _appNotifier = appNotifier;
             _citizenRepository = citizenRepository;
             _appConfiguration = configurationAccessor.Configuration;
-            _billInvoiceAppService = billInvoiceAppService;
-            _billEmailHistoryRepos = billEmailHistoryRepos;
-            _emailSender = emailSender;
-            _tenantSetting = tenantSetting;
-
         }
 
         public async Task SendEmailAndBNotificationAllApartment(List<SendUserBillNotificationInput> input)
@@ -89,7 +68,6 @@ namespace Yootek.Services.BillEmailer
                         try
                         {
                             await _billEmailUtil.SendEmailToApartmentAsync(bill.ApartmentCode, bill.Period, AbpSession.TenantId);
-
                         }
                         catch
                         {
@@ -113,11 +91,10 @@ namespace Yootek.Services.BillEmailer
 
                 foreach (var bill in input)
                 {
-
                     try
                     {
                         var citizens = await _citizenRepository.GetAll().Where(x => x.ApartmentCode == bill.ApartmentCode && x.State == STATE_CITIZEN.ACCEPTED && x.AccountId.HasValue).Select(x => x.AccountId.Value).ToListAsync();
-                        await NotificationUserBill(bill.ApartmentCode, bill.Period, citizens, AbpSession.TenantId);
+                        await NotificationUserBill(bill, citizens, AbpSession.TenantId);
                     }
                     catch { }
                 }
@@ -128,55 +105,6 @@ namespace Yootek.Services.BillEmailer
             {
                 Logger.Fatal("send mail bills :" + e.Message);
                 throw;
-            }
-        }
-        public async Task SendEmailToEmailAdminSenderAsync(long id, DateTime? tim)
-        {
-            try
-            {
-                if (tim == null) return;
-                var time = tim.Value;
-                var emailTemplate = _billInvoiceAppService.GetPaymentVoucher(id); //phiếu thu
-
-                //var citizenTemp = _citizenTempRepository.FirstOrDefault(x => x.AccountId == AbpSession.UserId && x.RelationShip == RELATIONSHIP.Contractor && x.IsStayed == true);
-                //if (citizenTemp == null)
-                //{
-                //    var citizenTemp0 = _citizenTempRepository.GetAll().Where(x => x.AccountId == AbpSession.UserId && x.RelationShip == RELATIONSHIP.Contractor).OrderByDescending(x => x.OwnerGeneration).FirstOrDefault();
-                //    if (citizenTemp0 != null)
-                //    {
-                //        var apartmentCode = citizenTemp0.ApartmentCode;
-
-                //        var history = new BillEmailHistory()
-                //        {
-                //            ApartmentCode = apartmentCode,
-                //            CitizenTempId = citizenTemp0 != null ? citizenTemp0.Id : null,
-                //            Period = time,
-                //            EmailTemplate = emailTemplate.ToString(),
-                //            TenantId = AbpSession.TenantId
-
-                //        };
-
-                //        await _billEmailHistoryRepos.InsertAsync(history);
-                //    }
-                //}
-
-                var currentPeriod = string.Format("{0:MM/yyyy}", time);
-                var emailSender = await _tenantSetting.GetEmailSettingsAsync();
-                if (emailSender.DefaultFromAddress != null && emailSender.DefaultFromAddress != "") {
-                    await _emailSender.SendAsync(new MailMessage
-                    {
-                        To = { emailSender.DefaultFromAddress },
-                        Subject = $"Thông báo hóa đơn dịch vụ tháng {currentPeriod}",
-                        Body = emailTemplate.ToString().Replace("OCTYPE html>", ""),
-                        IsBodyHtml = true
-                    });
-                }
-
-            }
-            catch (Exception e)
-            {
-                Logger.Fatal("Send email to email sender: " + e.Message);
-                Logger.Fatal(JsonConvert.SerializeObject(e));
             }
         }
 
@@ -210,35 +138,36 @@ namespace Yootek.Services.BillEmailer
             }
         }
 
-        private async Task NotificationUserBill(string apartmentCode, DateTime period, List<long> userIds, int? tenantId)
+        private async Task NotificationUserBill(SendUserBillNotificationInput bill, List<long> userIds, int? tenantId)
         {
             var users = userIds.Select(x => new UserIdentifier(tenantId, x)).ToArray();
-            var detailUrlApp = $"yoolife://app/receipt?apartmentCode={apartmentCode}&formId=1";
-            var detailUrlWA = $"/monthly?apartmentCode={apartmentCode}&formId=1";
+            var formId = 1;
+            switch (bill.Status)
+            {
+                case UserBillStatus.Pending: formId = 1; break;
+                case UserBillStatus.Paid: formId = 2; break;
+                case UserBillStatus.Debt: formId = 3; break;
+                default: break;
+            }
+            var detailUrlApp = $"yoolife://app/receipt?apartmentCode={bill.ApartmentCode}&formId={formId}";
+            var detailUrlWA = $"/monthly?apartmentCode={bill.ApartmentCode}&formId={formId}";
             var messageSuccess = new UserMessageNotificationDataBase(
                                AppNotificationAction.UserBill,
                                AppNotificationIcon.UserBill,
                                TypeAction.Detail,
-                               $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+                               $"Bạn có hóa đơn tháng {bill.Period.Month}/{bill.Period.Year} của căn hộ {bill.ApartmentCode}. Nhấn để xem chi tiết !",
                                detailUrlApp,
                                detailUrlWA
                                );
             await _appNotifier.SendMessageNotificationInternalAsync(
-                $"Thông báo hóa đơn mới!",
-                $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
+                $"Yoolife thông báo hóa đơn!",
+                $"Bạn có hóa đơn tháng {bill.Period.Month}/{bill.Period.Year} của căn hộ {bill.ApartmentCode}. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 detailUrlWA,
                 users,
                 messageSuccess,
                 AppType.USER
                 );
-            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //      $"Thông báo hóa đơn mới!",
-            //      $"Bạn có hóa đơn tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
-            //      detailUrlApp,
-            //      detailUrlWA,
-            //      users,
-            //      messageSuccess);
             return;
         }
 

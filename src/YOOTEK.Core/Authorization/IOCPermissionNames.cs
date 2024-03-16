@@ -2,7 +2,7 @@
 
 namespace Yootek.Authorization
 {
-    public static class PermissionNames
+    public static class IOCPermissionNames
     {
         // Phân quyền dữ liệu
         public const string Data = "Data";

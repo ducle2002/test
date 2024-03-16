@@ -131,7 +131,7 @@ namespace Yootek.Services
                              .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                              .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                              .ApplySearchFilter(input.Keyword, x => x.Name)
-                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                             .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                              .OrderByDescending(x => x.CreationTime)
                     .AsQueryable();
 
@@ -489,7 +489,7 @@ namespace Yootek.Services
                                  OptionVoteId = uv.OptionVoteId,
                                  Id = uv.Id,
                              })
-                             .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                             .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                              .OrderByDescending(x => x.CreationTime)
                              .AsQueryable();
 
@@ -540,7 +540,7 @@ namespace Yootek.Services
                              UrbanId = _organizationRepos.GetAll().Where(u => u.Id == vt.OrganizationUnitId && u.ParentId == null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
                              BuildingId = _organizationRepos.GetAll().Where(u => u.Id == vt.OrganizationUnitId && u.ParentId != null && u.Type == 0).Select(u => u.Id).FirstOrDefault(),
                          })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .AsQueryable();
 
             return query;
@@ -809,7 +809,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var count = await _cityVoteRepos.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .Where(x => x.OrganizationUnitId.HasValue).CountAsync();
                 return DataResult.ResultSuccess(count, "Get success!");
             }
@@ -827,17 +827,14 @@ namespace Yootek.Services
         {
             var detailUrlApp = $"yoolife://app/evote/detail?id={vote.Id}";
             var citizens = (from cz in _citizenRepos.GetAll()
-                            where cz.State == STATE_CITIZEN.ACCEPTED &&
-                                  (vote.UrbanId == null || cz.UrbanId == vote.UrbanId) &&
-                                  (vote.BuildingId == null || cz.BuildingId == vote.BuildingId)
-                            select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
+                            where cz.State == STATE_CITIZEN.ACCEPTED
+                            select new UserIdentifier(cz.TenantId, cz.AccountId ?? 0)).Distinct().ToList();
 
-            var messageDeclined = new NotificationWithContentIdDatabase(
-                             vote.Id,
+            var messageDeclined = new UserMessageNotificationDataBase(
                              AppNotificationAction.CityVoteNew,
                              AppNotificationIcon.CityVoteNewIcon,
                               TypeAction.Detail,
-                                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
+                                $"{creatername} đã tạo một khảo sát mới. Nhấn để xem chi tiết !",
                                 detailUrlApp,
                                 "",
                                 "",
@@ -845,21 +842,14 @@ namespace Yootek.Services
 
                              );
             await _appNotifier.SendMessageNotificationInternalAsync(
-                "Thông báo khảo sát cư dân!",
-                $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
+                "Yoolife khảo sát số !",
+                $"{creatername} đã tạo một khảo sát mới. Nhấn để xem chi tiết !",
                  detailUrlApp,
                  "",
                  citizens.ToArray(),
                  messageDeclined,
                  AppType.USER
                 );
-            //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //     "Thông báo khảo sát cư dân!",
-            //     $"{creatername} tạo một khảo sát mới. Nhấn để xem chi tiết !",
-            //     detailUrlApp,
-            //     "",
-            //     citizens.ToArray(),
-            //     messageDeclined);
         }
         #endregion
 

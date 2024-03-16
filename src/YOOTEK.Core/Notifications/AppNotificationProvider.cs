@@ -13,7 +13,7 @@ namespace Yootek.Notifications
                 new NotificationDefinition(
                     AppNotificationNames.NewUserRegistered,
                     displayName: L("NewUserRegisteredNotificationDefinition"),
-                    permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Administration_Users)
+                    permissionDependency: new SimplePermissionDependency(IOCPermissionNames.Pages_Administration_Users)
                     )
                 );
 
@@ -21,7 +21,7 @@ namespace Yootek.Notifications
                 new NotificationDefinition(
                     AppNotificationNames.NewTenantRegistered,
                     displayName: L("NewTenantRegisteredNotificationDefinition"),
-                    permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Tenants)
+                    permissionDependency: new SimplePermissionDependency(IOCPermissionNames.Pages_Tenants)
                     )
                 );
         }

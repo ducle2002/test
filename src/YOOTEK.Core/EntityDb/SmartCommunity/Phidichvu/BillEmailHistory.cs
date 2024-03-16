@@ -1,18 +1,14 @@
-﻿using Abp.Domain.Entities.Auditing;
-using Abp.Domain.Entities;
-using Abp.Organizations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
+using Abp.Organizations;
 
 namespace Yootek.EntityDb
 {
     [Table("BillEmailHistories")]
-    public class BillEmailHistory: FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit
+    public class BillEmailHistory : FullAuditedEntity<long>, IMayHaveTenant, IMayHaveOrganizationUnit
     {
         public long? CitizenTempId { get; set; }
         [StringLength(1000)]

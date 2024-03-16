@@ -81,26 +81,7 @@ namespace Yootek.Services
                                 {
                                     try
                                     {
-                                        /*await _appNotifyBusiness.SendNotifyFirebaseToTopic(new MessageNotifyToTopicDto()
-                                        {
-                                            Title = "Thông báo hóa đơn công nợ!",
-                                            Action = "remider_bill_debt",
-                                            Icon = "",
-                                            ImageUrl = "",
-                                            TenantId = tenant.Id,
-                                            Message = $"Bạn có hóa đơn công nợ tháng {dateTimePreMonth.Month}/{dateTimePreMonth.Year} của căn hộ {billDebtApartment.ApartmentCode} !",
-                                            TopicName = string.Format("apartment_{0}_{1}", billDebtApartment.TenantId, billDebtApartment.ApartmentCode),
-                                        });*/
-                                        await _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
-                                        {
-                                            Title = L("BillNotification"),
-                                            Body = L("BillNotificationComingDueBody"),
-                                            Data = JsonConvert.SerializeObject(new
-                                            {
-                                                action = "remider_bill_debt"
-                                            }),
-                                            GroupName = string.Format("apartment_{0}_{1}", billDebtApartment.TenantId, billDebtApartment.ApartmentCode)
-                                        });
+                                      
                                         List<Citizen> users = await _citizenRepos.GetAllListAsync(c => c.ApartmentCode == billDebtApartment.ApartmentCode && c.AccountId.HasValue);
                                         if (users != null & users.Count > 0)
                                         {
@@ -147,13 +128,6 @@ namespace Yootek.Services
                 messageSuccess,
                 AppType.USER
                 );
-            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //      $"Thông báo hóa đơn công nợ!",
-            //      $"Bạn có hóa đơn công nợ tháng {period.Month}/{period.Year} của căn hộ {apartmentCode} !",
-            //      detailUrlApp,
-            //      detailUrlWA,
-            //      users,
-            //      messageSuccess);
             return;
         }
     }

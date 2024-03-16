@@ -182,8 +182,8 @@ namespace Yootek.Services.Dto
         public int? MemberNum { get; set; }
         public long? BuildingId { get; set; }
         public long? UrbanId { get; set; }
-        public List<string>? IdentityImageUrls { get; set; }
-        [CanBeNull] public String HomeAddress { get; set; }
+        public List<string> IdentityImageUrls { get; set; }
+        [CanBeNull] public string HomeAddress { get; set; }
     }
 
     [AutoMap(typeof(CitizenTemp))]

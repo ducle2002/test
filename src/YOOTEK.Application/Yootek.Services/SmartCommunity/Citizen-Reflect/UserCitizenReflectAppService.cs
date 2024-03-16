@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.UserFeedbackCommentEnum;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Yootek.Services
 {
@@ -316,14 +317,13 @@ namespace Yootek.Services
                 citizenInsert.Name = "PA0" + id.ToString();
                 citizenInsert.Id = id;
 
-                Citizen? citizen = (from us in _citizenRepos.GetAll()
-                                    where AbpSession.UserId == us.AccountId
-                                    select us).FirstOrDefault();
+                Citizen citizen = (from us in _citizenRepos.GetAll()
+                                   where AbpSession.UserId == us.AccountId
+                                   select us).FirstOrDefault();
                 if (citizen != null)
                 {
                     citizenInsert.Phone = citizen.PhoneNumber;
                     citizenInsert.NameFeeder = citizen.FullName;
-                    citizenInsert.ApartmentCode = citizen.ApartmentCode;
                 }
 
                 CitizenReflectComment feedbackComment = new()
@@ -335,75 +335,13 @@ namespace Yootek.Services
                 };
                 await _citizenReflectCommentRepos.InsertAndGetIdAsync(feedbackComment);
                 await CurrentUnitOfWork.SaveChangesAsync();
-                List<User> adminsBuilding = null;
-                List<User> adminsUrban = null;
-                List<User> admins = null;
-                string urbanCode = null;
-                string buildingCode = null;
 
-                if (input.UrbanId != null)
-                {
-                    adminsUrban = await _store.GetUserByOrganizationUnitIdAsync((long)input.UrbanId, AbpSession.TenantId);
-                    urbanCode = await _appOrganizationUnitRepos.GetAll()
-                    .Where(x => x.Id == input.UrbanId && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && x.ParentId == null)
-                    .Select(x => x.Code)
-                    .FirstOrDefaultAsync();
-                }
+                var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.FEEDBACK, input.UrbanId);
 
-                if (input.BuildingId != null)
-                {
-                    adminsBuilding = await _store.GetUserByOrganizationUnitIdAsync((long)input.BuildingId, AbpSession.TenantId);
-                    buildingCode = await _appOrganizationUnitRepos.GetAll()
-                    .Where(x => x.Id == input.BuildingId && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME && x.ParentId != null)
-                    .Select(x => x.Code)
-                    .FirstOrDefaultAsync();
-                }
-                var organizationUnits = await _appOrganizationUnitRepos.GetAll()
-                .Where(x => x.Type == APP_ORGANIZATION_TYPE.ADMINISTRATION &&
-                            (urbanCode != null && x.Code.StartsWith(urbanCode + ".") ||
-                             buildingCode != null && x.Code.StartsWith(buildingCode + ".")))
-                .Select(x => x.ParentId)
-                .ToListAsync();
-
-                List<User> adminsOrganization = new List<User>();
-
-                foreach (var ou in organizationUnits)
-                {
-                    List<User> adminsInOrganization = await _store.GetUserByOrganizationUnitIdAsync((long)ou, AbpSession.TenantId);
-                    adminsOrganization.AddRange(adminsInOrganization);
-                }
-
-                admins = adminsUrban.Union(adminsBuilding).Union(adminsOrganization).ToList();
-
-                // List<User>? admins = await _store.GetUserByOrganizationUnitIdAsync(0, AbpSession.TenantId);
-                string detailUrlApp, detailUrlWA;
-                detailUrlApp = $"yooioc://app/feedback/detail?id={id}";
-                detailUrlWA = $"/feedbacks/id={id}";
                 if (admins != null && admins.Any())
                 {
-                    var messageAccept = new UserMessageNotificationDataBase(
-                        AppNotificationAction.ReflectCitizenNew,
-                        AppNotificationIcon.ReflectCitizenNewIcon,
-                        TypeAction.Detail,
-                        $"Có một phản ánh mới {citizenInsert.Name} từ cư dân {citizenInsert.ApartmentCode}!",
-                        detailUrlApp,
-                        detailUrlWA,
-                        citizen.ImageUrl ?? "",
-                        "",
-                        0
-                    );
-
-                    // Gửi thông báo tới tất cả người quản trị (admins)
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân",
-                        $"Có một phản ánh mới {citizenInsert.Name} từ cư dân {citizenInsert.ApartmentCode}!",
-                        detailUrlApp,
-                        detailUrlWA,
-                        admins.Select(admin => new UserIdentifier(admin.TenantId, admin.Id)).ToArray(),
-                        messageAccept
-                    );
+                    await NotifierNewNotificationReflect(citizenInsert, admins.ToArray(), citizen.FullName);
                 }
-
                 return DataResult.ResultSuccess(citizenInsert, "Insert success !");
             }
             catch (Exception ex)
@@ -447,16 +385,10 @@ namespace Yootek.Services
 
                         var admins = await _store.GetAllChatCitizenManagerTenantAsync(feedback.UrbanId, AbpSession.TenantId);
                         var adminIds = admins.Select(a => new UserIdentifier(a.TenantId, a.Id)).ToArray();
-                        var processName = "Ban quản trị";
-                        if (feedback.OrganizationUnitId.HasValue)
-                        {
-                            var org = _appOrganizationUnitRepos.FirstOrDefault(x => x.Id == feedback.OrganizationUnitId);
-                            if (org != null) processName = org.DisplayName;
-                        }
                         if (admins != null && admins.Any())
                         {
                             _notificationCommunicator.SendCommentFeedbackToAdminTenant(admins, insertInput);
-                            await NotifierCommentCitizenReflect(insertInput, feedback.Name, processName, adminIds);                                                                                    //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
+                            await NotifierCommentCitizenReflect(insertInput, feedback.Name, adminIds);                                                                                    //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
                         }
                         mb.statisticMetris(t1, 0, "is_noti");
                         var data = DataResult.ResultSuccess(insertInput, "Insert success !");
@@ -711,30 +643,34 @@ namespace Yootek.Services
                 throw;
             }
         }
+        
         #region common
-        private async Task NotifierCommentCitizenReflect(CitizenReflectComment comment, string reflectName, string processName, UserIdentifier[] admin)
+        private async Task NotifierCommentCitizenReflect(CitizenReflectComment comment, string reflectName, UserIdentifier[] admin)
         {
+            var detailUrlApp = $"yooioc://app/feedback/comment?id={comment.FeedbackId}";
+            var detailUrlWA = $"/feedbacks/comment?id={comment.FeedbackId}";
             var messageDeclined = new NotificationWithContentIdDatabase(
             comment.Id,
             AppNotificationAction.CommentReflectCitizen,
             AppNotificationIcon.CommentReflectCitizenSuccessIcon,
             TypeAction.Detail,
-            $"Giao tiếp phản ánh {reflectName} tới {processName}. Nhấn để xem chi tiết !",
-            "",
-            ""
+            $"Bạn có 1 tin nhắn phản ánh {reflectName} mới. Nhấn để xem chi tiết !",
+            detailUrlApp,
+            detailUrlWA
             );
-            await _appNotifier.SendUserMessageNotifyFireBaseCheckOnlineAsync(
-                "Thông báo tin nhắn của phản ánh cư dân!",
-                $"Giao tiếp phản ánh {reflectName} tới {processName}. Nhấn để xem chi tiết !",
-                "",
-                "",
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Tin nhắn phản ánh số!",
+                $"Bạn có 1 tin nhắn phản ánh {reflectName} mới. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
                 admin.ToArray(),
-                messageDeclined);
+                messageDeclined,
+                AppType.IOC);
 
         }
         private async Task NotifierNewNotificationReflect(CitizenReflect data, UserIdentifier[] admin, string creatorName)
         {
-            var detailUrlApp = $"yoolife://app/feedback/detail?id={data.Id}";
+            var detailUrlApp = $"yooioc://app/feedback/detail?id={data.Id}";
             var detailUrlWA = $"/feedbacks?id={data.Id}";
             var messageDeclined = new NotificationWithContentIdDatabase(
                             data.Id,
@@ -753,17 +689,8 @@ namespace Yootek.Services
                 detailUrlWA,
                 admin.ToArray(),
                 messageDeclined,
-                AppType.USER
+                AppType.IOC
                 );
-
-            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //      "Yoolife phản ánh số!",
-            //      $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-            //      detailUrlApp,
-            //      detailUrlWA,
-            //      admin.ToArray(),
-            //    messageDeclined);
-
 
         }
         #endregion

@@ -142,7 +142,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
                         };
             query = query
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(!input.IsAdvanced, x => !(x.Method != UserBillPaymentMethod.Direct && x.Status == UserBillPaymentStatus.Pending) || !(x.Method != UserBillPaymentMethod.Banking && x.Status == UserBillPaymentStatus.Pending))
                 .WhereIf(input.Status.HasValue, x => x.Status == input.Status)
                 .WhereIf(input.InDay.HasValue, x => x.CreationTime.Day == input.InDay.Value.Day && x.CreationTime.Month == input.InDay.Value.Month && x.CreationTime.Year == input.InDay.Value.Year)
@@ -191,7 +191,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                             {
                                 totalPrice += b.LastCost.Value;
                             }
-
                         }
 
                         if (!bill.UserBillDebtIds.IsNullOrEmpty())
@@ -203,9 +202,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         if (!bill.UserBillPrepaymentIds.IsNullOrEmpty())
                         {
                             bill.BillListPrepayment = await SplitBills(bill.UserBillPrepaymentIds);
-
                         }
-
                     }
 
                     if (bill.TypePayment == TypePayment.DebtBill && !bill.BillDebtIds.IsNullOrWhiteSpace())
@@ -226,6 +223,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         }
                         catch { }
                     }
+
                     bill.TotalPayment = totalPrice;
 
                     if (bill.ApartmentCode.IsNullOrEmpty())
@@ -531,23 +529,9 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             try
             {
                 input.Status = UserBillPaymentStatus.Success;
-                var payment = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
-
+                await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
                 var data = DataResult.ResultSuccess("Admin payment success");
-                ////yêu cầu aden gửi email thông báo hóa đơn
-                //var sendEmailInput = new PrintBillInvoiceInput
-                //{
-                //    ApartmentCode = input.ApartmentCode,
-                //    PeriodMonth = input.Period.Month,
-                //    PeriodYear = input.Period.Year,
-                //    Method = input.Method,
-                //    Payment = payment,
-                //};
-                //await _billInvoice.SendEmailReceiptToApartmentAsync(sendEmailInput, input.Period); // đợi phiếu thu của aden
-                if (AbpSession.TenantId == 114)
-                {
-                    await _handlePayment.SendEmailToEmailAdminSenderAsync(payment.Id, input.Period);
-                }
+
                 return data;
             }
             catch (Exception ex)
@@ -678,7 +662,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
 
                                  })
-                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                   .Where(x => x.IsDeleted && x.IsRecover.HasValue && x.IsRecover.Value)
                                   .WhereIf(input.Method.HasValue, x => (int)x.Method == input.Method)
                                   .WhereIf(input.UrbanId.HasValue, x => (long)x.UrbanId == input.UrbanId)

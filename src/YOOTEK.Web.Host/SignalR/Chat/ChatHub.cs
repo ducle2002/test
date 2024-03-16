@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Json;
 
 namespace Yootek.Web.Host.Chat
 {
@@ -85,16 +86,13 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
-                    return true;
-                }
+                await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
+                return true;
             }
             catch (Exception ex)
             {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
+                Logger.Fatal("Could not send chat message to user: " + receiver);
+                Logger.Fatal(ex.ToJsonString());
                 return false;
             }
         }
@@ -107,22 +105,13 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _chatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId, input.Id);
-                    return true;
-                }
-            }
-            catch (UserFriendlyException ex)
-            {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
-                return false;
+                await _chatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId, input.Id);
+                return true;
             }
             catch (Exception ex)
             {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
+                Logger.Fatal("Could not send chat message to user: " + receiver);
+                Logger.Fatal(ex.ToJsonString());
                 return false;
             }
         }
@@ -262,17 +251,8 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _organizationUnitChatManager.SendMessageOrgAsync(sender, receiver, input.Message,input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage, input.IsAdmin);
-                    return true;
-                }
-            }
-            catch (UserFriendlyException ex)
-            {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
-                return false;
+                await _organizationUnitChatManager.SendMessageOrgAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage, input.IsAdmin);
+                return true;
             }
             catch (Exception ex)
             {
@@ -290,17 +270,8 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _organizationUnitChatManager.DeleteMessageOrgAsync(sender, receiver, input.SharedMessageId, input.Id);
-                    return true;
-                }
-            }
-            catch (UserFriendlyException ex)
-            {
-                Logger.Warn("Could not send chat message to user: " + receiver);
-                Logger.Warn(ex.ToString(), ex);
-                return false;
+                await _organizationUnitChatManager.DeleteMessageOrgAsync(sender, receiver, input.SharedMessageId, input.Id);
+                return true;
             }
             catch (Exception ex)
             {
@@ -335,10 +306,7 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message,input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
-                }
+                await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message, input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
                 return true;
             }
             catch (Exception ex)
@@ -354,10 +322,7 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _busniessChatMessageManager.SendMessageProviderToUserAsync(sender, receiver, input.ProviderId, input.Message,input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
-                }
+                await _busniessChatMessageManager.SendMessageProviderToUserAsync(sender, receiver, input.ProviderId, input.Message, input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);
             }
             catch (Exception ex)
             {
@@ -373,11 +338,8 @@ namespace Yootek.Web.Host.Chat
 
             try
             {
-                using (AbpSession.Use(Context.GetTenantId(), Context.GetUserId()))
-                {
-                    await _busniessChatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId);
-                    return true;
-                }
+                await _busniessChatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId);
+                return true;
             }
             catch (Exception ex)
             {

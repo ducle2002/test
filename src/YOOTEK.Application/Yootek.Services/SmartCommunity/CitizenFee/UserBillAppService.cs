@@ -143,10 +143,10 @@ namespace Yootek.Services
                 {
                     case UserBillFormId.Pending_WaitForConfirm:
                         query = query.Where(x =>
-                            x.Status == UserBillStatus.Pending || x.Status == UserBillStatus.WaitForConfirm);
+                            x.Status == UserBillStatus.Pending || x.Status == UserBillStatus.WaitForConfirm || x.IsPaymentPending == true);
                         break;
                     case UserBillFormId.Paid:
-                        query = query.Where(x => x.Status == UserBillStatus.Paid);
+                        query = query.Where(x => x.Status == UserBillStatus.Paid && x.IsPaymentPending != true);
                         break;
                     case UserBillFormId.Debt:
                         query = query.Where(x => x.Status == UserBillStatus.Debt);
@@ -166,6 +166,14 @@ namespace Yootek.Services
                     .Skip(input.SkipCount)
                     .Take(input.MaxResultCount)
                     .ToList();
+
+                foreach(var item in result)
+                {
+                    foreach(var bill in item.Value)
+                    {
+                        if (bill.IsPaymentPending == true) bill.Status = UserBillStatus.WaitForConfirm;
+                    }
+                }
 
                 var data = DataResult.ResultSuccess(result, "Get success", result.Count());
                 return data;

@@ -792,21 +792,23 @@ namespace Yootek.Services
 
         private async Task NotifierVerifyCitizen(Citizen citizen, string citizenName, UserIdentifier[] admin)
         {
-            var messageDeclined = new NotificationWithContentIdDatabase(
-            citizen.Id,
+            var detailUrlApp = $"yooioc://app/verify-citizen/detail?id={citizen.Id}";
+            var detailUrlWA = $"/citizens/verify/id={citizen.Id}";
+            var messageDeclined = new UserMessageNotificationDataBase(
             AppNotificationAction.CitizenVerify,
             AppNotificationIcon.CitizenVerifyIcon,
             TypeAction.Detail,
             $"{citizenName} đã gửi yêu cầu xác minh tài khoản đến ban quản trị. Nhấn để xem chi tiết !",
-            "",
-            "");
-            await _appNotifier.SendUserMessageNotifyFireBaseCheckOnlineAsync(
+            detailUrlApp,
+            detailUrlWA);
+            await _appNotifier.SendMessageNotificationInternalAsync(
                 "Thông báo xác minh tài khoản cư dân!",
                  $"{citizenName} đã gửi yêu cầu xác minh tài khoản đến ban quản trị. Nhấn để xem chi tiết !",
-                 "",
-                 "",
+                 detailUrlApp,
+                 detailUrlWA,
                 admin.ToArray(),
-                messageDeclined);
+                messageDeclined,
+                AppType.IOC);
 
         }
         #endregion

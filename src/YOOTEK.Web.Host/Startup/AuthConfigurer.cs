@@ -2,15 +2,11 @@
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Abp.Runtime.Security;
-using Microsoft.Net.Http.Headers;
-using System.Collections.Generic;
-using System.Security.Claims;
 
 
 namespace Yootek.Web.Host.Startup
