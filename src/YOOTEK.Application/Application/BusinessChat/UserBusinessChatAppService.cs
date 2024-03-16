@@ -147,19 +147,22 @@ namespace Yootek.Application.BusinessChat
                     
                     if(item == null)
                     {
-                        item = await _providerRepository.GetAll().Where(x => x.Id == input.ProviderId)
-                        .Select(x => new UserProviderFriendship()
+                        using(CurrentUnitOfWork.SetTenantId(null))
                         {
-                            ProviderId = input.ProviderId,
-                            IsShop = true,
-                            FriendImageUrl = x.ImageUrls != null ? x.ImageUrls[0] : null,
-                            CreationTime = DateTime.Now,
-                            FriendName = x.Name,
-                            FriendTenantId = x.TenantId,
-                            FriendUserId = x.CreatorUserId ?? 0,
-                            UserId = user.UserId,
-                            TenantId = user.TenantId
-                        }).FirstOrDefaultAsync();
+                            item = await _providerRepository.GetAll().Where(x => x.Id == input.ProviderId)
+                            .Select(x => new UserProviderFriendship()
+                            {
+                                ProviderId = input.ProviderId,
+                                IsShop = true,
+                                FriendImageUrl = x.ImageUrls != null ? x.ImageUrls[0] : null,
+                                CreationTime = DateTime.Now,
+                                FriendName = x.Name,
+                                FriendTenantId = x.TenantId,
+                                FriendUserId = x.CreatorUserId ?? 0,
+                                UserId = user.UserId,
+                                TenantId = user.TenantId
+                            }).FirstOrDefaultAsync();
+                        }
                     }
 
                     if(item == null) return DataResult.ResultSuccess(item, "Get success !");
