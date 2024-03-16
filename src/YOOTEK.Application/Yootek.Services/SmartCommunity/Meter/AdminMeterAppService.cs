@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -8,11 +9,11 @@ using Abp.Application.Services;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
-using IronBarCode;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
+using QRCoder;
 using Yootek.App.ServiceHttpClient;
 using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using Yootek.Application;
@@ -380,18 +381,16 @@ namespace Yootek.Services
                                                   BuildingId = sm.BuildingId,
                                                   CreationTime = sm.CreationTime,
                                                   CreatorUserId = sm.CreatorUserId ?? 0,
-                                                  BuildingName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.BuildingId).Select(x => x.DisplayName).FirstOrDefault(),
-                                                  UrbanName = _organizationUnitRepository.GetAll().Where(x => x.Id == sm.UrbanId).Select(x => x.DisplayName).FirstOrDefault(),
+
                                               })
                     .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
-                    .WhereIf(input.MeterTypeId != null, m => m.MeterTypeId == input.MeterTypeId)
-                    .WhereIf(input.UrbanId != null, m => m.UrbanId == input.UrbanId)
+                    .WhereIf(input.MeterTypeId.HasValue, m => m.MeterTypeId == input.MeterTypeId)
+                    .WhereIf((input.UrbanId.HasValue && input.UrbanId.Value>0), m => m.UrbanId == input.UrbanId)
                     .WhereIf(input.BuildingId != null, m => m.BuildingId == input.BuildingId)
                     .WhereIf(input.ApartmentCode != null, m => m.ApartmentCode == input.ApartmentCode)
                     .ApplySearchFilter(input.Keyword, x => x.Name, x => x.ApartmentCode);
 
-                List<MeterDto> result = await query
-                    .Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
+                List<MeterDto> result = await query.ToListAsync();
                 string zipFileName = "QRCodeImages.zip";
                 string outputDirectory = "QRCodeImages";
                 if (File.Exists(zipFileName))
@@ -415,20 +414,33 @@ namespace Yootek.Services
 
                     foreach (var item in result)
                     {
-                        item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
-                        GeneratedBarcode qrCode = QRCodeWriter.CreateQrCode(item.QRAction, 350); ;
-                        //GeneratedBarcode qrCode = null;
-                        //if (string.IsNullOrEmpty(fullPath))
-                        //    qrCode= QRCodeWriter.CreateQrCode(item.QRAction, 350);
-                        //else
-                        //{
-                        //    qrCode= QRCodeWriter.CreateQrCodeWithLogo(item.QRAction, fullPath, 350);
-                        //}
+                        try
+                        {
+                            item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
+                            QRCodeGenerator qr = new QRCodeGenerator();
+                            QRCodeData data = qr.CreateQrCode(item.QRAction, QRCoder.QRCodeGenerator.ECCLevel.Q);
+                            QRCode code = new QRCode(data);
+                            using (Bitmap qrImage = code.GetGraphic(20)) // Điều chỉnh kích thước 20 nếu cần thiết
+                            {
+                                Bitmap logo = new Bitmap(fullPath); // Đường dẫn đến ảnh bạn muốn chèn
+                                int logoSize = 30; // Kích thước của logo (điều chỉnh tùy ý)
+                                using (Graphics g = Graphics.FromImage(qrImage))
+                                {
+                                    g.DrawImage(logo, new Rectangle((qrImage.Width - logoSize) / 2, (qrImage.Height - logoSize) / 2, logoSize, logoSize));
+                                    string text = item.Code??item.QrCode; // Chuỗi bạn muốn chèn
+                                    Font font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular); // Điều chỉnh font và kích thước tùy ý
+                                    SizeF textSize = g.MeasureString(text, font);
+                                    int x = (qrImage.Width - (int)textSize.Width) / 2;
+                                    int y = qrImage.Height - (int)textSize.Height - 10; // Điều chỉnh vị trí dựa trên kích thước của chữ và vị trí tùy ý
+                                    g.DrawString(text, font, Brushes.Black, x, y);
+                                }
 
-                        //qrCode.AddBarcodeValueTextBelowBarcode();
-                        //qrCode.AddBarcodeValueTextAboveBarcode("My barcode");
-                        string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code??item.QrCode}.png");
-                        qrCode.SaveAsPng(qrCodeFilePath);
+                                
+                                string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code??item.QrCode}.png");
+                                qrImage.Save(qrCodeFilePath, System.Drawing.Imaging.ImageFormat.Png);
+                            }
+                        }
+                        catch (Exception ex) { }
 
                     }
                 }
@@ -445,5 +457,6 @@ namespace Yootek.Services
                 throw;
             }
         }
+
     }
 }
