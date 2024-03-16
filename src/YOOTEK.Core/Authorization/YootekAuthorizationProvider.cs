@@ -632,7 +632,44 @@ namespace Yootek.Authorization
             government.CreateChildPermission(PermissionNames.Pages_Government_Citizens_Vote,
                 L("Bình chọn công dân"));
             government.CreateChildPermission(PermissionNames.Pages_Government_Digital_Notices, L("Thông báo số"));
-            government.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily, L("Nhật ký số"));
+            // government.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily, L("Nhật ký số"));
+
+             var governmentDaily = government.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily,
+                L("Cuộc sống thường ngày"));
+
+            governmentDaily.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily_GetAll,
+                L("Xem danh sách cuộc sống thường ngày"));
+            governmentDaily.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily_GetDetail,
+                L("Xem chi tiết cuộc sống thường ngày"));
+            governmentDaily.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily_Create,
+                L("Thêm mới cuộc sống thường ngày"));
+            governmentDaily.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily_Edit,
+                L("Chỉnh sửa cuộc sống thường ngày"));
+                governmentDaily.CreateChildPermission(PermissionNames.Pages_Government_DigitalDaily_Delete,
+                L("Xóa cuộc sống thường ngày"));
+
+            //kinh tế số
+            var governmentEconomy = context.CreatePermission(PermissionNames.Pages_Government_Economy, L("Kinh tế số"));
+            governmentEconomy.CreateChildPermission(PermissionNames.Pages_Government_Economy_Shopping, L("Mua sắm số"));
+            governmentEconomy.CreateChildPermission(PermissionNames.Pages_Government_Economy_Work, L("Việc làm số"));
+            governmentEconomy.CreateChildPermission(PermissionNames.Pages_Government_Economy_Repair, L("Dịch vụ sửa chữa"));
+            governmentEconomy.CreateChildPermission(PermissionNames.Pages_Government_Economy_Healthy, L("Chăm sóc sức khoẻ số"));
+            governmentEconomy.CreateChildPermission(PermissionNames.Pages_Government_Economy_Entertainment, L("Giải trí số"));
+
+
+
+            //xã hội số:
+            var governmentSocial = context.CreatePermission(PermissionNames.Pages_Government_Social, L("Xã hội số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Sport, L("Thể thao số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Traveling, L("Du lịch - Thắng cảnh số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Staying, L("Lưu trú số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Education, L("Giáo dục số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Medical, L("Y tế số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Traffic, L("Giao thông số"));
+            governmentSocial.CreateChildPermission(PermissionNames.Pages_Government_Social_Relics, L("Di tích - làng nghề số"));
+
+
+
             government.CreateChildPermission(PermissionNames.Pages_Government_Question_Answer, L("Hỏi đáp"));
 
 

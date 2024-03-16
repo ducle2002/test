@@ -153,6 +153,7 @@ namespace Yootek.Services
                   .WhereIf(input.ReceiveAll != null, x => input.ReceiveAll == x.ReceiveAll)
                   .WhereIf(input.BuildingId != null, x => input.BuildingId == x.BuildingId)
                   .WhereIf(input.UrbanId != null, x => input.UrbanId == x.UrbanId)
+                  .WhereIf(input.Type != null, x => input.Type == x.Type)
                   //.WhereIf(input.State.HasValue, x => x.State == input.State)
                   .ApplySearchFilter(input.Keyword, x => x.Name)
                   .AsQueryable();
