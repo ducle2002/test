@@ -155,7 +155,7 @@ namespace Yootek.Chat
                     sentMessage,
                     messRep
                     );
-                await FireNotificationMessageToUserAsync(messRep, receiverIdentifier, friend);
+                await FireNotificationMessageToUserAsync(messRep, senderIdentifier, receiverIdentifier, friend);
             }
             else
             {
@@ -422,22 +422,22 @@ namespace Yootek.Chat
             return null;
         }
 
-        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
+        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier sender, UserIdentifier user, Friendship friend)
         {
             var messageData = new UserMessageNotificationDataBase(
                           AppNotificationAction.ChatMessage,
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
-                          "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
+                          "yoolife://app/chat-organization/" + sender.ToUserIdentifierStringNoti(),
+                          "yoolife://app/chat-organization/" + sender.ToUserIdentifierStringNoti(),
                           friend.FriendImageUrl
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendUserName + " " + NotificationMessageCheckType(message),
                 message.Message,
-                "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
-                "yoolife://app/chat-organization/" + user.ToUserIdentifierStringNoti(),
+                "yoolife://app/chat-organization/" + sender.ToUserIdentifierStringNoti(),
+                "yoolife://app/chat-organization/" + sender.ToUserIdentifierStringNoti(),
                 new [] { user },
                 messageData,
                 AppType.USER

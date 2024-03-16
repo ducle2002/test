@@ -125,7 +125,7 @@ namespace Yootek.Chat
 
             if (userFriend == null)
             {
-                var userInfo = _userManager.GetUser(user);
+                var userInfo = _userManager.GetUser(userShop);
                 userFriend = new UserProviderFriendship()
                 {
                     UserId = user.UserId,

@@ -152,30 +152,31 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.ApartmentBalanceBill
             }
         }
 
-        //public async Task<object> GetDetailBalanceByApartment(GetTotalApartmentBalanceInput input)
-        //{
-        //    try
-        //    {
-        //        var request = new GetApartmentBalanceInput()
-        //        {
-        //            ApartmentCode = input.ApartmentCode,
-        //            BuildingId = input.BuildingId,
-        //            UrbanId = input.UrbanId
-        //        };
-        //        var query = QueryApartmentBalance(request);
-        //        var total = await query.Where(x => x.EBalanceAction == EBalanceAction.Add).SumAsync(x => x.Amount);
+        public async Task<object> GetDetailBalanceByApartment(GetTotalApartmentBalanceInput input)
+        {
+            try
+            {
+                var request = new GetApartmentBalanceInput()
+                {
+                    ApartmentCode = input.ApartmentCode,
+                    BuildingId = input.BuildingId,
+                    UrbanId = input.UrbanId
+                };
+                var query = QueryApartmentBalance(request);
+                var totalAdd = await query.Where(x => x.EBalanceAction == EBalanceAction.Add).SumAsync(x => x.Amount);
+                var totalSub = await query.Where(x => x.EBalanceAction == EBalanceAction.Sub).SumAsync(x => x.Amount);
 
-        //        var data = DataResult.ResultSuccess(total, "Get success");
-        //        return data;
+                var data = DataResult.ResultSuccess(totalAdd - totalSub, "Get success");
+                return data;
 
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var data = DataResult.ResultError(ex.Message, "ResultFail");
-        //        Logger.Fatal(ex.Message, ex);
-        //        throw;
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                var data = DataResult.ResultError(ex.Message, "ResultFail");
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
 
     }
 }

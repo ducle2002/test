@@ -204,7 +204,7 @@ namespace Yootek.Chat
                 messRep
                 );
 
-            await FireNotificationMessageToUserAsync(sentMessage, receiverIdentifier, friend);
+            await FireNotificationMessageToUserAsync(sentMessage,senderIdentifier, receiverIdentifier, friend);
         }
 
         // Lưu và gửi tin nhắn cho người nhận
@@ -366,7 +366,7 @@ namespace Yootek.Chat
             return null;
         }
 
-        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
+        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier sender, UserIdentifier user, Friendship friend)
         {
             try
             {
@@ -375,15 +375,15 @@ namespace Yootek.Chat
                          AppNotificationIcon.ChatMessageIcon,
                          TypeAction.Detail,
                          message.Message,
-                         AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                         AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                         AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
+                         AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
                          friend.FriendImageUrl
                          );
                 await _appNotifier.SendMessageNotificationInternalAsync(
                     friend.FriendUserName + " " + NotificationMessageCheckType(message),
                     message.Message,
-                    AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                    AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
+                    AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
+                    AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
                     new[] { user },
                     messageData,
                     AppType.USER
