@@ -414,33 +414,29 @@ namespace Yootek.Services
 
                     foreach (var item in result)
                     {
-                        try
+                        item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
+                        QRCodeGenerator qr = new QRCodeGenerator();
+                        QRCodeData data = qr.CreateQrCode(item.QRAction, QRCoder.QRCodeGenerator.ECCLevel.Q);
+                        QRCode code = new QRCode(data);
+                        using (Bitmap qrImage = code.GetGraphic(20)) // Điều chỉnh kích thước 20 nếu cần thiết
                         {
-                            item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
-                            QRCodeGenerator qr = new QRCodeGenerator();
-                            QRCodeData data = qr.CreateQrCode(item.QRAction, QRCoder.QRCodeGenerator.ECCLevel.Q);
-                            QRCode code = new QRCode(data);
-                            using (Bitmap qrImage = code.GetGraphic(20)) // Điều chỉnh kích thước 20 nếu cần thiết
+                            Bitmap logo = new Bitmap(fullPath); // Đường dẫn đến ảnh bạn muốn chèn
+                            int logoSize = 30; // Kích thước của logo (điều chỉnh tùy ý)
+                            using (Graphics g = Graphics.FromImage(qrImage))
                             {
-                                Bitmap logo = new Bitmap(fullPath); // Đường dẫn đến ảnh bạn muốn chèn
-                                int logoSize = 30; // Kích thước của logo (điều chỉnh tùy ý)
-                                using (Graphics g = Graphics.FromImage(qrImage))
-                                {
-                                    g.DrawImage(logo, new Rectangle((qrImage.Width - logoSize) / 2, (qrImage.Height - logoSize) / 2, logoSize, logoSize));
-                                    string text = item.Code??item.QrCode; // Chuỗi bạn muốn chèn
-                                    Font font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular); // Điều chỉnh font và kích thước tùy ý
-                                    SizeF textSize = g.MeasureString(text, font);
-                                    int x = (qrImage.Width - (int)textSize.Width) / 2;
-                                    int y = qrImage.Height - (int)textSize.Height - 10; // Điều chỉnh vị trí dựa trên kích thước của chữ và vị trí tùy ý
-                                    g.DrawString(text, font, Brushes.Black, x, y);
-                                }
-
-                                
-                                string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code??item.QrCode}.png");
-                                qrImage.Save(qrCodeFilePath, System.Drawing.Imaging.ImageFormat.Png);
+                                g.DrawImage(logo, new Rectangle((qrImage.Width - logoSize) / 2, (qrImage.Height - logoSize) / 2, logoSize, logoSize));
+                                string text = item.Code??item.QrCode; // Chuỗi bạn muốn chèn
+                                Font font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular); // Điều chỉnh font và kích thước tùy ý
+                                SizeF textSize = g.MeasureString(text, font);
+                                int x = (qrImage.Width - (int)textSize.Width) / 2;
+                                int y = qrImage.Height - (int)textSize.Height - 10; // Điều chỉnh vị trí dựa trên kích thước của chữ và vị trí tùy ý
+                                g.DrawString(text, font, Brushes.Black, x, y);
                             }
+
+
+                            string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code??item.QrCode}.png");
+                            qrImage.Save(qrCodeFilePath, System.Drawing.Imaging.ImageFormat.Png);
                         }
-                        catch (Exception ex) { }
 
                     }
                 }
