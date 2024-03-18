@@ -73,7 +73,7 @@ namespace Yootek.Services
 
                 var citizen = await _citizenRepos.FirstOrDefaultAsync(x => x.ApartmentCode == input.ApartmentCode && x.AccountId == AbpSession.UserId);
                 var citizenName = citizen?.FullName ?? "Cư dân";
-                var admins = await UserManager.GetUserOrganizationUnitByUrban(adType.UrbanId ?? 0);
+                var admins = await UserManager.GetUserOrganizationUnitByUrbanOrNull(adType.UrbanId);
                
                 if(admins != null) await NotifierNewAdministrative(insertInput, admins.ToArray(), citizenName);
                 var data = DataResult.ResultSuccess(insertInput, "Insert success !");
