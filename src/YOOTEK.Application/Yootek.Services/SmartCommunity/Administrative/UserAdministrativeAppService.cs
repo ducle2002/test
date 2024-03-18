@@ -263,8 +263,8 @@ namespace Yootek.Services
 
         private async Task NotifierNewAdministrative(Administrative data, UserIdentifier[] admin, string creatorName)
         {
-            var detailUrlApp = $"yooioc://app/feedback/detail?id={data.Id}";
-            var detailUrlWA = $"/feedbacks?id={data.Id}";
+            var detailUrlApp = $"yooioc://app/adminstrative/detail?id={data.Id}";
+            var detailUrlWA = $"/adminstrative?id={data.Id}";
             var messageDeclined = new UserMessageNotificationDataBase(
                             AppNotificationAction.ReflectCitizenNew,
                             AppNotificationIcon.ReflectCitizenNewIcon,
@@ -276,7 +276,7 @@ namespace Yootek.Services
 
             await _appNotifier.SendMessageNotificationInternalAsync(
                 "Yoolife hành chính số!",
-                $"{creatorName} đã tạo một phản ánh mới. Nhấn để xem chi tiết !",
+                $"{creatorName} đã gửi 1 form hành chính số mới. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 detailUrlWA,
                 admin.ToArray(),
