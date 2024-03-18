@@ -383,8 +383,8 @@ namespace Yootek.Authorization.Users
                     var urban = await _organizationUnitRepository.FirstOrDefaultAsync(urbanId);
                     if (urban == null) return null;
                     var ids = await _organizationUnitRepository.GetAll().Where(x => x.Code.StartsWith(urban.Code) && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME).Select(x => x.Id).Distinct().ToListAsync();
-                    var users = await _userOrganizationUnitRepository.GetAll().
-                        Where(x => ids.Contains(x.OrganizationUnitId))
+                    var users = await _userOrganizationUnitRepository.GetAll()
+                        .Where(x => ids.Contains(x.OrganizationUnitId))
                         .Select(x => new UserIdentifier(x.TenantId, x.UserId))
                         .ToListAsync();
                     return users;
