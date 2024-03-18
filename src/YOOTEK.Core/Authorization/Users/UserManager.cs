@@ -409,6 +409,7 @@ namespace Yootek.Authorization.Users
                     {
                         var users = await _userOrganizationUnitRepository.GetAll()
                            .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                           .Distinct()
                            .ToListAsync();
                         return users;
                     }
@@ -418,6 +419,7 @@ namespace Yootek.Authorization.Users
                         var users = await _userOrganizationUnitRepository.GetAll()
                             .Where(x => ids.Contains(x.OrganizationUnitId))
                             .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                            .Distinct()
                             .ToListAsync();
                         return users;
                     }
