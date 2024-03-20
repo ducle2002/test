@@ -62,7 +62,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var query = _billPrepaymentRepository.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds);
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds);
                 var data = await query.PageBy(input).ToListAsync();
 
                 var result = data.MapTo<List<BillPrepaymentDto>>();

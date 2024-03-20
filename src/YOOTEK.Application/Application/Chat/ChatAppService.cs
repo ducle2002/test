@@ -25,6 +25,7 @@ using Yootek.Application.Chat.Dto;
 using Yootek.Authorization.Users;
 using Abp.UI;
 using Abp.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Yootek.Chat
 {
@@ -64,22 +65,50 @@ namespace Yootek.Chat
         }
 
 
-        //public async Task<bool> SendMessage(SendChatMessageInput input)
-        //{
-        //    var sender = AbpSession.ToUserIdentifier();
-        //    var receiver = new UserIdentifier(input.TenantId, input.UserId);
-        //    try
-        //    {
-        //        await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Logger.Warn("Could not send chat message to user: " + receiver);
-        //        Logger.Warn(ex.ToString(), ex);
-        //        return false;
-        //    }
-        //}
+        public async Task<bool> SendMessage(SendChatMessageInput input)
+        {
+            var sender = AbpSession.ToUserIdentifier();
+            var receiver = new UserIdentifier(input.TenantId, input.UserId);
+            try
+            {
+                await _chatMessageManager.SendMessageAsync(sender, receiver, input.Message, input.FileUrl, input.TenancyName, input.UserName, input.SenderImageUrl, input.MessageRepliedId, input.TypeMessage);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn(ex.ToString(), ex);
+                return false;
+            }
+        }
+
+        [HttpPost]
+        public async Task<bool> DeleteMessage(DeleteChatMessageInput input)
+        {
+            var sender = AbpSession.ToUserIdentifier();
+            var receiver = new UserIdentifier(input.TenantId, input.UserId);
+
+            try
+            {
+                using (AbpSession.Use(AbpSession.GetTenantId(), AbpSession.GetUserId()))
+                {
+                    await _chatMessageManager.DeleteMessageAsync(sender, receiver, input.SharedMessageId, input.Id);
+                    return true;
+                }
+            }
+            catch (UserFriendlyException ex)
+            {
+                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn(ex.ToString(), ex);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Logger.Warn("Could not send chat message to user: " + receiver);
+                Logger.Warn(ex.ToString(), ex);
+                return false;
+            }
+        }
 
         public async Task<DataResult> CountMessageUnreadUser()
         {
@@ -346,6 +375,59 @@ namespace Yootek.Chat
             }
         }
 
+        public async Task<DataResult> GetUserChat(GetUserChatInput input)
+        {
+            try
+            {
+                var userId = AbpSession.GetUserId();
+                //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
+                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
+
+                var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId && x.FriendTenantId == input.TenantId);
+
+                if(item == null)
+                {
+                    using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                    {
+                        item = _userRepository.GetAll().Where(x => x.Id == input.UserId)
+                       .Select(x => new FriendCacheItem()
+                       {
+                           FriendUserId = input.UserId,
+                           FriendImageUrl = x.ImageUrl,
+                           FriendTenantId = input.TenantId,
+                           FriendUserName = x.FullName,
+                           State = FriendshipState.Stranger
+                       })
+                       .FirstOrDefault();
+                    }
+                }
+
+                if(item == null) return DataResult.ResultSuccess( "get success");
+
+                var friend = ObjectMapper.Map<FriendDto>(item);
+
+                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                         new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
+                     );
+
+                friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
+
+                if (friend.State == FriendshipState.IsDeleted)
+                {
+                    friend.FriendUserName = "Người dùng yoolife";
+                    friend.FriendImageUrl = null;
+                }
+
+                return DataResult.ResultSuccess(friend, "get success");
+
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal("GetUserChatFriendsWithSettings : " + e.ToJsonString());
+                throw;
+            }
+        }
+
         [DisableAuditing]
         public async Task<GetUserChatFriendsWithSettingsOutput> GetFriendRequestingList()
         {
@@ -403,7 +485,7 @@ namespace Yootek.Chat
                         {
                             if (mes.MessageRepliedId != null)
                             {
-                                var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == userId);
+                                var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId);
                                 if (rep != null)
                                 {
                                     mes.MessageReplied = rep.MapTo<ChatMessageDto>();
@@ -430,7 +512,7 @@ namespace Yootek.Chat
                 .Where(m =>
                     m.UserId == userId &&
                     m.TargetUserId == input.UserId &&
-                    m.ReadState == ChatMessageReadState.Unread)
+                   (m.ReadState == ChatMessageReadState.Unread || m.ReceiverReadState == ChatMessageReadState.Unread))
                 .ToListAsync();
 
             if (!messages.Any())
@@ -441,6 +523,7 @@ namespace Yootek.Chat
             foreach (var message in messages)
             {
                 message.ChangeReadState(ChatMessageReadState.Read);
+                message.ChangeReceiverReadState(ChatMessageReadState.Read);
             }
 
             var userIdentifier = AbpSession.ToUserIdentifier();
@@ -473,4 +556,13 @@ namespace Yootek.Chat
         public int TypeMessage { get; set; }
         public bool IsAdmin { get; set; }
     }
+
+    public class DeleteChatMessageInput
+    {
+        public long Id { get; set; }
+        public int? TenantId { get; set; }
+        public Guid SharedMessageId { get; set; }
+        public long UserId { get; set; }
+    }
+
 }

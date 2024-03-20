@@ -22,12 +22,13 @@ using Abp.MultiTenancy;
 using System.Security.Claims;
 using Yootek.Organizations.Cache;
 using Abp.Runtime.Session;
-using Yootek.Friendships.Cache;
-using System.Security.Cryptography;
 using Microsoft.EntityFrameworkCore;
 using Yootek.Organizations.OrganizationStructure;
 using Yootek.Organizations.Cache.Dto;
 using Abp.AutoMapper;
+using Abp.Json;
+using Abp.Linq.Extensions;
+using Org.BouncyCastle.Crypto;
 
 namespace Yootek.Authorization.Users
 {
@@ -217,7 +218,7 @@ namespace Yootek.Authorization.Users
             }
             catch (Exception e)
             {
-                Logger.LogError("Exception", e.ToString());
+                Logger.LogError(e.Message);
                 return null;
             }
         }
@@ -306,8 +307,6 @@ namespace Yootek.Authorization.Users
             });
         }
 
-      
-
         public override async Task RemoveFromOrganizationUnitAsync(long userId, long ouId)
         {
             await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
@@ -350,6 +349,89 @@ namespace Yootek.Authorization.Users
             );
         }
 
+        public async Task<List<UserIdentifier>> GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE type, long? parentId = null)
+        {
+            try
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
+                {
+                    var parent = await _organizationUnitRepository.FirstOrDefaultAsync(parentId?? 0);
+                    var ids = await _organizationUnitRepository.GetAll()
+                        .Where(x => x.Type == type)
+                        .WhereIf(parentId.HasValue && parent != null, x => x.Code.StartsWith(parent.Code))
+                        .Select(x => x.ParentId ?? 0)
+                        .Distinct()
+                        .ToListAsync();
+                    var users = await _userOrganizationUnitRepository.GetAll().
+                        Where(x => ids.Contains(x.OrganizationUnitId))
+                        .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                        .ToListAsync();
+                    return users;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.ToJsonString());
+                return null;
+            }
+        }
+        public async Task<List<UserIdentifier>> GetUserOrganizationUnitByUrban(long urbanId)
+        {
+            try
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
+                {
+                    var urban = await _organizationUnitRepository.FirstOrDefaultAsync(urbanId);
+                    if (urban == null) return null;
+                    var ids = await _organizationUnitRepository.GetAll().Where(x => x.Code.StartsWith(urban.Code) && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME).Select(x => x.Id).Distinct().ToListAsync();
+                    var users = await _userOrganizationUnitRepository.GetAll()
+                        .Where(x => ids.Contains(x.OrganizationUnitId))
+                        .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                        .ToListAsync();
+                    return users;
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.ToJsonString());
+                return null;
+            }
+        }
+
+        public async Task<List<UserIdentifier>> GetUserOrganizationUnitByUrbanOrNull(long? urbanId)
+        {
+            try
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(AbpSession.TenantId))
+                {
+                    var urban = await _organizationUnitRepository.FirstOrDefaultAsync(urbanId??0);
+                    if (urbanId > 0 || urban == null)
+                    {
+                        var users = await _userOrganizationUnitRepository.GetAll()
+                           .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                           .Distinct()
+                           .ToListAsync();
+                        return users;
+                    }
+                    else
+                    {
+                        var ids = await _organizationUnitRepository.GetAll().Where(x => x.Code.StartsWith(urban.Code) && x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME).Select(x => x.Id).Distinct().ToListAsync();
+                        var users = await _userOrganizationUnitRepository.GetAll()
+                            .Where(x => ids.Contains(x.OrganizationUnitId))
+                            .Select(x => new UserIdentifier(x.TenantId, x.UserId))
+                            .Distinct()
+                            .ToListAsync();
+                        return users;
+                    }
+                   
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e.ToJsonString());
+                return null;
+            }
+        }
 
         private async Task<List<APP_ORGANIZATION_TYPE>> CheckOrganizationUnitType(long id, int? tenantId)
         {
@@ -363,8 +445,6 @@ namespace Yootek.Authorization.Users
                
             });
         }
-
-
         #endregion
 
         #region Cache OrganizationUnit accessible

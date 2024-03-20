@@ -129,7 +129,7 @@ namespace Yootek.Services
                                      DepartmentUnitName = (du != null) ? du.DisplayName : null,
                                      Type = st.Type
                                  })
-                                 .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                 .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                  .WhereIf(input.OrganizationUnitId != null, x => input.OrganizationUnitId == x.OrganizationUnitId)
                                  .WhereIf(input.DepartmentUnitId != null, x => input.DepartmentUnitId == x.DepartmentUnitId)
                                  .WhereIf(input.Type.HasValue, x => input.Type == x.Type)

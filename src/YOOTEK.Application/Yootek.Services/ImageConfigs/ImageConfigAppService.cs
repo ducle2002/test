@@ -24,7 +24,7 @@ namespace Yootek.Services
             _imageConfigRepository = imageConfigRepository;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Settings_Images_GetAll)]
+        [AbpAuthorize(IOCPermissionNames.Pages_Settings_Images_GetAll)]
         public async Task<List<ImageConfigDto>> GetList(GetListImageConfigInput input)
         {
             var tenantId = CurrentUnitOfWork.GetTenantId();
@@ -49,7 +49,7 @@ namespace Yootek.Services
             }
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Settings_Images_Create)]
+        [AbpAuthorize(IOCPermissionNames.Pages_Settings_Images_Create)]
         public async Task<object> Create(CreateImageConfigInput input)
         {
             var imageConfig = input.MapTo<ImageConfig>();
@@ -71,7 +71,7 @@ namespace Yootek.Services
             return result;
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Settings_Images_Edit)]
+        [AbpAuthorize(IOCPermissionNames.Pages_Settings_Images_Edit)]
         public async Task<object> Update(UpdateImageConfigInput input)
         {
             using (CurrentUnitOfWork.SetTenantId(input.TenantId))
@@ -91,7 +91,7 @@ namespace Yootek.Services
             }
         }
 
-        [AbpAuthorize(PermissionNames.Pages_Settings_Images_Delete)]
+        [AbpAuthorize(IOCPermissionNames.Pages_Settings_Images_Delete)]
         public async void Delete(int id)
         {
             using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))

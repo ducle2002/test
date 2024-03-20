@@ -31,6 +31,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Yootek.Common.Enum.CommonENum;
 using Abp.Authorization;
+using Yootek.Services.SmartCommunity.BillingInvoice;
+using Yootek.Services.SmartCommunity.BillingInvoice.Dto;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -60,6 +62,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         private readonly UserBillEmailer _handlePayment;
         private readonly IRepository<UserBillPaymentHistory, long> _billPaymentHistoryRepos;
         private readonly IPaymentExcelExporter _paymentExcelExporter;
+        private readonly IBillInvoiceAppService _billInvoice;
         public AdminManagerBillPaymentAppService(
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<User, long> userRepos, IRepository<UserBill, long> userBillRepo,
@@ -70,7 +73,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             HandlePaymentUtilAppService handlePaymentUtilAppService,
             UserBillEmailer handlePayment,
             IRepository<UserBillPaymentHistory, long> billPaymentHistoryRepos,
-            IPaymentExcelExporter paymentExcelExporter
+            IPaymentExcelExporter paymentExcelExporter,
+            IBillInvoiceAppService billInvoice
             )
 
         {
@@ -85,6 +89,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             _handlePayment = handlePayment;
             _billPaymentHistoryRepos = billPaymentHistoryRepos;
             _paymentExcelExporter = paymentExcelExporter;
+            _billInvoice = billInvoice;
         }
 
         protected IQueryable<AdminUserBillPaymentOutputDto> QueryUserBillPayments(GetAllAdminUserBillPaymentDto input)
@@ -137,7 +142,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
                         };
             query = query
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(!input.IsAdvanced, x => !(x.Method != UserBillPaymentMethod.Direct && x.Status == UserBillPaymentStatus.Pending) || !(x.Method != UserBillPaymentMethod.Banking && x.Status == UserBillPaymentStatus.Pending))
                 .WhereIf(input.Status.HasValue, x => x.Status == input.Status)
                 .WhereIf(input.InDay.HasValue, x => x.CreationTime.Day == input.InDay.Value.Day && x.CreationTime.Month == input.InDay.Value.Month && x.CreationTime.Year == input.InDay.Value.Year)
@@ -186,7 +191,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                             {
                                 totalPrice += b.LastCost.Value;
                             }
-
                         }
 
                         if (!bill.UserBillDebtIds.IsNullOrEmpty())
@@ -198,9 +202,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         if (!bill.UserBillPrepaymentIds.IsNullOrEmpty())
                         {
                             bill.BillListPrepayment = await SplitBills(bill.UserBillPrepaymentIds);
-
                         }
-
                     }
 
                     if (bill.TypePayment == TypePayment.DebtBill && !bill.BillDebtIds.IsNullOrWhiteSpace())
@@ -221,6 +223,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         }
                         catch { }
                     }
+
                     bill.TotalPayment = totalPrice;
 
                     if (bill.ApartmentCode.IsNullOrEmpty())
@@ -354,7 +357,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         {
             try
             {
-                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
                     var userBillPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(input.Id);
                     switch (input.Status)
@@ -658,7 +661,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 
 
                                  })
-                                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                   .Where(x => x.IsDeleted && x.IsRecover.HasValue && x.IsRecover.Value)
                                   .WhereIf(input.Method.HasValue, x => (int)x.Method == input.Method)
                                   .WhereIf(input.UrbanId.HasValue, x => (long)x.UrbanId == input.UrbanId)

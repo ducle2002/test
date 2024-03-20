@@ -5,17 +5,16 @@ using System.Linq;
 using Yootek.EntityDb;
 using Yootek.Common;
 using static Yootek.YootekServiceBase;
-using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos;
 
 namespace Yootek.Services
 {
     [AutoMap(typeof(DigitalServices))]
     public class DigitalServicesDto : DigitalServices
     {
-        		public string UrbanText { get; set; }
-		public string CategoryText { get; set; }
+        public string UrbanText { get; set; }
+        public string CategoryText { get; set; }
         public List<DigitalServiceDetailsDto> ServiceDetails { get; set; }
-    }   
+    }
     public enum TypeActionUpdateStateWork
     {
         START_DOING = 1,
@@ -25,14 +24,13 @@ namespace Yootek.Services
     }
     public class GetAllDigitalServicesInputDto : CommonInputDto
     {
-        		public string Keyword { get; set; }
-		public  long UrbanId { get; set; }
-		public  long Category { get; set; }
+        public long UrbanId { get; set; }
+        public long Category { get; set; }
         public FieldSortDigitalServices? OrderBy { get; set; }
     }
     public enum FieldSortDigitalServices
     {
         [FieldName("Id")]
-        ID = 1,        
+        ID = 1,
     }
 }

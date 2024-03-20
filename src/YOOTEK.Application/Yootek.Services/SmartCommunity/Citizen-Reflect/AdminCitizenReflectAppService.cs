@@ -151,7 +151,7 @@ namespace Yootek.Services
                                                        ListHandleUserIds = fb.ListHandleUserIds,
                                                        //HandlersName = await GetUsersOrganizationNameAsync(fb.ListHandleUserIds),
                                                    })
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(input.OrganizationUnitId.HasValue, x => (x.Type.HasValue && x.Type == input.OrganizationUnitId)
                                                                  || (x.OrganizationUnitId.HasValue &&
                                                                      x.OrganizationUnitId == input.OrganizationUnitId))
@@ -221,7 +221,7 @@ namespace Yootek.Services
                 if (query != null)
                 {
                     var result = query.Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-                    foreach(var item in result)
+                    foreach (var item in result)
                     {
                         item.HandlersName = await GetUsersOrganizationNameAsync(item.ListHandleUserIds);
                     }
@@ -246,6 +246,16 @@ namespace Yootek.Services
             {
                 CitizenReflect citizenReflect = await _citizenReflectRepos.GetAsync(id);
                 CitizenReflectDto citizenReflectDto = ObjectMapper.Map<CitizenReflectDto>(citizenReflect);
+                if (citizenReflect.CreatorUserId != null)
+                {
+                    User userReflectDto = await _userRepos.GetAsync((long)citizenReflect.CreatorUserId);
+                    Citizen citizen =
+                        await _citizenRepos.GetAll().Where(x => x.AccountId == citizenReflect.CreatorUserId).FirstOrDefaultAsync();
+                    citizenReflectDto.FullName = userReflectDto.FullName;
+                    citizenReflectDto.UserName = userReflectDto.UserName;
+                    citizenReflectDto.ImageUrl = userReflectDto.ImageUrl;
+                    citizenReflectDto.ApartmentCode = citizen.ApartmentCode;
+                }
                 citizenReflectDto.BuildingName = GetOrganizationName(citizenReflect.BuildingId);
                 citizenReflectDto.UrbanName = GetOrganizationName(citizenReflect.UrbanId);
                 citizenReflectDto.HandlersName = await GetUsersOrganizationNameAsync(citizenReflect.ListHandleUserIds);
@@ -273,7 +283,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var count = await _citizenReflectRepos.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .Where(x => x.Type.HasValue && x.OrganizationUnitId.HasValue).CountAsync();
                 return DataResult.ResultSuccess(count, "Get success!");
             }
@@ -411,11 +421,13 @@ namespace Yootek.Services
                 }
                 else
                 {
-                    var insertInput = input.MapTo<CitizenReflectComment>();
+                    var insertInput = ObjectMapper.Map<CitizenReflectComment>(input);
+                    var checkReflect = await _citizenReflectRepos.FirstOrDefaultAsync(x => x.Id == input.FeedbackId);
+                    if(checkReflect == null) return DataResult.ResultCode(input, "Reflect not found!", 404);
                     insertInput.ReadState = 1;
                     long id = await _citizenReflectCommentRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
-                    var citizen = new UserIdentifier(AbpSession.TenantId, input.CreatorFeedbackId);
+                    var citizen = new UserIdentifier(AbpSession.TenantId, checkReflect.CreatorUserId ?? 0);
 
                     var clients = await _onlineClientManager.GetAllByUserIdAsync(citizen);
 
@@ -424,6 +436,7 @@ namespace Yootek.Services
                         _notificationCommunicator.SendCommentFeedbackToUserTenant(clients, insertInput);
                     }
 
+                    await NotifierCommentCitizenReflect(insertInput, checkReflect.Name, new [] { citizen });
                     mb.statisticMetris(t1, 0, "is_noti");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -611,7 +624,7 @@ namespace Yootek.Services
                              UrbanId = uf.UrbanId,
                              BuildingId = uf.BuildingId,
                          })
-                         .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .AsQueryable();
             switch (formId)
             {
@@ -816,7 +829,6 @@ namespace Yootek.Services
             }
         }
 
-
         public async Task<int> QueryGetAllCitizenReflectCommentByMonth(int month, int year, long? organizationUnitId)
         {
             try
@@ -932,24 +944,22 @@ namespace Yootek.Services
                         TypeAction.Detail,
                         $"Phản ánh {reflect.Name} của bạn đã bị từ chối. Nhấn để xem chi tiết !",
                         detailUrlApp,
-                        detailUrlWADeclined,
-                        "",
-                        "",
-                        0
+                        detailUrlWADeclined
 
 
                     );
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã bị từ chối. Nhấn để xem chi tiết !",
                         detailUrlApp,
                         detailUrlWADeclined,
                         new UserIdentifier[]
                         {
                             new UserIdentifier(reflect.TenantId,
-                                reflect.CreatorUserId.HasValue ? reflect.CreatorUserId.Value : 0)
+                                reflect.CreatorUserId ?? 0)
                         },
-                        messageDeclined);
+                        messageDeclined,
+                        AppType.USER);
                     break;
 
                 case (int?)UserFeedbackEnum.STATE_FEEDBACK.HANDLING:
@@ -960,13 +970,10 @@ namespace Yootek.Services
                         TypeAction.Detail,
                         $"Phản ánh {reflect.Name} của bạn đã được tiếp nhận !",
                         detailUrlApp,
-                        detailUrlWAHandling,
-                        "",
-                        "",
-                        0
+                        detailUrlWAHandling
                     );
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                         "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã được tiếp nhận !",
                         detailUrlApp,
                         detailUrlWAHandling,
@@ -975,7 +982,8 @@ namespace Yootek.Services
                             new UserIdentifier(reflect.TenantId,
                                 reflect.CreatorUserId.HasValue ? reflect.CreatorUserId.Value : 0)
                         },
-                        messageHandling);
+                        messageHandling,
+                        AppType.USER);
                     break;
 
                 case (int?)UserFeedbackEnum.STATE_FEEDBACK.ADMIN_CONFIRMED:
@@ -986,14 +994,11 @@ namespace Yootek.Services
                         TypeAction.Detail,
                         $"Phản ánh {reflect.Name} của bạn đã được hoàn thành !",
                         detailUrlApp,
-                        detailUrlWAConfirm,
-                        "",
-                        "",
-                        0
+                        detailUrlWAConfirm
 
                     );
-                    await _appNotifier.SendUserMessageNotifyFullyAsync(
-                        "Thông báo phản ánh cư dân!",
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife phản ánh số !",
                         $"Phản ánh {reflect.Name} của bạn đã được hoàn thành !",
                         detailUrlApp,
                         detailUrlWAConfirm,
@@ -1002,9 +1007,34 @@ namespace Yootek.Services
                             new UserIdentifier(reflect.TenantId,
                                 reflect.CreatorUserId.HasValue ? reflect.CreatorUserId.Value : 0)
                         },
-                        messageConfirm);
+                        messageConfirm,
+                        AppType.USER);
                     break;
             }
+        }
+
+        private async Task NotifierCommentCitizenReflect(CitizenReflectComment comment, string reflectName, UserIdentifier[] user)
+        {
+            var detailUrlApp = $"yoolife://app/feedback/comment?id={comment.FeedbackId}";
+            var detailUrlWA = $"/feedbacks/comment?id={comment.FeedbackId}";
+            var messageDeclined = new NotificationWithContentIdDatabase(
+            comment.Id,
+            AppNotificationAction.CommentReflectCitizen,
+            AppNotificationIcon.CommentReflectCitizenSuccessIcon,
+            TypeAction.Detail,
+            $"Tin nhắn phản ánh {reflectName} !",
+            detailUrlApp,
+            detailUrlWA
+            );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                $"Tin nhắn phản ánh {reflectName} !",
+                $"Bạn có 1 tin nhắn tới phản ánh {reflectName}. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                user,
+                messageDeclined,
+                AppType.USER);
+
         }
 
         #endregion

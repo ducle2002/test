@@ -24,6 +24,19 @@ using System.Threading.Tasks;
 
 namespace Yootek.Application.BusinessChat
 {
+    public class UserSendMessageProviderInput
+    {
+        public long ProviderId { get; set; }
+        public long ProviderUserId { get; set; }
+        public int? ProviderTenantId { get; set; }
+        public string ProviderImageUrl { get; set; }
+        public string ProviderName { get; set; }
+        public long? MessageRepliedId { get; set; }
+        public string Message { get; set; }
+        public string FileUrl { get; set; }
+        public int TypeMessage { get; set; }
+    }
+
     public interface IProviderBusinessChatAppService : IApplicationService
     {
         Task<DataResult> GetUserFriendshipChats(GetUserFriendshipInput input);
@@ -36,18 +49,39 @@ namespace Yootek.Application.BusinessChat
         private readonly IRepository<BusinessChatMessage, long> _businessChatMessageRepos;
         private readonly IRepository<UserProviderFriendship, long> _userProviderFriendshipRepos;
         private readonly IBusinessChatCommunicator _businessChatCommunicator;
+        private readonly IBusinessChatMessageManager _busniessChatMessageManager;
+        private readonly IRepository<User, long> _userRepository;   
 
         public ProviderBusinessChatAppService(
             IRepository<UserProviderFriendship, long> userProviderFriendshipRepos,
             IRepository<BusinessChatMessage, long> businessChatMessageRepos,
             IBusinessChatCommunicator businessChatCommunicator,
-            IOnlineClientManager onlineClientManager
+            IOnlineClientManager onlineClientManager,
+            IBusinessChatMessageManager busniessChatMessageManager,
+            IRepository<User, long> userRepository
+
             )
         {
             _onlineClientManager = onlineClientManager;
             _businessChatMessageRepos = businessChatMessageRepos;
             _userProviderFriendshipRepos = userProviderFriendshipRepos;
             _businessChatCommunicator = businessChatCommunicator;
+            _busniessChatMessageManager = busniessChatMessageManager;
+            _userRepository = userRepository;
+        }
+
+        public async Task SendMessageBusiness(UserSendMessageProviderInput input)
+        {
+            var sender = AbpSession.ToUserIdentifier();
+            var receiver = new UserIdentifier(input.ProviderTenantId, input.ProviderUserId);
+            try
+            {
+                await _busniessChatMessageManager.SendMessageUserToProviderAsync(sender, receiver, input.ProviderId, input.Message, input.FileUrl, input.ProviderImageUrl, input.MessageRepliedId, input.TypeMessage, input.ProviderName);              
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<DataResult> GetUserFriendshipChats(GetUserFriendshipInput input)
@@ -99,27 +133,48 @@ namespace Yootek.Application.BusinessChat
             {
                 var user = AbpSession.ToUserIdentifier();
                 var item = _userProviderFriendshipRepos.GetAll()
-                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && x.TenantId == input.TenantId && !x.IsShop)
+                             .Where(x => x.ProviderId == input.ProviderId && x.FriendUserId == input.UserId && !x.IsShop)
                              .FirstOrDefault();
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
+                {
+                  
+                    if (item == null)
+                    {
+                        item = await _userRepository.GetAll()
+                            .Where(x => x.Id == input.UserId)
+                            .Select(x => new UserProviderFriendship()
+                            {
+                                FriendUserId = input.UserId,
+                                IsShop = false,
+                                FriendImageUrl = x.ImageUrl,
+                                ProviderId = input.ProviderId,
+                                TenantId = user.TenantId,
+                                UserId = user.UserId,
+                                FriendTenantId = input.TenantId,
+                                FriendName = x.FullName
 
-                if (item == null) return DataResult.ResultSuccess(null, "");
-                var friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
-                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-                    new UserIdentifier(item.TenantId, item.UserId)
-                );
+                            }).FirstOrDefaultAsync();
+                    }
 
-                friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
-                 .Where(m => (m.UserId == user.UserId && m.TargetUserId == item.UserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))
-                 .OrderByDescending(m => m.CreationTime)
-                 .Take(20)
-                 .Count();
-                friend.LastMessage = _businessChatMessageRepos.GetAll()
-                       .Where(m => (m.UserId == user.UserId && m.TargetUserId == friend.FriendUserId && m.ProviderId == friend.ProviderId))
-                       .OrderByDescending(m => m.CreationTime)
-                       .FirstOrDefault();
-                friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
+                    if (item == null) return DataResult.ResultSuccess(null, "");
+                    var friend = ObjectMapper.Map<ProviderFriendshipDto>(item);
+                    friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
+                        new UserIdentifier(item.TenantId, item.UserId)
+                    );
 
-                return DataResult.ResultSuccess(friend, "Get success !");
+                    friend.UnreadMessageCount = _businessChatMessageRepos.GetAll()
+                     .Where(m => (m.UserId == user.UserId && m.TargetUserId == item.UserId && m.ProviderId == item.ProviderId && m.ReadState == ChatMessageReadState.Unread))
+                     .OrderByDescending(m => m.CreationTime)
+                     .Take(20)
+                     .Count();
+                    friend.LastMessage = _businessChatMessageRepos.GetAll()
+                           .Where(m => (m.UserId == user.UserId && m.TargetUserId == friend.FriendUserId && m.ProviderId == friend.ProviderId))
+                           .OrderByDescending(m => m.CreationTime)
+                           .FirstOrDefault();
+                    friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
+
+                    return DataResult.ResultSuccess(friend, "Get success !");
+                }
 
             }
             catch (Exception e)
@@ -175,7 +230,7 @@ namespace Yootek.Application.BusinessChat
                  m.UserId == user.UserId &&
                  m.TargetUserId == input.UserId &&
                  m.ProviderId == input.ProviderId &&
-                 m.ReadState == ChatMessageReadState.Unread
+                 (m.ReadState == ChatMessageReadState.Unread || m.ReceiverReadState == ChatMessageReadState.Unread)
                  && m.TenantId == user.TenantId
                  )
              .ToListAsync();
@@ -187,6 +242,7 @@ namespace Yootek.Application.BusinessChat
             foreach (var message in messages)
             {
                 message.ChangeReadState(ChatMessageReadState.Read);
+                message.ChangeReceiverReadState(ChatMessageReadState.Read);
             }
 
             var userIdentifier = AbpSession.ToUserIdentifier();

@@ -20,6 +20,8 @@ using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using static Yootek.Common.Enum.CommonENum;
+using Yootek.Notifications;
+using Abp;
 
 namespace Yootek.Services
 {
@@ -31,12 +33,16 @@ namespace Yootek.Services
         private readonly IRepository<User, long> _userRepos;
         private readonly IRepository<QATopic, long> _topicRepos;
         private readonly IAdminQuestionAnswerExcelExporter _adminQuestionAnswerExcelExporter;
+        private readonly IAppNotifier _appNotifier;
+
+
         public AdminQuestionAnswerAppService(
             IRepository<QuestionAnswer, long> questionAnswerRepos,
             IRepository<QAComment, long> questionAnswerCommentRepos,
             IRepository<User, long> userRepos,
             IRepository<QATopic, long> topicRepos,
-            IAdminQuestionAnswerExcelExporter adminQuestionAnswerExcelExporter
+            IAdminQuestionAnswerExcelExporter adminQuestionAnswerExcelExporter,
+            IAppNotifier appNotifier
             )
         {
             _questionAnswerCommentRepos = questionAnswerCommentRepos;
@@ -44,6 +50,7 @@ namespace Yootek.Services
             _userRepos = userRepos;
             _topicRepos = topicRepos;
             _adminQuestionAnswerExcelExporter = adminQuestionAnswerExcelExporter;
+            _appNotifier = appNotifier;
         }
         protected IQueryable<QuestionAnswerDto> QueryDataQNA(GetAllQuestionAnswerInput input)
         {
@@ -147,7 +154,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> GetByIdAsync(long id)
         {
             try
@@ -207,7 +213,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> GetQuestionAnswerById(GetAllQuestionAnswerInput input)
         {
             try
@@ -215,7 +220,7 @@ namespace Yootek.Services
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     long t1 = TimeUtils.GetNanoseconds();
-                    var result = QueryDataQNA(input).FirstOrDefaultAsync().Result;
+                    var result = await QueryDataQNA(input).FirstOrDefaultAsync();
 
                     var data = DataResult.ResultSuccess(result, "Get success");
                     mb.statisticMetris(t1, 0, "gall_questionAnswer");
@@ -229,9 +234,8 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         [Obsolete]
-        public async Task<object> CreateOrUpdateCommentQuestionAndAnswer(QuestionAnswerDto input)
+        public async Task<object> CreateOrUpdateCommentQuestionAndAnswer(CommentQuestionAnswerDto input)
         {
             try
             {
@@ -257,9 +261,11 @@ namespace Yootek.Services
                 {
                     //Insert
                     var insertInput = input.MapTo<QAComment>();
+                    var qa = await _questionAnswerRepos.FirstOrDefaultAsync(x => x.Id == input.ForumId);
+                    if(qa ==  null) return DataResult.ResultSuccess(input, "Insert success !");
                     insertInput.IsAdmin = true;
                     long id = await _questionAnswerCommentRepos.InsertAndGetIdAsync(insertInput);
-
+                    await NotifierCommentFaQ(qa, new UserIdentifier(qa.TenantId, qa.CreatorUserId ?? 0));
                     mb.statisticMetris(t1, 0, "insert_questionAnswer");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -270,7 +276,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> GetAllQuestionAnswerTopics(GetAllForumTopicInput input)
         {
             try
@@ -309,7 +314,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> GetTopicByIdAsync(long id)
         {
             try
@@ -322,7 +326,6 @@ namespace Yootek.Services
                 throw;
             }
         }
-
         public async Task<object> UpdateStateQuestionTopic(long id, int state)
         {
             try
@@ -344,7 +347,6 @@ namespace Yootek.Services
                 throw new UserFriendlyException(error.Message);
             }
         }
-
         [Obsolete]
         public async Task<object> CreateOrUpdateTopicAsync(QATopicDto input)
         {
@@ -378,7 +380,6 @@ namespace Yootek.Services
                 return new UserFriendlyException(e.Message);
             }
         }
-
         public async Task<object> DeleteQuestionAnswerTopicAsync(long id)
         {
             try
@@ -394,7 +395,21 @@ namespace Yootek.Services
                 return new UserFriendlyException(e.Message);
             }
         }
-
+        public async Task<object> DeleteQuestionAnswerAsync(long id)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+                await _questionAnswerRepos.DeleteAsync(id);
+                var data = DataResult.ResultSuccess("Delete Success");
+                mb.statisticMetris(t1, 0, "del_topic");
+                return data;
+            }
+            catch (Exception e)
+            {
+                return new UserFriendlyException(e.Message);
+            }
+        }
         public Task<DataResult> DeleteMultipleQuestionAnswerTopic([FromBody] List<long> ids)
         {
             try
@@ -419,7 +434,6 @@ namespace Yootek.Services
                 return Task.FromResult(data);
             }
         }
-
         public async Task<object> ExportAdminForumToExcel(QuestionAnswerExcelOutputDto input)
         {
             try
@@ -528,6 +542,31 @@ namespace Yootek.Services
                 Logger.Fatal(e.Message);
                 throw;
             }
+        }
+
+        private async Task NotifierCommentFaQ(QuestionAnswer data, UserIdentifier user)
+        {
+            var detailUrlApp = $"yoolife://app/faq/detail?id={data.Id}";
+            var detailUrlWA = $"/faq?id={data.Id}";
+            var message = new UserMessageNotificationDataBase(
+                            AppNotificationAction.ReflectCitizenNew,
+                            AppNotificationIcon.ReflectCitizenNewIcon,
+                            TypeAction.Detail,
+                            $"Admin đã trả lời câu hỏi của bạn. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife hỏi đáp số!",
+                $"Admin đã trả lời câu hỏi của bạn. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                new[] { user },
+                message,
+                AppType.USER
+                );
+
         }
     }
 }

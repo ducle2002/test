@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Yootek.EntityDb;
+using Yootek.Authorization.Users;
+using System.Linq;
 
 namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
 {
@@ -30,7 +32,9 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         Task<MicroserviceResultDto<List<UpdateStateRelateDto>>> UpdateStateWork(UpdateStateWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteWork(DeleteWorkDto input);
         Task<MicroserviceResultDto<bool>> DeleteManyWork(DeleteManyWorkDto input);
-        Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input);
+        Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotify(GetAllWorksNotifyQuery input);
+        Task<MicroserviceResultDto<List<WorkExcelDto>>> GetListWorkExcel(GetExcelWorkDto input);
+
         #endregion
 
         #region IWorkTypeService
@@ -78,6 +82,8 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         Task<MicroserviceResultDto<bool>> CreateWorkComment(CreateWorkCommentDto input);
         Task<MicroserviceResultDto<bool>> UpdateWorkComment(UpdateWorkCommentDto input);
         Task<MicroserviceResultDto<bool>> DeleteWorkComment(DeleteWorkCommentDto input);
+        
+
         #endregion
 
         #region IWorkTurnService
@@ -131,7 +137,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<PagedResultDto<WorkDto>>>();
         }
-        public async Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotìy(GetAllWorksNotifyQuery input)
+        public async Task<MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>>> GetListWorkNotify(GetAllWorksNotifyQuery input)
         {
             var query = "api/v1/work/get-list-work-notify" + input.GetStringQueryUri();
             using var request = new HttpRequestMessage(HttpMethod.Get, query);
@@ -215,7 +221,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
                     try
                     {
                         // Sau khi công việc đã được tạo, gửi thông báo cho RecipientIds và SupervisorIds
-                        await SendWorkNotification(result.Result.Value, input.RecipientIds, input.SupervisorIds, $"yooioc://work/detail?id={result.Result.Value}&tenantId={_session.TenantId}", $"/tasks?id={result.Result.Value}&tenantId={_session.TenantId}");
+                        await SendWorkNotification(result.Result.Value, input.RecipientIds, input.SupervisorIds, $"yooioc://app/work/detail?id={result.Result.Value}", $"/tasks?id={result.Result.Value}&tenantId={_session.TenantId}");
                     }
                     catch
                     {
@@ -267,6 +273,16 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
             request.HandleDeleteAsJson(input, _session);
             var response = await _client.SendAsync(request);
             return await response.ReadContentAs<MicroserviceResultDto<bool>>();
+        }
+
+        public async Task<MicroserviceResultDto<List<WorkExcelDto>>> GetListWorkExcel(GetExcelWorkDto input)
+        {
+            var query = "api/v1/work/get-list-work-excel" + input.GetStringQueryUri();
+            using var request = new HttpRequestMessage(HttpMethod.Get, query);
+            request.HandleGet(_session);
+            var response = await _client.SendAsync(request);
+            var result= await response.ReadContentAs<MicroserviceResultDto<List<WorkExcelDto>>>();
+            return result;
         }
         #endregion
 
@@ -637,7 +653,7 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
         #region helpers method 
         private async Task SendWorkNotification(long workId, List<long> recipientIds, List<long> supervisorIds, string detailUrlApp, string detailUrlWA)
         {
-            var message = "Thông báo giao việc!";
+            var message = "Thông báo quản lý công việc !";
             var notification = new NotificationWithContentIdDatabase(
                 workId,
                 AppNotificationAction.WorkNotification,
@@ -647,56 +663,33 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
                 detailUrlApp,
                 detailUrlWA,
                 "",
-                ""
-
+            ""
             );
 
-            foreach (var userId in recipientIds)
-            {
+            var recipients = recipientIds.Select(x => new UserIdentifier(_session.TenantId, x)).ToList();
 
-                var recipients = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
-                
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    message,
-                    "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                    detailUrlApp,
-                    detailUrlWA,
-                    recipients.ToArray(),
-                    notification,
-                    AppType.USER
-                );
-                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     message,
-                //     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     recipients.ToArray(),
-                //     notification
-                // );
-            }
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                message,
+                "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+                detailUrlApp,
+                detailUrlWA,
+                recipients.ToArray(),
+                notification,
+                AppType.IOC
+            );
 
-            foreach (var userId in supervisorIds)
-            {
-                var supervisors = new List<UserIdentifier> { new UserIdentifier(_session.TenantId, userId) };
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    message,
-                    "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                    detailUrlApp,
-                    detailUrlWA,
-                    supervisors.ToArray(),
-                    notification,
-                    AppType.USER
-                );
-                // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     message,
-                //     "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     supervisors.ToArray(),
-                //     notification
-                // );
-            }
+            var supervisors = supervisorIds.Select(x => new UserIdentifier(_session.TenantId, x)).ToList();
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                message,
+                "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+                detailUrlApp,
+                detailUrlWA,
+                supervisors.ToArray(),
+                notification,
+                AppType.IOC
+            );
         }
+
         #endregion
     }
 }

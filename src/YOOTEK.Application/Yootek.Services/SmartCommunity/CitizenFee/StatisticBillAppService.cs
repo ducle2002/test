@@ -624,7 +624,7 @@ namespace Yootek.Services
                 }
 
                 IQueryable<UserBill> queryUserBill = _userBillRepository.GetAll()
-                        .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                        .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                         .WhereIf(input.FromDay.HasValue, u => u.Period >= fromDay)
                         .WhereIf(input.ToDay.HasValue, u => u.Period <= toDay)
                         .WhereIf(!input.FromDay.HasValue && !input.ToDay.HasValue, x => x.Period.Value.Year == yearCurrent & x.Period.Value.Month == monthCurrent)
@@ -632,7 +632,7 @@ namespace Yootek.Services
                         .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId);
 
                 IQueryable<UserBillPayment> queryBillPayment = _userBillPaymentRepository.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.FromDay.HasValue, u => u.CreationTime >= fromDay)
                     .WhereIf(input.ToDay.HasValue, u => u.CreationTime <= toDay)
                     .WhereIf(!input.FromDay.HasValue && !input.ToDay.HasValue, x => x.CreationTime.Year == yearCurrent & x.CreationTime.Month == monthCurrent)
@@ -733,7 +733,7 @@ namespace Yootek.Services
                              UrbanId = b.UrbanId,
                              DebtTotal = b.DebtTotal
                          })
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                 .WhereIf(input.Type > 0, x => x.BillType == input.Type)

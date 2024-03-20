@@ -25,7 +25,7 @@ namespace Yootek.Web.Host
 
         public Task Init()
         {
-            BillDebtReminderJobScheduler();
+           // BillDebtReminderJobScheduler();
             BillReminderJobScheduler();
             CreateUserBillMonthlyJobScheduler();
             DayCreateNotificationJobScheduler();
@@ -36,18 +36,18 @@ namespace Yootek.Web.Host
             return Task.CompletedTask;
         }
 
-        protected Task BillDebtReminderJobScheduler()
-        {
-            _jobManager.ScheduleAsync<BillDebtReminderJob>(
-                job => { job.WithIdentity("BillDebtReminderJobIdentity", "UserBill"); },
-                trigger =>
-                {
-                    trigger.StartNow()
-                        .WithCronSchedule("0 0 7 1/1 * ? *") 
-                        .Build();
-                });
-            return Task.CompletedTask;
-        }
+        //protected Task BillDebtReminderJobScheduler()
+        //{
+        //    _jobManager.ScheduleAsync<BillDebtReminderJob>(
+        //        job => { job.WithIdentity("BillDebtReminderJobIdentity", "UserBill"); },
+        //        trigger =>
+        //        {
+        //            trigger.StartNow()
+        //                .WithCronSchedule("0 0 7 1/1 * ? *") 
+        //                .Build();
+        //        });
+        //    return Task.CompletedTask;
+        //}
 
         protected Task BillReminderJobScheduler()
         {
@@ -127,7 +127,6 @@ namespace Yootek.Web.Host
                 });
             return Task.CompletedTask;
         }
-
 
     }
 

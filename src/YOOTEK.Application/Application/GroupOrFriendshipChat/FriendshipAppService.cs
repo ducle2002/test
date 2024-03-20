@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +26,9 @@ using Yootek.Friendships.Cache;
 using Yootek.Friendships.Dto;
 using Yootek.Users.Dto;
 using Abp.Linq.Extensions;
+using Yootek.Notifications;
+using Yootek.EntityDb;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace Yootek.Friendships
 {
@@ -41,7 +44,7 @@ namespace Yootek.Friendships
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<Friendship, long> _friendshipRepository;
         private readonly IUnitOfWorkManager _unitOfWorkManager;
-
+        private readonly IAppNotifier _appNotifier;
 
         public FriendshipAppService(
             IFriendshipManager friendshipManager,
@@ -52,7 +55,8 @@ namespace Yootek.Friendships
             IUserFriendsCache userFriendsCache,
             IRepository<User, long> userRepository,
             IRepository<Friendship, long> friendshipRepository,
-            IUnitOfWorkManager unitOfWorkManager
+            IUnitOfWorkManager unitOfWorkManager,
+            IAppNotifier appNotifier
         )
         {
             _friendshipManager = friendshipManager;
@@ -64,6 +68,7 @@ namespace Yootek.Friendships
             _userRepository = userRepository;
             _friendshipRepository = friendshipRepository;
             _unitOfWorkManager = unitOfWorkManager;
+            _appNotifier = appNotifier;
         }
 
         public async Task<DataResult> GetFriendRequestingList(GetAllFriendInput input)
@@ -248,9 +253,9 @@ namespace Yootek.Friendships
             }
         }
         
-        public async Task ChangeFriendShip(UserIdentifier userIdentifier, UserIdentifier probableFriend, FriendshipState friendshipState, FollowState followState)
+        public async Task<Friendship> ChangeFriendShip(UserIdentifier userIdentifier, UserIdentifier probableFriend, FriendshipState friendshipState, FollowState followState)
         {
-            await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+            return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
             {
                 var friendship = (await _friendshipManager.GetFriendshipOrNullAsync(userIdentifier, probableFriend));
                 if (friendship == null)
@@ -261,6 +266,7 @@ namespace Yootek.Friendships
                 friendship.State = friendshipState;
                 friendship.FollowState = followState;
                 await _friendshipManager.UpdateFriendshipAsync(friendship);
+                return friendship;
             });
         }
 
@@ -278,7 +284,7 @@ namespace Yootek.Friendships
                         throw new UserFriendlyException(L("YouAlreadySentAFriendshipRequestToThisUser"));
                     }
 
-                    if (friendShip.State != FriendshipState.None)
+                    if (friendShip.State != FriendshipState.None || friendShip.State != FriendshipState.Stranger)
                     {
                         throw new UserFriendlyException(L("FriendShipStateIsNotValid"));
                     }
@@ -303,9 +309,32 @@ namespace Yootek.Friendships
                         {
                             followState = (FollowState)friendShip.FollowState;
                         }
-                        await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.Requesting, followState);
-                        
-                        return friendShip.MapTo<FriendDto>();
+                        friendShip.IsSender = true;
+                        friendShip.FollowState = followState;
+                        friendShip.State = FriendshipState.Requesting;
+                        await _friendshipManager.UpdateFriendshipAsync(friendShip);
+
+                        var targetFriend = await _friendshipManager.GetFriendshipOrNullAsync(probableFriend, userIdentifier);
+                        if(targetFriend == null)
+                        {
+                            var user = await UserManager.FindByIdAsync(AbpSession.GetUserId().ToString());
+                            var userTenancyName = user.TenantId.HasValue ? _tenantCache.Get(user.TenantId.Value).TenancyName : null;
+                            var targetFriendship = new Friendship(probableFriend, userIdentifier, userTenancyName,
+                            user.FullName, user.ImageUrl, FriendshipState.Requesting, FollowState.Pending);
+                            await _friendshipManager.CreateFriendshipAsync(targetFriendship);
+
+                        }
+                        else
+                        {
+                            targetFriend.IsSender = false;
+                            targetFriend.FollowState = FollowState.Pending;
+                            targetFriend.State = FriendshipState.Requesting;
+                            await _friendshipManager.UpdateFriendshipAsync(targetFriend);
+                        }
+
+
+                        await NotifierNewFriendship(targetFriend, new[] { probableFriend });
+                        return ObjectMapper.Map<FriendDto>(friendShip);
                     }
                 }
                 else
@@ -351,10 +380,10 @@ namespace Yootek.Friendships
                             isFriendOnline);
                     }
 
-                    var sourceFriendshipRequest = sourceFriendship.MapTo<FriendDto>();
+                    var sourceFriendshipRequest = ObjectMapper.Map<FriendDto>(sourceFriendship);
                     sourceFriendshipRequest.IsOnline =
                         (await _onlineClientManager.GetAllByUserIdAsync(probableFriend)).Any();
-
+                    await NotifierNewFriendship(targetFriendship, new[] { probableFriend });
                     return sourceFriendshipRequest;
                 }
             }
@@ -770,7 +799,8 @@ namespace Yootek.Friendships
                             follow = (FollowState)friendShip.FollowState;
                         }
                         await ChangeFriendShip(userIdentifier, probableFriend, FriendshipState.Accepted, follow);
-                        await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.Accepted, follow);
+                        var friend = await ChangeFriendShip(probableFriend, userIdentifier, FriendshipState.Accepted, follow);
+                        await NotifierFriendshipAccepted(friend, new[] { probableFriend } );
                     }
                 }
                 else
@@ -1074,6 +1104,56 @@ namespace Yootek.Friendships
               Logger.Fatal(e.Message);
               throw;
           }
+        }
+
+        private async Task NotifierNewFriendship(Friendship data, UserIdentifier[] user)
+        {
+            var detailUrlApp = $"yoolife://app/friend-request";
+            var detailUrlWA = $"yoolife://app/friend-request";
+            var message = new UserMessageNotificationDataBase(
+                            AppNotificationAction.FriendRequest,
+                            AppNotificationIcon.FriendShipIcon,
+                            TypeAction.Detail,
+                            $"{data.FriendUserName} đã gửi một lời mời kết bạn. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+               "Yoolife kết bạn !",
+                $"{data.FriendUserName} đã gửi một lời mời kết bạn. Nhấn để xem chi tiết !",
+                detailUrlApp,
+                detailUrlWA,
+                user,
+                message,
+                AppType.USER
+                );
+
+        }
+
+        private async Task NotifierFriendshipAccepted(Friendship data, UserIdentifier[] user)
+        {
+            var detailUrlApp = $"yoolife://app/friend-accepted";
+            var detailUrlWA = $"yoolife://app/friend-accepted";
+            var message = new UserMessageNotificationDataBase(
+                            AppNotificationAction.FriendRequest,
+                            AppNotificationIcon.FriendShipIcon,
+                            TypeAction.Detail,
+                            $"{data.FriendUserName} chấp nhận lời mời kết bạn của bạn !. Nhấn để xem chi tiết !",
+                            detailUrlApp,
+                            detailUrlWA
+                            );
+
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife kết bạn !",
+                $"{data.FriendUserName} chấp nhận lời mời kết bạn của bạn !",
+                detailUrlApp,
+                detailUrlWA,
+                user,
+                message,
+                AppType.USER
+                );
+
         }
     }
 }

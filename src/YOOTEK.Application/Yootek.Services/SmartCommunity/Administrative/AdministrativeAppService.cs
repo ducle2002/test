@@ -90,7 +90,7 @@ namespace Yootek.Services
             _appNotifier = appNotifier;
         }
 
-      
+
         public async Task<object> CreateOrUpdateAdministrative(AdministrativeDto input)
         {
             try
@@ -118,14 +118,14 @@ namespace Yootek.Services
                 }
                 else
                 {
-                    
+
                     var insertInput = input.MapTo<Administrative>();
                     // Only admin can send administrative request
                     //var creatorUser = _homeMemberRepos.FirstOrDefault(x => x.Id == insertInput.CreatorUserId);
                     //if (creatorUser == null) { return null; }
                     //if (!creatorUser.IsAdmin) { return null; }
                     //
-					long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
+                    long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
                     await CreateOrUpdateValueWithAdministrative(input.Properties, id, input.ADTypeId);
                     mb.statisticMetris(t1, 0, "is_administrative");
@@ -142,7 +142,7 @@ namespace Yootek.Services
 
         }
 
-      
+
         public async Task<DataResult> HandleStateUserAdministrative(HandleStateAdministrativeInput input)
         {
             try
@@ -194,99 +194,7 @@ namespace Yootek.Services
 
         }
 
-        private Task<long> CreateUserBillAdministrative(Administrative administrative, TypeAdministrative type)
-        {
-            var checkBill = administrative.UserBillId != null ? _userBillRepos.FirstOrDefault(administrative.UserBillId.Value) : null;
-            if (checkBill != null) return Task.FromResult(administrative.UserBillId.Value);
 
-            var apartment = _homeMemberRepos.FirstOrDefault(x => x.UserId == administrative.CreatorUserId);
-            var citizen = _citizenRepos.FirstOrDefault(x => x.AccountId == administrative.CreatorUserId && x.State == STATE_CITIZEN.ACCEPTED);
-            var properties = new
-            {
-                customerName = citizen == null ? citizen.FullName : ""
-            };
-
-            var bill = new UserBill()
-            {
-                BillType = BillType.Other,
-                Amount = 0,
-                LastCost = type.Price != null ? type.Price.Value : 0,
-                Title = "Hóa đơn hành chính số: " + type.Name,
-                Status = UserBillStatus.Pending,
-                ApartmentCode = apartment != null ? apartment.ApartmentCode : null,
-                Code = GetUniqueKey(8),
-                TenantId = AbpSession.TenantId,
-                DueDate = DateTime.Now.AddDays(10), // Ngày hết hạn sau 10 ngày
-                Period = DateTime.Now,
-                Properties = JsonConvert.SerializeObject(properties)
-
-            };
-            var billId = _userBillRepos.InsertAndGetId(bill);
-            return Task.FromResult(billId);
-        }
-
-        private Task DeleteUserBillAdministrative(Administrative administrative, TypeAdministrative typ)
-        {
-            var checkBill = administrative.UserBillId != null ? _userBillRepos.FirstOrDefault(administrative.UserBillId.Value) : null;
-            if (checkBill != null)
-                _userBillRepos.DeleteAsync(checkBill.Id);
-
-            return Task.CompletedTask;
-
-        }
-        private Task FireUserStateAdministrative(Administrative administrative)
-        {
-            if (administrative.State == AdministrativeState.Accepted) HandAdministrativeAccept(administrative);
-            else if (administrative.State == AdministrativeState.Denied) HandAdministrativeDenied(administrative);
-            return Task.CompletedTask;
-        }
-
-
-        private Task HandAdministrativeAccept(Administrative administrative)
-        {
-            string message = "Đăng ký dịch vụ hành chính công của bạn đã được chấp nhận.";
-            string detailUrlApp = $"yoolife://app/adminstrative/detail?id={administrative.Id}";
-            string detailUrlWA = $"/adminstrative?id={administrative.Id}";
-            var b = SendMessageNotify(message, administrative.CreatorUserId.Value, detailUrlApp, detailUrlWA);
-
-            return Task.CompletedTask;
-        }
-
-        private Task SendMessageNotify(string message, long userId, string detailUrlApp, string detailUrlWA)
-        {
-            var devicesIds = _fcmTokenRepos.GetAllList(x => x.CreatorUserId == userId);
-            var tokens = devicesIds.Select(x => x.Token).ToList();
-
-            var data = new
-            {
-                action = "tenant_administrative",
-                detailUrlApp,
-                detailUrlWA
-            };
-
-            var a = _cloudMessagingManager.FcmSendToMultiDevice(new FcmMultiSendToDeviceInput()
-            {
-                Title = "Thông báo đăng ký dịch vụ hành chính công !",
-                Body = message,
-                Data = JsonConvert.SerializeObject(data),
-                Tokens = tokens
-            });
-
-            return Task.CompletedTask;
-        }
-
-        private Task HandAdministrativeDenied(Administrative administrative, string refuseReason = "")
-        {
-            string message = $"Thật tiếc đăng ký dịch vụ hành chính công của bạn đã bị từ chối. Nhấn để xem chi tiết ";
-            string detailUrlApp = $"yoolife://app/adminstrative/detail?id={administrative.Id}";
-            string detailUrlWA = $"/adminstrative?id={administrative.Id}";
-            var c = SendMessageNotify(message, administrative.CreatorUserId.Value, detailUrlApp, detailUrlWA);
-            //    Task.WaitAll(a, b, c);
-            return Task.CompletedTask;
-        }
-
-
-      
         public async Task<DataResult> DeleteAdministrative(long id)
         {
             try
@@ -329,7 +237,7 @@ namespace Yootek.Services
         }
 
 
-      
+
         public async Task<object> UpdateStateAdministrative(long id, int state)
         {
             try
@@ -359,7 +267,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public async Task<object> UpdateConfirmationOwner(long id)
         {
             try
@@ -392,7 +300,7 @@ namespace Yootek.Services
 
         #region Config
 
-      
+
         public async Task<object> CreateOrUpdateType(TypeAdministrativeDto input)
         {
             try
@@ -464,7 +372,8 @@ namespace Yootek.Services
 
                 var data = DataResult.ResultSuccess("Delete success!");
                 return Task.FromResult(data);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
                 Logger.Fatal(e.Message);
@@ -575,7 +484,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public async Task<DataResult> DeleteValueWithAdministrativeIdAsync(long adId)
         {
             try
@@ -606,7 +515,7 @@ namespace Yootek.Services
         #endregion
 
         #region Property
-      
+
         public async Task<object> CreateOrUpdateProperty(ADPropetyInput input)
         {
             try
@@ -647,7 +556,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> CreateProperty(ADPropetyInput input)
         {
             try
@@ -690,7 +599,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> UpdateProperty(ADPropetyInput input)
         {
             try
@@ -746,7 +655,7 @@ namespace Yootek.Services
             }
         }
 
-      
+
         public Task<DataResult> CreateOrUpdateListProperty(List<ADPropetyInput> input)
         {
             try
@@ -800,6 +709,99 @@ namespace Yootek.Services
                 return Task.FromResult(data);
             }
         }
+        #endregion
+
+
+        #region Common
+        private Task<long> CreateUserBillAdministrative(Administrative administrative, TypeAdministrative type)
+        {
+            var checkBill = administrative.UserBillId != null ? _userBillRepos.FirstOrDefault(administrative.UserBillId.Value) : null;
+            if (checkBill != null) return Task.FromResult(administrative.UserBillId.Value);
+
+            var apartment = _homeMemberRepos.FirstOrDefault(x => x.UserId == administrative.CreatorUserId);
+            var citizen = _citizenRepos.FirstOrDefault(x => x.AccountId == administrative.CreatorUserId && x.State == STATE_CITIZEN.ACCEPTED);
+            var properties = new
+            {
+                customerName = citizen == null ? citizen.FullName : ""
+            };
+
+            var bill = new UserBill()
+            {
+                BillType = BillType.Other,
+                Amount = 0,
+                LastCost = type.Price != null ? type.Price.Value : 0,
+                Title = "Hóa đơn hành chính số: " + type.Name,
+                Status = UserBillStatus.Pending,
+                ApartmentCode = apartment != null ? apartment.ApartmentCode : null,
+                Code = GetUniqueKey(8),
+                TenantId = AbpSession.TenantId,
+                DueDate = DateTime.Now.AddDays(10), // Ngày hết hạn sau 10 ngày
+                Period = DateTime.Now,
+                Properties = JsonConvert.SerializeObject(properties)
+
+            };
+            var billId = _userBillRepos.InsertAndGetId(bill);
+            return Task.FromResult(billId);
+        }
+
+        private Task DeleteUserBillAdministrative(Administrative administrative, TypeAdministrative typ)
+        {
+            var checkBill = administrative.UserBillId != null ? _userBillRepos.FirstOrDefault(administrative.UserBillId.Value) : null;
+            if (checkBill != null)
+                _userBillRepos.DeleteAsync(checkBill.Id);
+
+            return Task.CompletedTask;
+
+        }
+
+        private async Task FireUserStateAdministrative(Administrative administrative)
+        {
+            if (administrative.State == AdministrativeState.Accepted) await HandAdministrativeAccept(administrative);
+            else if (administrative.State == AdministrativeState.Denied) await HandAdministrativeDenied(administrative);
+        }
+
+
+        private async Task HandAdministrativeAccept(Administrative administrative)
+        {
+            string message = "Đăng ký dịch vụ hành chính số của bạn đã được chấp nhận.";
+            string detailUrlApp = $"yoolife://app/adminstrative/detail?id={administrative.Id}";
+            string detailUrlWA = $"/adminstrative?id={administrative.Id}";
+            await SendMessageNotify(message, new UserIdentifier(administrative.TenantId, administrative.CreatorUserId ?? 0), detailUrlApp, detailUrlWA);
+        }
+
+        private async Task SendMessageNotify(string message, UserIdentifier user, string detailUrlApp, string detailUrlWA)
+        {
+
+            var messageDeclined = new UserMessageNotificationDataBase(
+                             AppNotificationAction.StateAdministrative,
+                             AppNotificationIcon.StateAdministrativeIcon,
+                              TypeAction.Detail,
+                               message,
+                               detailUrlApp,
+                               detailUrlWA,
+                                "",
+                                ""
+
+                             );
+            await _appNotifier.SendMessageNotificationInternalAsync(
+                "Yoolife hành chính số!",
+                 message,
+                 detailUrlApp,
+                 detailUrlWA,
+                 new[] { user },
+                 messageDeclined,
+                 AppType.USER
+                );
+        }
+
+        private async Task HandAdministrativeDenied(Administrative administrative, string refuseReason = "")
+        {
+            string message = $"Thật tiếc đăng ký dịch vụ hành chính số của bạn đã bị từ chối. Nhấn để xem chi tiết ";
+            string detailUrlApp = $"yoolife://app/adminstrative/detail?id={administrative.Id}";
+            string detailUrlWA = $"/adminstrative?id={administrative.Id}";
+            await SendMessageNotify(message, new UserIdentifier(administrative.TenantId, administrative.CreatorUserId ?? 0), detailUrlApp, detailUrlWA);
+        }
+
         #endregion
     }
 }

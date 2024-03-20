@@ -14,4 +14,9 @@ namespace Yootek.Application.BusinessChat.Input
         public long ProviderId { get; set; }
         public long? ProviderUserId { get; set; }
     }
+
+    public class GetProviderByIdInput
+    {
+        public long ProviderId { get; set;}
+    }
 }

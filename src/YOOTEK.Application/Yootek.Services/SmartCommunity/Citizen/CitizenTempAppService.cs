@@ -487,7 +487,7 @@ namespace Yootek.Services
                                          BuildingId = ci.BuildingId,
                                          UrbanId = ci.UrbanId,
                                      })
-                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                                 ;
@@ -516,7 +516,7 @@ namespace Yootek.Services
                                          BuildingId = ci.BuildingId,
                                          UrbanId = ci.UrbanId,
                                      })
-                                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
                                 ;
@@ -597,7 +597,7 @@ namespace Yootek.Services
                                      AccountEmail = user.EmailAddress,
                                      Hometown = ci.Hometown,
                                  })
-                            .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                            .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                             .WhereIf(input.IsStayed.HasValue, x => x.IsStayed == input.IsStayed)
                             .ApplySearchFilter(input.Keyword, x => x.FullName, x => x.Address, x => x.Email, x => x.PhoneNumber, x => x.ApartmentCode);
 
@@ -777,7 +777,7 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var citizens = await _citizenTempRepos.GetAll()
-                    .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                    .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                     .WhereIf(input.IsStayed.HasValue, x => x.IsStayed == input.IsStayed)
                     .WhereIf(input.Ids != null && input.Ids.Count > 0, x => input.Ids.Contains(x.Id))
                     .ToListAsync();

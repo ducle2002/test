@@ -27,6 +27,8 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Org.BouncyCastle.Math;
+using Yootek.Services.SmartCommunity.BillingInvoice;
 
 namespace Yootek.Services
 {
@@ -245,6 +247,7 @@ namespace Yootek.Services
 
         }
 
+        
         [RemoteService(false)]
         public async Task<StringBuilder> CreateTemplate(string apartmentCode, DateTime time, int? tenantId, CitizenTemp citizenTemp = null)
         {
@@ -2525,6 +2528,7 @@ namespace Yootek.Services
         }
 
         [RemoteService(false)]
+        //Tan phong
         public async Task<StringBuilder> CreateTemplateTanPhong(string apartmentCode, DateTime period, int? tenantId)
         {
             using (CurrentUnitOfWork.SetTenantId(tenantId))
@@ -2917,6 +2921,7 @@ namespace Yootek.Services
         }
 
         [RemoteService(false)]
+        //Mhomes
         public async Task<StringBuilder> CreateTemplateMhomes(string apartmentCode, DateTime period, int? tenantId)
         {
             using (CurrentUnitOfWork.SetTenantId(tenantId))
@@ -5001,7 +5006,10 @@ namespace Yootek.Services
                 return emailTemplate;
             }
         }
+       
+
         //Trung do
+        [RemoteService(false)]
         public async Task<StringBuilder> CreateTemplateTrungDo(string apartmentCode, DateTime period, int? tenantId)
         {
             using (CurrentUnitOfWork.SetTenantId(tenantId))
@@ -5368,13 +5376,13 @@ namespace Yootek.Services
                     }
 
                     emailTemplate.Replace("{E_TOTAL_AMOUNT}",
-                        string.Format("{0:#,#.##}", electricBill.LastCost.HasValue ? string.Format("{0:#,#}", Math.Round(electricBill.LastCost.Value)) : null));
+                                            string.Format("{0:#,#.##}", electricBill.LastCost.HasValue ? string.Format("{0:#,#}", Math.Round(electricBill.LastCost.Value)) : null));
 
 
                     // emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE + e_percent));
                     emailTemplate.Replace("{E_INTO_MONEY}", string.Format("{0:#,#.##}", resultE));
                 }
-
+                
                 double parkingMoneyPaid = parkingBill != null && parkingBill.Status == UserBillStatus.Paid ? parkingBill.LastCost.Value : 0;
 
 
@@ -5404,8 +5412,8 @@ namespace Yootek.Services
                     .Replace("{TOTAL_INDEX_W}", GetStringValue((double?)totalIndexWater))
                     .Replace("{TOTAL_INDEX_E}", GetStringValue(totalIndexElectric))
                     .Replace("{LIST_WATER}", listWaterConsumptions)
-                    .Replace("{E_VAT}", string.Format("{0:#,#.##}", (resultE * e_vat)))
-                    .Replace("{E_HT}", string.Format("{0:#,#.##}", (resultE * e_ht)))
+                    .Replace("{E_VAT}", string.Format("{0:#,#.##}", resultE * e_vat))
+                    .Replace("{E_HT}", string.Format("{0:#,#.##}", resultE * e_ht))
                     .Replace("{P_MONEY_PAID}", FormatCost(parkingMoneyPaid))
 
 

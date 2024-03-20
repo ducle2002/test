@@ -23,6 +23,7 @@ using Abp;
 using Abp.Authorization.Users;
 using Abp.Linq.Extensions;
 using Abp.UI;
+using Abp.Runtime.Session;
 
 namespace Yootek.Services
 {
@@ -291,12 +292,6 @@ namespace Yootek.Services
                         insertInput.ReadState = 1;
                         long id = await _userFeedbackCommentRepos.InsertAndGetIdAsync(insertInput);
                         insertInput.Id = id;
-                        // var admins = await _store.GetAllRoleChatFeedbackHBAsync(feedback.Type.Value);
-                        var admins = await _store.GetUserByOrganizationUnitIdAsync((int)feedback.Type.Value, AbpSession.TenantId);
-                        if (admins != null && admins.Any())
-                        {
-                            _notificationCommunicator.SendCommentFeedbackToAdminTenant(admins, insertInput);
-                        }
 
                         mb.statisticMetris(t1, 0, "is_noti");
                         var data = DataResult.ResultSuccess(insertInput, "Insert success !");
@@ -450,8 +445,8 @@ namespace Yootek.Services
                     long id = await _commentRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
 
-                    var userComment = _userRepos.FirstOrDefault(AbpSession.UserId ?? 0);
-                    await NotifierNewCommentUser(insertInput, userComment);
+                    var userComment = UserManager.GetUser(AbpSession.ToUserIdentifier());
+                    if(userComment != null) await NotifierNewCommentUser(insertInput, userComment);
                     mb.statisticMetris(t1, 0, "is_comment");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -467,7 +462,7 @@ namespace Yootek.Services
         }
         private async Task NotifierNewCommentUser(CityNotificationComment data, User userComment)
         {
-            var detailUrlApp = $"yoolife://app/notification/detail?id={data.Id}";
+            var detailUrlApp = $"yoolife://app/notification/comments?id={data.Id}";
             var detailUrlWA = $"/notices?id={data.Id}";
             var creatorNotification = new List<UserIdentifier>
             {
@@ -479,27 +474,20 @@ namespace Yootek.Services
                 AppNotificationAction.CityNotificationComment,
                 AppNotificationIcon.CityNotificationCommentIcon,
                 TypeAction.Detail,
-                $"{userComment.UserName} bình luận thông báo của bạn.Nhấn để xem chi tiết !",
+                  $"{userComment.UserName} đã bình luận một bài thông báo số của bạn. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 detailUrlWA
                 );
             await _appNotifier.SendMessageNotificationInternalAsync(
-                    "Bình luận thông báo số!",
-                    $"{userComment.UserName} bình luận thông báo của bạn.Nhấn để xem chi tiết !",
+                    "Yoolife thông báo số!",
+                    $"{userComment.UserName} đã bình luận một bài thông báo số của bạn. Nhấn để xem chi tiết !",
                     detailUrlApp,
                     detailUrlWA,
                     creatorNotification.ToArray(),
                     messageDeclined,
                     AppType.USER
                     );
-            // await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-            //     "Bình luận thông báo số!",
-            //     $"{userComment.UserName} bình luận thông báo của bạn.Nhấn để xem chi tiết !",
-            //     detailUrlApp,
-            //     detailUrlWA,
-            //     creatorNotification.ToArray(),
-            //     messageDeclined
-            // );
+
         }
         public async Task<object> DeleteFeedback(long id)
         {

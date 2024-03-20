@@ -155,7 +155,7 @@ namespace Yootek.Emailing
             }
             else if (tenantId == 114)
             {
-                using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.lathanh.html"))
+                using (var stream = typeof(EmailTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.Emailing.EmailTemplates.trungdo.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);

@@ -42,7 +42,7 @@ namespace Yootek.Services
         [RemoteService(true)]
         public async Task SchedulerWorkCreateNotificationAsync()
         {
-            MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>> result = await _httpWorkAssignmentService.GetListWorkNotìy(new()
+            MicroserviceResultDto<PagedResultDto<GetAllWorksNotifyDto>> result = await _httpWorkAssignmentService.GetListWorkNotify(new()
             {
                 QueryCase = QueryCaseWorkNotify.ByWorker
             });

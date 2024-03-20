@@ -60,7 +60,7 @@ namespace Yootek.Services
         private readonly IRepository<User, long> _userRepos;
         private readonly IRepository<UserCityNotification, long> _userCityNotificationRepos; //luu cu dan nhan thong bao
         private readonly IRepository<Citizen, long> _citizenRepos;
-        private readonly IRepository<Apartment, long> _smartHomeRepos;
+        private readonly IRepository<Apartment, long> _apartmentRepos;
         private readonly IRepository<AppOrganizationUnit, long> _appOrganizationUnitRepository;
         private readonly IRepository<UserOrganizationUnit, long> _userOrganizationUnitRepository;
         //   private readonly IFeedbackListExcelExporter _feedbackListExcelExporter;
@@ -79,7 +79,7 @@ namespace Yootek.Services
 
             IAppNotifier appNotifier,
             IRepository<Citizen, long> citizenRepos,
-            IRepository<Apartment, long> smartHomeRepos,
+            IRepository<Apartment, long> apartmentRepos,
         //     IFeedbackListExcelExporter feedbackListExcelExporter,
             IRepository<UserOrganizationUnit, long> userOrganizationRepos,
             ISqlExecuter sqlExecute
@@ -91,7 +91,7 @@ namespace Yootek.Services
             _userCityNotificationRepos = userCityNotificationRepos;
             _userRepos = userRepos;
             _citizenRepos = citizenRepos;
-            _smartHomeRepos = smartHomeRepos;
+            _apartmentRepos = apartmentRepos;
             //_feedbackListExcelExporter = feedbackListExcelExporter;
             _appOrganizationUnitRepository = appOrganizationUnitRepository;
             _userOrganizationUnitRepository = userOrganizationUnitRepository;
@@ -147,12 +147,13 @@ namespace Yootek.Services
             {
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var query = QueryDataCityNotification(input)
-                .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
+                .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                   .WhereIf(input.ReceiverGroupCode != null, x => input.ReceiverGroupCode == x.ReceiverGroupCode)
                   .WhereIf(input.OrganizationUnitId != null, x => input.OrganizationUnitId == x.OrganizationUnitId)
                   .WhereIf(input.ReceiveAll != null, x => input.ReceiveAll == x.ReceiveAll)
                   .WhereIf(input.BuildingId != null, x => input.BuildingId == x.BuildingId)
                   .WhereIf(input.UrbanId != null, x => input.UrbanId == x.UrbanId)
+                  .WhereIf(input.Type != null, x => input.Type == x.Type)
                   //.WhereIf(input.State.HasValue, x => x.State == input.State)
                   .ApplySearchFilter(input.Keyword, x => x.Name)
                   .AsQueryable();
@@ -581,132 +582,98 @@ namespace Yootek.Services
 
         private async Task NotifierNewCityNotificationUser(CityNotification data, string creatorName = "Ban quản trị")
         {
-            var detailUrlApp = $"yoolife://app/notification/detail?id={data.Id}";
-            var detailUrlWA = $"/notices?id={data.Id}";
-            List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
-
-            var messageDeclined = new NotificationWithContentIdDatabase(
-                            data.Id,
-                            AppNotificationAction.CityNotificationNew,
-                            AppNotificationIcon.CityNotificationNewIcon,
-                            TypeAction.Detail,
-                            $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                            detailUrlApp,
-                            detailUrlWA,
-                            "",
-                            ""
-
-                            );
-            //tenant
-            if (data.ReceiveAll == RECEIVE_TYPE.TENANT_ALL)
+            try
             {
-                var citizens = (from cz in _citizenRepos.GetAll()
-                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    "Yoolife thông báo số !",
-                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                    detailUrlApp,
-                    detailUrlWA,
-                    citizens.ToArray(),
-                    messageDeclined,
-                    AppType.USER
-                    );
-                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     "Yoolife thông báo số !",
-                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     citizens.ToArray(),
-                //   messageDeclined);
-            }
-            //khu do thi
-            else if (data.ReceiveAll == RECEIVE_TYPE.URBAN_ALL)
-            {
-                var citizens = (from cz in _citizenRepos.GetAll()
-                                join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
-                                where buIds.Contains((long)cz.UrbanId)
-                                select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    "Yoolife thông báo số !",
-                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                    detailUrlApp,
-                    detailUrlWA,
-                    citizens.ToArray(),
-                    messageDeclined,
-                    AppType.USER
-                    );
-                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     "Yoolife thông báo số !",
-                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     citizens.ToArray(),
-                //   messageDeclined);
-            }
-            //toa nha
-            else if (data.ReceiveAll == RECEIVE_TYPE.BUIDING_ALL)
-            {
+                var detailUrlApp = $"yoolife://app/notification/detail?id={data.Id}";
+                var detailUrlWA = $"/notices?id={data.Id}";
 
-                var citizens = new List<List<UserIdentifier>>();
-
-                foreach (var building in data.OrganizationUnitIds)
+                var messageDeclined = new UserMessageNotificationDataBase(
+                                AppNotificationAction.CityNotificationNew,
+                                AppNotificationIcon.CityNotificationNewIcon,
+                                TypeAction.Detail,
+                                $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                                detailUrlApp,
+                                detailUrlWA
+                                );
+                //tenant
+                if (data.ReceiveAll == RECEIVE_TYPE.TENANT_ALL)
                 {
-                    var listCitizens = (from cz in _citizenRepos.GetAll()
-                                        join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
-                                        where cz.OrganizationUnitId == building && buIds.Contains(cz.BuildingId ?? 0)
-                                        select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                    citizens.Add(listCitizens);
+                    var citizens = (from cz in _citizenRepos.GetAll()
+                                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife thông báo số !",
+                        $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                        detailUrlApp,
+                        detailUrlWA,
+                        citizens.ToArray(),
+                        messageDeclined,
+                        AppType.USER
+                        );
+
+                }
+                //khu do thi
+                else if (data.ReceiveAll == RECEIVE_TYPE.URBAN_ALL)
+                {
+                    var citizens = (from cz in _citizenRepos.GetAll()
+                                    where cz.UrbanId == data.UrbanId
+                                    select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife thông báo số !",
+                        $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                        detailUrlApp,
+                        detailUrlWA,
+                        citizens.ToArray(),
+                        messageDeclined,
+                        AppType.USER
+                        );
+
+                }
+                //toa nha
+                else if (data.ReceiveAll == RECEIVE_TYPE.BUIDING_ALL)
+                {
+
+                    var citizens = new List<List<UserIdentifier>>();
+
+                    foreach (var building in data.OrganizationUnitIds)
+                    {
+                        var listCitizens = (from cz in _citizenRepos.GetAll()
+                                            join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
+                                            where cz.OrganizationUnitId == building
+                                            select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
+                        citizens.Add(listCitizens);
+                    }
+
+
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife thông báo số !",
+                        $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                        detailUrlApp,
+                        detailUrlWA,
+                        citizens.SelectMany(x => x).ToArray(),
+                        messageDeclined,
+                        AppType.USER
+                        );
+                }
+                //can ho
+                else
+                {
+                    var citizensApartment = (from cz in _citizenRepos.GetAll()
+                                             where cz.State == STATE_CITIZEN.ACCEPTED && data.ReceiverGroupCode.Contains(cz.ApartmentCode)
+                                             select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).Distinct().ToList();
+                    await _appNotifier.SendMessageNotificationInternalAsync(
+                        "Yoolife thông báo số !",
+                        $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
+                        detailUrlApp,
+                        detailUrlWA,
+                        citizensApartment.ToArray(),
+                        messageDeclined,
+                        AppType.USER
+                        );
                 }
 
-
-                //var citizens = from cz in _citizenRepos.GetAll()
-                //               join ou in _appOrganizationUnitRepository.GetAll() on cz.UrbanId equals ou.Id
-                //               where data.OrganizationUnitIds.Contains(cz.OrganizationUnitId)
-                //                     && buIds.Contains(cz.BuildingId ?? 0)
-                //               select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0).ToList();
-
-
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    "Yoolife thông báo số !",
-                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                    detailUrlApp,
-                    detailUrlWA,
-                    citizens.SelectMany(x => x).ToArray(),
-                    messageDeclined,
-                    AppType.USER
-                    );
-                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     "Yoolife thông báo số !",
-                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     citizens.ToArray(),
-                //   messageDeclined);
-            }
-            //can ho
-            else
+            }catch
             {
-                var citizensApartment = (from cz in _citizenRepos.GetAll()
-                                         join sh in _smartHomeRepos.GetAll()
-                                         on cz.ApartmentCode equals sh.ApartmentCode
-                                         where cz.State == STATE_CITIZEN.ACCEPTED && data.ReceiverGroupCode.Contains(cz.ApartmentCode) && buIds.Contains((long)cz.UrbanId) && buIds.Contains((long)cz.BuildingId)
-                                         select new UserIdentifier(cz.TenantId, cz.AccountId.HasValue ? cz.AccountId.Value : 0)).ToList();
-                await _appNotifier.SendMessageNotificationInternalAsync(
-                    "Yoolife thông báo số !",
-                    $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                    detailUrlApp,
-                    detailUrlWA,
-                    citizensApartment.ToArray(),
-                    messageDeclined,
-                    AppType.USER
-                    );
-                //await _appNotifier.SendUserMessageNotifyFireBaseAsync(
-                //     "Yoolife thông báo số !",
-                //     $"{creatorName} đã tạo một thông báo số mới. Nhấn để xem chi tiết !",
-                //     detailUrlApp,
-                //     detailUrlWA,
-                //     citizensApartment.ToArray(),
-                //   messageDeclined);
+                return;
             }
         }
 

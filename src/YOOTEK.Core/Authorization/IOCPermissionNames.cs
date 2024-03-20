@@ -2,7 +2,7 @@
 
 namespace Yootek.Authorization
 {
-    public static class PermissionNames
+    public static class IOCPermissionNames
     {
         // Phân quyền dữ liệu
         public const string Data = "Data";
@@ -546,7 +546,35 @@ namespace Yootek.Authorization
         public const string Pages_Government_Portal = "Pages.Government.Portal";
 
         public const string Pages_Government_Question_Answer = "Pages.Government.Question_Answer";
+        
+        // Cuộc sống thường ngày
         public const string Pages_Government_DigitalDaily = "Pages.Government.DigitalDaily";
+        public const string Pages_Government_DigitalDaily_GetAll = "Pages.Government.DigitalDaily.GetAll";
+        public const string Pages_Government_DigitalDaily_GetDetail = "Pages.Government.DigitalDaily.GetDetail";
+        public const string Pages_Government_DigitalDaily_Create = "Pages.Government.DigitalDaily.Create";
+        public const string Pages_Government_DigitalDaily_Edit = "Pages.Government.DigitalDaily.Edit";
+        public const string Pages_Government_DigitalDaily_Delete = "Pages.Government.DigitalDaily.Delete";
+
+        // kinh tế số
+        public const string Pages_Government_Economy = "Pages.Government.Economy";
+        public const string Pages_Government_Economy_Shopping = "Pages.Government.Economy.Shopping";
+        public const string Pages_Government_Economy_Work= "Pages.Government.Economy.Work";
+        public const string Pages_Government_Economy_Repair= "Pages.Government.Economy.Repair";
+        public const string Pages_Government_Economy_Healthy = "Pages.Government.Economy.Healthy";
+        public const string Pages_Government_Economy_Entertainment = "Pages.Government.Economy.Entertainment";
+
+
+
+        // xã hội số
+        public const string Pages_Government_Social = "Pages.Government.Social";
+        public const string Pages_Government_Social_Sport="Pages.Government.Social.Sport";
+        public const string Pages_Government_Social_Traveling= "Pages.Government.Social.Traveling";
+        public const string Pages_Government_Social_Staying= "Pages.Government.Social.Staying";
+        public const string Pages_Government_Social_Education = "Pages.Government.Social.Education";
+        public const string Pages_Government_Social_Medical = "Pages.Government.Social.Medical";
+        public const string Pages_Government_Social_Traffic = "Pages.Government.Social.Traffic";
+        public const string Pages_Government_Social_Relics = "Pages.Government.Social.Relics";
+
 
 
         // quản trị

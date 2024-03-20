@@ -91,7 +91,7 @@ namespace Yootek.Authorization.Users
                 using (_unitOfWorkManager.Current.SetTenantId(tenantId))
                 {
                     var users = new List<UserIdentifier>();
-                    var roles = _roleRepository.GetAllIncluding(x => x.Permissions).Where(y => y.Permissions.Any(u => u.Name == PermissionNames.Pages_Citizens)).ToList();
+                    var roles = _roleRepository.GetAllIncluding(x => x.Permissions).Where(y => y.Permissions.Any(u => u.Name == IOCPermissionNames.Pages_Citizens)).ToList();
                     if (roles != null)
                     {
                         foreach (var role in roles)
@@ -155,59 +155,7 @@ namespace Yootek.Authorization.Users
             }
 
         }
-
-        public async Task<List<User>> GetAllRoleChatFeedbackHBAsync(int type)
-        {
-            var permissionChat = PermissionConst.HongBangRoleMap[type];
-            if (permissionChat != null)
-            {
-                var users = new List<User>();
-                var roles = _roleRepository.GetAllIncluding(x => x.Permissions).Where(y => y.Permissions.Any(u => u.Name == permissionChat)).ToList();
-                if (roles != null)
-                {
-                    foreach (var role in roles)
-                    {
-                        var users1 = await UserRepository.GetAllIncluding(x => x.Roles).Where(y => y.Roles.Any(m => m.RoleId == role.Id)).ToListAsync();
-                        users = users.Concat(users1).Distinct().ToList();
-                    }
-                }
-                return users;
-            }
-            else
-            {
-                return null;
-            }
-
-        }
-
-        public async Task<Dictionary<int, int>> GetAllTypeRoleHBAsync()
-        {
-            var types = new Dictionary<int, int>();
-            for (var i = 1; i < 14; i++)
-            {
-                types.Add(i, 999);
-            }
-
-            //var permissionChat = PermissionConst.HongBangRoleMap[type];
-            var roles = await _roleRepository.GetAllIncluding(x => x.Permissions, y => y.Users).Where(m => m.Users.Any(m => m.UserId == AbpSession.UserId)).ToListAsync();
-
-            if (roles != null)
-            {
-                foreach (var permission in PermissionConst.HongBangRoleMap)
-                {
-                    //var per = role.
-                    foreach (var role in roles)
-                    {
-                        var check = role.Permissions.Where(x => x.Name == permission.Value).ToList();
-                        if (check.Count() > 0)
-                        {
-                            types[permission.Key] = permission.Key;
-                        }
-                    }
-                }
-            }
-            return types;
-        }
+      
     }
 }
 

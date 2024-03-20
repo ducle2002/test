@@ -74,36 +74,42 @@ namespace Yootek.Chat
             _appNotifier = appNotifier;
         }
 
-
         public async Task DeleteMessageAsync(UserIdentifier sender, UserIdentifier receiver, Guid deviceMessageId, long id)
         {
-            CheckReceiverExists(receiver);
-            var message = await _chatMessageRepository.FirstOrDefaultAsync(x => (x.Id == id || x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
-            if (message == null)
+            using(var uow = UnitOfWorkManager.Begin())
             {
-                return;
+                CheckReceiverExists(receiver);
+                var message = await _chatMessageRepository.FirstOrDefaultAsync(x => (x.Id == id || x.SharedMessageId == deviceMessageId) && x.Side == ChatSide.Sender);
+                if (message == null)
+                {
+                    return;
+                }
+                await HandleDeleteMessageSenderAsync(sender, message);
+                await HandleDeleteMessageReceiverAsync(receiver, message);
+                await uow.CompleteAsync();
             }
-            await HandleDeleteMessageSenderAsync(sender, message);
-            await HandleDeleteMessageReceiverAsync(receiver, message);
 
         }
+
         public async Task SendMessageAsync(UserIdentifier sender, UserIdentifier receiver, string message,string fileUrl, string senderTenancyName, string senderUserName, string senderImageUrl, long? messageRepliedId, int typeMessage = 0)
         {
-             CheckReceiverExists(receiver);
-
-            // _chatFeatureChecker.CheckChatFeatures(sender.TenantId, receiver.TenantId);
-
-            var friendshipState = (await _friendshipManager.GetFriendshipOrNullAsync(sender, receiver))?.State;
-            if (friendshipState == FriendshipState.Blocked)
+            using (var uow = UnitOfWorkManager.Begin())
             {
-                throw new UserFriendlyException(L("UserIsBlocked"));
+                CheckReceiverExists(receiver);
+
+                var friendshipState = (await _friendshipManager.GetFriendshipOrNullAsync(sender, receiver))?.State;
+                if (friendshipState == FriendshipState.Blocked)
+                {
+                    throw new UserFriendlyException(L("UserIsBlocked"));
+                }
+
+                var sharedMessageId = Guid.NewGuid();
+
+                await HandleSenderToReceiverAsync(sender, receiver, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+                await HandleReceiverToSenderAsync(sender, receiver, message, fileUrl, sharedMessageId, messageRepliedId, typeMessage);
+                await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderImageUrl);
+                await uow.CompleteAsync();
             }
-
-            var sharedMessageId = Guid.NewGuid();
-
-            await HandleSenderToReceiverAsync(sender, receiver, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await HandleReceiverToSenderAsync(sender, receiver, message,fileUrl, sharedMessageId, messageRepliedId, typeMessage);
-            await HandleSenderUserInfoChangeAsync(sender, receiver, senderTenancyName, senderUserName, senderImageUrl);
         }
 
         private void CheckReceiverExists(UserIdentifier receiver)
@@ -144,7 +150,6 @@ namespace Yootek.Chat
         {
             return await _chatMessageRepository.FirstOrDefaultAsync(m => m.Id == id && m.UserId == userId);
         }
-
 
         // Lưu và gửi tin nhắn cho chính người gửi
         private async Task HandleSenderToReceiverAsync(UserIdentifier senderIdentifier, UserIdentifier receiverIdentifier, string message,string fileUrl, Guid sharedMessageId, long? messageRepliedId, int typeMessage)
@@ -199,7 +204,7 @@ namespace Yootek.Chat
                 messRep
                 );
 
-            await FireNotificationMessageToUserAsync(sentMessage, receiverIdentifier, friend);
+            await FireNotificationMessageToUserAsync(sentMessage,senderIdentifier, receiverIdentifier, friend);
         }
 
         // Lưu và gửi tin nhắn cho người nhận
@@ -295,7 +300,6 @@ namespace Yootek.Chat
             _userFriendsCache.UpdateFriend(receiver, senderAsFriend);
         }
 
-
         public async Task HandleDeleteMessageSenderAsync(UserIdentifier sender, ChatMessage message)
         {
             await _chatMessageRepository.DeleteAsync(message.Id);
@@ -332,7 +336,6 @@ namespace Yootek.Chat
             return null;
         }
 
-
         #region Common
         private int CheckTypeMessage(string message)
         {
@@ -363,29 +366,32 @@ namespace Yootek.Chat
             return null;
         }
 
-        public async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier user, Friendship friend)
+        private async Task FireNotificationMessageToUserAsync(ChatMessage message, UserIdentifier sender, UserIdentifier user, Friendship friend)
         {
-            var messageData = new UserMessageNotificationDataBase(
-                          AppNotificationAction.ChatMessage,
-                          AppNotificationIcon.ChatMessageIcon,
-                          TypeAction.Detail,
-                          message.Message,
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                          AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                          friend.FriendImageUrl                           
-                          );
-            await _appNotifier.SendMessageNotificationInternalAsync(
-                friend.FriendUserName + " " + NotificationMessageCheckType(message),
-                message.Message,
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                AppRouterLinks.AppUser_ChatUser + "/" + user.ToUserIdentifierStringNoti(),
-                new UserIdentifier[] {user},
-                messageData,
-                AppType.USER
-               );
+            try
+            {
+                var messageData = new UserMessageNotificationDataBase(
+                         AppNotificationAction.ChatMessage,
+                         AppNotificationIcon.ChatMessageIcon,
+                         TypeAction.Detail,
+                         message.Message,
+                         AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
+                         AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
+                         friend.FriendImageUrl
+                         );
+                await _appNotifier.SendMessageNotificationInternalAsync(
+                    friend.FriendUserName + " " + NotificationMessageCheckType(message),
+                    message.Message,
+                    AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
+                    AppRouterLinks.AppUser_ChatUser + "/" + sender.ToUserIdentifierStringNoti(),
+                    new[] { user },
+                    messageData,
+                    AppType.USER
+                   );
+            }catch { }
         }
 
-        public string NotificationMessageCheckType(ChatMessage mes)
+        private string NotificationMessageCheckType(ChatMessage mes)
         {
             if (mes.TypeMessage == null) return "";
             switch(mes.TypeMessage.Value)
