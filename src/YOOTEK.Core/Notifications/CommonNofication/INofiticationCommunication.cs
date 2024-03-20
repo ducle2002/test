@@ -19,7 +19,7 @@ namespace Yootek.Notifications
         void SendNotificaionToUserTenant(IReadOnlyList<IOnlineClient> clients, CityNotification noti);
         void SendCommentFeedbackToUserTenant(IReadOnlyList<IOnlineClient> clients, CitizenReflectComment noti);
         void AdminUpdateStateFeedback(IReadOnlyList<IOnlineClient> clients, CitizenReflect noti);
-        void SendCommentFeedbackToAdminTenant(IReadOnlyList<User> clients, CitizenReflectComment noti);
+        void SendCommentFeedbackToAdminTenant(IReadOnlyList<UserIdentifier> clients, CitizenReflectComment noti);
         void SendNotificationToAdminTenant(IReadOnlyList<User> clients, CitizenReflect noti);
         Task SendMessageEventAsync(string eventName, object data, UserIdentifier[] users);
     }

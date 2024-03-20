@@ -549,7 +549,7 @@ namespace Yootek.Services
                 detailUrlWA,
                 new[] { user },
                 message,
-                AppType.IOC
+                AppType.USER
                 );
 
         }

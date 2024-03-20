@@ -250,20 +250,12 @@ namespace Yootek.Services
                             return organizationUnitDto;
                         }).ToList());
 
-                    var unitChargeFeedbacks = listOrganizationUnitTypes.Items.Where(ou => ou.Types != null && ou.Types.Contains(APP_ORGANIZATION_TYPE.FEEDBACK)).ToList();
-
-                    var memberUnitCharge = unitChargeFeedbacks
-                        .SelectMany(ou => _userManager.GetUsersInOrganizationUnitAsync(ObjectMapper.Map<AppOrganizationUnit>(ou)).Result)
-                        .Select(a => new UserIdentifier(a.TenantId, a.Id))
-                        .ToArray();
-
                     var user = _userRepos.FirstOrDefault(AbpSession.UserId ?? 0);
-
-                    if (memberUnitCharge != null && memberUnitCharge.Any())
+                    var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.FEEDBACK, insertInput.UrbanId);
+                    if (admins != null && admins.Any())
                     {
-                        await NotifierNewNotificationReflect(insertInput, memberUnitCharge, user?.FullName);
+                        await NotifierNewNotificationReflect(insertInput, admins.ToArray(), user?.FullName);                                                                               //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
                     }
-
 
 
                     //var admins = await _store.GetUserByOrganizationUnitIdAsync((int)input.Type.Value, AbpSession.TenantId);
@@ -383,12 +375,11 @@ namespace Yootek.Services
                         long id = await _citizenReflectCommentRepos.InsertAndGetIdAsync(insertInput);
                         insertInput.Id = id;
 
-                        var admins = await _store.GetAllChatCitizenManagerTenantAsync(feedback.UrbanId, AbpSession.TenantId);
-                        var adminIds = admins.Select(a => new UserIdentifier(a.TenantId, a.Id)).ToArray();
+                        var admins = await UserManager.GetUserOrganizationUnitByType(APP_ORGANIZATION_TYPE.FEEDBACK, feedback.UrbanId);
                         if (admins != null && admins.Any())
                         {
                             _notificationCommunicator.SendCommentFeedbackToAdminTenant(admins, insertInput);
-                            await NotifierCommentCitizenReflect(insertInput, feedback.Name, adminIds);                                                                                    //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
+                            await NotifierCommentCitizenReflect(insertInput, feedback.Name, admins.ToArray());                                                                                    //  var adminIdentifiers = admins.Select(u => new UserIdentifier(u.TenantId, u.Id)).ToList();
                         }
                         mb.statisticMetris(t1, 0, "is_noti");
                         var data = DataResult.ResultSuccess(insertInput, "Insert success !");
