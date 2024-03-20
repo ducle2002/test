@@ -1,27 +1,20 @@
-﻿using Abp.Application.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Text;
+using System.Threading.Tasks;
+using Abp;
+using Abp.Application.Services;
+using Abp.Authorization;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
-using Yootek.Authorization.Users;
-using Yootek.Common.DataResult;
-using Yootek.EntityDb;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
-using Abp.Linq.Extensions;
-using Microsoft.EntityFrameworkCore;
-using System.Text;
-using System.Data.SqlClient;
-using Yootek.ApbCore.Data;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Yootek.ApbCore.Data;
+using Yootek.Common.DataResult;
 using Yootek.Common.Enum;
+using Yootek.EntityDb;
 using Yootek.Notifications;
-using Yootek.Common.Enum.Quanlydancu;
-using Abp.Authorization;
-using Abp;
-using Yootek.Authorization;
-using Abp.UI;
 
 namespace Yootek.Services
 {
@@ -200,7 +193,7 @@ namespace Yootek.Services
             try
             {
                 await _administrativeRepos.DeleteAsync(id);
-                await DeleteValueWithAdministrativeIdAsync(id);
+                // await DeleteValueWithAdministrativeIdAsync(id);
                 var data = DataResult.ResultSuccess("Delete success!");
                 return data;
             }
