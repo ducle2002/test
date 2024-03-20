@@ -193,7 +193,7 @@ namespace Yootek.Services
             try
             {
                 await _administrativeRepos.DeleteAsync(id);
-                // await DeleteValueWithAdministrativeIdAsync(id);
+                await DeleteValueWithAdministrativeIdAsync(id);
                 var data = DataResult.ResultSuccess("Delete success!");
                 return data;
             }
@@ -483,17 +483,7 @@ namespace Yootek.Services
             try
             {
                 long t1 = TimeUtils.GetNanoseconds();
-
-                StringBuilder sb = new StringBuilder();
-
-                sb.AppendFormat("{0}", adId);
-
-                var sql = string.Format("DELETE from AdministrativeValue" +
-                    " WHERE AdministrativeId IN ({0})",
-                    sb.ToString());
-                var par = new SqlParameter();
-                var i = await _sqlExecute.ExecuteAsync(sql);
-                await CurrentUnitOfWork.SaveChangesAsync();
+                await _valueAdministrativeRepos.DeleteAsync(x => x.AdministrativeId == adId);   
                 var data = DataResult.ResultSuccess("Delete Success");
                 mb.statisticMetris(t1, 0, "delete_value_administrative");
                 return data;
