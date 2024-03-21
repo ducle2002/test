@@ -189,8 +189,8 @@ namespace Yootek.Services
                                  OrganizationUnitId = type.OrganizationUnitId
                              })
 
-                    .WhereIf(input.UrbanId != null, x => x.UrbanId == input.UrbanId || x.OrganizationUnitId == input.UrbanId)
-                    .WhereIf(input.BuildingId != null, x => x.BuildingId == input.BuildingId || x.BuildingId == null)
+                    .WhereIf(input.UrbanId > 0, x => x.UrbanId == input.UrbanId || x.OrganizationUnitId == input.UrbanId)
+                    .WhereIf(input.BuildingId > 0, x => x.BuildingId == input.BuildingId || x.BuildingId == null)
                     .WhereIf(input.GroupType.HasValue, x => x.GroupType == input.GroupType)
                     .ApplySearchFilter(input.Keyword, x => x.Name)
                     .AsQueryable();
