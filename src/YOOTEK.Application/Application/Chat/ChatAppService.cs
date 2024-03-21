@@ -299,20 +299,20 @@ namespace Yootek.Chat
         //    }
         //}
         [DisableAuditing]
-        public async Task<GetUserChatFriendsWithSettingsOutput> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
+        public async Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
         {
             try
             {
                 var userId = AbpSession.GetUserId();
                 //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
-                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), FriendshipState.Accepted);
+                var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
 
                 if (!string.IsNullOrWhiteSpace(input.Keyword))
                 {
                     cacheItem.Friends = cacheItem.Friends.Where(x => x.FriendUserName.Contains(input.Keyword)).ToList();
                 }
 
-                var friends = cacheItem.Friends.MapTo<List<FriendDto>>();
+                var friends = ObjectMapper.Map<List<FriendDto>>(cacheItem.Friends.Skip(input.SkipCount).Take(input.MaxResultCount).ToList());
                 var listresults = new List<ChatFriendOrRoomDto>();
 
                 foreach (var friend in friends)
@@ -333,7 +333,12 @@ namespace Yootek.Chat
                        .FirstOrDefault();
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
 
-                   
+                    friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
+                    if (friend.State == FriendshipState.IsDeleted)
+                    {
+                        friend.FriendUserName = "Người dùng yoolife";
+                        friend.FriendImageUrl = null;
+                    }
                 }
 
                 listresults = listresults.Concat(friends).ToList();
@@ -362,16 +367,13 @@ namespace Yootek.Chat
 
                 #endregion
 
-                return new GetUserChatFriendsWithSettingsOutput
-                {
-                    Friends = listresults,
-                    ServerTime = Clock.Now,
-                    SenderId = AbpSession.UserId.Value
-                };
+                return DataResult.ResultSuccess(listresults, "get success", cacheItem.Friends.Count());
+
             }
             catch (Exception e)
             {
-                throw new UserFriendlyException("GetUserChatFriendsWithSetting exception !" + e.Message);
+                Logger.Fatal("GetUserChatFriendsWithSettings : " + e.ToJsonString());
+                throw;
             }
         }
 
