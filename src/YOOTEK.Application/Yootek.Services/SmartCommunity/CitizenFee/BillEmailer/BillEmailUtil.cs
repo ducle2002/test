@@ -1116,7 +1116,7 @@ namespace Yootek.Services
                     .Replace("{UNIT_PRICE_WATER}", FormatCost(billWaterConfigProperties?.Prices[0].Value))
 
                     // management
-                    .Replace("{COST_MANAGEMENT_UNPAID}", FormatCost(managementMoney))
+                    .Replace("{COST_MANAGEMENT_UNPAID}", FormatCost(managementMoneyUnpaid))
                     .Replace("{COST_MANAGEMENT_DEBT}", FormatCost(managementMoneyDebt))
                     .Replace("{COST_MANAGEMENT}", FormatCost(managementMoney))
 
@@ -1127,7 +1127,7 @@ namespace Yootek.Services
 
                     // parking
                     .Replace("{UNIT_PRICE_PARKING}", "")
-                    .Replace("{COST_PARKING_UNPAID}", FormatCost(parkingMoney))
+                    .Replace("{COST_PARKING_UNPAID}", FormatCost(parkingMoneyUnpaid))
                     .Replace("{COST_PARKING_DEBT}", FormatCost(parkingMoneyDebt))
                     .Replace("{COST_PARKING}", FormatCost(parkingMoney))
 
