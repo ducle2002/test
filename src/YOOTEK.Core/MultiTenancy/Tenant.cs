@@ -32,7 +32,6 @@ namespace Yootek.MultiTenancy
         IOC = 2,
         GOVERNMENT = 3,
         FORUM = 4,
-        RETAIL = 5,
-        FNB = 6
+        ERP = 5
     }
 }

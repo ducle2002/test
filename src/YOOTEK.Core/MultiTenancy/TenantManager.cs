@@ -52,5 +52,10 @@ namespace Yootek.MultiTenancy
         {
             return TenantRepository.FirstOrDefaultAsync(t => t.TenancyName.ToLower() == tenancyName.ToLower() || t.SubName.ToLower() == tenancyName.ToLower());
         }
+
+        public Task<Tenant> FindByTenancyErpNameAsync(string tenancyName)
+        {
+            return TenantRepository.FirstOrDefaultAsync(t => (t.TenancyName.ToLower() == tenancyName.ToLower() || t.SubName.ToLower() == tenancyName.ToLower()) && t.TenantType == TenantType.ERP);
+        }
     }
 }

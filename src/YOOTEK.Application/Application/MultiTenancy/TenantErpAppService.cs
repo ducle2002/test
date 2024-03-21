@@ -50,7 +50,7 @@ namespace YOOTEK.Application.MultiTenancy
 
             var tenant = await _tenantRepository.FirstOrDefaultAsync(t => (t.TenancyName.ToLower() == input.TenancyName.ToLower()
             || t.SubName.ToLower() == input.TenancyName.ToLower())
-            && (t.TenantType == TenantType.RETAIL || t.TenantType == TenantType.FNB));
+            && t.TenantType == TenantType.ERP);
             if (tenant == null)
             {
                 return new IsTenantAvailableOutput(TenantAvailabilityState.NotFound);
