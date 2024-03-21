@@ -127,7 +127,7 @@ namespace Yootek.Chat
                   .Count();
             var data = DataResult.ResultSuccess(unreadMessageCount + unreadMessageGroupCount, "Get success !");
             return data;
-        } 
+        }
 
         public async Task<DataResult> SearchUserMessageByKeyword(SearchMessageInput input)
         {
@@ -174,130 +174,6 @@ namespace Yootek.Chat
             }
         }
 
-        // 03/03
-        //[DisableAuditing]
-        //public async Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
-        //{
-        //    try
-        //    {
-        //        var userId = AbpSession.GetUserId();
-        //        //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
-        //        var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), null);
-
-        //        if (!string.IsNullOrWhiteSpace(input.Keyword))
-        //        {
-        //            cacheItem.Friends = cacheItem.Friends.Where(x => x.FriendUserName.Contains(input.Keyword)).ToList();
-        //        }
-
-        //        var friends = ObjectMapper.Map<List<FriendDto>>(cacheItem.Friends.Skip(input.SkipCount).Take(input.MaxResultCount).ToList());
-        //        var listresults = new List<ChatFriendOrRoomDto>();
-
-        //        foreach (var friend in friends)
-        //        {
-        //            friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-        //                new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
-        //            );
-
-        //            friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-        //             .Where(m => (m.UserId == userId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
-        //             .OrderByDescending(m => m.CreationTime)
-        //             .Take(20)
-        //             .ToList()
-        //             .Count();
-        //            friend.LastMessage = _chatMessageRepository.GetAll()
-        //               .Where(m => (m.UserId == userId && m.TargetUserId == friend.FriendUserId))
-        //               .OrderByDescending(m => m.CreationTime)
-        //               .FirstOrDefault();
-        //            friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
-
-        //            friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
-        //            if(friend.State == FriendshipState.IsDeleted)
-        //            {
-        //                friend.FriendUserName = "Người dùng yoolife";
-        //                friend.FriendImageUrl = null;
-        //            }
-        //        }
-
-        //        listresults = listresults.Concat(friends).ToList();
-
-        //        #region Room chat
-
-        //        //var roomCaches = await _groupChatCache.GetUserGroupChatCacheItemInternal(AbpSession.ToUserIdentifier());
-        //        //var rooms = roomCaches.GroupChats.MapTo<List<GroupChatDto>>();
-
-        //        //if(rooms != null)
-        //        //{
-        //        //    foreach(var room in rooms)
-        //        //    {
-        //        //        room.IsOnline = true;
-        //        //        room.IsGroupOrFriend = true;
-        //        //        //room.LastMessage = _roomMessageRepos.GetAll()
-        //        //        // .Where(m => m.UserId == userId)
-        //        //        // .OrderByDescending(m => m.CreationTime)
-        //        //        // .FirstOrDefault();
-        //        //        //room.LastMessageDate = room.LastMessage != null ? room.LastMessage.CreationTime : room.LastMessageDate;
-        //        //        //room.Members = _groupChatCache.GetMemberGroupChatCacheItem(room.Id, room.TenantId).MapTo<List<FriendDto>>();
-        //        //    }
-        //        //}
-        //        //  listresults = listresults.Concat(rooms).ToList();
-        //        listresults = listresults.OrderByDescending(x => x.LastMessageDate).ToList();
-
-        //        #endregion
-
-        //        return DataResult.ResultSuccess(listresults, "get success", cacheItem.Friends.Count());
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Logger.Fatal("GetUserChatFriendsWithSettings : "+  e.ToJsonString());
-        //        throw;
-        //    }
-        //}
-
-        //[DisableAuditing]
-        //public async Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input)
-        //{
-        //    try
-        //    {
-        //        var userId = AbpSession.GetUserId();
-        //        input.TenantId = AbpSession.TenantId;
-        //        using(CurrentUnitOfWork.SetTenantId(input.TenantId))
-        //        {
-        //            var query =  _chatMessageRepository.GetAll()
-        //               .WhereIf(input.IsOrganizationUnit == null || !input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit != true)
-        //               .WhereIf(input.IsOrganizationUnit.HasValue && input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit == input.IsOrganizationUnit)
-        //               .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)
-        //               .Where(m => m.UserId == userId && m.TargetTenantId == input.TenantId && m.TargetUserId == input.UserId)
-        //               .OrderByDescending(m => m.CreationTime)
-        //               .AsQueryable();
-        //            var messages = await query.PageBy(input)
-        //               .ToListAsync();
-
-        //            messages.Reverse();
-        //            var result = ObjectMapper.Map<List<ChatMessageDto>>(messages);
-        //            if (result != null)
-        //            {
-        //                foreach (var mes in result)
-        //                {
-        //                    if (mes.MessageRepliedId != null)
-        //                    {
-        //                        var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == userId);
-        //                        if (rep != null)
-        //                        {
-        //                            mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
-        //                        }
-        //                    }
-        //                }
-        //            }
-
-        //            return DataResult.ResultSuccess(result, "", query.Count());
-        //        }
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw new UserFriendlyException("GetUserChatMessages exception !" + e.Message);
-        //    }
-        //}
         [DisableAuditing]
         public async Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input)
         {
@@ -387,9 +263,9 @@ namespace Yootek.Chat
 
                 var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId && x.FriendTenantId == input.TenantId);
 
-                if(item == null)
+                if (item == null)
                 {
-                    using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                    using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                     {
                         item = _userRepository.GetAll().Where(x => x.Id == input.UserId)
                        .Select(x => new FriendCacheItem()
@@ -404,7 +280,7 @@ namespace Yootek.Chat
                     }
                 }
 
-                if(item == null) return DataResult.ResultSuccess( "get success");
+                if (item == null) return DataResult.ResultSuccess("get success");
 
                 var friend = ObjectMapper.Map<FriendDto>(item);
 
@@ -431,38 +307,7 @@ namespace Yootek.Chat
         }
 
         [DisableAuditing]
-        public async Task<GetUserChatFriendsWithSettingsOutput> GetFriendRequestingList()
-        {
-            var userId = AbpSession.GetUserId();
-            //var cacheItem = _userFriendsCache.GetCacheItem(AbpSession.ToUserIdentifier());
-            var cacheItem = _userFriendsCache.GetUserFriendsCacheItemInternal(AbpSession.ToUserIdentifier(), FriendshipState.Requesting, false);
-
-            var friends = cacheItem.Friends.MapTo<List<FriendDto>>();
-
-            foreach (var friend in friends)
-            {
-                friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-                    new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
-                );
-
-                friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-                 .Where(m => (m.UserId == userId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
-                 .OrderByDescending(m => m.CreationTime)
-                 .Take(10)
-                 .ToList()
-                 .Count();
-            }
-            var listresults = new List<ChatFriendOrRoomDto>();
-            listresults = listresults.Concat(friends).ToList();
-            return new GetUserChatFriendsWithSettingsOutput
-            {
-                Friends = listresults,
-                ServerTime = Clock.Now
-            };
-        }
-
-        [DisableAuditing]
-        public async Task<ListResultDto<ChatMessageDto>> GetUserChatMessages(GetUserChatMessagesInput input)
+        public async Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input)
         {
             try
             {
@@ -470,17 +315,18 @@ namespace Yootek.Chat
                 input.TenantId = AbpSession.TenantId;
                 using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
-                    var messages = await _chatMessageRepository.GetAll()
+                    var query = _chatMessageRepository.GetAll()
                        .WhereIf(input.IsOrganizationUnit == null || !input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit != true)
                        .WhereIf(input.IsOrganizationUnit.HasValue && input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit == input.IsOrganizationUnit)
                        .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)
                        .Where(m => m.UserId == userId && m.TargetTenantId == input.TenantId && m.TargetUserId == input.UserId)
                        .OrderByDescending(m => m.CreationTime)
-                       .Take(50)
+                       .AsQueryable();
+                    var messages = await query.PageBy(input)
                        .ToListAsync();
 
                     messages.Reverse();
-                    var result = messages.MapTo<List<ChatMessageDto>>();
+                    var result = ObjectMapper.Map<List<ChatMessageDto>>(messages);
                     if (result != null)
                     {
                         foreach (var mes in result)
@@ -490,13 +336,13 @@ namespace Yootek.Chat
                                 var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId);
                                 if (rep != null)
                                 {
-                                    mes.MessageReplied = rep.MapTo<ChatMessageDto>();
+                                    mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
                                 }
                             }
                         }
                     }
 
-                    return new ListResultDto<ChatMessageDto>(result);
+                    return DataResult.ResultSuccess(result, "", query.Count());
                 }
             }
             catch (Exception e)
@@ -504,6 +350,7 @@ namespace Yootek.Chat
                 throw new UserFriendlyException("GetUserChatMessages exception !" + e.Message);
             }
         }
+
         public async Task MarkAllUnreadMessagesOfUserAsRead(MarkAllUnreadMessagesOfUserAsReadInput input)
         {
             var userId = AbpSession.GetUserId();

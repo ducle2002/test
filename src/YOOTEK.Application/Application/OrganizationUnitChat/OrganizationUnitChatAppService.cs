@@ -87,295 +87,40 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             _userRepository = userRepository;
         }
 
-        // 03/03
-        //public async Task<object> GetOrganizationUnitIdByUser(GetOrganizationUnitIdByUserInput input)
-        //{
-        //    var ouIds = UserManager.GetAccessibleOperationDepartmentIds();
-
-        //    try
-        //    {
-        //        var ouOfUrbanIds = new List<long>();
-        //        if (input.UrbanId.HasValue)
-        //        {
-        //            ouOfUrbanIds = (from ou in _organizationRepos.GetAll()
-        //                            join ouc in _organizationRepos.GetAll() on ou.ParentId equals ouc.Id
-        //                            where ou.Type == APP_ORGANIZATION_TYPE.CHAT
-        //                            && ouc.ParentId == input.UrbanId.Value
-        //                            select ouc.Id).ToList();
-        //        }
-
-        //        var query = (from ou in _organizationRepos.GetAll()
-        //                     select new AppOrganizationUnitDto()
-        //                     {
-        //                         DisplayName = ou.DisplayName,
-        //                         Id = ou.ParentId.Value,
-        //                         Type = ou.Type,
-        //                         TenantId = ou.TenantId,
-        //                         ParentId = ou.ParentId,
-        //                         Description = ou.Description,
-        //                         ImageUrl = ou.ImageUrl
-
-        //                     })
-        //                     .Where(x => x.Type == APP_ORGANIZATION_TYPE.CHAT)
-        //                     .Where(x => ouIds.Contains(x.ParentId.Value))
-        //                     .WhereIf(input.UrbanId.HasValue, x => ouOfUrbanIds.Contains(x.ParentId.Value))
-        //                     .AsQueryable();
-        //        var data = await query.PageBy(input).ToListAsync();
-        //        return DataResult.ResultSuccess(data, "Get success", query.Count());
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<object> GetOrganizationUnitChatUser(GetOrganizationUnitChatUserInput input)
-        //{
-        //    try
-        //    {
-        //        var userId = AbpSession.GetUserId();
-        //        var org = await _organizationRepos.FirstOrDefaultAsync(input.OrganizationUnitId);
-
-        //        if (org == null)
-        //        {
-        //            return null;
-        //        }
-        //        var orgs = await _appOrganizationUnitManager.GetAppOrganizationUnitAsync(new GetOrganizationUnitInput()
-        //        {
-        //            TenantId = AbpSession.TenantId,
-        //            Type = APP_ORGANIZATION_TYPE.CHAT
-        //        });
-
-        //        var query = (from apm in orgs
-        //                    where apm.Type == APP_ORGANIZATION_TYPE.CHAT
-        //                    && apm.Code.StartsWith(org.Code)
-        //                    select new TenantProjectChatDto()
-        //                    {
-        //                        OrganizationUnitId = apm.ParentId,
-        //                        Name = apm.DisplayName,
-        //                        ImageUrl = apm.ImageUrl,
-        //                        Type = apm.Type,
-        //                        Description = apm.Description
-
-        //                    })
-        //                    .AsQueryable();
-        //        var data = query.ToList();
-        //        foreach (var friend in data)
-        //        {
-        //            //friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-        //            //    new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
-        //            //);
-
-        //            friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-        //             .Where(m => (m.UserId == userId && m.TargetUserId == friend.OrganizationUnitId && m.ReadState == ChatMessageReadState.Unread))
-        //             .OrderByDescending(m => m.CreationTime)
-        //             .Take(20)
-        //             .ToList()
-        //             .Count();
-        //            friend.LastMessage = _chatMessageRepository.GetAll()
-        //               .Where(m => (m.UserId == userId && m.TargetUserId == friend.OrganizationUnitId))
-        //               .OrderByDescending(m => m.CreationTime)
-        //               .FirstOrDefault();
-        //            friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
-        //        }
-
-        //        return DataResult.ResultSuccess(data, "", query.Count());
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<object> GetOrganizationUnitChatAdmin(GetOrganizationUnitChatUserInput input)
-        //{
-        //    try
-        //    {
-        //        var query =
-        //           (from friendship in _friendshipRepos.GetAll()
-        //            where friendship.UserId == input.OrganizationUnitId
-        //            select new FriendDto()
-        //            {
-        //                FriendUserId = friendship.FriendUserId,
-        //                FriendTenantId = friendship.FriendTenantId,
-        //                State = friendship.State,
-        //                FollowState = friendship.FollowState,
-        //                FriendUserName = friendship.FriendUserName,
-        //                FriendTenancyName = friendship.FriendTenancyName,
-        //                FriendImageUrl = friendship.FriendImageUrl,
-        //                IsOrganizationUnit = friendship.IsOrganizationUnit,
-        //                LastMessageDate = friendship.CreationTime,
-        //                FriendInfo = (from ctz in _citizenRepos.GetAll()
-        //                              where friendship.FriendUserId == ctz.AccountId
-        //                              select ctz).FirstOrDefault()
-        //            })
-        //            .Where(x => x.IsOrganizationUnit == true)
-        //            .AsQueryable();
-
-        //        var friends =  query.ToList();
-        //        // var cacheItem = _userOrganizationUnitCache.GetFriendChatOrganizationUnit(organizationUnitId, AbpSession.TenantId);
-
-        //        //var friends = cacheItem.MapTo<List<FriendDto>>();
-        //        var listresults = new List<ChatFriendOrRoomDto>();
-
-        //        foreach (var friend in friends)
-        //        {
-
-        //            friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
-        //                new UserIdentifier(friend.FriendTenantId, friend.FriendUserId)
-        //            );
-
-        //            friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-        //             .Where(m => (m.UserId == input.OrganizationUnitId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
-        //             .OrderByDescending(m => m.CreationTime)
-        //             .Take(20)
-        //             .ToList()
-        //             .Count();
-        //            friend.LastMessage = _chatMessageRepository.GetAll()
-        //               .Where(m => (m.UserId == input.OrganizationUnitId && m.TargetUserId == friend.FriendUserId))
-        //               .OrderByDescending(m => m.CreationTime)
-        //               .FirstOrDefault();
-        //            friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
-        //        }
-
-        //        listresults = listresults.Concat(friends).ToList();
-        //        listresults = listresults.OrderByDescending(x => x.LastMessageDate).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
-
-        //        return DataResult.ResultSuccess(listresults, "", query.Count());
-
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<DataResult> GetUserChatMessages(GetOrganizationChatMessagesInput input)
-        //{
-        //    try
-        //    {
-        //        input.TenantId = AbpSession.TenantId;
-        //        var query = _chatMessageRepository.GetAll()
-        //            .Where(x => x.IsOrganizationUnit == true)
-        //            .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)
-        //            .Where(m => m.UserId == input.OrganizationUnitId && m.TargetTenantId == input.TenantId && m.TargetUserId == input.UserId)
-        //            .OrderByDescending(m => m.CreationTime)
-        //            .AsQueryable();
-        //        var messages = query.PageBy(input)
-        //            .ToList();
-
-        //        messages.Reverse();
-        //        var result = ObjectMapper.Map<List<ChatMessageDto>>(messages);
-        //        if (result != null)
-        //        {
-        //            foreach (var mes in result)
-        //            {
-        //                if (mes.MessageRepliedId != null)
-        //                {
-        //                    var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == input.OrganizationUnitId);
-        //                    if (rep != null)
-        //                    {
-        //                        mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        return DataResult.ResultSuccess(result, "", query.Count());
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<object> GetChatMsgCountStatistics()
-        //{
-        //    try
-        //    {
-        //        var count = await _chatMessageRepository.GetAll().CountAsync();
-        //        return DataResult.ResultSuccess(count, "Get success!");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        var data = DataResult.ResultError(e.ToString(), "Exception !");
-        //        Logger.Fatal(e.Message);
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<object> GetCountChatOrganizationStatistics()
-        //{
-        //    try
-        //    {
-        //        List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
-        //        var query = (from mes in _chatMessageRepository.GetAll()
-        //                     select new ChatMessageStatic
-        //                     {
-        //                         IsOrganizationUnit = mes.IsOrganizationUnit,
-        //                         UrbanId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
-        //                         BuildingId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
-        //                     })
-        //                     .WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
-        //                     .Where(x => x.IsOrganizationUnit == true).CountAsync();
-
-        //        var result = await query;
-        //        return DataResult.ResultSuccess(result, "Get success!");
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        Logger.Fatal(e.Message);
-        //        throw;
-        //    }
-        //}
-
-        //public async Task<int> GetCountMessageUnread(MarkAllUnreadMessagesOfUserAsReadInput input)
-        //{
-        //    var count = _chatMessageRepository
-        //       .GetAll()
-        //       .Where(m => m.IsOrganizationUnit == true)
-        //       .Where(m =>
-        //           m.TargetTenantId == input.TenantId &&
-        //           m.TargetUserId == input.UserId &&
-        //           m.ReadState == ChatMessageReadState.Unread)
-        //       .Count();
-        //    return count;
-
-        //}
-        public async Task<object> GetOrganizationUnitIdByUser(long? urbanId)
+        public async Task<object> GetOrganizationUnitIdByUser(GetOrganizationUnitIdByUserInput input)
         {
             var ouIds = UserManager.GetAccessibleOperationDepartmentIds();
 
             try
             {
                 var ouOfUrbanIds = new List<long>();
-                if (urbanId.HasValue)
+                if (input.UrbanId.HasValue)
                 {
                     ouOfUrbanIds = (from ou in _organizationRepos.GetAll()
                                     join ouc in _organizationRepos.GetAll() on ou.ParentId equals ouc.Id
                                     where ou.Type == APP_ORGANIZATION_TYPE.CHAT
-                                    && ouc.ParentId == urbanId
+                                    && ouc.ParentId == input.UrbanId.Value
                                     select ouc.Id).ToList();
                 }
 
-                var data = (from ou in _organizationRepos.GetAll()
-                            select new AppOrganizationUnitDto()
-                            {
-                                DisplayName = ou.DisplayName,
-                                Id = ou.ParentId.Value,
-                                Type = ou.Type,
-                                TenantId = ou.TenantId,
-                                ParentId = ou.ParentId,
-                                Description = ou.Description,
-                                ImageUrl = ou.ImageUrl
+                var query = (from ou in _organizationRepos.GetAll()
+                             select new AppOrganizationUnitDto()
+                             {
+                                 DisplayName = ou.DisplayName,
+                                 Id = ou.ParentId.Value,
+                                 Type = ou.Type,
+                                 TenantId = ou.TenantId,
+                                 ParentId = ou.ParentId,
+                                 Description = ou.Description,
+                                 ImageUrl = ou.ImageUrl
 
-                            })
+                             })
                              .Where(x => x.Type == APP_ORGANIZATION_TYPE.CHAT)
                              .Where(x => ouIds.Contains(x.ParentId.Value))
-                             .WhereIf(urbanId.HasValue, x => ouOfUrbanIds.Contains(x.ParentId.Value))
-                             .ToList();
-                return DataResult.ResultSuccess(data, "Get success");
+                             .WhereIf(input.UrbanId.HasValue, x => ouOfUrbanIds.Contains(x.ParentId.Value))
+                             .AsQueryable();
+                var data = await query.PageBy(input).ToListAsync();
+                return DataResult.ResultSuccess(data, "Get success", query.Count());
             }
             catch (Exception e)
             {
@@ -383,12 +128,12 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
-        public async Task<object> GetOrganizationUnitChatUser(long orgId)
+        public async Task<object> GetOrganizationUnitChatUser(GetOrganizationUnitChatUserInput input)
         {
             try
             {
                 var userId = AbpSession.GetUserId();
-                var org = await _organizationRepos.FirstOrDefaultAsync(orgId);
+                var org = await _organizationRepos.FirstOrDefaultAsync(input.OrganizationUnitId);
 
                 if (org == null)
                 {
@@ -400,19 +145,20 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     Type = APP_ORGANIZATION_TYPE.CHAT
                 });
 
-                var data = (from apm in orgs
-                            where apm.Type == APP_ORGANIZATION_TYPE.CHAT
-                            && apm.Code.StartsWith(org.Code)
-                            select new TenantProjectChatDto()
-                            {
-                                OrganizationUnitId = apm.ParentId,
-                                Name = apm.DisplayName,
-                                ImageUrl = apm.ImageUrl,
-                                Type = apm.Type,
-                                Description = apm.Description
+                var query = (from apm in orgs
+                             where apm.Type == APP_ORGANIZATION_TYPE.CHAT
+                             && apm.Code.StartsWith(org.Code)
+                             select new TenantProjectChatDto()
+                             {
+                                 OrganizationUnitId = apm.ParentId,
+                                 Name = apm.DisplayName,
+                                 ImageUrl = apm.ImageUrl,
+                                 Type = apm.Type,
+                                 Description = apm.Description
 
-                            })
-                            .ToList();
+                             })
+                            .AsQueryable();
+                var data = query.ToList();
                 foreach (var friend in data)
                 {
                     //friend.IsOnline = await _onlineClientManager.IsOnlineAsync(
@@ -431,7 +177,8 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                        .FirstOrDefault();
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
                 }
-                return data;
+
+                return DataResult.ResultSuccess(data, "", query.Count());
 
             }
             catch (Exception e)
@@ -440,13 +187,13 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
-        public async Task<object> GetOrganizationUnitChatAdmin(long organizationUnitId)
+        public async Task<object> GetOrganizationUnitChatAdmin(GetOrganizationUnitChatUserInput input)
         {
             try
             {
                 var query =
                    (from friendship in _friendshipRepos.GetAll()
-                    where friendship.UserId == organizationUnitId
+                    where friendship.UserId == input.OrganizationUnitId
                     select new FriendDto()
                     {
                         FriendUserId = friendship.FriendUserId,
@@ -455,7 +202,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                         FollowState = friendship.FollowState,
                         FriendUserName = friendship.FriendUserName,
                         FriendTenancyName = friendship.FriendTenancyName,
-                       // FriendProfilePictureId = friendship.FriendProfilePictureId,
+                        FriendImageUrl = friendship.FriendImageUrl,
                         IsOrganizationUnit = friendship.IsOrganizationUnit,
                         LastMessageDate = friendship.CreationTime,
                         FriendInfo = (from ctz in _citizenRepos.GetAll()
@@ -465,7 +212,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     .Where(x => x.IsOrganizationUnit == true)
                     .AsQueryable();
 
-                var friends = await query.ToListAsync();
+                var friends = query.ToList();
                 // var cacheItem = _userOrganizationUnitCache.GetFriendChatOrganizationUnit(organizationUnitId, AbpSession.TenantId);
 
                 //var friends = cacheItem.MapTo<List<FriendDto>>();
@@ -479,26 +226,22 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     );
 
                     friend.UnreadMessageCount = _chatMessageRepository.GetAll()
-                     .Where(m => (m.UserId == organizationUnitId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
+                     .Where(m => (m.UserId == input.OrganizationUnitId && m.TargetUserId == friend.FriendUserId && m.ReadState == ChatMessageReadState.Unread))
                      .OrderByDescending(m => m.CreationTime)
                      .Take(20)
                      .ToList()
                      .Count();
                     friend.LastMessage = _chatMessageRepository.GetAll()
-                       .Where(m => (m.UserId == organizationUnitId && m.TargetUserId == friend.FriendUserId))
+                       .Where(m => (m.UserId == input.OrganizationUnitId && m.TargetUserId == friend.FriendUserId))
                        .OrderByDescending(m => m.CreationTime)
                        .FirstOrDefault();
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
                 }
 
                 listresults = listresults.Concat(friends).ToList();
-                listresults = listresults.OrderByDescending(x => x.LastMessageDate).ToList();
-                return new GetUserChatFriendsWithSettingsOutput
-                {
-                    Friends = listresults,
-                    ServerTime = Clock.Now,
-                    SenderId = AbpSession.UserId.Value
-                };
+                listresults = listresults.OrderByDescending(x => x.LastMessageDate).Skip(input.SkipCount).Take(input.MaxResultCount).ToList();
+
+                return DataResult.ResultSuccess(listresults, "", query.Count());
 
             }
             catch (Exception e)
@@ -507,21 +250,22 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             }
         }
 
-        public async Task<ListResultDto<ChatMessageDto>> GetUserChatMessages(GetOrganizationChatMessagesInput input)
+        public async Task<DataResult> GetUserChatMessages(GetOrganizationChatMessagesInput input)
         {
             try
             {
                 input.TenantId = AbpSession.TenantId;
-                var messages = _chatMessageRepository.GetAll()
+                var query = _chatMessageRepository.GetAll()
                     .Where(x => x.IsOrganizationUnit == true)
                     .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)
                     .Where(m => m.UserId == input.OrganizationUnitId && m.TargetTenantId == input.TenantId && m.TargetUserId == input.UserId)
                     .OrderByDescending(m => m.CreationTime)
-                    .Take(50)
+                    .AsQueryable();
+                var messages = query.PageBy(input)
                     .ToList();
 
                 messages.Reverse();
-                var result = messages.MapTo<List<ChatMessageDto>>();
+                var result = ObjectMapper.Map<List<ChatMessageDto>>(messages);
                 if (result != null)
                 {
                     foreach (var mes in result)
@@ -531,13 +275,13 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                             var rep = await _chatMessageRepository.FirstOrDefaultAsync(x => x.Id == mes.MessageRepliedId && x.UserId == input.OrganizationUnitId);
                             if (rep != null)
                             {
-                                mes.MessageReplied = rep.MapTo<ChatMessageDto>();
+                                mes.MessageReplied = ObjectMapper.Map<ChatMessageDto>(rep);
                             }
                         }
                     }
                 }
 
-                return new ListResultDto<ChatMessageDto>(result);
+                return DataResult.ResultSuccess(result, "", query.Count());
             }
             catch (Exception e)
             {
@@ -607,6 +351,31 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
             catch (Exception e)
             {
                 var data = DataResult.ResultError(e.ToString(), "Exception !");
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<object> GetCountChatOrganizationStatistics()
+        {
+            try
+            {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+                var query = (from mes in _chatMessageRepository.GetAll()
+                             select new ChatMessageStatic
+                             {
+                                 IsOrganizationUnit = mes.IsOrganizationUnit,
+                                 UrbanId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
+                                 BuildingId = _userOrganizationRepos.GetAll().Where(x => x.UserId == mes.UserId).Select(x => x.OrganizationUnitId).FirstOrDefault(),
+                             })
+                             .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
+                             .Where(x => x.IsOrganizationUnit == true).CountAsync();
+
+                var result = await query;
+                return DataResult.ResultSuccess(result, "Get success!");
+            }
+            catch (Exception e)
+            {
                 Logger.Fatal(e.Message);
                 throw;
             }
