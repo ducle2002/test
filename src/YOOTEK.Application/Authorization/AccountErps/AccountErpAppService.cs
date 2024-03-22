@@ -24,7 +24,7 @@ using Yootek.Common.DataResult;
 
 namespace YOOTEK.Authorization.Accounts
 {
-    internal class AccountErpAppService : YootekAppServiceBase
+    public class AccountErpAppService : YootekAppServiceBase
     {
         public IAppUrlService AppUrlService { get; set; }
 
@@ -88,7 +88,7 @@ namespace YOOTEK.Authorization.Accounts
         {
 
             var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.PhoneNumber);
-            if (tenant != null) throw new UserFriendlyException(501, "Phone number is exist !");
+            if (tenant != null) throw new UserFriendlyException(500101, "Phone number is exist !");
 
             //Create tenant by phone number
             tenant = new Tenant()
@@ -125,16 +125,15 @@ namespace YOOTEK.Authorization.Accounts
                 }
 
                 User user;
-                user = await _userRegistrationManager.RegisterAsync(
+                user = await _userRegistrationManager.RegisterErpAsync(
                     name,
                     surname,
                     input.EmailAddress,
                     input.PhoneNumber,
                     input.Password,
                     false,
-                    false,
                     input.PhoneNumber);
-
+                user.IsActive = false;
                 var timeCodeExpire = TimeSpan.FromMinutes(1);
                 await SendVerificationOtp(input.PhoneNumber, input.EmailAddress, input.FullName, timeCodeExpire);
                 return DataResult.ResultSuccess(new RegisterErpOutput
@@ -146,7 +145,16 @@ namespace YOOTEK.Authorization.Accounts
 
         }
 
-        public async Task<DataResult> SendVerificationOtp(string phoneNumber, string email, string fullName, TimeSpan timeCodeExpire)
+        public async Task<DataResult> ReSendVerificationOtp(string phoneNumber, string email, string fullName)
+        {
+           
+            var timeCodeExpire = TimeSpan.FromMinutes(1);
+
+            await SendVerificationOtp(phoneNumber, email, fullName, timeCodeExpire);
+            return DataResult.ResultSuccess("Send success !");
+        }
+
+        protected async Task SendVerificationOtp(string phoneNumber, string email, string fullName, TimeSpan timeCodeExpire)
         {
             var code = RandomHelper.GetRandom(100000, 999999).ToString();
             var cacheItem = new OtpErpVerificationCodeCacheItem { Code = code };
@@ -157,9 +165,7 @@ namespace YOOTEK.Authorization.Accounts
                 timeCodeExpire
             );
 
-            await _userEmailer.SendOtpUserRegisterync(fullName, email, code);
-
-            return DataResult.ResultSuccess("Send success !");
+           await _userEmailer.SendOtpUserRegisterync(fullName, email, code);
         }
 
         public async Task<DataResult> VerifyOtpCode(VerifyErpOtpInputDto input)
@@ -168,17 +174,17 @@ namespace YOOTEK.Authorization.Accounts
 
             if (cash == null)
             {
-                throw new Exception("Phone number confirmation code is not found in cache !");
+                throw new UserFriendlyException(500102, "OTP code is expired !");
             }
 
             if (input.Code != cash.Code)
             {
-                throw new UserFriendlyException(L("WrongSmsVerificationCode"));
+                throw new UserFriendlyException(500103, "OTP code is not matched !");
             }
 
-            var user = await UserManager.GetUserAsync(AbpSession.ToUserIdentifier());
+            var user = await UserManager.GetErpUserOrNullByPhoneNumberAsync(input.PhoneNumber);
             user.IsPhoneNumberConfirmed = true;
-            user.PhoneNumber = input.PhoneNumber;
+            user.IsEmailConfirmed = true;
             await UserManager.UpdateAsync(user);
             return DataResult.ResultSuccess("Send success !");
         }
