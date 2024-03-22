@@ -4,6 +4,7 @@ using Yootek.MultiTenancy;
 using Yootek;
 using Yootek.Authorization.Accounts.Dto;
 using Yootek.Common.DataResult;
+using Abp.Web.Models;
 
 namespace YOOTEK.Application.MultiTenancy
 {
@@ -45,6 +46,7 @@ namespace YOOTEK.Application.MultiTenancy
                 tenant.AdminPageConfig);
         }
 
+        [DontWrapResult]
         public async Task<DataResult> GetTenantByTenancyName(string tenancyName)
         {
             if (string.IsNullOrWhiteSpace(tenancyName))
