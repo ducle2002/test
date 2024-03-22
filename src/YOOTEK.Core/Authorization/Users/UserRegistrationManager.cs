@@ -61,7 +61,6 @@ namespace Yootek.Authorization.Users
             if (!string.IsNullOrEmpty(emailAddress))
             {
                 thirdAcc = await GetThirdAccountUserMultiTenantByMail(emailAddress);
-               
             }
             else emailAddress = "";
             var user = new User
@@ -82,28 +81,37 @@ namespace Yootek.Authorization.Users
             await _userManager.InitializeOptionsAsync(null);
 
             CheckErrors(await _userManager.CreateAsync(user, plainPassword));
-            //RegisterRocketChatAsync(surname + name, emailAddress, userName, plainPassword);
-
-            if (AbpSession.TenantId.HasValue && isCitizen)
-            {
-                var citizen = new Citizen()
-                {
-                    FullName = name + " " + surname,
-                    AccountId = user.Id,
-                    Email = emailAddress,
-                    TenantId = AbpSession.TenantId,
-                    PhoneNumber = phoneNumber,
-                    Address = address,
-                    Gender = gender,
-                    DateOfBirth = dateOfBirth
-                };
-                await _citizenRepos.InsertAsync(citizen);
-            }
 
             await CurrentUnitOfWork.SaveChangesAsync();
 
             return user;
         }
+
+        public async Task<User> RegisterErpAsync(string name, string surname, string emailAddress, string userName, string plainPassword, bool isEmailConfirmed, string phoneNumber = "")
+        {
+            var user = new User
+            {
+                Name = name,
+                Surname = surname,
+                EmailAddress = emailAddress,
+                IsActive = true,
+                UserName = userName,
+                IsEmailConfirmed = isEmailConfirmed,
+                Roles = new List<UserRole>(),
+                PhoneNumber = phoneNumber
+            };
+
+            user.SetNormalizedNames();
+
+            await _userManager.InitializeOptionsAsync(null);
+
+            CheckErrors(await _userManager.CreateAsync(user, plainPassword));
+
+            await CurrentUnitOfWork.SaveChangesAsync();
+
+            return user;
+        }
+
 
 
         public async Task<List<User>> RegisterListAccoutAsync(List<AccoutRegister> accoutRegisters)

@@ -7,6 +7,8 @@ using Yootek.Editions;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Abp.UI;
+using System.Text.RegularExpressions;
 
 namespace Yootek.MultiTenancy
 {
@@ -56,6 +58,24 @@ namespace Yootek.MultiTenancy
         public Task<Tenant> FindByTenancyErpNameAsync(string tenancyName)
         {
             return TenantRepository.FirstOrDefaultAsync(t => (t.TenancyName.ToLower() == tenancyName.ToLower() || t.SubName.ToLower() == tenancyName.ToLower()) && t.TenantType == TenantType.ERP);
+        }
+
+        protected override Task ValidateTenancyNameAsync(string tenancyName)
+        {
+            if (!Regex.IsMatch(tenancyName, Tenant.NTenancyNameRegex))
+            {
+                throw new UserFriendlyException(L("InvalidTenancyName"));
+            }
+
+            return Task.FromResult(0);
+        }
+
+        protected override void ValidateTenancyName(string tenancyName)
+        {
+            if (!Regex.IsMatch(tenancyName, Tenant.NTenancyNameRegex))
+            {
+                throw new UserFriendlyException(L("InvalidTenancyName"));
+            }
         }
     }
 }
