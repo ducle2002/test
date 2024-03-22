@@ -1,27 +1,10 @@
-﻿using Abp.Application.Services.Dto;
-using Abp.Application.Services;
-using Abp.Authorization;
-using Abp.Domain.Repositories;
-using Abp.Localization;
-using Abp.MultiTenancy;
-using Abp.Runtime.Security;
-using AutoMapper.Internal.Mappers;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Abp.Application.Services;
 using System.Threading.Tasks;
-using Yootek.Authorization.Roles;
-using Yootek.Authorization.Users;
-using Yootek.Authorization;
-using Yootek.Configuration;
-using Yootek.Editions;
-using Yootek.MultiTenancy.Dto;
 using Yootek.MultiTenancy;
 using Yootek;
 using Yootek.Authorization.Accounts.Dto;
+using Yootek.Common.DataResult;
+using Abp.Web.Models;
 
 namespace YOOTEK.Application.MultiTenancy
 {
@@ -32,13 +15,13 @@ namespace YOOTEK.Application.MultiTenancy
 
     public class TenantErpAppService : YootekAppServiceBase, ITenantErpAppService
     {
-        private readonly IRepository<Tenant, int> _tenantRepository;
+        private readonly TenantManager _tenantManager;
 
         public TenantErpAppService(
-            IRepository<Tenant, int> repository
+            TenantManager tenantManager
             )
         {
-            _tenantRepository = repository;
+            _tenantManager = tenantManager;
         }
 
         public async Task<IsTenantAvailableOutput> IsTenantAvailable(IsTenantAvailableInput input)
@@ -48,9 +31,7 @@ namespace YOOTEK.Application.MultiTenancy
                 return new IsTenantAvailableOutput(TenantAvailabilityState.NotFound);
             }
 
-            var tenant = await _tenantRepository.FirstOrDefaultAsync(t => (t.TenancyName.ToLower() == input.TenancyName.ToLower()
-            || t.SubName.ToLower() == input.TenancyName.ToLower())
-            && (t.TenantType == TenantType.RETAIL || t.TenantType == TenantType.FNB));
+            var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.TenancyName);
             if (tenant == null)
             {
                 return new IsTenantAvailableOutput(TenantAvailabilityState.NotFound);
@@ -64,5 +45,28 @@ namespace YOOTEK.Application.MultiTenancy
             return new IsTenantAvailableOutput(TenantAvailabilityState.Available, tenant.Id, tenant.MobileConfig,
                 tenant.AdminPageConfig);
         }
+
+        [DontWrapResult]
+        public async Task<DataResult> GetTenantByTenancyName(string tenancyName)
+        {
+            if (string.IsNullOrWhiteSpace(tenancyName))
+            {
+                return DataResult.ResultSuccess(null, "");
+            }
+
+            var tenant = await _tenantManager.FindByTenancyErpNameAsync(tenancyName);
+            if (tenant == null)
+            {
+                return DataResult.ResultSuccess(null, "");
+            }
+
+            if (!tenant.IsActive)
+            {
+                return DataResult.ResultSuccess(null, "");
+            }
+
+            return DataResult.ResultSuccess(tenant, "");
+        }
     }
+
 }

@@ -1,0 +1,186 @@
+﻿using Abp.Configuration;
+using Abp.Domain.Repositories;
+using Abp.Runtime.Caching;
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Yootek.Authorization.Accounts.Dto;
+using Yootek.Authorization.Accounts;
+using Yootek.Authorization.Users;
+using Yootek.Net.Sms;
+using Yootek.Notifications;
+using Yootek.Organizations;
+using Yootek.Url;
+using Yootek;
+using Yootek.MultiTenancy;
+using YOOTEK.Authorization.AccountErps;
+using Abp.UI;
+using Yootek.Authorization.Roles;
+using Abp.Runtime.Session;
+using Yootek.Account.Cache;
+using Abp;
+using Yootek.Common.DataResult;
+
+namespace YOOTEK.Authorization.Accounts
+{
+    internal class AccountErpAppService : YootekAppServiceBase
+    {
+        public IAppUrlService AppUrlService { get; set; }
+
+        // from: http://regexlib.com/REDetails.aspx?regexp_id=1923
+        public const string PasswordRegex =
+            "(?=^.{8,}$)(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?!.*\\s)[0-9a-zA-Z!@#$%^&*()]*$";
+
+        private readonly UserRegistrationManager _userRegistrationManager;
+        private readonly UserManager _userManager;
+        private readonly TenantManager _tenantManager;
+        private readonly IAppNotifier _appNotifier;
+        private readonly IUserEmailer _userEmailer;
+        private readonly ICacheManager _cacheManager;
+        private readonly ISmsSender _smsSender;
+
+        // private readonly IUnitOfWordManager
+        public AccountErpAppService(
+            UserManager userManager,
+            TenantManager tenantManager,
+            IRepository<Tenant, int> tenantRepos,
+            IAppNotifier appNotifier,
+            UserRegistrationManager userRegistrationManager,
+            IUserEmailer userEmailer,
+            ICacheManager cacheManager,
+            ISmsSender smsSender
+        )
+        {
+            _cacheManager = cacheManager;
+            _tenantManager = tenantManager;
+            _userRegistrationManager = userRegistrationManager;
+            _userManager = userManager;
+            _appNotifier = appNotifier;
+            _userEmailer = userEmailer;
+            AppUrlService = NullAppUrlService.Instance;
+            _smsSender = smsSender;
+        }
+
+        public async Task<IsTenantAvailableOutput> IsTenantAvailable(IsTenantAvailableInput input)
+        {
+            if (string.IsNullOrWhiteSpace(input.TenancyName))
+            {
+                return new IsTenantAvailableOutput(TenantAvailabilityState.NotFound);
+            }
+
+            var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.TenancyName);
+            if (tenant == null)
+            {
+                return new IsTenantAvailableOutput(TenantAvailabilityState.NotFound);
+            }
+
+            if (!tenant.IsActive)
+            {
+                return new IsTenantAvailableOutput(TenantAvailabilityState.InActive);
+            }
+
+            return new IsTenantAvailableOutput(TenantAvailabilityState.Available, tenant.Id, tenant.MobileConfig,
+                tenant.AdminPageConfig);
+        }
+
+        public async Task<DataResult> Register(RegisterErpInput input)
+        {
+
+            var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.PhoneNumber);
+            if (tenant != null) throw new UserFriendlyException(501, "Phone number is exist !");
+
+            //Create tenant by phone number
+            tenant = new Tenant()
+            {
+                TenancyName = input.PhoneNumber,
+                TenantType = TenantType.ERP,
+                Name = input.PhoneNumber,
+                IsActive = true
+            };
+           
+            await _tenantManager.CreateAsync(tenant);
+            await CurrentUnitOfWork.SaveChangesAsync(); // To get new tenant's id.
+
+       
+            // We are working entities of new tenant, so changing tenant filter
+            using (CurrentUnitOfWork.SetTenantId(tenant.Id))
+            {
+                string name = "";
+                string surname = "";
+                if (!string.IsNullOrWhiteSpace(input.FullName))
+                {
+                    var names = input.FullName.Trim().Split(" ");
+                    if (names.Length == 1)
+                    {
+                        name = names[0];
+                        surname = "";
+                    }
+
+                    if (names.Length > 1)
+                    {
+                        surname = names[0];
+                        name = input.FullName.Trim().Split(surname)[1].Trim();
+                    }
+                }
+
+                User user;
+                user = await _userRegistrationManager.RegisterAsync(
+                    name,
+                    surname,
+                    input.EmailAddress,
+                    input.PhoneNumber,
+                    input.Password,
+                    false,
+                    false,
+                    input.PhoneNumber);
+
+                var timeCodeExpire = TimeSpan.FromMinutes(1);
+                await SendVerificationOtp(input.PhoneNumber, input.EmailAddress, input.FullName, timeCodeExpire);
+                return DataResult.ResultSuccess(new RegisterErpOutput
+                {
+                    CanLogin = user.IsActive && user.IsEmailConfirmed,
+                    TimeCodeExpire = timeCodeExpire
+                }, "Success");
+            }
+
+        }
+
+        public async Task<DataResult> SendVerificationOtp(string phoneNumber, string email, string fullName, TimeSpan timeCodeExpire)
+        {
+            var code = RandomHelper.GetRandom(100000, 999999).ToString();
+            var cacheItem = new OtpErpVerificationCodeCacheItem { Code = code };
+
+            await _cacheManager.GetOtpErpVerificationCodeCache().SetAsync(
+                phoneNumber,
+                cacheItem,
+                timeCodeExpire
+            );
+
+            await _userEmailer.SendOtpUserRegisterync(fullName, email, code);
+
+            return DataResult.ResultSuccess("Send success !");
+        }
+
+        public async Task<DataResult> VerifyOtpCode(VerifyErpOtpInputDto input)
+        {
+            var cash = await _cacheManager.GetOtpErpVerificationCodeCache().GetOrDefaultAsync(input.PhoneNumber);
+
+            if (cash == null)
+            {
+                throw new Exception("Phone number confirmation code is not found in cache !");
+            }
+
+            if (input.Code != cash.Code)
+            {
+                throw new UserFriendlyException(L("WrongSmsVerificationCode"));
+            }
+
+            var user = await UserManager.GetUserAsync(AbpSession.ToUserIdentifier());
+            user.IsPhoneNumberConfirmed = true;
+            user.PhoneNumber = input.PhoneNumber;
+            await UserManager.UpdateAsync(user);
+            return DataResult.ResultSuccess("Send success !");
+        }
+    }
+}
