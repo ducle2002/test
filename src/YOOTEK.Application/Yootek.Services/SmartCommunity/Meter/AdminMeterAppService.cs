@@ -423,7 +423,7 @@ namespace Yootek.Services
                         using (MemoryStream ms = new MemoryStream())
                         {
                             // Lưu hình ảnh QR Code vào MemoryStream
-                            code.GetGraphic(20, Color.DarkBlue, Color.White, true).Save(ms, new PngEncoder());
+                            code.GetGraphic(20, Color.Black, Color.White, true).Save(ms, new PngEncoder());
 
                             // Ghi dữ liệu từ MemoryStream vào mảng byte
                             byte[] qrBytes = ms.ToArray();
