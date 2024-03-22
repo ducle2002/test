@@ -71,26 +71,26 @@ namespace Yootek.Services
                         SetCellDataFormat(sheet.GetRow(i).Cells[4], "dd/mm/yyyy");
                         sheet.GetRow(i).CreateCell(5);
                         //sheet.GetRow(i).Height = 10;
-                        if (input[i - 1].QrCode != null || string.IsNullOrWhiteSpace(input[i - 1].QrCode))
-                        {
-                            string qrData = "yoolife://app/add_parking/" + input[i - 1].QrCode + "/" + (int)QRCodeActionType.CarParking + "/{\"parkingId\":" + input[i - 1].Id + "}";
-                            QRCodeGenerator qrGenerator = new QRCodeGenerator();
-                            QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
-                            QRCode qrCode = new QRCode(qrCodeData);
-                            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+                        //if (input[i - 1].QrCode != null || string.IsNullOrWhiteSpace(input[i - 1].QrCode))
+                        //{
+                        //    string qrData = "yoolife://app/add_parking/" + input[i - 1].QrCode + "/" + (int)QRCodeActionType.CarParking + "/{\"parkingId\":" + input[i - 1].Id + "}";
+                        //    QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                        //    QRCodeData qrCodeData = qrGenerator.CreateQrCode(qrData, QRCodeGenerator.ECCLevel.Q);
+                        //    QRCode qrCode = new QRCode(qrCodeData);
+                        //    var qrCodeImage = qrCode.GetGraphic(20);
 
-                            ImageConverter converter = new ImageConverter();
-                            byte[] file = ToByteArray(qrCodeImage);
+                        //    ImageConverter converter = new ImageConverter();
+                        //    byte[] file = ;
 
-                            var pictureindex = excelPackage.AddPicture(file, PictureType.PNG);
-                            IDrawing drawing = sheet.CreateDrawingPatriarch();
-                            IClientAnchor anchor = excelPackage.GetCreationHelper().CreateClientAnchor();
-                            anchor.Col1 = 5;
-                            anchor.Row1 = i;
-                            anchor.AnchorType = AnchorType.MoveAndResize;
-                            IPicture picture = drawing.CreatePicture(anchor, pictureindex);
-                            picture.Resize(1, 1);
-                        }
+                        //    var pictureindex = excelPackage.AddPicture(file, PictureType.PNG);
+                        //    IDrawing drawing = sheet.CreateDrawingPatriarch();
+                        //    IClientAnchor anchor = excelPackage.GetCreationHelper().CreateClientAnchor();
+                        //    anchor.Col1 = 5;
+                        //    anchor.Row1 = i;
+                        //    anchor.AnchorType = AnchorType.MoveAndResize;
+                        //    IPicture picture = drawing.CreatePicture(anchor, pictureindex);
+                        //    picture.Resize(1, 1);
+                        //}
                     }
                     for (var i = 0; i < 5; i++)
                     {
@@ -155,7 +155,7 @@ namespace Yootek.Services
 
                 var data = await _parkingRepository.InsertAsync(parking);
                 await CurrentUnitOfWork.SaveChangesAsync();
-                data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.CarParking);
+                data.QrCode = QRCodeGen(data.Id, QRCodeActionType.CarParking);
 
                 var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                 {
@@ -383,7 +383,7 @@ namespace Yootek.Services
                                 var dataInsert = await _parkingRepository.InsertAsync(insertInput);
                                 await CurrentUnitOfWork.SaveChangesAsync();
 
-                                dataInsert.QrCode = QRCodeGenerator(dataInsert.Id, QRCodeActionType.CarParking);
+                                dataInsert.QrCode = QRCodeGen(dataInsert.Id, QRCodeActionType.CarParking);
 
                                 var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                                 {
@@ -529,7 +529,7 @@ namespace Yootek.Services
                     var id = await _parkingRepository.InsertAndGetIdAsync(lot);
                     if (lot.QrCode == null || string.IsNullOrWhiteSpace(lot.QrCode))
                     {
-                        lot.QrCode = QRCodeGenerator(lot.Id, QRCodeActionType.CarParking);
+                        lot.QrCode = QRCodeGen(lot.Id, QRCodeActionType.CarParking);
 
                         var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                         {

@@ -143,7 +143,7 @@ namespace Yootek.Services
                 {
                     for (int i = 0; i < data.Count; i++)
                     {
-                        data[i].QrCode = QRCodeGenerator(data[i].Id, QRCodeActionType.Asset);
+                        data[i].QrCode = QRCodeGen(data[i].Id, QRCodeActionType.Asset);
                         var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                         {
                             Name = $"QR/Asset/{AbpSession.TenantId}/{data[i].Code}",
@@ -181,7 +181,7 @@ namespace Yootek.Services
                 {
                     throw new UserFriendlyException("Qrcode create fail !");
                 }
-                item.QrCode = QRCodeGenerator(item.Id, QRCodeActionType.Asset);
+                item.QrCode = QRCodeGen(item.Id, QRCodeActionType.Asset);
                 var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                 {
                     Name = $"QR/Asset/{AbpSession.TenantId}/{item.Code}",
@@ -250,7 +250,7 @@ namespace Yootek.Services
                 TaiSanChiTiet item = dto.MapTo<TaiSanChiTiet>();
                 item.TenantId = AbpSession.TenantId;
                 var data = await _repository.InsertAsync(item);
-                data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Asset);
+                data.QrCode = QRCodeGen(data.Id, QRCodeActionType.Asset);
                 var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                 {
                     Name = $"QR/Asset/{AbpSession.TenantId}/{data.Code}",
@@ -758,7 +758,7 @@ x.Code.ToLower().Contains(input.Keyword.ToLower()) || x.Title.ToLower().Contains
                         else
                         {
                             var data = _repository.Insert(oItem);
-                            data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Asset);
+                            data.QrCode = QRCodeGen(data.Id, QRCodeActionType.Asset);
                             var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                             {
                                 Name = $"QR/Asset/{AbpSession.TenantId}/{data.Code}",
@@ -790,7 +790,7 @@ x.Code.ToLower().Contains(input.Keyword.ToLower()) || x.Title.ToLower().Contains
                         else
                         {
                             var data = _repository.Insert(oItem);
-                            data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Asset);
+                            data.QrCode = QRCodeGen(data.Id, QRCodeActionType.Asset);
                             var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                             {
                                 Name = $"QR/Asset/{AbpSession.TenantId}/{data.Code}",
