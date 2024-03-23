@@ -631,6 +631,26 @@ namespace Yootek.Notifications
 
         }
 
+        public async Task SendMessageNotificationInternalSellerAsync(string notificationName, string fireBaseMessage, string detailUrlApp, string detailUrlWA, UserIdentifier[] users, NotificationData messageData, long? providerId, EntityDb.AppType appType = EntityDb.AppType.ALL, bool isOnlyFirebase = false, bool isSendGroup = false, string groupName = "", NotificationSeverity severity = NotificationSeverity.Info)
+        {
+            var request = new InternalNotificationInput()
+            {
+                AppType = appType,
+                DetailUrlApp = detailUrlApp,
+                DetailUrlWA = detailUrlWA,
+                FirebaseMessage = fireBaseMessage,
+                GroupName = groupName,
+                IsOnlyFirebase = isOnlyFirebase,
+                IsSendGroup = isSendGroup,
+                NotificationName = notificationName,
+                NotificationMessageData = messageData,
+                Severity = severity,
+                Users = users,
+                ProviderId = providerId
+            };
+            await _httpClient.SendAsync<DataResult>("/api/services/app/InternalNotification/CreateForBusiness", HttpMethod.Post, request);
+        }
+
         public enum AppType
         {
             APP_USER = 1,
