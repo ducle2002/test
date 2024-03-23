@@ -12,5 +12,11 @@ namespace Yootek.Authorization.Roles
             public const string Admin = "Admin";
 
         }
+
+        public static class ERP
+        {
+            public const string Admin = "ERPAdmin";
+
+        }
     }
 }

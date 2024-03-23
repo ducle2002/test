@@ -29,6 +29,7 @@ using Abp.AutoMapper;
 using Abp.Json;
 using Abp.Linq.Extensions;
 using Org.BouncyCastle.Crypto;
+using Twilio.Types;
 
 namespace Yootek.Authorization.Users
 {
@@ -101,6 +102,7 @@ namespace Yootek.Authorization.Users
             _deptUserRepo = deptUserRepo;
         }
 
+        #region Base user
         public override async Task<IdentityResult> CreateAsync(User user)
         {
             var tenantId = GetCurrentTenantId();
@@ -231,6 +233,7 @@ namespace Yootek.Authorization.Users
 
             return AbpSession.TenantId;
         }
+        #endregion
 
         #region Organization
 
@@ -707,5 +710,33 @@ namespace Yootek.Authorization.Users
 
         #endregion
 
+
+        #region ERP
+        public async Task<User> GetErpUserOrNullByPhoneNumberAsync(string phoneNumber)
+        {
+            return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+            {
+                var tenant = await _tenantRepository.FirstOrDefaultAsync(x => x.TenancyName == phoneNumber);
+                if (tenant == null) return null;
+
+                using (_unitOfWorkManager.Current.SetTenantId(tenant.Id))
+                {
+                    return await FindByNameAsync(phoneNumber);
+                }
+            });
+        }
+
+        public async Task<IdentityResult> UpdateErpUserAsync(User user)
+        {
+            return await _unitOfWorkManager.WithUnitOfWorkAsync(async () =>
+            {
+                using (_unitOfWorkManager.Current.SetTenantId(user.TenantId))
+                {
+                    return await UpdateAsync(user);
+                }
+            });
+        }
+
+        #endregion
     }
 }

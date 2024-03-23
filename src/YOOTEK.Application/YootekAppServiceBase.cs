@@ -90,7 +90,7 @@ namespace Yootek
         }
 
 
-        protected string QRCodeGenerator(long id, QRCodeActionType type)
+        protected string QRCodeGen(long id, QRCodeActionType type)
         {
             return $"{type}-{AbpSession.TenantId}-{id}-{GetUniqueKey(8)}";
         }

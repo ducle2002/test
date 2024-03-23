@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Yootek.Organizations;
 using Yootek.EntityDb;
+using YOOTEK.Common;
 
 namespace Yootek.Chat
 {
@@ -313,15 +314,15 @@ namespace Yootek.Chat
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
                           friend.FriendImageUrl
                           );
             await _appNotifier.SendMessageNotificationInternalAsync(
                 friend.FriendName + " đã gửi 1 tin nhắn !",
                 message.Message,
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
                 new [] { receiver },
                 messageData,
                 apptype
