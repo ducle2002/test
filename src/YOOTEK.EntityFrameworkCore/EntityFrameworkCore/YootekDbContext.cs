@@ -305,12 +305,6 @@ namespace Yootek.EntityFrameworkCore
 
         #endregion
 
-        #region ERP
-        public virtual DbSet<ERPBranch> ERPBranchs { get; set; }
-        public virtual DbSet<ERPBusinessType> ERPBusinessTypes { get; set; }
-        public virtual DbSet<ERPSeller> ERPSellers { get; set; }
-        public virtual DbSet<ERPStaff> ERPStaffs { get; set; }
-        #endregion
         public YootekDbContext(DbContextOptions<YootekDbContext> options)
             : base(options)
         {
