@@ -209,7 +209,7 @@ namespace Yootek.Controllers
 
 
         [HttpPost]
-        public async Task<RefreshTokenResult> RefreshErpToken(RefreshTokenModel model)
+        public async Task<RefreshTokenResult> RefreshErpToken([FromBody] RefreshTokenModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Token))
             {
