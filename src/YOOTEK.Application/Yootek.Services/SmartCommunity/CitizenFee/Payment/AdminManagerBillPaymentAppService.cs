@@ -31,6 +31,8 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using static Yootek.Common.Enum.CommonENum;
 using Abp.Authorization;
+using Yootek.Services.SmartCommunity.BillingInvoice;
+using Yootek.Services.SmartCommunity.BillingInvoice.Dto;
 
 namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
 {
@@ -60,6 +62,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         private readonly UserBillEmailer _handlePayment;
         private readonly IRepository<UserBillPaymentHistory, long> _billPaymentHistoryRepos;
         private readonly IPaymentExcelExporter _paymentExcelExporter;
+        private readonly IBillInvoiceAppService _billInvoice;
         public AdminManagerBillPaymentAppService(
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<User, long> userRepos, IRepository<UserBill, long> userBillRepo,
@@ -70,7 +73,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             HandlePaymentUtilAppService handlePaymentUtilAppService,
             UserBillEmailer handlePayment,
             IRepository<UserBillPaymentHistory, long> billPaymentHistoryRepos,
-            IPaymentExcelExporter paymentExcelExporter
+            IPaymentExcelExporter paymentExcelExporter,
+            IBillInvoiceAppService billInvoice
             )
 
         {
@@ -85,6 +89,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
             _handlePayment = handlePayment;
             _billPaymentHistoryRepos = billPaymentHistoryRepos;
             _paymentExcelExporter = paymentExcelExporter;
+            _billInvoice = billInvoice;
         }
 
         protected IQueryable<AdminUserBillPaymentOutputDto> QueryUserBillPayments(GetAllAdminUserBillPaymentDto input)
@@ -352,7 +357,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
         {
             try
             {
-                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
                     var userBillPayment = await _userBillPaymentRepo.FirstOrDefaultAsync(input.Id);
                     switch (input.Status)

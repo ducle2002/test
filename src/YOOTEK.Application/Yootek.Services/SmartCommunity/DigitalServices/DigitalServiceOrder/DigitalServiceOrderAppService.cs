@@ -197,7 +197,12 @@ namespace Yootek.Services
                 item.UrbanId = services.UrbanId;
                 item.TenantId = AbpSession.TenantId;
                 await _repository.InsertAndGetIdAsync(item);
-                await FireNotificationCreateServiceOrder(item, services.Title);
+
+                var admins = await UserManager.GetUserOrganizationUnitByUrbanOrNull(item.UrbanId);
+                if(admins != null)
+                {
+                    await FireNotificationCreateServiceOrder(item, services.Title, admins.ToArray());
+                }
                 return DataResult.ResultSuccess(Common.Resource.QuanLyChung.InsertSuccess);
             }
             catch (Exception e)
@@ -389,7 +394,8 @@ namespace Yootek.Services
             {
             }
         }
-        private async Task FireNotificationCreateServiceOrder(DigitalServiceOrder oDigitalServiceOrder, string serviceName)
+
+        private async Task FireNotificationCreateServiceOrder(DigitalServiceOrder oDigitalServiceOrder, string serviceName, UserIdentifier[] admins)
         {
             try
             {
@@ -411,7 +417,7 @@ namespace Yootek.Services
                     $"Dịch vụ {serviceName} có một đơn đặt mới. Nhấn để xem chi tiết !",
                     detailUrlApp,
                     "",
-                    new[] { new UserIdentifier(oDigitalServiceOrder.TenantId, oDigitalServiceOrder.CreatorUserId ?? 0) },
+                    admins,
                     messageAccept,
                     AppType.IOC);
             }

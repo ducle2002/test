@@ -336,7 +336,7 @@ x.Code.ToLower().Contains(input.Keyword.ToLower())|| x.NguoiNhan.ToLower().Conta
                             TenantId = AbpSession.TenantId
                         };
                         var dataTSCT = await _taiSanChiTietRepository.InsertAsync(_tsChiTiet);
-                        dataTSCT.QrCode = QRCodeGenerator(dataTSCT.Id, QRCodeActionType.Asset);
+                        dataTSCT.QrCode = QRCodeGen(dataTSCT.Id, QRCodeActionType.Asset);
                         var createQRCodeResult = await _httpQRCodeService.CreateQRObject(new CreateQRObjectDto()
                         {
                             Name = $"QR/Asset/{AbpSession.TenantId}/{dataTSCT.Code}",

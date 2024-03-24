@@ -17,6 +17,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Yootek.Organizations;
 using Yootek.EntityDb;
+using YOOTEK.Common;
 
 namespace Yootek.Chat
 {
@@ -308,22 +309,25 @@ namespace Yootek.Chat
 
         public async Task FireNotificationMessageToProviderAsync(BusinessChatMessage message, UserIdentifier user, UserIdentifier receiver, long providerId, UserProviderFriendship friend, AppType apptype)
         {
-            var messageData = new UserMessageNotificationDataBase(
+            var messageData = new UserMessageNotificationSeller(
                           AppNotificationAction.ChatMessage,
                           AppNotificationIcon.ChatMessageIcon,
                           TypeAction.Detail,
                           message.Message,
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
-                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
-                          friend.FriendImageUrl
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
+                          AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
+                          friend.FriendImageUrl,
+                          "",
+                          providerId
                           );
-            await _appNotifier.SendMessageNotificationInternalAsync(
+            await _appNotifier.SendMessageNotificationInternalSellerAsync(
                 friend.FriendName + " đã gửi 1 tin nhắn !",
                 message.Message,
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
-                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierString(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
+                AppRouterLinks.AppSeller_ChatUser + "/" + providerId + '/' + user.ToUserIdentifierStringNoti(),
                 new [] { receiver },
                 messageData,
+                providerId,
                 apptype
                );
         }

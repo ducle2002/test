@@ -23,7 +23,19 @@ namespace Yootek.Notifications
             string groupName = "",
             NotificationSeverity severity = NotificationSeverity.Info
             );
-
+        Task SendMessageNotificationInternalSellerAsync(
+            string notificationName,
+            string fireBaseMessage,
+            string detailUrlApp,
+            string detailUrlWA,
+            UserIdentifier[] users,
+            NotificationData messageData,
+            long? providerId,
+            EntityDb.AppType appType = EntityDb.AppType.ALL,
+            bool isOnlyFirebase = false, 
+            bool isSendGroup = false,
+            string groupName = "",
+            NotificationSeverity severity = NotificationSeverity.Info);
 
         Task MultiSendMessageAsync(string typeMessage, UserIdentifier[] users, string message, bool isRealtimeMessage = false, bool isCloudMessage = false, bool isSendAll = false, NotificationSeverity severity = NotificationSeverity.Info);
         //Gửi thông báo Firebase

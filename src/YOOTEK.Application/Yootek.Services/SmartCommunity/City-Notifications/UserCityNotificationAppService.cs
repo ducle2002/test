@@ -292,12 +292,6 @@ namespace Yootek.Services
                         insertInput.ReadState = 1;
                         long id = await _userFeedbackCommentRepos.InsertAndGetIdAsync(insertInput);
                         insertInput.Id = id;
-                        // var admins = await _store.GetAllRoleChatFeedbackHBAsync(feedback.Type.Value);
-                        var admins = await _store.GetUserByOrganizationUnitIdAsync((int)feedback.Type.Value, AbpSession.TenantId);
-                        if (admins != null && admins.Any())
-                        {
-                            _notificationCommunicator.SendCommentFeedbackToAdminTenant(admins, insertInput);
-                        }
 
                         mb.statisticMetris(t1, 0, "is_noti");
                         var data = DataResult.ResultSuccess(insertInput, "Insert success !");

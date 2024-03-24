@@ -292,6 +292,7 @@ namespace Yootek.Services
                 citizenInsert.TenantId = AbpSession.TenantId;
                 citizenInsert.AccountId = AbpSession.UserId;
                 citizenInsert.State = STATE_CITIZEN.NEW;
+                await _citizenRepos.InsertAndGetIdAsync(citizenInsert);
                 var admins = await _store.GetAllCitizenManagerTenantAsync(AbpSession.TenantId);
 
                 if (admins != null && admins.Any())
@@ -299,7 +300,7 @@ namespace Yootek.Services
                     await NotifierVerifyCitizen(citizenInsert, citizenInsert.FullName, admins.ToArray());
                 }
 
-                await _citizenRepos.InsertAsync(citizenInsert);
+             
                 return DataResult.ResultSuccess(true, "Insert success !");
             }
             catch (Exception e)

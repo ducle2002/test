@@ -94,8 +94,8 @@ namespace Yootek.Notifications
                     AppNotificationIcon.UserWelcomeApp,
                     TypeAction.Detail,
                     "Hãy cùng khám phá các tính năng thông minh trên nền tảng xã hội thông minh này nhé! Tham khảo thêm tại: https://yoolife.vn",
-                    "yoolife://app/smartsocial-shopping",
-                    "yoolife://app/smartsocial-shopping"
+                    "",
+                    ""
                 );
 
             await PublishAsync(
@@ -108,8 +108,8 @@ namespace Yootek.Notifications
                  $"Chào mừng {user.FullName} đã đến với Yoolife !",
                 AppNotificationAction.UserWelcomeApp,
                 new UserIdentifier[] { user.ToUserIdentifier() },
-                    "yoolife://app/smartsocial-shopping",
-                    "yoolife://app/smartsocial-shopping");
+                    "",
+                    "");
 
         }
 
@@ -629,6 +629,26 @@ namespace Yootek.Notifications
 
             await _httpClient.SendAsync<DataResult>("/api/services/app/InternalNotification/CreateNotification", HttpMethod.Post, request);
 
+        }
+
+        public async Task SendMessageNotificationInternalSellerAsync(string notificationName, string fireBaseMessage, string detailUrlApp, string detailUrlWA, UserIdentifier[] users, NotificationData messageData, long? providerId, EntityDb.AppType appType = EntityDb.AppType.ALL, bool isOnlyFirebase = false, bool isSendGroup = false, string groupName = "", NotificationSeverity severity = NotificationSeverity.Info)
+        {
+            var request = new InternalNotificationInput()
+            {
+                AppType = appType,
+                DetailUrlApp = detailUrlApp,
+                DetailUrlWA = detailUrlWA,
+                FirebaseMessage = fireBaseMessage,
+                GroupName = groupName,
+                IsOnlyFirebase = isOnlyFirebase,
+                IsSendGroup = isSendGroup,
+                NotificationName = notificationName,
+                NotificationMessageData = messageData,
+                Severity = severity,
+                Users = users,
+                ProviderId = providerId
+            };
+            await _httpClient.SendAsync<DataResult>("/api/services/app/InternalNotification/CreateForBusiness", HttpMethod.Post, request);
         }
 
         public enum AppType

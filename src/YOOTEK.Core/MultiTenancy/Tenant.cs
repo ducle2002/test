@@ -7,6 +7,8 @@ namespace Yootek.MultiTenancy
 {
     public class Tenant : AbpTenant<User>
     {
+        public const string NTenancyNameRegex = "^[a-zA-Z0-9_-]{1,}$";
+
         public string MobileConfig { get; set; }
         public string AdminPageConfig { get; set; }
 
@@ -32,7 +34,6 @@ namespace Yootek.MultiTenancy
         IOC = 2,
         GOVERNMENT = 3,
         FORUM = 4,
-        RETAIL = 5,
-        FNB = 6
+        ERP = 5
     }
 }

@@ -147,6 +147,25 @@ namespace Yootek.Authorization.Users
 
         }
 
+        public async Task SendOtpUserRegisterync(string fullName, string email, string code)
+        {
+
+            if (code.IsNullOrEmpty())
+            {
+                throw new Exception("Code should be set in order to send.");
+            }
+
+            var emailTemplate = new StringBuilder(_emailTemplateProvider.GetOTPTemplate());
+
+            emailTemplate.Replace("{FullName}", fullName);
+            emailTemplate.Replace("{CODE}", code);
+
+
+            await ReplaceBodyAndSend(email, "Yoolife OTP !", emailTemplate, new StringBuilder());
+
+
+        }
+
         public async Task TryToSendChatMessageMail(User user, string senderUsername, string senderTenancyName, ChatMessage chatMessage)
         {
             try

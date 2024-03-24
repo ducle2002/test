@@ -62,12 +62,20 @@ namespace Yootek.Services
                 long t1 = TimeUtils.GetNanoseconds();
 
                 input.TenantId = AbpSession.TenantId;
+                var adType = await _typeAdministrativeRepos.FirstOrDefaultAsync(input.ADTypeId);
+                if(adType == null) return DataResult.ResultSuccess("Type administrative not found !");
 
                 var insertInput = input.MapTo<Administrative>();
                 insertInput.State = AdministrativeState.Requesting;
                 long id = await _administrativeRepos.InsertAndGetIdAsync(insertInput);
                 insertInput.Id = id;
                 await CreateOrUpdateValueWithAdministrative(input.Properties, id, input.ADTypeId);
+
+                var citizen = await _citizenRepos.FirstOrDefaultAsync(x => x.ApartmentCode == input.ApartmentCode && x.AccountId == AbpSession.UserId);
+                var citizenName = citizen?.FullName ?? "Cư dân";
+                var admins = await UserManager.GetUserOrganizationUnitByUrbanOrNull(adType.UrbanId);
+               
+                if(admins != null) await NotifierNewAdministrative(insertInput, admins.ToArray(), citizenName);
                 var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                 mb.statisticMetris(t1, 0, "is_administrative");
 
@@ -81,6 +89,7 @@ namespace Yootek.Services
                 throw;
             }
         }
+
         public async Task<object> CancelAdministrativeByUser(CancelAdministrativeByUserInput input)
         {
             try
@@ -263,8 +272,8 @@ namespace Yootek.Services
 
         private async Task NotifierNewAdministrative(Administrative data, UserIdentifier[] admin, string creatorName)
         {
-            var detailUrlApp = $"yooioc://app/feedback/detail?id={data.Id}";
-            var detailUrlWA = $"/feedbacks?id={data.Id}";
+            var detailUrlApp = $"yooioc://app/adminstrative/detail?id={data.Id}";
+            var detailUrlWA = $"/adminstrative?id={data.Id}";
             var messageDeclined = new UserMessageNotificationDataBase(
                             AppNotificationAction.ReflectCitizenNew,
                             AppNotificationIcon.ReflectCitizenNewIcon,
@@ -276,7 +285,7 @@ namespace Yootek.Services
 
             await _appNotifier.SendMessageNotificationInternalAsync(
                 "Yoolife hành chính số!",
-                $"{creatorName} đã tạo một phản ánh mới. Nhấn để xem chi tiết !",
+                $"{creatorName} đã gửi 1 form hành chính số mới. Nhấn để xem chi tiết !",
                 detailUrlApp,
                 detailUrlWA,
                 admin.ToArray(),

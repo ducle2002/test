@@ -141,11 +141,11 @@ namespace Yootek.Web.Host.SignalR
         }
 
         [System.Obsolete]
-        public void SendCommentFeedbackToAdminTenant(IReadOnlyList<User> clients, CitizenReflectComment noti)
+        public void SendCommentFeedbackToAdminTenant(IReadOnlyList<UserIdentifier> clients, CitizenReflectComment noti)
         {
             foreach (var client in clients)
             {
-                _notificationHub.Clients.User(client.Id.ToString()).SendAsync("sendcmfbtoadtenant", noti.MapTo<UserFeedbackCommentDto>());
+                _notificationHub.Clients.User(client.UserId.ToString()).SendAsync("sendcmfbtoadtenant", noti.MapTo<UserFeedbackCommentDto>());
 
             }
         }

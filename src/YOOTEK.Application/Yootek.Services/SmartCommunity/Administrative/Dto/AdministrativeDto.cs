@@ -88,7 +88,7 @@ namespace Yootek.Services
     {
         public string Name { get; set; }
         public long? BuildingId { get; set; }
-        public string? ApartmentCode { get; set; }
+        public string ApartmentCode { get; set; }
         public string CreatorUserName { get; set; }
         public string CreatorUserAvatar { get; set; }
     }

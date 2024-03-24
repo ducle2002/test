@@ -427,7 +427,7 @@ namespace Yootek.Services
                     insertInput.ReadState = 1;
                     long id = await _citizenReflectCommentRepos.InsertAndGetIdAsync(insertInput);
                     insertInput.Id = id;
-                    var citizen = new UserIdentifier(AbpSession.TenantId, input.CreatorFeedbackId);
+                    var citizen = new UserIdentifier(AbpSession.TenantId, checkReflect.CreatorUserId ?? 0);
 
                     var clients = await _onlineClientManager.GetAllByUserIdAsync(citizen);
 
@@ -436,7 +436,7 @@ namespace Yootek.Services
                         _notificationCommunicator.SendCommentFeedbackToUserTenant(clients, insertInput);
                     }
 
-                    await NotifierCommentCitizenReflect(insertInput, checkReflect.Name, new UserIdentifier[] { citizen });
+                    await NotifierCommentCitizenReflect(insertInput, checkReflect.Name, new [] { citizen });
                     mb.statisticMetris(t1, 0, "is_noti");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;

@@ -19,5 +19,6 @@ namespace Yootek.Notifications
         public NotificationSeverity? Severity { get; set; }
         public bool IsSendGroup {  get; set; }
         public string GroupName { get; set; }
+        public long? ProviderId { get; set; }
     }
 }

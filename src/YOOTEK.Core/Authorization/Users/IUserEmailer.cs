@@ -28,6 +28,15 @@ namespace Yootek.Authorization.Users
         Task SendPasswordResetLinkAsync(User user, string link = null);
 
         /// <summary>
+        /// Send OTP code active user register to user's email.
+        /// </summary>
+        /// <param name="fullName"></param>
+        /// <param name="email"></param>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        Task SendOtpUserRegisterync(string fullName, string email, string code);
+
+        /// <summary>
         /// Sends an email for unread chat message to user's email.
         /// </summary>
         /// <param name="user"></param>

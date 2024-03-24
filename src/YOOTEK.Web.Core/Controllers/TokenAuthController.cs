@@ -33,6 +33,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using NUglify.Helpers;
 
 namespace Yootek.Controllers
 {
@@ -205,6 +206,66 @@ namespace Yootek.Controllers
                 throw new ValidationException("Refresh token is not valid!", e);
             }
         }
+
+
+        [HttpPost]
+        public async Task<RefreshTokenResult> RefreshErpToken(RefreshTokenModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Token))
+            {
+                throw new ArgumentNullException(nameof(model.Token));
+            }
+
+            if (!IsRefreshTokenValid(model.Token, out var principal))
+            {
+                throw new UserFriendlyException("Refresh token is not valid!");
+            }
+
+            try
+            {
+                var user = await _userManager.GetUserAsync(
+                    UserIdentifier.Parse(principal.Claims.First(x => x.Type == AppConsts.UserIdentifier).Value)
+                );
+
+                if (user == null)
+                {
+                    throw new UserFriendlyException("Unknown user or user identifier");
+                }
+
+                principal = await _claimsPrincipalFactory.CreateAsync(user);
+
+                var claims = (await CreateJwtClaims(principal.Identity as ClaimsIdentity, user)).ToList();
+
+                if (model.StoreId.HasValue)
+                {
+                    claims.Add(new Claim(ErpClaimTypes.StoreId, model.StoreId.ToString()));
+                }
+
+                if (model.BranchId.HasValue)
+                {
+                    claims.Add(new Claim(ErpClaimTypes.BranchId, model.BranchId.ToString()));
+                }
+
+                var accessToken = CreateAccessToken(claims);
+
+                var result = new RefreshTokenResult(
+                    accessToken,
+                    GetEncryptedAccessToken(accessToken),
+                    (int)_configuration.AccessTokenExpiration.TotalSeconds);
+                Logger.Fatal(JsonConvert.SerializeObject(result));
+
+                return await Task.FromResult(result);
+            }
+            catch (UserFriendlyException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                throw new ValidationException("Refresh token is not valid!", e);
+            }
+        }
+
 
         [HttpGet]
         [AbpAuthorize]

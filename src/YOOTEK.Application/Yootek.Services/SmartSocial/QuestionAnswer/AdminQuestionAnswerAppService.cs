@@ -395,6 +395,21 @@ namespace Yootek.Services
                 return new UserFriendlyException(e.Message);
             }
         }
+        public async Task<object> DeleteQuestionAnswerAsync(long id)
+        {
+            try
+            {
+                long t1 = TimeUtils.GetNanoseconds();
+                await _questionAnswerRepos.DeleteAsync(id);
+                var data = DataResult.ResultSuccess("Delete Success");
+                mb.statisticMetris(t1, 0, "del_topic");
+                return data;
+            }
+            catch (Exception e)
+            {
+                return new UserFriendlyException(e.Message);
+            }
+        }
         public Task<DataResult> DeleteMultipleQuestionAnswerTopic([FromBody] List<long> ids)
         {
             try
@@ -549,7 +564,7 @@ namespace Yootek.Services
                 detailUrlWA,
                 new[] { user },
                 message,
-                AppType.IOC
+                AppType.USER
                 );
 
         }

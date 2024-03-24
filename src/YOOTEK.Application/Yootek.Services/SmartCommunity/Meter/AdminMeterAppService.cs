@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -14,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using QRCoder;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 using Yootek.App.ServiceHttpClient;
 using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using Yootek.Application;
@@ -140,7 +141,7 @@ namespace Yootek.Services
 
                 var data = await _meterRepository.InsertAsync(meter);
                 await CurrentUnitOfWork.SaveChangesAsync();
-                data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Meter);
+                data.QrCode = QRCodeGen(data.Id, QRCodeActionType.Meter);
 
                 await CurrentUnitOfWork.SaveChangesAsync();
                 mb.statisticMetris(t1, 0, "ParkingService.CreateParkingAsync");
@@ -181,7 +182,7 @@ namespace Yootek.Services
                     var data = await _meterRepository.InsertAsync(meter);
 
 
-                    data.QrCode = QRCodeGenerator(data.Id, QRCodeActionType.Meter);
+                    data.QrCode = QRCodeGen(data.Id, QRCodeActionType.Meter);
 
                 }
 
@@ -414,33 +415,25 @@ namespace Yootek.Services
 
                     foreach (var item in result)
                     {
-                        try
-                        {
-                            item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
-                            QRCodeGenerator qr = new QRCodeGenerator();
-                            QRCodeData data = qr.CreateQrCode(item.QRAction, QRCoder.QRCodeGenerator.ECCLevel.Q);
-                            QRCode code = new QRCode(data);
-                            using (Bitmap qrImage = code.GetGraphic(20)) // Điều chỉnh kích thước 20 nếu cần thiết
-                            {
-                                Bitmap logo = new Bitmap(fullPath); // Đường dẫn đến ảnh bạn muốn chèn
-                                int logoSize = 30; // Kích thước của logo (điều chỉnh tùy ý)
-                                using (Graphics g = Graphics.FromImage(qrImage))
-                                {
-                                    g.DrawImage(logo, new Rectangle((qrImage.Width - logoSize) / 2, (qrImage.Height - logoSize) / 2, logoSize, logoSize));
-                                    string text = item.Code??item.QrCode; // Chuỗi bạn muốn chèn
-                                    Font font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Regular); // Điều chỉnh font và kích thước tùy ý
-                                    SizeF textSize = g.MeasureString(text, font);
-                                    int x = (qrImage.Width - (int)textSize.Width) / 2;
-                                    int y = qrImage.Height - (int)textSize.Height - 10; // Điều chỉnh vị trí dựa trên kích thước của chữ và vị trí tùy ý
-                                    g.DrawString(text, font, Brushes.Black, x, y);
-                                }
+                        item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
 
-                                
-                                string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code??item.QrCode}.png");
-                                qrImage.Save(qrCodeFilePath, System.Drawing.Imaging.ImageFormat.Png);
-                            }
+                        QRCodeGenerator qr = new QRCodeGenerator();
+                        QRCodeData data = qr.CreateQrCode(item.QRAction, QRCodeGenerator.ECCLevel.Q);
+                        QRCode code = new QRCode(data);
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            // Lưu hình ảnh QR Code vào MemoryStream
+                            code.GetGraphic(20, Color.Black, Color.White, true).Save(ms, new PngEncoder());
+
+                            // Ghi dữ liệu từ MemoryStream vào mảng byte
+                            byte[] qrBytes = ms.ToArray();
+
+                            // Tạo tên tệp QR Code
+                            string qrCodeFilePath = Path.Combine(outputDirectory, $"{item.Code ?? item.QrCode}.png");
+
+                            // Ghi mảng byte vào tệp PNG
+                            File.WriteAllBytes(qrCodeFilePath, qrBytes);
                         }
-                        catch (Exception ex) { }
 
                     }
                 }
