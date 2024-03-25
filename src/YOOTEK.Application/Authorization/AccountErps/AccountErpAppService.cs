@@ -21,6 +21,8 @@ using Abp.Runtime.Session;
 using Yootek.Account.Cache;
 using Abp;
 using Yootek.Common.DataResult;
+using Abp.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace YOOTEK.Authorization.Accounts
 {
@@ -134,7 +136,7 @@ namespace YOOTEK.Authorization.Accounts
                     false,
                     input.PhoneNumber);
                 user.IsActive = false;
-                var timeCodeExpire = TimeSpan.FromMinutes(1);
+                var timeCodeExpire = TimeSpan.FromMinutes(5);
                 await SendVerificationOtp(input.PhoneNumber, input.EmailAddress, input.FullName, timeCodeExpire);
                 return DataResult.ResultSuccess(new RegisterErpOutput
                 {
@@ -145,12 +147,39 @@ namespace YOOTEK.Authorization.Accounts
 
         }
 
-        public async Task<DataResult> ReSendVerificationOtp(string phoneNumber, string email, string fullName)
+        public async Task<DataResult> SendForgotPasswordOtp([FromBody] string phoneNumber)
+        {
+            try
+            {
+                var tenant = await _tenantManager.FindByTenancyErpNameAsync(phoneNumber);
+                if (tenant == null) throw new UserFriendlyException(404, "Phone number is not exist !");
+
+                using (CurrentUnitOfWork.SetTenantId(tenant.Id))
+                {
+                    var user = await UserManager.FindByNameAsync(phoneNumber);
+                    if (user == null)
+                    {
+                        throw new UserFriendlyException(404, "Phone number is not exist !");
+                    }
+
+                    user.SetNewPasswordResetCode();
+                    await _userEmailer.SendPasswordResetLinkAsync(user);
+                    return DataResult.ResultSuccess("");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal("pass + Email: " + ex.ToJsonString());
+                throw;
+            }
+        }
+
+        public async Task<DataResult> ReSendVerificationOtp([FromBody] ReSendVerificationOtpInput input)
         {
            
-            var timeCodeExpire = TimeSpan.FromMinutes(1);
+            var timeCodeExpire = TimeSpan.FromMinutes(5);
 
-            await SendVerificationOtp(phoneNumber, email, fullName, timeCodeExpire);
+            await SendVerificationOtp(input.PhoneNumber, input.Email, input.FullName, timeCodeExpire);
             return DataResult.ResultSuccess("Send success !");
         }
 
@@ -186,7 +215,7 @@ namespace YOOTEK.Authorization.Accounts
             user.IsPhoneNumberConfirmed = true;
             user.IsEmailConfirmed = true;
             user.IsActive = true;
-            await UserManager.UpdateAsync(user);
+            await UserManager.UpdateErpUserAsync(user);
             return DataResult.ResultSuccess("Send success !");
         }
     }
