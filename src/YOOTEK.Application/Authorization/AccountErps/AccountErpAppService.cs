@@ -185,6 +185,7 @@ namespace YOOTEK.Authorization.Accounts
             var user = await UserManager.GetErpUserOrNullByPhoneNumberAsync(input.PhoneNumber);
             user.IsPhoneNumberConfirmed = true;
             user.IsEmailConfirmed = true;
+            user.IsActive = true;
             await UserManager.UpdateAsync(user);
             return DataResult.ResultSuccess("Send success !");
         }
