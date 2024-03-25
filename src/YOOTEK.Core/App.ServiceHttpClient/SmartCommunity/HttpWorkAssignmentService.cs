@@ -678,16 +678,16 @@ namespace Yootek.App.ServiceHttpClient.Yootek.SmartCommunity
                 AppType.IOC
             );
 
-            var supervisors = supervisorIds.Select(x => new UserIdentifier(_session.TenantId, x)).ToList();
-            await _appNotifier.SendMessageNotificationInternalAsync(
-                message,
-                "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
-                detailUrlApp,
-                detailUrlWA,
-                supervisors.ToArray(),
-                notification,
-                AppType.IOC
-            );
+            //var supervisors = supervisorIds.Select(x => new UserIdentifier(_session.TenantId, x)).ToList();
+            //await _appNotifier.SendMessageNotificationInternalAsync(
+            //    message,
+            //    "Bạn vừa được giao công việc mới. Nhấn để xem chi tiết!",
+            //    detailUrlApp,
+            //    detailUrlWA,
+            //    supervisors.ToArray(),
+            //    notification,
+            //    AppType.IOC
+            //);
         }
 
         #endregion
