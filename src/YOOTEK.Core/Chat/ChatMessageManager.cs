@@ -204,7 +204,7 @@ namespace Yootek.Chat
                 messRep
                 );
 
-            await FireNotificationMessageToUserAsync(sentMessage,senderIdentifier, receiverIdentifier, friend);
+          
         }
 
         // Lưu và gửi tin nhắn cho người nhận
@@ -261,7 +261,7 @@ namespace Yootek.Chat
             {
                 await _chatCommunicator.SendMessageToClient(clients, sentMessage, messRep);
             }
-           
+            await FireNotificationMessageToUserAsync(sentMessage, receiverIdentifier, senderIdentifier , friend);
         }
 
         // Thay đổi info người gửi nếu có thay đổi
