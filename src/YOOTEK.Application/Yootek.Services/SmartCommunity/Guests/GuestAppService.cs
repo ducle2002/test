@@ -8,12 +8,12 @@ using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Abp.Organizations;
 using Abp.UI;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Yootek.Application;
 using Yootek.Common.DataResult;
 using Yootek.EntityDb;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.Guests.Dto;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Yootek.Yootek.Services.Yootek.SmartCommunity.Guests
 {
@@ -37,28 +37,30 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.Guests
             try
             {
                 var query = _guestRepo.GetAll().Select(g => new BasicGuestDto()
-                    {
-                        Id = g.Id,
-                        TenantId = g.TenantId,
-                        Name = g.Name,
-                        PhoneNumber = g.PhoneNumber,
-                        CheckInTime = g.CheckInTime,
-                        CheckOutTime = g.CheckOutTime,
-                        Status = g.Status,
-                        GuestFormId = g.GuestFormId,
-                        GuestFormName = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
+                {
+                    Id = g.Id,
+                    TenantId = g.TenantId,
+                    Name = g.Name,
+                    PhoneNumber = g.PhoneNumber,
+                    CheckInTime = g.CheckInTime,
+                    CheckOutTime = g.CheckOutTime,
+                    Status = g.Status,
+                    GuestFormId = g.GuestFormId,
+                    GuestFormName = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
                             .Select(gf => gf.Name)
                             .FirstOrDefault(),
-                        UrbanId = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
+                    UrbanId = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
                             .Select(gf => gf.UrbanId)
                             .FirstOrDefault(),
-                        UrbanName = _ouRepo.GetAll().Where(o => o.Id == _guestFormRepo.GetAll()
-                                .Where(gf => gf.Id == g.GuestFormId)
-                                .Select(gf => gf.UrbanId)
-                                .FirstOrDefault()).Select(o => o.DisplayName)
+                    UrbanName = _ouRepo.GetAll().Where(o => o.Id == _guestFormRepo.GetAll()
+                            .Where(gf => gf.Id == g.GuestFormId)
+                            .Select(gf => gf.UrbanId)
+                            .FirstOrDefault()).Select(o => o.DisplayName)
                             .FirstOrDefault(),
-                        CreationTime = g.CreationTime
-                    })
+                    CreationTime = g.CreationTime,
+                    PlaceDetail = g.PlaceDetail,
+                    HostName = g.HostName,
+                })
                     .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
                     .WhereIf(input.Status.HasValue, x => x.Status == input.Status)
                     .WhereIf(!input.Keyword.IsNullOrEmpty(),
@@ -100,37 +102,38 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.Guests
             try
             {
                 var result = await _guestRepo.GetAll().Select(g => new DetailGuestDo()
-                    {
-                        Id = g.Id,
-                        TenantId = g.TenantId,
-                        Name = g.Name,
-                        PhoneNumber = g.PhoneNumber,
-                        Address = g.Address,
-                        IdNumber = g.IdNumber,
-                        IdCardFrontImageUrl = g.IdCardFrontImageUrl,
-                        IdCardBackImageUrl = g.IdCardBackImageUrl,
-                        CheckInTime = g.CheckInTime,
-                        CheckOutTime = g.CheckOutTime,
-                        Status = g.Status,
-                        Vehicle = g.Vehicle,
-                        VehicleNumber = g.VehicleNumber,
-                        GuestFormId = g.GuestFormId,
-                        GuestFormName = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
+                {
+                    Id = g.Id,
+                    TenantId = g.TenantId,
+                    Name = g.Name,
+                    PhoneNumber = g.PhoneNumber,
+                    Address = g.Address,
+                    IdNumber = g.IdNumber,
+                    IdCardFrontImageUrl = g.IdCardFrontImageUrl,
+                    IdCardBackImageUrl = g.IdCardBackImageUrl,
+                    CheckInTime = g.CheckInTime,
+                    CheckOutTime = g.CheckOutTime,
+                    Status = g.Status,
+                    Vehicle = g.Vehicle,
+                    VehicleNumber = g.VehicleNumber,
+                    GuestFormId = g.GuestFormId,
+                    GuestFormName = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
                             .Select(gf => gf.Name)
                             .FirstOrDefault(),
-                        UrbanId = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
+                    UrbanId = _guestFormRepo.GetAll().Where(gf => gf.Id == g.GuestFormId)
                             .Select(gf => gf.UrbanId)
                             .FirstOrDefault(),
-                        UrbanName = _ouRepo.GetAll().Where(o => o.Id == _guestFormRepo.GetAll()
-                                .Where(gf => gf.Id == g.GuestFormId)
-                                .Select(gf => gf.UrbanId)
-                                .FirstOrDefault()).Select(o => o.DisplayName)
+                    UrbanName = _ouRepo.GetAll().Where(o => o.Id == _guestFormRepo.GetAll()
+                            .Where(gf => gf.Id == g.GuestFormId)
+                            .Select(gf => gf.UrbanId)
+                            .FirstOrDefault()).Select(o => o.DisplayName)
                             .FirstOrDefault(),
-                        HostName = g.HostName,
-                        HostPhoneNumber = g.HostPhoneNumber,
-                        Description = g.Description,
-                        CreationTime = g.CreationTime
-                    })
+                    HostName = g.HostName,
+                    HostPhoneNumber = g.HostPhoneNumber,
+                    Description = g.Description,
+                    CreationTime = g.CreationTime,
+                    PlaceDetail = g.PlaceDetail,
+                })
                     .Where(x => x.Id == input.Id)
                     .ToListAsync();
 
