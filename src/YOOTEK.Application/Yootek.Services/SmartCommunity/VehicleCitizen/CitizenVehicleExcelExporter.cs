@@ -1,13 +1,9 @@
-﻿using Yootek.Core.Dto;
+﻿using System.Collections.Generic;
+using Yootek.Core.Dto;
 using Yootek.DataExporting.Excel.NPOI;
 using Yootek.EntityDb;
 using Yootek.Services;
 using Yootek.Storage;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
 {
@@ -29,6 +25,7 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
                     var sheet = excelPackage.CreateSheet("Phương tiện");
                     AddHeader(
                         sheet,
+                        "Id",
                         "Mã khu đô thị",
                         "Mã toà nhà",
                         L("ApartmentCode"),
@@ -38,8 +35,15 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
                         L("VehicleCode"),
                         L("VehicleName"),
                         "Mã bãi đỗ",
-                        L("Description"));
+                        L("Description"),
+                        "Phí gửi xe",
+                        "Ngày đăng ký",
+                        "Ngày hết hạn",
+                        "Mã bảng giá",
+                        "Trạng thái"
+                        );
                     AddObjects(sheet, vehicles,
+                        _ => _.Id,
                         _ => _.UrbanCode,
                         _ => _.BuildingCode,
                         _ => _.ApartmentCode,
@@ -48,8 +52,13 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
                         _ => GetVehicleTypeTxt(_.VehicleType),
                         _ => _.VehicleCode,
                         _ => _.VehicleName,
-                        _ => _.ParkingName,
-                        _ => _.Description
+                        _ => _.ParkingCode,
+                        _ => _.Description,
+                        _ => _.Cost,
+                        _ => _.RegistrationDate.HasValue ? _.RegistrationDate.Value.ToString("dd/MM/yyyy") : string.Empty,
+                        _ => _.ExpirationDate.HasValue ? _.ExpirationDate.Value.ToString("dd/MM/yyyy") : string.Empty,
+                        _ => _.BillConfigCode,
+                        _ => GetVehicleStateTxt(_.State)
                         );
                 }
                 );
@@ -64,6 +73,16 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.VehicleCitizen
                 case VehicleType.Bicycle: return L("Bicycle");
                 case VehicleType.Other: return L("Other");
                 default: return L("Other");
+            }
+        }
+        protected string GetVehicleStateTxt(CitizenVehicleState? state)
+        {
+            switch (state)
+            {
+                case CitizenVehicleState.ACCEPTED: return "Hoạt động";
+                case CitizenVehicleState.REJECTED: return "Không hoạt động";
+                case CitizenVehicleState.OVERDUE: return "Hết hạn";
+                default: return "Không hoạt động";
             }
         }
 
