@@ -157,25 +157,31 @@ namespace Yootek.Services
                 data.CreatorCitizen = await _citizenRepos.FirstOrDefaultAsync(x => x.AccountId == item.CreatorUserId);
                 data.ArrServiceDetails = !string.IsNullOrEmpty(item.ServiceDetails) ? JsonConvert.DeserializeObject<List<DigitalServiceDetailsGridDto>>(item.ServiceDetails) : new List<DigitalServiceDetailsGridDto>();
 
-                try //để tạm trong trường hợp trên máy local ko chạy được grpc
-                {
-                    MicroserviceResultDto<List<WorkDto>> result = await _httpWorkAssignmentService.GetAllWorkByRelatedId(new GetListWorkByRelatedIdDto()
-                    {
-                        RelatedId = id,
-                        RelationshipType = WorkAssociationType.DIGITAL_SERVICES,
-                    });
-
-                    if (result != null)
-                    {
-                        data.WorkOrder = result.Result;
-                    }
-                }
-                catch (Exception e)
-                {
-
-                }
-
                 return DataResult.ResultSuccess(data, Common.Resource.QuanLyChung.Success);
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<DataResult> GetWorkByOrderId(long id)
+        {
+            try
+            {
+                MicroserviceResultDto<List<WorkDto>> result = await _httpWorkAssignmentService.GetAllWorkByRelatedId(new GetListWorkByRelatedIdDto()
+                {
+                    RelatedId = id,
+                    RelationshipType = WorkAssociationType.DIGITAL_SERVICES,
+                });
+
+                if (result != null)
+                {
+                    return DataResult.ResultSuccess(result.Result, Common.Resource.QuanLyChung.Success);
+                }
+
+                return DataResult.ResultSuccess( Common.Resource.QuanLyChung.Success);
             }
             catch (Exception e)
             {

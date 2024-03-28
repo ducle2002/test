@@ -71,6 +71,7 @@ namespace Yootek.Services
         COMPLETE,
         CANCEL,
         PAIDED,
+        PAIDEDDEBT,
     }
     public enum FieldSortDigitalServiceOrder
     {
