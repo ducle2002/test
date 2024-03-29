@@ -52,11 +52,11 @@ namespace Yootek
                 cache.DefaultSlidingExpireTime = TimeSpan.FromHours(2);
             });
 
-            //Configuration.Caching.UseRedis(options =>
-            //{
-            //    options.ConnectionString = _appConfiguration["Abp:RedisCache:ConnectionString"];
-            //    options.DatabaseId = _appConfiguration.GetValue<int>("Abp:RedisCache:DatabaseId");
-            //});
+            Configuration.Caching.UseRedis(options =>
+            {
+                options.ConnectionString = _appConfiguration["RedisCache:ConnectionString"];
+                options.DatabaseId = _appConfiguration.GetValue<int>("RedisCache:DatabaseId");
+            });
 
             ConfigureTokenAuth();
         }

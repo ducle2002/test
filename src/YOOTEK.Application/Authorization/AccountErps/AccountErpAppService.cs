@@ -23,6 +23,7 @@ using Abp;
 using Yootek.Common.DataResult;
 using Abp.Json;
 using Microsoft.AspNetCore.Mvc;
+using Abp.Extensions;
 
 namespace YOOTEK.Authorization.Accounts
 {
@@ -147,16 +148,16 @@ namespace YOOTEK.Authorization.Accounts
 
         }
 
-        public async Task<DataResult> SendForgotPasswordOtp([FromBody] string phoneNumber)
+        public async Task<DataResult> SendForgotPasswordOtp([FromBody] SendForgotPasswordOtpInput input)
         {
             try
             {
-                var tenant = await _tenantManager.FindByTenancyErpNameAsync(phoneNumber);
+                var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.PhoneNumber);
                 if (tenant == null) throw new UserFriendlyException(404, "Phone number is not exist !");
 
                 using (CurrentUnitOfWork.SetTenantId(tenant.Id))
                 {
-                    var user = await UserManager.FindByNameAsync(phoneNumber);
+                    var user = await UserManager.FindByNameAsync(input.PhoneNumber);
                     if (user == null)
                     {
                         throw new UserFriendlyException(404, "Phone number is not exist !");
@@ -170,6 +171,42 @@ namespace YOOTEK.Authorization.Accounts
             catch (Exception ex)
             {
                 Logger.Fatal("pass + Email: " + ex.ToJsonString());
+                throw;
+            }
+        }
+
+        public async Task<DataResult> ConfirmResetPassword(ConfirmResetPasswordInput input)
+        {
+            try
+            {
+                var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.PhoneNumber);
+                if (tenant == null) throw new UserFriendlyException(404, "Phone number is not exist !");
+
+                using (CurrentUnitOfWork.SetTenantId(tenant.Id))
+                {
+                    var user = await UserManager.FindByNameAsync(input.PhoneNumber);
+                    if (user == null)
+                    {
+                        throw new UserFriendlyException(404, "Phone number is not exist !");
+                    }
+
+                    if ( user.PasswordResetCode.IsNullOrEmpty() || user.PasswordResetCode != input.OtpCode)
+                    {
+                        throw new UserFriendlyException(422, L("InvalidPasswordResetCode"),
+                            L("InvalidPasswordResetCode_Detail"));
+                    }
+
+                    await UserManager.InitializeOptionsAsync(tenant.Id);
+                    CheckErrors(await UserManager.ChangePasswordAsync(user, input.NewPassword));
+                    user.PasswordResetCode = null;
+                    user.IsEmailConfirmed = true;
+                    await UserManager.UpdateAsync(user);
+                    return DataResult.ResultSuccess("Password change success S!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal("Erp otp pass + Email: " + ex.ToJsonString());
                 throw;
             }
         }
