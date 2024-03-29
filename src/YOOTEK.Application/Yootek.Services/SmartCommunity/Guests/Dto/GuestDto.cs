@@ -1,8 +1,8 @@
 using System;
 using Abp.AutoMapper;
+using JetBrains.Annotations;
 using Yootek.Common;
 using Yootek.EntityDb;
-using JetBrains.Annotations;
 using static Yootek.YootekServiceBase;
 
 namespace Yootek.Yootek.Services.Yootek.SmartCommunity.Guests.Dto
