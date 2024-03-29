@@ -146,7 +146,10 @@ namespace Yootek.Services
                                      NumberCitizen = g.Count(x => x != null),
                                      NumberBuilding = (from b in _organizationUnitRepository.GetAll()
                                                        where buildingIds.Contains(b.Id) && b.ParentId == g.Key.Id
-                                                       select b).Count()
+                                                       select b).Count(),
+                                     NameBuildings = string.Join(", ", (from b in _organizationUnitRepository.GetAll()
+                                                                        where buildingIds.Contains(b.Id) && b.ParentId == g.Key.Id
+                                                                        select b.DisplayName).ToList())
                                  })
                                  .Where(x => urbanIds.Contains(x.Id))
                                  .ApplySearchFilter(input.Keyword, x => x.DisplayName, x => x.ProjectCode)
@@ -232,7 +235,10 @@ namespace Yootek.Services
                                        NumberCitizen = g.Count(x => x != null),
                                        NumberBuilding = (from b in _organizationUnitRepository.GetAll()
                                                          where buildingIds.Contains(b.Id) && b.ParentId == g.Key.Id
-                                                         select b).Count()
+                                                         select b).Count(),
+                                       NameBuildings = string.Join(", ", (from b in _organizationUnitRepository.GetAll()
+                                                                          where buildingIds.Contains(b.Id) && b.ParentId == g.Key.Id
+                                                                          select b.DisplayName).ToList())
                                    }).FirstOrDefaultAsync();
                 return DataResult.ResultSuccess(urban.MapTo<UrbanDto>(), "Get urban detail success!");
             }

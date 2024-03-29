@@ -38,6 +38,8 @@ namespace Yootek.Services
         public long? ParentId { get; set; }
         public string Code { get; set; }
         public int NumberBuilding { get; set; }
+        public string? NameBuildings { get; set; }
+
         public int NumberCitizen { get; set; }
     }
 
@@ -52,6 +54,8 @@ namespace Yootek.Services
         public string ProjectCode { get; set; }
         public int NumberBuilding { get; set; }
         public int NumberCitizen { get; set; }
+        public string? NameBuildings { get; set; }
+
     }
 
 

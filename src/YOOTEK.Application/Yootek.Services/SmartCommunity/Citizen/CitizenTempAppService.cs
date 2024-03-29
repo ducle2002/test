@@ -976,6 +976,7 @@ namespace Yootek.Services
                     ("Mẹ của khách") => RELATIONSHIP.Mother_Guest,
                     ("Ông của khách") => RELATIONSHIP.Grandfather_Guest,
                     ("Bà của khách") => RELATIONSHIP.Grandmother_Guest,
+                    ("Nhân viên") => RELATIONSHIP.Staff,
                     "" => 0,
                     _ => throw new NotImplementedException()
                 };
@@ -1004,6 +1005,7 @@ namespace Yootek.Services
                     ("Mother guest") => RELATIONSHIP.Mother_Guest,
                     ("Grandfather guest") => RELATIONSHIP.Grandfather_Guest,
                     ("Grandmother guest") => RELATIONSHIP.Grandmother_Guest,
+                    ("Staff") => RELATIONSHIP.Staff,
                     "" => 0,
                     _ => throw new NotImplementedException()
                 };
