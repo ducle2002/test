@@ -21,6 +21,9 @@ using Abp.Runtime.Session;
 using Yootek.Account.Cache;
 using Abp;
 using Yootek.Common.DataResult;
+using Abp.Json;
+using Microsoft.AspNetCore.Mvc;
+using Abp.Extensions;
 
 namespace YOOTEK.Authorization.Accounts
 {
@@ -134,7 +137,7 @@ namespace YOOTEK.Authorization.Accounts
                     false,
                     input.PhoneNumber);
                 user.IsActive = false;
-                var timeCodeExpire = TimeSpan.FromMinutes(1);
+                var timeCodeExpire = TimeSpan.FromMinutes(5);
                 await SendVerificationOtp(input.PhoneNumber, input.EmailAddress, input.FullName, timeCodeExpire);
                 return DataResult.ResultSuccess(new RegisterErpOutput
                 {
@@ -145,12 +148,75 @@ namespace YOOTEK.Authorization.Accounts
 
         }
 
-        public async Task<DataResult> ReSendVerificationOtp(string phoneNumber, string email, string fullName)
+        public async Task<DataResult> SendForgotPasswordOtp([FromBody] SendForgotPasswordOtpInput input)
+        {
+            try
+            {
+                var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.PhoneNumber);
+                if (tenant == null) throw new UserFriendlyException(404, "Phone number is not exist !");
+
+                using (CurrentUnitOfWork.SetTenantId(tenant.Id))
+                {
+                    var user = await UserManager.FindByNameAsync(input.PhoneNumber);
+                    if (user == null)
+                    {
+                        throw new UserFriendlyException(404, "Phone number is not exist !");
+                    }
+
+                    user.SetNewPasswordResetCode();
+                    await _userEmailer.SendPasswordResetLinkAsync(user);
+                    return DataResult.ResultSuccess("");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal("pass + Email: " + ex.ToJsonString());
+                throw;
+            }
+        }
+
+        public async Task<DataResult> ConfirmResetPassword(ConfirmResetPasswordInput input)
+        {
+            try
+            {
+                var tenant = await _tenantManager.FindByTenancyErpNameAsync(input.PhoneNumber);
+                if (tenant == null) throw new UserFriendlyException(404, "Phone number is not exist !");
+
+                using (CurrentUnitOfWork.SetTenantId(tenant.Id))
+                {
+                    var user = await UserManager.FindByNameAsync(input.PhoneNumber);
+                    if (user == null)
+                    {
+                        throw new UserFriendlyException(404, "Phone number is not exist !");
+                    }
+
+                    if ( user.PasswordResetCode.IsNullOrEmpty() || user.PasswordResetCode != input.OtpCode)
+                    {
+                        throw new UserFriendlyException(422, L("InvalidPasswordResetCode"),
+                            L("InvalidPasswordResetCode_Detail"));
+                    }
+
+                    await UserManager.InitializeOptionsAsync(tenant.Id);
+                    CheckErrors(await UserManager.ChangePasswordAsync(user, input.NewPassword));
+                    user.PasswordResetCode = null;
+                    user.IsEmailConfirmed = true;
+                    await UserManager.UpdateAsync(user);
+                    return DataResult.ResultSuccess("Password change success S!");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal("Erp otp pass + Email: " + ex.ToJsonString());
+                throw;
+            }
+        }
+
+        public async Task<DataResult> ReSendVerificationOtp([FromBody] ReSendVerificationOtpInput input)
         {
            
-            var timeCodeExpire = TimeSpan.FromMinutes(1);
+            var timeCodeExpire = TimeSpan.FromMinutes(5);
 
-            await SendVerificationOtp(phoneNumber, email, fullName, timeCodeExpire);
+            await SendVerificationOtp(input.PhoneNumber, input.Email, input.FullName, timeCodeExpire);
             return DataResult.ResultSuccess("Send success !");
         }
 
@@ -185,7 +251,8 @@ namespace YOOTEK.Authorization.Accounts
             var user = await UserManager.GetErpUserOrNullByPhoneNumberAsync(input.PhoneNumber);
             user.IsPhoneNumberConfirmed = true;
             user.IsEmailConfirmed = true;
-            await UserManager.UpdateAsync(user);
+            user.IsActive = true;
+            await UserManager.UpdateErpUserAsync(user);
             return DataResult.ResultSuccess("Send success !");
         }
     }

@@ -23,7 +23,9 @@ namespace Yootek.Services
     {
         public string UrbanCode { get; set; }
         public string BuildingCode { get; set; }
-        public string ParkingName { get; set; }
+        public string ParkingCode { get; set; }
+        public string BillConfigCode { get; set; }
+
     }
 
     public class GetAllCitizenVehicleInput : CommonInputDto
