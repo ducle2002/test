@@ -12,8 +12,8 @@ namespace Yootek.Services
     {
         public int? MinValue { get; set; }
         public int? MaxValue { get; set; }
-        public DateTime? FromMonth { get; set; }
-        public DateTime? ToMonth { get; set; }
+        //public DateTime? FromMonth { get; set; }
+        //public DateTime? ToMonth { get; set; }
         public long? MeterTypeId { get; set; }
         public DateTime? Period { get; set; }
         public OrderByMeterByMonth OrderBy { get; set; }
