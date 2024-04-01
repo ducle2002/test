@@ -72,5 +72,6 @@ namespace YOOTEK.EntityDb
         Booking = 2,
         Invoice = 3,
         Ecofarm = 4,
+        DigitalService = 5,
     }
 }

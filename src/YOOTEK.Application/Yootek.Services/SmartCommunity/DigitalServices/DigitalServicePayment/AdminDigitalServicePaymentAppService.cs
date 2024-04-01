@@ -29,13 +29,15 @@ namespace YOOTEK.Yootek.Services
         private readonly IRepository<DigitalServices, long> _digitalServiceRepository;
         private readonly IRepository<DigitalServiceDetails, long> _digitalServiceDetailRepository;
         private readonly IRepository<Citizen, long> _citizenRepository;
+        private readonly DigitalServicePaymentUtil _digitalServicePaymentUtil;
 
         public AdminDigitalServicePaymentAppService(
              IRepository<DigitalServicePayment, long> digitalServicePaymentRepository,
              IRepository<DigitalServiceOrder, long> digitalServiceOrderRepository,
              IRepository<DigitalServices, long> digitalServiceRepository,
              IRepository<DigitalServiceDetails, long> digitalServiceDetailRepository,
-             IRepository<Citizen, long> citizenRepository
+             IRepository<Citizen, long> citizenRepository,
+             DigitalServicePaymentUtil digitalServicePaymentUtil
             )
         {
             _digitalServicePaymentRepository = digitalServicePaymentRepository;
@@ -43,6 +45,7 @@ namespace YOOTEK.Yootek.Services
             _digitalServiceRepository = digitalServiceRepository;
             _digitalServiceDetailRepository = digitalServiceDetailRepository;
             _citizenRepository = citizenRepository;
+            _digitalServicePaymentUtil = digitalServicePaymentUtil;
         }
 
         private IQueryable<DigitalServicePaymentDto> QueryDigitalServicePayment()
@@ -119,29 +122,10 @@ namespace YOOTEK.Yootek.Services
         {
             try
             {
-                var order = await _digitalServiceOrderRepository.FirstOrDefaultAsync(dto.OrderId);
-                if(order == null) throw new UserFriendlyException(404, "Data not found !");
+                var data = await _digitalServicePaymentUtil.HandlePaymentSuccess(dto.OrderId, dto.Amount, dto.Method, dto.Note, null, DigitalServicePaymentStatus.SUCCESS);
+              
 
-                var insertData = ObjectMapper.Map<DigitalServicePayment>(dto);
-
-                if (order.TotalAmount == dto.Amount) order.Status = (int)TypeActionUpdateStateServiceOrder.PAIDED;
-                else
-                {
-                    order.Status = (int)TypeActionUpdateStateServiceOrder.PAIDEDDEBT;
-                    order.TotalDebtOrBalance = order.TotalAmount - dto.Amount;
-                };
-
-                insertData.ServiceId = order.ServiceId;
-                insertData.Status = DigitalServicePaymentStatus.SUCCESS;
-                insertData.TenantId = order.TenantId;
-                insertData.BuildingId = order.BuildingId;
-                insertData.UrbanId = order.UrbanId;
-                insertData.ApartmentCode = order.ApartmentCode;
-
-                await _digitalServicePaymentRepository.InsertAndGetIdAsync(insertData);
-                await _digitalServiceOrderRepository.UpdateAsync(order);
-
-                return DataResult.ResultSuccess(insertData, "Insert success !");
+                return DataResult.ResultSuccess(data, "Insert success !");
             }
             catch (Exception ex)
             {
