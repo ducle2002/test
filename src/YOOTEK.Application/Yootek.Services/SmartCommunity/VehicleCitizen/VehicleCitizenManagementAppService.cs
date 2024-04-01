@@ -860,7 +860,7 @@ namespace Yootek.Services
             }
         }
 
-        public async Task<object> ExportToExcel(ExportVehicleToExcelInput input)
+        public async Task<object> ExportToExcel(GetAllCitizenVehicleInput input)
         {
             try
             {
@@ -899,7 +899,12 @@ namespace Yootek.Services
 
                              })
                              .Where(x => x.State == CitizenVehicleState.ACCEPTED || x.State == CitizenVehicleState.REJECTED || x.State == CitizenVehicleState.OVERDUE)
-                             .WhereIf(input.ApartmentCodes != null, x => input.ApartmentCodes.Contains(x.ApartmentCode))
+                              .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
+                                 .WhereIf(input.State.HasValue, x => x.State == input.State)
+                                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                                 .WhereIf(input.ApartmentCode != null, x => x.ApartmentCode == input.ApartmentCode)
+                                 .ApplySearchFilter(input.Keyword, x => x.ApartmentCode, x => x.VehicleCode, x => x.VehicleName)
                              .OrderBy(x => x.ApartmentCode).AsQueryable();
                 var data = await query.ToListAsync();
                 var result = _excelExporter.ExportCitizenVehicleToFile(data);
