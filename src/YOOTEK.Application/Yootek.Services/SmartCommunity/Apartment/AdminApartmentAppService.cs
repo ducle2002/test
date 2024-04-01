@@ -108,7 +108,7 @@ namespace Yootek.Services
                                                             FloorId = apartment.FloorId,
                                                             FloorName = _floorRepository.GetAll().Where(x => x.Id == apartment.FloorId).Select(x => x.DisplayName).FirstOrDefault(),
                                                             BillConfig = apartment.BillConfig,
-                                                            RenterName = _citizenTempRepository.GetAll().Where(x => x.UrbanId == apartment.UrbanId && x.BuildingId == apartment.BuildingId && x.ApartmentCode == apartment.ApartmentCode && x.RelationShip == RELATIONSHIP.renter_Guest).Select(x => x.FullName).FirstOrDefault(),
+                                                            RenterName = _citizenTempRepository.GetAll().Where(x => x.UrbanId == apartment.UrbanId && x.BuildingId == apartment.BuildingId && x.ApartmentCode == apartment.ApartmentCode && x.RelationShip == RELATIONSHIP.Renter_Guest).Select(x => x.FullName).FirstOrDefault(),
 
                                                         })
                          .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
