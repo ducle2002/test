@@ -32,19 +32,20 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         public int? TenantId { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
-        public List<string>? ImageUrls { get; set; }
-        public string? Note { get; set; }
+        public List<string> ImageUrls { get; set; }
+        public string Note { get; set; }
         public DateTime? DateStart { get; set; }
         public DateTime? DateExpected { get; set; }
         public DateTime? DateFinish { get; set; }
         public long? UserId { get; set; }
+        public string WorkerName { get; set; }
         public int? Status { get; set; }
         public long? WorkTypeId { get; set; }
         public long CreatorUserId { get; set; }
         public DateTime CreationTime { get; set; }
-        public string? QrCode { get; set; }
-        public QRObjectDto? QRObject { get; set; }
-        public string? QRAction { get; set; }               
+        public string QrCode { get; set; }
+        public QRObjectDto QRObject { get; set; }
+        public string QRAction { get; set; }               
     }
 
     public class WorkExcelDto
@@ -194,6 +195,7 @@ namespace Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity.WorkDtos
         ASSIGNED = 1,
         RECEIVED = 2,
         FOLLOW = 3,
+        FULLDATA = 4
     }
     public class CreateWorkDto
     {

@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 using static Yootek.Common.Enum.UserFeedbackEnum;
 using Yootek.Core.Dto;
 using Yootek.Services.ExportData;
+using Yootek.Authorization;
 
 namespace Yootek.Services
 {
@@ -130,16 +131,43 @@ namespace Yootek.Services
         {
             try
             {
-                MicroserviceResultDto<PagedResultDto<WorkDto>> listResult = await _httpWorkAssignmentService.GetListWork(new GetListWorkDto()
+                if(!input.FormId.HasValue && IsGranted(IOCPermissionNames.Data_Admin))
                 {
-                    FormId = (int?)input.FormId,
-                    Status = (int?)input.Status,
-                    WorkTypeId = input.WorkTypeId,
-                    Keyword = input.Keyword,
-                    MaxResultCount = input.MaxResultCount,
-                    SkipCount = input.SkipCount
-                });
-                return DataResult.ResultSuccess(listResult.Result.Items, listResult.Message, listResult.Result.TotalCount);
+                    MicroserviceResultDto<PagedResultDto<WorkDto>> listResult = await _httpWorkAssignmentService.AdminGetListWork(new GetListWorkDto()
+                    {
+                        FormId = null,
+                        Status = (int?)input.Status,
+                        WorkTypeId = input.WorkTypeId,
+                        Keyword = input.Keyword,
+                        MaxResultCount = input.MaxResultCount,
+                        SkipCount = input.SkipCount
+                    });
+
+                    if(listResult.Result.Items != null)
+                    {
+                        foreach (var item in listResult.Result.Items)
+                        {
+                            item.WorkerName = GetFullNameAndUserNameOfUser(item.UserId ?? 0);
+                        }
+                    }
+
+                    return DataResult.ResultSuccess(listResult.Result.Items, listResult.Message, listResult.Result.TotalCount);
+                }
+                else
+                {
+                    MicroserviceResultDto<PagedResultDto<WorkDto>> listResult = await _httpWorkAssignmentService.GetListWork(new GetListWorkDto()
+                    {
+                        FormId = (int?)input.FormId,
+                        Status = (int?)input.Status,
+                        WorkTypeId = input.WorkTypeId,
+                        Keyword = input.Keyword,
+                        MaxResultCount = input.MaxResultCount,
+                        SkipCount = input.SkipCount
+                    });
+
+                    return DataResult.ResultSuccess(listResult.Result.Items, listResult.Message, listResult.Result.TotalCount);
+                }
+              
             }
             catch (Exception e)
             {
