@@ -31,8 +31,8 @@ namespace Yootek.EntityDb
         Mother_Guest = 18,
         Grandfather_Guest = 19,
         Grandmother_Guest = 20,
-        staff_Guest = 21,
-        renter_Guest = 22,
+        Staff_Guest = 21,
+        Renter_Guest = 22,
     }
 
     public enum STATE_CITIZEN
