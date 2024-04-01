@@ -1,15 +1,22 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using Yootek.Application;
 using Yootek.Common.DataResult;
 using Yootek.EntityDb;
 using Yootek.Organizations;
+using Yootek.Services.Dto;
 using Exception = System.Exception;
 
 namespace Yootek.Services
@@ -28,12 +35,14 @@ namespace Yootek.Services
 
 
 
-    public class CarCardAppService(IRepository<CarCard, long> carCardRepository, IRepository<AppOrganizationUnit, long> organizationUnit, IRepository<CitizenVehicle, long> citizenVehicleRepos, IRepository<CitizenParking, long> citizenParkingRepository) : YootekAppServiceBase, ICarCardAppService
+    public class CarCardAppService(IRepository<CarCard, long> carCardRepository, IRepository<CitizenParking, long> parkingRepos, IRepository<AppOrganizationUnit, long> organizationUnit, IRepository<CitizenVehicle, long> citizenVehicleRepos, IRepository<CitizenParking, long> citizenParkingRepository, ICarCardListExcelExporter excelExporter) : YootekAppServiceBase, ICarCardAppService
     {
         private readonly IRepository<CarCard, long> _carCardRepository = carCardRepository;
         private readonly IRepository<AppOrganizationUnit, long> _organizationUnit = organizationUnit;
         private readonly IRepository<CitizenVehicle, long> _citizenVehicleRepos = citizenVehicleRepos;
         private readonly IRepository<CitizenParking, long> _citizenParkingRepository = citizenParkingRepository;
+        private readonly ICarCardListExcelExporter _excelExporter = excelExporter;
+        private readonly IRepository<CitizenParking, long> _parkingRepos = parkingRepos;
         public async Task<object> CreateCarCard(CreateCarCardDto input)
         {
             try
@@ -96,6 +105,7 @@ namespace Yootek.Services
                                                    })
           .WhereIf(input.State != default, u => u.State == input.State)
           .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+          .WhereIf(input.ParkingId.HasValue, x => x.ParkingId == input.ParkingId)
           .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
           .WhereIf(input.Status == 5, x => x.State == null)
           .WhereIf(input.ToDay.HasValue, x => x.CreationTime.Date == input.ToDay.Value.Date)
@@ -308,6 +318,156 @@ namespace Yootek.Services
             catch (Exception e)
             {
                 Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+        public async Task<object> ExportToExcel(CarCardInput input)
+        {
+            try
+            {
+                IQueryable<CarCardDto> query = (from u in _carCardRepository.GetAll()
+                                                join citizenVehicle in _citizenVehicleRepos.GetAll() on u.VehicleCardCode equals citizenVehicle.CardNumber into tb_citizenVehicle
+                                                from creator in tb_citizenVehicle.DefaultIfEmpty()
+                                                select new CarCardDto()
+                                                {
+                                                    CreationTime = u.CreationTime,
+                                                    BuildingId = (long)creator.BuildingId,
+                                                    UrbanId = (long)creator.UrbanId,
+                                                    State = creator.State,
+                                                    VehicleCardCode = u.VehicleCardCode,
+                                                    BuildingName = _organizationUnit.GetAll().Where(x => x.Id == creator.BuildingId).Select(x => x.DisplayName).FirstOrDefault() ?? "-",
+                                                    UrbanName = _organizationUnit.GetAll().Where(x => x.Id == creator.UrbanId).Select(x => x.DisplayName).FirstOrDefault() ?? "-",
+                                                    ApartmentCode = creator.ApartmentCode,
+                                                    VehicleName = creator.VehicleName ?? "-",
+                                                    VehicleCode = creator.VehicleCode ?? "-",
+                                                    OwnerName = creator.OwnerName ?? "-",
+                                                    VehicleType = creator.VehicleType,
+                                                    RegistrationDate = creator.RegistrationDate,
+                                                    ExpirationDate = creator.ExpirationDate,
+                                                    Cost = creator.Cost,
+                                                    ParkingId = (long)u.ParkingId,
+                                                    ParkingName = _citizenParkingRepository.GetAll().Where(x => x.Id == u.ParkingId).Select(x => x.ParkingName).FirstOrDefault() ?? "-",
+                                                    Description = creator.Description ?? "-",
+                                                })
+                                                 .WhereIf(input.State != default, u => u.State == input.State)
+          .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+          .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+           .WhereIf(input.ParkingId.HasValue, x => x.ParkingId == input.ParkingId)
+          .WhereIf(input.Status == 5, x => x.State == null)
+          .WhereIf(input.ToDay.HasValue, x => x.CreationTime.Date == input.ToDay.Value.Date)
+         .ApplySearchFilter(input.Keyword, u => u.VehicleCardCode, u => u.BuildingName, u => u.UrbanName)
+                              .OrderBy(x => x.ApartmentCode)
+                            .AsQueryable();
+                var data = await query.ToListAsync();
+                var result = _excelExporter.ExportToFile(data);
+                return DataResult.ResultSuccess(result, "Success!");
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
+        public async Task<object> ImportCarCardFromExcel([FromForm] ImportCarCardExcelInput input)
+        {
+            try
+            {
+                const int COL_PARKING_LOT_CODE = 1;
+                const int COL_VEHICLECARDCODE = 2;
+                IFormFile file = input.File;
+                string fileName = file.FileName;
+                string fileExt = Path.GetExtension(fileName);
+                if (fileExt != ".xlsx" && fileExt != ".xls")
+                {
+                    return DataResult.ResultError("File not supported", "Error");
+                }
+
+                // Generate a unique file path
+                string filePath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + fileExt);
+
+                using (FileStream stream = File.Create(filePath))
+                {
+                    await file.CopyToAsync(stream);
+                    stream.Close();
+                }
+
+                var package = new ExcelPackage(new FileInfo(filePath));
+                var worksheet = package.Workbook.Worksheets.First();
+                int rowCount = worksheet.Dimension.End.Row;
+                var listCarCards = new List<CarCard>();
+
+                for (var row = 2; row <= rowCount; row++)
+                {
+                    var carCard = new CarCard();
+
+                    if (worksheet.Cells[row, COL_PARKING_LOT_CODE].Value != null)
+                    {
+                        var parkingIDstr = worksheet.Cells[row, COL_PARKING_LOT_CODE].Value.ToString().Trim();
+
+                        var checkParkingId = (await _parkingRepos.FirstOrDefaultAsync(x => x.ParkingCode == parkingIDstr));
+                        if (checkParkingId != null)
+                        {
+                            carCard.ParkingId = checkParkingId.Id;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else continue;
+
+                    if (worksheet.Cells[row, COL_VEHICLECARDCODE].Value != null)
+                    {
+                        var checkCarCardCode = worksheet.Cells[row, COL_VEHICLECARDCODE].Value.ToString().Trim();
+
+                        var checkCarCard = (await _carCardRepository.FirstOrDefaultAsync(x => x.VehicleCardCode == checkCarCardCode && x.ParkingId == carCard.ParkingId));
+                        if (checkCarCard == null)
+                        {
+                            carCard.VehicleCardCode = checkCarCardCode;
+                        }
+                        else { continue; }
+
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    carCard.TenantId = AbpSession.TenantId;
+
+                    listCarCards.Add(carCard);
+
+                }
+
+                await CreateListCarCardsAsync(listCarCards);
+                File.Delete(filePath);
+
+                return DataResult.ResultSuccess(listCarCards, "Success");
+            }
+
+            catch (Exception ex)
+            {
+                var data = DataResult.ResultError(ex.Message, "Error");
+                Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
+        private async Task CreateListCarCardsAsync(List<CarCard> input)
+        {
+            try
+            {
+                if (input == null || !input.Any())
+                {
+                    return;
+                }
+                foreach (var item in input)
+                {
+                    var data = await _carCardRepository.InsertAsync(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex.Message);
                 throw;
             }
         }
