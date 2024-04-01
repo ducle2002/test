@@ -9,6 +9,10 @@ namespace Yootek.Common.Enum
         AdminVerify = 5,
         Banking = 6,
 
+
+        OnePay1 = 31,
+        OnePay2 = 32,
+        OnePay3 = 33,
     }
 
     public enum UserBillPaymentStatus

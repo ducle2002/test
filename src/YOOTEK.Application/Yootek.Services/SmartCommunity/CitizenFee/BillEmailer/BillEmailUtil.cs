@@ -1116,7 +1116,7 @@ namespace Yootek.Services
                     .Replace("{UNIT_PRICE_WATER}", FormatCost(billWaterConfigProperties?.Prices[0].Value))
 
                     // management
-                    .Replace("{COST_MANAGEMENT_UNPAID}", FormatCost(managementMoney))
+                    .Replace("{COST_MANAGEMENT_UNPAID}", FormatCost(managementMoneyUnpaid))
                     .Replace("{COST_MANAGEMENT_DEBT}", FormatCost(managementMoneyDebt))
                     .Replace("{COST_MANAGEMENT}", FormatCost(managementMoney))
 
@@ -1127,7 +1127,7 @@ namespace Yootek.Services
 
                     // parking
                     .Replace("{UNIT_PRICE_PARKING}", "")
-                    .Replace("{COST_PARKING_UNPAID}", FormatCost(parkingMoney))
+                    .Replace("{COST_PARKING_UNPAID}", FormatCost(parkingMoneyUnpaid))
                     .Replace("{COST_PARKING_DEBT}", FormatCost(parkingMoneyDebt))
                     .Replace("{COST_PARKING}", FormatCost(parkingMoney))
 
@@ -2968,12 +2968,12 @@ namespace Yootek.Services
 
                 // userbill for each type
                 List<BillConfig> billConfigs = _billConfigRepository.GetAllList();
-                UserBill parkingBill = userBills.FirstOrDefault(x => x.BillType == BillType.Parking);
-                UserBill waterBill = userBills.FirstOrDefault(x => x.BillType == BillType.Water);
-                UserBill electricBill = userBills.FirstOrDefault(x => x.BillType == BillType.Electric);
-                UserBill lightBill = userBills.FirstOrDefault(x => x.BillType == BillType.Lighting);
-                UserBill managementBill = userBills.FirstOrDefault(x => x.BillType == BillType.Manager);
-                List<UserBill> otherBills = userBills.Where(x => x.BillType == BillType.Other).ToList();
+                UserBill parkingBill = userBills.FirstOrDefault(x => x.BillType == BillType.Parking && x.Status == UserBillStatus.Pending);
+                UserBill waterBill = userBills.FirstOrDefault(x => x.BillType == BillType.Water && x.Status == UserBillStatus.Pending);
+                UserBill electricBill = userBills.FirstOrDefault(x => x.BillType == BillType.Electric && x.Status == UserBillStatus.Pending);
+                UserBill lightBill = userBills.FirstOrDefault(x => x.BillType == BillType.Lighting && x.Status == UserBillStatus.Pending);
+                UserBill managementBill = userBills.FirstOrDefault(x => x.BillType == BillType.Manager && x.Status == UserBillStatus.Pending);
+                List<UserBill> otherBills = userBills.Where(x => x.BillType == BillType.Other && x.Status == UserBillStatus.Pending).ToList();
 
                 // day water, electric, management, ... 
                 int dayWater = await GetDayWater(waterBill, currentDate);
@@ -2995,10 +2995,7 @@ namespace Yootek.Services
                 double lightMoneyUnpaid = GetBillCost(lightBill);
                 double otherMoneyUnpaid = (double)otherBills.Sum(x => x.LastCost);
 
-                // tax
-                long waterMoneyBVMT = (long)(waterMoneyUnpaid * 0.1);
-                long waterMoneyVAT = (long)(waterMoneyUnpaid * 0.05);
-                double waterMoneyUnpaidAndTax = waterMoneyUnpaid + waterMoneyBVMT + waterMoneyVAT;
+               
 
                 List<UserBill> userBillDetbs = _userBillRepository.GetAll()
                   .Where(x => x.ApartmentCode == apartmentCode)
@@ -3030,14 +3027,13 @@ namespace Yootek.Services
                 double otherMoney = otherMoneyUnpaid + otherMoneyDebt;
 
                 // total unpaid, debt, pre_payment bill amount 
-                double costTax = waterMoneyBVMT + waterMoneyVAT;
+               
                 double costUnpaid = parkingMoneyUnpaid + waterMoneyUnpaid + managementMoneyUnpaid + electricMoneyUnpaid + lightMoneyUnpaid + otherMoneyUnpaid;
                 double costDebt = managementMoneyDebt + parkingMoneyDebt + waterMoneyDebt + electricMoneyDebt + lightMoneyDebt + otherMoneyDebt;
                 double costPrepayment = parkingMoneyPrePayment + waterMoneyPrePayment + managementMoneyPrePayment + electricMoneyPrePayment + lightMoneyPrePayment + otherMoneyPrePayment;
                 double totalFeeAndDebt = costUnpaid + costDebt;
                 double totalFeePayable = totalFeeAndDebt - costPrepayment;
-                double totalFeePayableAndTax = totalFeePayable + costTax;  // Thanh Bình
-                double totalFeeDebtAndTax = costUnpaid + costTax;
+             
 
                 // paid
                 double managementMoneyPaid = managementBill != null && managementBill.Status == UserBillStatus.Paid ? managementBill.LastCost.Value : 0;
@@ -3051,6 +3047,7 @@ namespace Yootek.Services
                 decimal indexEndElectric = GetIndexEnd(electricBill);
                 decimal totalIndexWater = GetTotalIndex(waterBill);
                 decimal totalIndexElectric = GetTotalIndex(electricBill);
+
 
                 #region bill config for each type
                 // parking 
@@ -3086,12 +3083,25 @@ namespace Yootek.Services
                 #region Sản lượng tiêu thụ nước
 
                 //Hóa đơn nước
+                //check water bill exist
                 var w_money = 0;
                 var resultW = 0;
                 if (waterBill != null)
                 {
                     w_money = (int)waterBill.LastCost;
                     buildingId = buildingId > 0 ? buildingId : waterBill.BuildingId;
+                    try
+                    {
+                        var w_propeties = JsonConvert.DeserializeObject<BillProperites>(waterBill.Properties);
+                        if(w_propeties.formulaDetails != null)
+                        {
+                            var wprice = w_propeties.formulaDetails.FirstOrDefault(x => x.BillType == BillType.Water && x.PricesType == BillConfigPricesType.Level);
+                            if (wprice != null) billWaterConfigProperties = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(wprice.Properties);
+                        }
+                    }catch
+                    {
+
+                    }
                 }
 
                 if (billWaterConfigProperties != null && billWaterConfigProperties.Prices != null)
@@ -3150,7 +3160,12 @@ namespace Yootek.Services
                     }
                 }
 
+                // tax
+                long waterMoneyBVMT = (long)(resultW * 0.1);
+                long waterMoneyVAT = (long)(resultW * 0.05);
+               // double waterMoneyUnpaidAndTax = resultW + waterMoneyBVMT + waterMoneyVAT;
 
+                double costTax = waterMoneyBVMT + waterMoneyVAT;
                 #endregion
 
                 #region Sản lượng tiêu thụ điện
@@ -3370,7 +3385,6 @@ namespace Yootek.Services
                     .Replace("{W_VAT}", FormatCost(waterMoneyVAT))  // thanh bình
                     .Replace("{COST_WATER_PRE_PAYMENT}", FormatCost(waterMoneyPrePayment))
                     .Replace("{COST_WATER_DEBT}", FormatCost(waterMoneyDebt))
-                    .Replace("{COST_WATER_UNPAID_TAX}", FormatCost(waterMoneyUnpaidAndTax)) // thanh bình
                     .Replace("{COST_WATER}", FormatCost(waterMoney))
 
                     // parking
@@ -3394,6 +3408,7 @@ namespace Yootek.Services
 
                     .Replace("{M_MONEY_PAID}", FormatCost(managementMoneyPaid))
                     .Replace("{P_MONEY_PAID}", FormatCost(parkingMoneyPaid))
+                    .Replace("{COST_TAX}", FormatCost(costTax))
                     // total money
                     .Replace("{TOTAL_1}", FormatCost(costUnpaid))
                     .Replace("{DEBT}", FormatCost(costDebt))
@@ -3403,7 +3418,7 @@ namespace Yootek.Services
                     .Replace("{END_PERIOD}", string.Format("{0:dd/MM/yyyy}", end_period))
                     .Replace("{W_HEAD_PERIOD}", string.Format("{0:dd/MM/yyyy}", w_head_period))
                     .Replace("{W_END_PERIOD}", string.Format("{0:dd/MM/yyyy}", w_end_period))
-                    .Replace("{COST_UNPAID_TAX}", FormatCost(totalFeeDebtAndTax))
+                   // .Replace("{COST_UNPAID_TAX}", FormatCost(totalFeeDebtAndTax))
                     .Replace("{W_MONEY}", FormatCost(w_money))
                     .Replace("{COST_UNPAID}", FormatCost(costUnpaid))
                     .Replace("{COST_DEBT}", FormatCost(costDebt))
@@ -5495,8 +5510,6 @@ namespace Yootek.Services
                     bill.LastCost.HasValue &&
                     bill.BillType == billType)
                 .Where(bill =>
-                    (bill.Period.Value.Month == periodDebt.Month &&
-                    bill.Period.Value.Year == periodDebt.Year) &&
                     bill.Status == UserBillStatus.Debt)
                 .Sum(bill => (bill.DebtTotal > 0 ? (double)bill.DebtTotal.Value : bill.LastCost.Value)) ?? 0;
         }

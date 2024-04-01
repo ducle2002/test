@@ -632,16 +632,6 @@ namespace Yootek.Services
                 foreach (var bill in result)
                 {
                     bill.CitizenName = bill.CitizenName ?? GetCitizenNameFromApartmentCode(bill.ApartmentCode);
-                    //if (bill.CitizenName == null)
-                    //{
-                    //    if (!string.IsNullOrWhiteSpace(bill.Properites) && bill.Properites.Contains("customerName"))
-                    //    {
-                    //        var ubProperties = JsonConvert.DeserializeObject<BillProperites>(bill.Properites);
-                    //        bill.CitizenName = !string.IsNullOrWhiteSpace(ubProperties.customerName)
-                    //            ? ubProperties.customerName
-                    //            : GetCitizenNameFromApartmentCode(bill.ApartmentCode);
-                    //    }
-                    //}
                 }
 
                 var data = DataResult.ResultSuccess(result, "Get success", query.Count());

@@ -53,17 +53,22 @@ namespace Yootek.Services
             _citizenVehicleRepos = citizenVehicleRepos;
         }
 
-
+        /// <summary>
+        /// Hot fix get parking app user 13/03/2024
+        /// Nguyễn Minh Hiếu
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public async Task<object> GetAllAsync(GetAllCitizenParkingInput input)
         {
             try
             {
-                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+               // List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 using (CurrentUnitOfWork.SetTenantId(AbpSession.TenantId))
                 {
                     var query = _citizenParkingRepos.GetAll();
                     var paginatedData = await query
-                            .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
+                            //.WhereByBuildingOrUrbanIf(!IsGranted(PermissionNames.Data_Admin), buIds)
                             .ApplySearchFilter(input.Keyword, x => x.ParkingName, x => x.ParkingCode)
                             .ApplySort(input.OrderBy, input.SortBy)
                             .ApplySort(OrderByCitizenParking.PARKING_CODE)
@@ -169,13 +174,8 @@ namespace Yootek.Services
             try
             {
                 if (ids.Count == 0) return DataResult.ResultError("Error", "Empty input!");
-                var tasks = new List<Task>();
-                foreach (var id in ids)
-                {
-                    var task = Delete(id);
-                    tasks.Add(task);
-                }
-                Task.WaitAll(tasks.ToArray());
+
+                await _citizenParkingRepos.DeleteAsync(x => ids.Contains(x.Id));
                 var data = DataResult.ResultSuccess("Deleted successfully!");
                 return data;
             }

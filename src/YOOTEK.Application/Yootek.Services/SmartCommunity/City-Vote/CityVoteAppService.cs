@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Abp.Timing;
 
 namespace Yootek.Services
 {
@@ -335,7 +336,14 @@ namespace Yootek.Services
             {
                 if (input.StartTime >= input.FinishTime || input.FinishTime <= DateTime.Now)
                     throw new UserFriendlyException(400, "DateTime is invalid");
-                CityVote cityVoteInsert = input.MapTo<CityVote>();
+               
+                //input.StartTime = Clock.Provider.Normalize(input.StartTime);
+                //input.FinishTime = Clock.Provider.Normalize(input.FinishTime);
+
+                input.StartTime = input.StartTime.AddHours(-7);
+                input.FinishTime = input.FinishTime.AddHours(-7);
+                CityVote cityVoteInsert = ObjectMapper.Map<CityVote>(input);
+
                 cityVoteInsert.TenantId = AbpSession.TenantId;
                 if (input.StartTime >= DateTime.Now)
                 {

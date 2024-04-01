@@ -31,7 +31,7 @@ namespace Yootek.Chat.Dto
         public ChatMessageDto MessageReplied { get; set; }
 
     }
-    public class ChatMessageStatic() : ChatMessage, IMayHaveUrban, IMayHaveBuilding
+    public class ChatMessageStatic : ChatMessage, IMayHaveUrban, IMayHaveBuilding
     {
         public long? UrbanId { get; set; }
         public long? BuildingId { get; set; }

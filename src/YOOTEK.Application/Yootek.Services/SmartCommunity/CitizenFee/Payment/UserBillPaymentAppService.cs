@@ -46,7 +46,6 @@ namespace Yootek.Services
         private readonly HttpClient _httpClient;
 
         public UserBillPaymentAppService(
-            IAbpSession abpSession,
             IConfiguration configuration,
             IRepository<UserBillPayment, long> userBillPaymentRepo,
             IRepository<UserBill, long> userBillRepository,
@@ -77,16 +76,28 @@ namespace Yootek.Services
             try
             {
                 var tenantId = AbpSession.TenantId;
-                var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
+                //var validate = await _userBillPaymentValidationRepo.FirstOrDefaultAsync(input.TransactionId);
 
-                if (input.ReturnUrl.IsNullOrEmpty())
-                {
-                    validate.ReturnUrl = input.ReturnUrl;
-                    if (validate.ReturnUrl.Contains("Approved")) validate.State = EReturnState.Approved;
-                    else validate.State = EReturnState.Reject;
-                }
+                //if (!input.ReturnUrl.IsNullOrEmpty())
+                //{
+                //    if (input.ReturnUrl.Contains("Approved"))
+                //    {
+                //        try
+                //        {
+                //            var url = input.ReturnUrl.Split("yoolife://onepay")[1];
+                //            var res = await _httpClient.SendAsync<PaymentDto>("api/payments/onepay-ipn" + url, HttpMethod.Get);
+                //        }
+                //        catch
+                //        {
 
-                await _userBillPaymentValidationRepo.UpdateAsync(validate);
+                //        }
+                //    }
+                   
+                   
+                //}
+
+               // await _userBillPaymentValidationRepo.UpdateAsync(validate);
+                return;
             }
             catch
             {
@@ -114,7 +125,7 @@ namespace Yootek.Services
                     case EPrepaymentStatus.SUCCESS:
                         transaction.Status = UserBillPaymentStatus.Success;
                         transaction.Method = (UserBillPaymentMethod)paymentTransaction.Method;
-                        var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction);  
+                        var pm = await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(transaction, input.Id);  
 
                         var res =  await _httpClient.SendAsync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);
                         await CreateEPaymentBalance(pm.Id, input.Id, paymentTransaction.Amount, pm.Title, pm.TenantId, pm.Method);

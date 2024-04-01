@@ -146,17 +146,17 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                 });
 
                 var query = (from apm in orgs
-                            where apm.Type == APP_ORGANIZATION_TYPE.CHAT
-                            && apm.Code.StartsWith(org.Code)
-                            select new TenantProjectChatDto()
-                            {
-                                OrganizationUnitId = apm.ParentId,
-                                Name = apm.DisplayName,
-                                ImageUrl = apm.ImageUrl,
-                                Type = apm.Type,
-                                Description = apm.Description
+                             where apm.Type == APP_ORGANIZATION_TYPE.CHAT
+                             && apm.Code.StartsWith(org.Code)
+                             select new TenantProjectChatDto()
+                             {
+                                 OrganizationUnitId = apm.ParentId,
+                                 Name = apm.DisplayName,
+                                 ImageUrl = apm.ImageUrl,
+                                 Type = apm.Type,
+                                 Description = apm.Description
 
-                            })
+                             })
                             .AsQueryable();
                 var data = query.ToList();
                 foreach (var friend in data)
@@ -212,7 +212,7 @@ namespace Yootek.Abp.Application.Chat.OrganizationUnitChat
                     .Where(x => x.IsOrganizationUnit == true)
                     .AsQueryable();
 
-                var friends =  query.ToList();
+                var friends = query.ToList();
                 // var cacheItem = _userOrganizationUnitCache.GetFriendChatOrganizationUnit(organizationUnitId, AbpSession.TenantId);
 
                 //var friends = cacheItem.MapTo<List<FriendDto>>();
