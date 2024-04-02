@@ -1,11 +1,11 @@
-﻿using Abp.Domain.Entities;
-using Abp.Domain.Entities.Auditing;
-using Abp.Organizations;
-using Yootek.Organizations.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
+using Abp.Organizations;
+using Yootek.Organizations.Interface;
 
 namespace Yootek.EntityDb
 {
@@ -31,6 +31,8 @@ namespace Yootek.EntityDb
         Mother_Guest = 18,
         Grandfather_Guest = 19,
         Grandmother_Guest = 20,
+        Staff_Guest = 21,
+        Renter_Guest = 22,
     }
 
     public enum STATE_CITIZEN

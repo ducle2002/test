@@ -12,4 +12,24 @@ namespace YOOTEK.Authorization.AccountErps
 
         public string PhoneNumber { get; set; }
     }
+
+    public class ReSendVerificationOtpInput
+    {
+        public string FullName { get; set; }
+        public string Email { get; set; }
+
+        public string PhoneNumber { get; set; }
+    }
+
+    public class SendForgotPasswordOtpInput
+    {
+        public string PhoneNumber { get; set; }
+    }
+
+    public class ConfirmResetPasswordInput
+    {
+        public string OtpCode { get; set; }
+        public string PhoneNumber { get; set; }
+        public string NewPassword { get; set; }
+    }
 }

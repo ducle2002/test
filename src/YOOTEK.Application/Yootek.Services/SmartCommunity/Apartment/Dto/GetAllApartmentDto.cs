@@ -1,8 +1,7 @@
-﻿using Abp.Domain.Entities;
+﻿using System;
+using Abp.Domain.Entities;
 using Yootek.Common;
 using Yootek.Organizations.Interface;
-using System;
-using System.Collections.Generic;
 using static Yootek.YootekServiceBase;
 
 namespace Yootek.Services.Dto
@@ -58,6 +57,8 @@ namespace Yootek.Services.Dto
         public string? BlockName { get; set; }
         public long[]? BillConfigId { get; set; }
         public string? BillConfig { get; set; }
+        public string? RenterName { get; set; }
+
 
     }
 }

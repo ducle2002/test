@@ -860,7 +860,7 @@ namespace Yootek.Services
             }
         }
 
-        public async Task<object> ExportToExcel(ExportVehicleToExcelInput input)
+        public async Task<object> ExportToExcel(GetAllCitizenVehicleInput input)
         {
             try
             {
@@ -889,12 +889,22 @@ namespace Yootek.Services
                                  State = vh.State,
                                  UrbanCode = ub.ProjectCode,
                                  BuildingCode = bu.ProjectCode,
-                                 ParkingName = pk.ParkingName,
+                                 ParkingCode = pk.ParkingCode,
                                  OwnerName = vh.OwnerName,
                                  CardNumber = vh.CardNumber,
+                                 Cost = vh.Cost,
+                                 RegistrationDate = vh.RegistrationDate,
+                                 ExpirationDate = vh.ExpirationDate,
+                                 BillConfigCode = _billConfigRepos.GetAll().Where(x => x.Id == vh.BillConfigId).Select(x => x.Code).FirstOrDefault(),
+
                              })
-                             .Where(x => x.State == CitizenVehicleState.ACCEPTED)
-                             .WhereIf(input.ApartmentCodes != null, x => input.ApartmentCodes.Contains(x.ApartmentCode))
+                             .Where(x => x.State == CitizenVehicleState.ACCEPTED || x.State == CitizenVehicleState.REJECTED || x.State == CitizenVehicleState.OVERDUE)
+                              .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
+                                 .WhereIf(input.State.HasValue, x => x.State == input.State)
+                                 .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                                 .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                                 .WhereIf(input.ApartmentCode != null, x => x.ApartmentCode == input.ApartmentCode)
+                                 .ApplySearchFilter(input.Keyword, x => x.ApartmentCode, x => x.VehicleCode, x => x.VehicleName)
                              .OrderBy(x => x.ApartmentCode).AsQueryable();
                 var data = await query.ToListAsync();
                 var result = _excelExporter.ExportCitizenVehicleToFile(data);
@@ -936,21 +946,22 @@ namespace Yootek.Services
 
         public async Task<object> ImportVehicleFromExcel([FromForm] ImportVehicleInput input)
         {
-            const int COL_URBAN_CODE = 1;
-            const int COL_BUILDING_CODE = 2;
-            const int COL_APARTMENT_CODE = 3;
-            const int COL_CUSTOMER_NAME = 4;
-            const int COL_CARD_NUMBER = 5;
-            const int COL_VEHICLE_TYPE = 6;
-            const int COL_VEHICLE_CODE = 7;
-            const int COL_VEHICLE_NAME = 8;
-            const int COL_PARKING_LOT_CODE = 9;
-            const int COL_DESCRIPTION = 10;
-            const int COL_LEVEL = 11;
+            const int COL_Id = 1;
+            const int COL_URBAN_CODE = 2;
+            const int COL_BUILDING_CODE = 3;
+            const int COL_APARTMENT_CODE = 4;
+            const int COL_CUSTOMER_NAME = 5;
+            const int COL_CARD_NUMBER = 6;
+            const int COL_VEHICLE_TYPE = 7;
+            const int COL_VEHICLE_CODE = 8;
+            const int COL_VEHICLE_NAME = 9;
+            const int COL_PARKING_LOT_CODE = 10;
+            const int COL_DESCRIPTION = 11;
             const int COL_COST = 12;
             const int COL_REGISTER = 13;
             const int COL_EXPIRES = 14;
             const int COL_BILLCONFIG_CODE = 15;
+            const int COL_State = 16;
 
             var file = input.Form;
             var fileName = file.FileName;
@@ -976,21 +987,24 @@ namespace Yootek.Services
                 for (var row = 2; row <= rowCount; row++)
                 {
                     var citizenVehicle = new CitizenVehicle();
+                    //COL_Id
 
-                    if (worksheet.Cells[row, COL_VEHICLE_CODE].Value != null)
-                        citizenVehicle.VehicleCode = worksheet.Cells[row, COL_VEHICLE_CODE].Value.ToString().Trim();
-
-                    if ((await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.VehicleCode == citizenVehicle.VehicleCode)) != null) continue;
-
-                    if (worksheet.Cells[row, COL_APARTMENT_CODE].Value != null)
+                    if (worksheet.Cells[row, COL_Id].Value != null)
                     {
-                        citizenVehicle.ApartmentCode = worksheet.Cells[row, COL_APARTMENT_CODE].Value.ToString().Trim();
+                        if (long.TryParse(worksheet.Cells[row, COL_Id].Value.ToString(), out long id))
+                        {
+                            citizenVehicle.Id = id;
+                        }
+                        else
+                        {
+                            citizenVehicle.Id = 0;
+                        }
                     }
                     else
                     {
                         continue;
                     }
-
+                    //COL_URBAN_CODE
                     if (worksheet.Cells[row, COL_URBAN_CODE].Value != null)
                     {
                         var ubIDstr = worksheet.Cells[row, COL_URBAN_CODE].Value.ToString().Trim();
@@ -1003,6 +1017,7 @@ namespace Yootek.Services
                     }
                     else continue;
 
+                    //COL_BUILDING_CODE
                     if (worksheet.Cells[row, COL_BUILDING_CODE].Value != null)
                     {
                         var buildIDStr = worksheet.Cells[row, COL_BUILDING_CODE].Value.ToString().Trim();
@@ -1014,16 +1029,51 @@ namespace Yootek.Services
                         else continue;
                     }
                     else continue;
+                    //COL_APARTMENT_CODE
 
+                    if (worksheet.Cells[row, COL_APARTMENT_CODE].Value != null)
+                    {
+                        citizenVehicle.ApartmentCode = worksheet.Cells[row, COL_APARTMENT_CODE].Value.ToString().Trim();
+                    }
+                    else
+                    {
+                        continue;
+                    }
+
+                    //COL_CUSTOMER_NAME
+                    if (worksheet.Cells[row, COL_CUSTOMER_NAME].Value != null)
+                    {
+                        citizenVehicle.OwnerName = worksheet.Cells[row, COL_CUSTOMER_NAME].Value.ToString().Trim();
+                    }
+                    //COL_CARD_NUMBER
+                    if (worksheet.Cells[row, COL_CARD_NUMBER].Value != null)
+                    {
+                        citizenVehicle.CardNumber = worksheet.Cells[row, COL_CARD_NUMBER].Value.ToString().Trim();
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    //COL_VEHICLE_TYPE
+                    if (worksheet.Cells[row, COL_VEHICLE_TYPE].Value != null)
+                        citizenVehicle.VehicleType = GetVehicleTypeNumber(worksheet.Cells[row, COL_VEHICLE_TYPE].Value.ToString().Trim());
+                    else citizenVehicle.VehicleType = VehicleType.Other;
+                    //COL_VEHICLE_CODE 
+                    if (worksheet.Cells[row, COL_VEHICLE_CODE].Value != null)
+                    {
+                        citizenVehicle.VehicleCode = worksheet.Cells[row, COL_VEHICLE_CODE].Value.ToString().Trim();
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                    //COL_VEHICLE_NAME 
                     if (worksheet.Cells[row, COL_VEHICLE_NAME].Value != null)
                     {
                         citizenVehicle.VehicleName = worksheet.Cells[row, COL_VEHICLE_NAME].Value.ToString().Trim();
                     }
                     else continue;
-                    if (worksheet.Cells[row, COL_VEHICLE_TYPE].Value != null)
-                        citizenVehicle.VehicleType = GetVehicleTypeNumber(worksheet.Cells[row, COL_VEHICLE_TYPE].Value.ToString().Trim());
-                    else citizenVehicle.VehicleType = VehicleType.Other;
-
+                    //COL_PARKING_LOT_CODE
                     if (worksheet.Cells[row, COL_PARKING_LOT_CODE].Value != null)
                     {
                         var parkingIDstr = worksheet.Cells[row, COL_PARKING_LOT_CODE].Value.ToString().Trim();
@@ -1039,42 +1089,12 @@ namespace Yootek.Services
                         }
                     }
                     else continue;
-
-                    if (worksheet.Cells[row, COL_CARD_NUMBER].Value != null)
-                    {
-                        var cardNumber = worksheet.Cells[row, COL_CARD_NUMBER].Value.ToString().Trim();
-
-                        var checkCarCard = await _citizenVehicleRepos.FirstOrDefaultAsync(x => x.CardNumber.ToLower() == cardNumber.ToLower());
-
-
-                        if (checkCarCard != null)
-                        {
-                            continue;
-                        }
-
-                        citizenVehicle.CardNumber = cardNumber;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-
-
-                    if (worksheet.Cells[row, COL_CUSTOMER_NAME].Value != null)
-                    {
-                        citizenVehicle.OwnerName = worksheet.Cells[row, COL_CUSTOMER_NAME].Value.ToString().Trim();
-                    }
-
+                    //COL_DESCRIPTION
                     if (worksheet.Cells[row, COL_DESCRIPTION].Value != null)
-                        citizenVehicle.Description = worksheet.Cells[row, COL_DESCRIPTION].Value.ToString().Trim();
-
-                    if (worksheet.Cells[row, COL_LEVEL].Value != null)
                     {
-                        citizenVehicle.Level = int.Parse(worksheet.Cells[row, COL_LEVEL].Value.ToString().Trim());
+                        citizenVehicle.Description = worksheet.Cells[row, COL_DESCRIPTION].Value.ToString().Trim();
                     }
-                    else continue;
-
+                    //COL_COST
                     if (worksheet.Cells[row, COL_COST].Value != null)
                     {
                         citizenVehicle.Cost = double.Parse(worksheet.Cells[row, COL_COST].Value.ToString().Trim());
@@ -1083,7 +1103,7 @@ namespace Yootek.Services
                     {
                         citizenVehicle.Cost = 0;
                     }
-
+                    //COL_REGISTER
                     if (worksheet.Cells[row, COL_REGISTER].Value != null)
                     {
 
@@ -1092,6 +1112,7 @@ namespace Yootek.Services
                               CultureInfo.InvariantCulture);
                     }
                     else continue;
+                    //COL_EXPIRES
                     if (worksheet.Cells[row, COL_EXPIRES].Value != null)
                     {
                         citizenVehicle.ExpirationDate = DateTime.ParseExact(worksheet.Cells[row, COL_EXPIRES].Value.ToString().Trim(), "dd/MM/yyyy",
@@ -1099,9 +1120,39 @@ namespace Yootek.Services
                     }
                     else continue;
 
-                    citizenVehicle.State = CitizenVehicleState.ACCEPTED;
-                    citizenVehicle.TenantId = AbpSession.TenantId;
+                    //COL_State
+                    if (worksheet.Cells[row, COL_State].Value != null)
+                    {
+                        var colState = worksheet.Cells[row, COL_State].Value.ToString().Trim().ToLower().Replace(" ", "");
+                        switch (colState)
+                        {
+                            case "hếthạn":
+                                citizenVehicle.State = CitizenVehicleState.OVERDUE;
+                                break;
+                            case "hoạtđộng":
+                                citizenVehicle.State = CitizenVehicleState.ACCEPTED;
+                                break;
+                            case "khônghoạtđộng":
+                                citizenVehicle.State = CitizenVehicleState.REJECTED;
+                                break;
+                            default:
+                                citizenVehicle.State = CitizenVehicleState.ACCEPTED;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        citizenVehicle.State = CitizenVehicleState.ACCEPTED;
+                    }
 
+                    if (citizenVehicle.ExpirationDate != null && citizenVehicle.ExpirationDate <= DateTime.Now)
+                    {
+                        if (citizenVehicle.State != CitizenVehicleState.REJECTED)
+                        {
+                            citizenVehicle.State = CitizenVehicleState.OVERDUE;
+                        }
+                    }
+                    //COL_BILLCONFIG_CODE
                     if (worksheet.Cells[row, COL_BILLCONFIG_CODE].Value != null)
                     {
                         var code = worksheet.Cells[row, COL_BILLCONFIG_CODE].Value.ToString().Trim();
@@ -1119,12 +1170,15 @@ namespace Yootek.Services
 
 
                     }
+                    citizenVehicle.TenantId = AbpSession.TenantId;
+
+
 
                     listVehicles.Add(citizenVehicle);
 
                 }
 
-                await CreateListVehicleAsync(listVehicles);
+                await CreateOrUpdateVehicleAsync(listVehicles);
                 await stream.DisposeAsync();
                 stream.Close();
                 File.Delete(filePath);

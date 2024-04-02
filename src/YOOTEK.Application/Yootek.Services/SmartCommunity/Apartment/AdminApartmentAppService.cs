@@ -1,35 +1,33 @@
 ﻿#nullable enable
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Linq.Dynamic.Core;
+using System.Threading;
+using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.AutoMapper;
 using Abp.Collections.Extensions;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
-using Yootek.Application;
-using Yootek.Common.DataResult;
-using Yootek.Core.Dto;
-using Yootek.EntityDb;
-using Yootek.Organizations;
-using Yootek.Services.Dto;
-using Yootek.Services.ExportData;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Dynamic.Core;
-using System.Threading;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Yootek.Common.Enum;
-using Yootek.Services.SmartCommunity.ExcelBill.Dto;
-using DocumentFormat.OpenXml.Vml;
-using System.IO;
-using DocumentFormat.OpenXml.Drawing;
+using OfficeOpenXml;
+using Yootek.Application;
 using Yootek.Authorization;
+using Yootek.Common.DataResult;
+using Yootek.Common.Enum;
+using Yootek.Core.Dto;
+using Yootek.EntityDb;
+using Yootek.Organizations;
 using Yootek.QueriesExtension;
+using Yootek.Services.Dto;
+using Yootek.Services.ExportData;
+using Yootek.Services.SmartCommunity.ExcelBill.Dto;
 
 namespace Yootek.Services
 {
@@ -110,7 +108,8 @@ namespace Yootek.Services
                                                             FloorId = apartment.FloorId,
                                                             FloorName = _floorRepository.GetAll().Where(x => x.Id == apartment.FloorId).Select(x => x.DisplayName).FirstOrDefault(),
                                                             BillConfig = apartment.BillConfig,
-                                                            
+                                                            RenterName = _citizenTempRepository.GetAll().Where(x => x.UrbanId == apartment.UrbanId && x.BuildingId == apartment.BuildingId && x.ApartmentCode == apartment.ApartmentCode && x.RelationShip == RELATIONSHIP.Renter_Guest).Select(x => x.FullName).FirstOrDefault(),
+
                                                         })
                          .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
                          .WhereIf(input.StatusId.HasValue, x => x.StatusId == input.StatusId)
@@ -215,7 +214,7 @@ namespace Yootek.Services
                 apartment.TenantId = AbpSession.TenantId;
                 apartment.BillConfig = billConfigJson;
 
-                
+
                 await _apartmentRepository.InsertAsync(apartment);
                 return DataResult.ResultSuccess(true, "Insert success!");
             }
@@ -241,7 +240,7 @@ namespace Yootek.Services
                 apartmentOrg.BillConfig = billConfigJson;
 
 
-                
+
                 ObjectMapper.Map(input, apartmentOrg);
                 //  apartmentOrg.BillConfigId = input.BillConfigDetail?.Select(x => x.BillConfigId ?? 0).ToArray();
 
@@ -438,7 +437,7 @@ namespace Yootek.Services
                                     billConfigsList.Add(billConfig);
                                 }
 
-                                
+
                             }
 
                             listApartmentImports.Add(new Apartment()
