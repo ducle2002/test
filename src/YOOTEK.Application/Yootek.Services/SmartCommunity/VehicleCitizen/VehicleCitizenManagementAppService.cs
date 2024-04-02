@@ -866,11 +866,11 @@ namespace Yootek.Services
             {
                 var query = (from vh in _citizenVehicleRepos.GetAll()
                              join pk in _parkingRepos.GetAll() on vh.ParkingId equals pk.Id into tbl_prk
-                             from pk in tbl_prk
+                             from pk in tbl_prk.DefaultIfEmpty()
                              join ub in _appOrganizationUnitRepos.GetAll() on vh.UrbanId equals ub.Id into tbl_urban
-                             from ub in tbl_urban
+                             from ub in tbl_urban.DefaultIfEmpty()
                              join bu in _appOrganizationUnitRepos.GetAll() on vh.BuildingId equals bu.Id into tbl_building
-                             from bu in tbl_building
+                             from bu in tbl_building.DefaultIfEmpty()
                              select new CitizenVehicleExcelOutputDto()
                              {
                                  Id = vh.Id,
@@ -898,7 +898,7 @@ namespace Yootek.Services
                                  BillConfigCode = _billConfigRepos.GetAll().Where(x => x.Id == vh.BillConfigId).Select(x => x.Code).FirstOrDefault(),
 
                              })
-                             .Where(x => x.State == CitizenVehicleState.ACCEPTED || x.State == CitizenVehicleState.REJECTED || x.State == CitizenVehicleState.OVERDUE)
+                             .Where(x => x.State != CitizenVehicleState.WAITING)
                               .WhereIf(input.VehicleType.HasValue, x => x.VehicleType == input.VehicleType)
                                  .WhereIf(input.State.HasValue, x => x.State == input.State)
                                  .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
