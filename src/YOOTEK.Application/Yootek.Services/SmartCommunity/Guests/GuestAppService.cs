@@ -156,6 +156,9 @@ namespace Yootek.Yootek.Services.Yootek.SmartCommunity.Guests
                 var guest = input.MapTo<Guest>();
                 guest.Status = GuestStatus.Pending;
 
+                guest.CheckInTime.AddHours(-7);
+                if (guest.CheckOutTime.HasValue) guest.CheckOutTime.Value.AddHours(-7);
+
                 using (CurrentUnitOfWork.DisableFilter(AbpDataFilters.MayHaveTenant))
                 {
                     var guestForm = await _guestFormRepo.GetAsync(input.GuestFormId);
