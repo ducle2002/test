@@ -1639,8 +1639,9 @@ namespace Yootek.Services
                     continue;
                 }
 
-                var customer = Convert.ToString(worksheet.Cells[row, CUSTOMER_NAME_INDEX].Value);
-
+                vehicle.CustomerName = worksheet.Cells[row, CUSTOMER_NAME_INDEX].Text.ToString() != ""
+                   ? worksheet.Cells[row, CUSTOMER_NAME_INDEX].Value.ToString().Trim()
+                   : null;
                 vehicle.ApartmentCode = worksheet.Cells[row, APARTMENT_CODE_INDEX].Value.ToString();
                 var buildingCode = worksheet.Cells[row, BUILDING_INDEX].Text.ToString() != ""
                     ? worksheet.Cells[row, BUILDING_INDEX].Value.ToString().Trim()
@@ -1717,7 +1718,6 @@ namespace Yootek.Services
 
                 //if (userBills.Count() < 1000)
                 //{
-
 
                 //}
                 //else
