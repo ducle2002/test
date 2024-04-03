@@ -80,6 +80,52 @@ namespace Yootek.Services
             _citizenRepository = citizenRepository;
             _billConfigRepo = billConfigRepo;
         }
+
+        public async Task<DataResult> GetAllApartmentForFilterAsync(GetAllApartmentInput input)
+        {
+            try
+            {
+                List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
+                IQueryable<GetAllApartmentDto> query = (from apartment in _apartmentRepository.GetAll()
+                                                        select new GetAllApartmentDto
+                                                        {
+                                                            Id = apartment.Id,
+                                                            ApartmentCode = apartment.ApartmentCode,
+                                                            Name = apartment.Name,
+                                                            Area = apartment.Area,
+                                                            ImageUrl = apartment.ImageUrl,
+                                                            BuildingId = apartment.BuildingId,
+                                                            UrbanId = apartment.UrbanId,
+                                                            StatusId = apartment.StatusId,
+                                                            TypeId = apartment.TypeId,
+                                                            CreationTime = apartment.CreationTime,
+                                                            BlockId = apartment.BlockId,
+                                                            FloorId = apartment.FloorId,
+                                                            BillConfig = apartment.BillConfig,
+
+                                                        })
+                         .WhereByBuildingOrUrbanIf(!IsGranted(IOCPermissionNames.Data_Admin), buIds)
+                         .WhereIf(input.StatusId.HasValue, x => x.StatusId == input.StatusId)
+                         .WhereIf(input.TypeId.HasValue, x => x.TypeId == input.TypeId)
+                         .WhereIf(input.FloorId.HasValue, x => x.FloorId == input.FloorId)
+                         .WhereIf(input.BuildingId.HasValue, x => x.BuildingId == input.BuildingId)
+                         .WhereIf(input.UrbanId.HasValue, x => x.UrbanId == input.UrbanId)
+                         .ApplySearchFilter(input.Keyword, x => x.Name, x => x.ApartmentCode);
+
+                List<GetAllApartmentDto> result = await query
+                    .ApplySort(input.OrderBy, input.SortBy)
+                    .ApplySort(OrderByApartment.APARTMENT_CODE)
+                    .Skip(input.SkipCount).Take(input.MaxResultCount).ToListAsync();
+
+                return DataResult.ResultSuccess(result, "Get success!", query.Count());
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
+                throw;
+            }
+        }
+
         public async Task<DataResult> GetAllApartmentAsync(GetAllApartmentInput input)
         {
             try
