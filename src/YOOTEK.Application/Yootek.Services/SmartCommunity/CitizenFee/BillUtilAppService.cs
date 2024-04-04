@@ -327,7 +327,6 @@ namespace Yootek.Services
                             }
                         }
 
-
                         #endregion
 
                         #region  management bill
@@ -354,6 +353,7 @@ namespace Yootek.Services
                                     Id = x.Id,  
                                     TypeId = x.TypeId,
                                     UrbanId = x.UrbanId,
+                                    BillConfig = x.BillConfig
                                 })
                                 .ToListAsync();
 
@@ -379,35 +379,41 @@ namespace Yootek.Services
                                     if (checkBill != null) continue;
 
                                     var config = billconfigs.FirstOrDefault(x => x.ApartmentTypeId == apartment.TypeId && x.IsPrivate == true)
-                                    ?? billconfigs.FirstOrDefault(x => x.BuildingId == apartment.BuildingId && x.IsPrivate == true)
-                                    ?? billconfigs.FirstOrDefault(x => x.UrbanId == apartment.UrbanId && x.IsPrivate == true) ?? defaultConfig;
-
-                                    var billConfigPropertiesM = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(config.Properties);
+                                           ?? billconfigs.FirstOrDefault(x => x.BuildingId == apartment.BuildingId && x.IsPrivate == true)
+                                           ?? billconfigs.FirstOrDefault(x => x.UrbanId == apartment.UrbanId && x.IsPrivate == true) ?? defaultConfig;
 
                                     var customerName = citizens.Where(x => x.ApartmentCode == apartment.ApartmentCode).Select(x => x.FullName).FirstOrDefault();
-                                    var area = apartment.Area ?? 0;
-                                    var bill = new UserBill()
+
+                                    if (!string.IsNullOrEmpty(apartment.BillConfig))
                                     {
-                                        ApartmentCode = apartment.ApartmentCode,
-                                        BuildingId = apartment.BuildingId,
-                                        UrbanId = apartment.UrbanId,
-                                        BillType = BillType.Manager,
-                                        BillConfigId = config.Id,
-                                        Title = $"Hóa đơn tháng {period.ToString("MM/yy")}",
-                                        TotalIndex = apartment.Area,
-                                        Period = period,
-                                        DueDate = lastMonth,
-                                        DebtTotal = 0,
-                                        Status = UserBillStatus.Pending,
-                                        TenantId = tenant.Id,
-                                        LastCost = billConfigPropertiesM.Prices[0].Value * (double)area
-                                    };
-                                    bill.Properties = JsonConvert.SerializeObject(new
+                                        try
+                                        {
+                                            var billConfigList = JsonConvert.DeserializeObject<List<BillConfigProperties>>(apartment.BillConfig);
+                                            var billConfigMs = billConfigList.Where(x => x.BillType == BillType.Manager).ToList();
+                                            if(billConfigMs.Count > 0)
+                                            {
+                                                var listConfigMs = billConfigMs.SelectMany(x => x.Properties.formulaDetails.ToList()).ToList();
+                                                foreach(var cfM in listConfigMs)
+                                                {
+                                                    await CreateUserBillManager(apartment, cfM, period, tenant.Id, customerName, lastMonth);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                await CreateUserBillManager(apartment, config, period, tenant.Id, customerName, lastMonth);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            await CreateUserBillManager(apartment, config, period, tenant.Id, customerName, lastMonth);
+                                        }                                     
+                                     
+                                    }
+                                    else
                                     {
-                                        customerName = customerName,
-                                        formulas = new BillConfig[] { config }
-                                    });
-                                    await _userBillRepo.InsertAsync(bill);
+                                        await CreateUserBillManager(apartment, config, period, tenant.Id, customerName, lastMonth);
+                                    }
+                                  
                                 }
 
                             }
@@ -422,6 +428,34 @@ namespace Yootek.Services
                     }
                 }
             });
+        }
+
+        private async Task CreateUserBillManager(ApartmentCreateBillDto apartment, BillConfig config, DateTime period, int tenantId, string customerName, DateTime dueDate)
+        {
+            var billConfigPropertiesM = JsonConvert.DeserializeObject<BillConfigPropertiesDto>(config.Properties);
+            var area = apartment.Area ?? 0;
+            var bill = new UserBill()
+            {
+                ApartmentCode = apartment.ApartmentCode,
+                BuildingId = apartment.BuildingId,
+                UrbanId = apartment.UrbanId,
+                BillType = BillType.Manager,
+                BillConfigId = config.Id,
+                Title = $"Hóa đơn tháng {period.ToString("MM/yy")}",
+                TotalIndex = apartment.Area,
+                Period = period,
+                DueDate = dueDate,
+                DebtTotal = 0,
+                Status = UserBillStatus.Pending,
+                TenantId = tenantId,
+                LastCost = billConfigPropertiesM.Prices[0].Value * (double)area
+            };
+            bill.Properties = JsonConvert.SerializeObject(new
+            {
+                customerName = customerName,
+                formulas = new BillConfig[] { config }
+            });
+            await _userBillRepo.InsertAsync(bill);
         }
 
         #endregion
