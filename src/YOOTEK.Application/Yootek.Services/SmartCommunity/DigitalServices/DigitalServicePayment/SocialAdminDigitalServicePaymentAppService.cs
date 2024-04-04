@@ -65,7 +65,8 @@ namespace Yootek.Services
                 {
                     Id = x.Id,
                     TenantName = x.Name,
-                }).AsQueryable();
+                    TenantType = x.TenantType
+                }).Where(x => x.TenantType == TenantType.IOC).AsQueryable();
 
                 var result = await query.PageBy(input).ToListAsync();
 
@@ -95,7 +96,6 @@ namespace Yootek.Services
 
                 foreach (var item in result)
                 {
-
                     using (CurrentUnitOfWork.SetTenantId(item.Id))
                     {
                         item.NumberEPayment = queryR
@@ -113,9 +113,15 @@ namespace Yootek.Services
                             .Where(x => x.TenantId == item.Id).Sum(x => x.Amount);
                     }
 
+                    var balance = _epaymentBanlanceRepository.GetAll()
+                        .Where(x => x.EbalancePaymentType == EbalancePaymentType.DigitalService)
+                        .Where(x => x.TenantId == item.Id && x.EBalanceAction == EBalanceAction.Add)
+                        .Sum(x => x.BalanceRemaining);
+                    var subBalance = _epaymentBanlanceRepository.GetAll()
+                        .Where(x => x.EbalancePaymentType == EbalancePaymentType.DigitalService)
+                        .Where(x => x.TenantId == item.Id && x.EBalanceAction == EBalanceAction.Sub)
+                        .Sum(x => x.BalanceRemaining);
 
-                    var balance = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == item.Id && x.EBalanceAction == EBalanceAction.Add).Sum(x => x.BalanceRemaining);
-                    var subBalance = _epaymentBanlanceRepository.GetAll().Where(x => x.TenantId == item.Id && x.EBalanceAction == EBalanceAction.Sub).Sum(x => x.BalanceRemaining);
                     item.TotalBalance = balance - subBalance;
 
                     item.TotalPaymentForTenant = subBalance;

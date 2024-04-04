@@ -70,7 +70,8 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 {
                     Id = x.Id,
                     TenantName = x.Name,
-                }).AsQueryable();
+                    TenantType = x.TenantType
+                }).Where(x => x.TenantType == TenantType.IOC).AsQueryable();
 
                 var result = await query.PageBy(input).ToListAsync();
 

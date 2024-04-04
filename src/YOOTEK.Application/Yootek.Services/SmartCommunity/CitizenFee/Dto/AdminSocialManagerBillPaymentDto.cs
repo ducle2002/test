@@ -7,6 +7,7 @@ using Abp.Application.Services.Dto;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
+using Yootek.MultiTenancy;
 
 namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
 {
@@ -47,6 +48,7 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.Dto
     {
         public int Id { get; set; }
         public string TenantName { get; set; }
+        public TenantType? TenantType { get; set; }
         public int NumberEPayment { get; set; }
         public int NumberRPayment { get; set; }
         public double TotalAmountEpay { get; set; }
