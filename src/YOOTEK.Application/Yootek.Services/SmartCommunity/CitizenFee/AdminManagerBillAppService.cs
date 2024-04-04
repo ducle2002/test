@@ -1699,6 +1699,7 @@ namespace Yootek.Services
 
                 foreach (UserBill userBill in userBills)
                 {
+                    if (userBill.LastCost <= 0) userBill.Status = UserBillStatus.Paid;
                     if (userBill.Id > 0) await _userBillRepo.UpdateAsync(userBill);
                     else
                     {
@@ -1830,6 +1831,7 @@ namespace Yootek.Services
                         isCreate = true;
                         if (userBill1.DueDate < DateTime.Now) userBill1.Status = UserBillStatus.Debt;
                         if (userBill1.DueDate > DateTime.Now) userBill1.Status = UserBillStatus.Pending;
+                        if(userBill1.LastCost == 0) userBill1.Status = UserBillStatus.Paid;
                         // var userBill =  await _userBillRepo.InsertAsync(userBill1);
                         var id = await _userBillRepo.InsertAndGetIdAsync(userBill1);
                         userBill1.Code = "HD" + userBill1.Id +
