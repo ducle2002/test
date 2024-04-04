@@ -157,7 +157,8 @@ namespace YOOTEK.Yootek.Services
                             DecimalRoudingUp(paymentTransaction.Amount),
                             (DigitalServicePaymentMethod)paymentTransaction.Method,
                             "",
-                            ""
+                            "",
+                            DigitalServicePaymentStatus.SUCCESS
                             );
 
                         var res = await _httpClient.SendAsync<PaymentDto>("/api/payments/change-bill-payment-status", HttpMethod.Post, requestPayment);

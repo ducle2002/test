@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Yootek;
 using Yootek.EntityDb;
+using Yootek.Services;
 using YOOTEK.EntityDb;
 using YOOTEK.EntityDb.IMAX.DichVu.DigitalServices;
 
@@ -33,7 +34,7 @@ namespace YOOTEK.Yootek.Services
         }
 
         [RemoteService(false)]
-        public async Task<DigitalServicePayment> HandlePaymentSuccess(long orderId, decimal paymentAmount, DigitalServicePaymentMethod method, string note, string properties)
+        public async Task<DigitalServicePayment> HandlePaymentSuccess(long orderId, decimal paymentAmount, DigitalServicePaymentMethod method, string note, string properties, DigitalServicePaymentStatus status = DigitalServicePaymentStatus.PENDING)
         {
             try
             {
@@ -51,7 +52,7 @@ namespace YOOTEK.Yootek.Services
                     TenantId = order.TenantId,
                     UrbanId = order.UrbanId,
                     ServiceId = order.ServiceId,
-                    Status = DigitalServicePaymentStatus.PENDING,
+                    Status = status,
                     Note = note,
                     Properties = properties
                 };
@@ -60,15 +61,18 @@ namespace YOOTEK.Yootek.Services
                 if (amountMustPay == paymentAmount)
                 {
                     order.PaymentState = DigitalServicePaymentState.Paid;
+                    order.Status = (int)TypeActionUpdateStateServiceOrder.PAIDED;
                     order.TotalDebtOrBalance = 0;
                 }
                 else if (amountMustPay > paymentAmount)
                 {
                     order.PaymentState = DigitalServicePaymentState.Debt;
+                    order.Status = (int)TypeActionUpdateStateServiceOrder.PAIDEDDEBT;
                     order.TotalDebtOrBalance = amountMustPay - paymentAmount;
                 }
                 else
                 {
+                    order.Status = (int)TypeActionUpdateStateServiceOrder.PAIDED;
                     order.PaymentState = DigitalServicePaymentState.Balance;
                     order.TotalDebtOrBalance = paymentAmount - amountMustPay;
                 }

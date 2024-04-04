@@ -81,7 +81,7 @@ namespace Yootek.Services
                 case RELATIONSHIP.Mother_Guest: return L("GuestMother");
                 case RELATIONSHIP.Grandfather_Guest: return L("GuestGrandfather");
                 case RELATIONSHIP.Grandmother_Guest: return L("GuestGrandmother");
-                case RELATIONSHIP.staff_Guest: return L("Staff");
+                case RELATIONSHIP.Staff_Guest: return L("Staff");
                 default: return "";
             }
         }
