@@ -27,11 +27,11 @@ namespace Yootek.Services.Dto
         public string? WardCode { get; set; }
         public string? Address { get; set; }
         public long[]? BillConfigId { get; set; }
-        public List<BillConfigProperties>? ListBillConfig { get; set; }
+        public List<BillConfigProperties> ListBillConfig { get; set; }
     }
     public class BillConfigProperties
     {
         public BillType? BillType { get; set; }
-        public BillProperites? Properties { get; set; }
+        public BillProperites Properties { get; set; }
     }
 }

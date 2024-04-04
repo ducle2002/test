@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
 
 namespace ImaxFileUploaderServer.Services
 {
@@ -27,6 +28,7 @@ namespace ImaxFileUploaderServer.Services
         private readonly string _bucketName;
         private readonly string _baseUrl;
         private readonly IConfigurationRoot _appConfiguration;
+        private string _s3Folder { get; set; } = "development";
 
         public S3Service(IWebHostEnvironment env)
         {
@@ -45,15 +47,24 @@ namespace ImaxFileUploaderServer.Services
                 RegionEndpoint.GetBySystemName(region));
 
             _transferUtility = new TransferUtility(_s3Client);
+
+            if(env.IsProduction())
+            {
+                _s3Folder = "public";
+            }
+            else
+            {
+                _s3Folder = "development";
+            }
         }
 
         public async Task<string> UploadToPublic(string keyName, string filePath)
         {
             try
             {
-                await _transferUtility.UploadAsync(filePath, _bucketName, $"public/{keyName}");
+                await _transferUtility.UploadAsync(filePath, _bucketName, $"{_s3Folder}/{keyName}");
 
-                return $"{_baseUrl}/public/{keyName}";
+                return $"{_baseUrl}/{_s3Folder}/{keyName}";
             }
             catch (AmazonS3Exception ex)
             {
@@ -73,10 +84,10 @@ namespace ImaxFileUploaderServer.Services
             {
                 using (var stream = file.OpenReadStream())
                 {
-                    await _transferUtility.UploadAsync(stream, _bucketName, $"public/{keyName}");
+                    await _transferUtility.UploadAsync(stream, _bucketName, $"{_s3Folder}/{keyName}");
                 }
 
-                return $"{_baseUrl}/public/{keyName}";
+                return $"{_baseUrl}/{_s3Folder}/{keyName}";
             }
             catch (AmazonS3Exception ex)
             {

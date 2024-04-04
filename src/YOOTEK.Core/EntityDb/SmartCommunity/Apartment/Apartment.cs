@@ -31,8 +31,8 @@ namespace Yootek.EntityDb
         public string DistrictCode { get; set; }
         [StringLength(100)]
         public string WardCode { get; set; }
-        public string? Address { get; set; }
-        public string? BillConfig { get; set; }
+        public string Address { get; set; }
+        public string BillConfig { get; set; }
     }
 
     public enum StatusApartment

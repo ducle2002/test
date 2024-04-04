@@ -40,5 +40,6 @@ namespace Yootek.Services.Dto
         public decimal? Area { get; set; }
         public long? TypeId { get; set; }
         public string CustomerName { get; set; }
+        public string BillConfig { get; set; }
     }
 }

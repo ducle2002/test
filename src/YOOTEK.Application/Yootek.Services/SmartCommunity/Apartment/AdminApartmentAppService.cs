@@ -224,21 +224,24 @@ namespace Yootek.Services
 
                 if (apartment.BillConfig != null)
                 {
-                    var billConfigList = JsonConvert.DeserializeObject<List<BillConfigProperties>>(apartment.BillConfig);
+                    try
+                    {
+                        var billConfigList = JsonConvert.DeserializeObject<List<BillConfigProperties>>(apartment.BillConfig);
+                        if(billConfigList != null)
+                        {
+                            List<GetAllBillConfigDto> listBillConfig = billConfigList
+                          .Select(billConfig =>
+                              new GetAllBillConfigDto
+                              {
+                                  BillType = billConfig.BillType,
+                                  Properties = billConfig.Properties,
+                              })
+                          .ToList();
 
-                    List<GetAllBillConfigDto> listBillConfig = billConfigList
-                        .Select(billConfig =>
-                            new GetAllBillConfigDto
-                            {
-                                BillType = billConfig.BillType,
-                                Properties = billConfig.Properties,
-                            })
-                        .ToList();
-
-                    apartmentDto.ListBillConfig = listBillConfig;
+                            apartmentDto.ListBillConfig = listBillConfig;
+                        } 
+                    }catch { }
                 }
-
-
                 return DataResult.ResultSuccess(apartmentDto, "Get apartment detail success!");
             }
             catch (Exception e)
