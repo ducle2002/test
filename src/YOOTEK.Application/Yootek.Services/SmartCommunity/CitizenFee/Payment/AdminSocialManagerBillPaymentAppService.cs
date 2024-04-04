@@ -218,6 +218,7 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                         item.BillListPrepayment = item.TransactionJson?.PrepaymentBills;
 
                         item.FullName = await GetUserFullName(item.CreatedById??0, item.TenantId);
+                        item.Method = CheckMethod(item.Method);
                     }
 
                     return DataResult.ResultSuccess(result, "", query.Count());

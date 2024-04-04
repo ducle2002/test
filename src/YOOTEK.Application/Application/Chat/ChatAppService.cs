@@ -127,7 +127,7 @@ namespace Yootek.Chat
                   .Count();
             var data = DataResult.ResultSuccess(unreadMessageCount + unreadMessageGroupCount, "Get success !");
             return data;
-        } 
+        }
 
         public async Task<DataResult> SearchUserMessageByKeyword(SearchMessageInput input)
         {
@@ -210,7 +210,7 @@ namespace Yootek.Chat
                     friend.LastMessageDate = friend.LastMessage != null ? friend.LastMessage.CreationTime : friend.LastMessageDate;
 
                     friend.State = _userRepository.FirstOrDefault(friend.FriendUserId) == null ? FriendshipState.IsDeleted : friend.State;
-                    if(friend.State == FriendshipState.IsDeleted)
+                    if (friend.State == FriendshipState.IsDeleted)
                     {
                         friend.FriendUserName = "Người dùng yoolife";
                         friend.FriendImageUrl = null;
@@ -244,11 +244,11 @@ namespace Yootek.Chat
                 #endregion
 
                 return DataResult.ResultSuccess(listresults, "get success", cacheItem.Friends.Count());
-               
+
             }
             catch (Exception e)
             {
-                Logger.Fatal("GetUserChatFriendsWithSettings : "+  e.ToJsonString());
+                Logger.Fatal("GetUserChatFriendsWithSettings : " + e.ToJsonString());
                 throw;
             }
         }
@@ -263,9 +263,9 @@ namespace Yootek.Chat
 
                 var item = cacheItem.Friends.FirstOrDefault(x => x.FriendUserId == input.UserId && x.FriendTenantId == input.TenantId);
 
-                if(item == null)
+                if (item == null)
                 {
-                    using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                    using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                     {
                         item = _userRepository.GetAll().Where(x => x.Id == input.UserId)
                        .Select(x => new FriendCacheItem()
@@ -280,7 +280,7 @@ namespace Yootek.Chat
                     }
                 }
 
-                if(item == null) return DataResult.ResultSuccess( "get success");
+                if (item == null) return DataResult.ResultSuccess("get success");
 
                 var friend = ObjectMapper.Map<FriendDto>(item);
 
@@ -313,9 +313,9 @@ namespace Yootek.Chat
             {
                 var userId = AbpSession.GetUserId();
                 input.TenantId = AbpSession.TenantId;
-                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
-                    var query =  _chatMessageRepository.GetAll()
+                    var query = _chatMessageRepository.GetAll()
                        .WhereIf(input.IsOrganizationUnit == null || !input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit != true)
                        .WhereIf(input.IsOrganizationUnit.HasValue && input.IsOrganizationUnit.Value, m => m.IsOrganizationUnit == input.IsOrganizationUnit)
                        .WhereIf(input.MinMessageId.HasValue, m => m.Id < input.MinMessageId.Value)

@@ -102,9 +102,10 @@ namespace Yootek.Service
         {
             try
             {
+               // List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
                 var organizationUnits = await _organizationUnitRepository.GetAll()
-                .Where(x => x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME)
-                .ToListAsync();
+                    .Where(x => x.Type == APP_ORGANIZATION_TYPE.REPRESENTATIVE_NAME)
+                    .ToListAsync();
 
                 var organizationUnitMemberCounts = await _userOrganizationUnitRepository.GetAll()
                    .GroupBy(x => x.OrganizationUnitId)

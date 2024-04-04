@@ -531,7 +531,6 @@ namespace Yootek.Yootek.Services.SmartCommunity.Phidichvu
                 input.Status = UserBillPaymentStatus.Success;
                 await _handlePaymentUtilAppService.PayMonthlyUserBillByApartment(input);
                 var data = DataResult.ResultSuccess("Admin payment success");
-
                 return data;
             }
             catch (Exception ex)

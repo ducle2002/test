@@ -9,9 +9,9 @@ namespace Yootek.Chat
 {
     public interface IChatAppService : IApplicationService
     {
-        Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input);
+        //Task<DataResult> GetUserChatFriendsWithSettings(GetUserChatFriendsWithSettingInput input);
 
-        Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input);
+        //Task<DataResult> GetUserChatMessages(GetUserChatMessagesInput input);
 
         Task MarkAllUnreadMessagesOfUserAsRead(MarkAllUnreadMessagesOfUserAsReadInput input);
 

@@ -43,6 +43,7 @@ namespace Yootek.EntityDb
         public string BillPaymentInfo { get; set; }
         [StringLength(256)]
         public string CustomerName { get; set; }
+        public int? EPaymentId { get; set; }
     }
 
     public enum TypePayment

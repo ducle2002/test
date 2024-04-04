@@ -23,7 +23,7 @@ namespace Yootek.Authorization.BillInvoices
         {
             if (tenantId == _configuration.GetValue<int>("CustomTenant:HudlandTenantId"))
             {
-                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.BillInvoices.Templates.hudland.html"))
+                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.BillInvoices.Templates.hudland.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
@@ -32,7 +32,7 @@ namespace Yootek.Authorization.BillInvoices
             }
             if (tenantId == _configuration.GetValue<int>("CustomTenant:Vina22TenantId"))
             {
-                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.BillInvoices.Templates.vina22.html"))
+                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.BillInvoices.Templates.vina22.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
@@ -41,7 +41,7 @@ namespace Yootek.Authorization.BillInvoices
             }
             if (tenantId == 94)
             {
-                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.BillInvoices.Templates.vinasinco.html"))
+                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.BillInvoices.Templates.vinasinco.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
@@ -59,7 +59,7 @@ namespace Yootek.Authorization.BillInvoices
             }
             else
             {
-                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("Yootek.Authorization.BillInvoices.Templates.default.html"))
+                using (var stream = typeof(BillInvoiceTemplateProvider).GetAssembly().GetManifestResourceStream("YOOTEK.Authorization.BillInvoices.Templates.default.html"))
                 {
                     var bytes = stream.GetAllBytes();
                     var template = Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);

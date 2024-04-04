@@ -83,27 +83,27 @@ namespace Yootek.Services
         {
             try
             {
-                if (!input.FromMonth.HasValue)
-                {
-                    // Nếu không có giá trị FromMonth, gán giá trị mặc định là đầu tháng của tháng hiện tại
-                    input.FromMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-                }
+                //if (!input.FromMonth.HasValue)
+                //{
+                //    // Nếu không có giá trị FromMonth, gán giá trị mặc định là đầu tháng của tháng hiện tại
+                //    input.FromMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+                //}
 
-                if (!input.ToMonth.HasValue)
-                {
-                    // Nếu không có giá trị ToMonth, gán giá trị mặc định là cuối tháng của tháng hiện tại
-                    input.ToMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
-                }
-                DateTime newFromMonth = new DateTime(), newToMonth = new DateTime();
-                if (input.FromMonth.HasValue)
-                {
-                    newFromMonth = new DateTime(input.FromMonth.Value.Year, input.FromMonth.Value.Month, input.FromMonth.Value.Day, 0, 0, 0);
-                }
+                //if (!input.ToMonth.HasValue)
+                //{
+                //    // Nếu không có giá trị ToMonth, gán giá trị mặc định là cuối tháng của tháng hiện tại
+                //    input.ToMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+                //}
+                //DateTime newFromMonth = new DateTime(), newToMonth = new DateTime();
+                //if (input.FromMonth.HasValue)
+                //{
+                //    newFromMonth = new DateTime(input.FromMonth.Value.Year, input.FromMonth.Value.Month, input.FromMonth.Value.Day, 0, 0, 0);
+                //}
 
-                if (input.ToMonth.HasValue)
-                {
-                    newToMonth = new DateTime(input.ToMonth.Value.Year, input.ToMonth.Value.Month, input.ToMonth.Value.Day, 23, 59, 59);
-                }
+                //if (input.ToMonth.HasValue)
+                //{
+                //    newToMonth = new DateTime(input.ToMonth.Value.Year, input.ToMonth.Value.Month, input.ToMonth.Value.Day, 23, 59, 59);
+                //}
                 var month = input.Period.HasValue ? input.Period.Value.Month : 0;
                 var year = input.Period.HasValue ? input.Period.Value.Year : 0;
                 List<long> buIds = UserManager.GetAccessibleBuildingOrUrbanIds();
@@ -146,8 +146,8 @@ namespace Yootek.Services
                     .WhereIf(input.MeterId != null, x => x.MeterId == input.MeterId)
                     .WhereIf(input.MinValue.HasValue, x => x.Value >= input.MinValue)
                     .WhereIf(input.MaxValue.HasValue, x => x.Value <= input.MaxValue)
-                    .WhereIf(input.FromMonth.HasValue, x => x.Period >= newFromMonth)
-                    .WhereIf(input.ToMonth.HasValue, x => x.Period <= newToMonth)
+                    //.WhereIf(input.FromMonth.HasValue, x => x.Period >= newFromMonth)
+                    //.WhereIf(input.ToMonth.HasValue, x => x.Period <= newToMonth)
                     .WhereIf(input.IsClosed.HasValue, x => x.IsClosed == input.IsClosed)
                     .OrderByDescending(x => x.CreationTime)
                     .ApplySearchFilter(input.Keyword, x => x.Name, x => x.ApartmentCode);
@@ -258,7 +258,6 @@ namespace Yootek.Services
 
                 if (input.Period != null)
                 {
-                    meterMonthly.Period = DateTime.Today;
                     var pre_period = input.Period.Value.AddMonths(-1);
                     var pre_bill = _userBillRepo.FirstOrDefault(x =>
                         x.ApartmentCode == input.ApartmentCode && x.Period.Value.Year == pre_period.Year &&
@@ -269,7 +268,7 @@ namespace Yootek.Services
 
 
                 //chi lay year va month
-                meterMonthly.Period = new DateTime(meterMonthly.Period.Value.Year, meterMonthly.Period.Value.Month, 1, 0, 0, 0);
+                //meterMonthly.Period = new DateTime(meterMonthly.Period.Value.Year, meterMonthly.Period.Value.Month, 1, 0, 0, 0);
 
                 await _meterMonthlyRepository.InsertAsync(meterMonthly);
                 return DataResult.ResultSuccess(true, "Insert success!");

@@ -18,6 +18,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Yootek.Common.Enum;
+using YOOTEK.EntityDb;
 
 namespace Yootek
 {
@@ -241,5 +243,21 @@ namespace Yootek
         protected decimal DecimalRoudingUp(double value) => Math.Round((decimal)value + (decimal)0.5, 0);
         protected decimal DecimalRoudingUp(decimal value) => Math.Round(value + (decimal)0.5, 0);
         #endregion
+
+        protected UserBillPaymentMethod CheckMethod(UserBillPaymentMethod method)
+        {
+            if (method == UserBillPaymentMethod.OnePay1 ||
+                method == UserBillPaymentMethod.OnePay2 ||
+                method == UserBillPaymentMethod.OnePay3) return UserBillPaymentMethod.OnePay;
+            return method;
+        }
+
+        protected EPaymentMethod CheckMethod(EPaymentMethod method)
+        {
+            if (method == EPaymentMethod.OnePay1 ||
+                method == EPaymentMethod.OnePay2 ||
+                method == EPaymentMethod.OnePay3) return EPaymentMethod.Onepay;
+            return method;
+        }
     }
 }

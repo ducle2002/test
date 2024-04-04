@@ -128,6 +128,16 @@
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600">1</td>
           <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
             <span style="font-weight: 600;">
+              <span>Dư nợ kỳ trước/ </span> <i>Opening Balance</i>
+            </span>
+          </td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;">{DEBT}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;"></td>
+        </tr>
+        <tr>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600">2</td>
+          <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+            <span style="font-weight: 600;">
               <span>Phí quản lý</span> <i>(Management fee)</i>:
             </span>
             <span>{HEAD_PERIOD} - {END_PERIOD}</span>
@@ -138,8 +148,7 @@
         <tr>
           <td rowspan="1" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600;"></td>
           <td colspan="2" style="border-width: 1px; border-style: solid; padding: 6px;">
-            <span style="display: inline-block; width: 206px"></span>
-            <span>Theo diện tích</span>
+            <span>Theo diện tích (Đã bao gồm 10% thuế VAT)</span>
           </td>
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{ACREAGE_APARTMENT}</td>
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{UNIT_PRICE_MANAGEMENT}</td>
@@ -147,7 +156,7 @@
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
         </tr>
         <tr>
-          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600;">2</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600;">3</td>
           <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
             <span style="font-weight: 600;">
               <span>Phí nước</span> <i>(Water fee)</i>:
@@ -158,7 +167,7 @@
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;"></td>
         </tr>
         <tr>
-          <td rowspan="5" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600;"></td>
+          <td rowspan="8" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600;"></td>
           <td colspan="2" style="border-width: 1px; border-style: solid; padding: 6px;">
             <span>Chỉ số đầu kỳ</span>
             <span style="font-style: italic;">(Prior meter reading)</span>
@@ -209,6 +218,34 @@
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
         </tr>
         <tr>
+          <td colspan="2" style="border-width: 1px; border-style: solid; padding: 6px;">
+            <span style="display: inline-block; width: 150px;"></span>
+            <span>Bậc 3</span>
+          </td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX3}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE3}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_AMOUNT3}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="border-width: 1px; border-style: solid; padding: 6px;">
+            <span style="display: inline-block; width: 150px;"></span>
+            <span>Bậc 4</span>
+          </td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX4}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE4}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_AMOUNT4}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+        </tr>
+        <tr>
+          <td colspan="3" style="border-width: 1px; border-style: solid; padding: 6px;">
+            <span>Thuế VAT (5%) + Phí bảo vệ môi trường (10%)</span>
+          </td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">15 %</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{COST_TAX}</td>
+          <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+        </tr>
+        <tr>
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 600;">3</td>
           <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 600;">
             <span>Phí khác</span> <i>(Other fees)</i>
@@ -236,13 +273,13 @@
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;">{TOTAL_1}</td>
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;"></td>
         </tr>
-        <tr>
+        <!-- <tr>
           <td colspan="5" style="border-width: 1px; border-style: solid; padding: 6px;">
             <span>Công nợ</span> <i>(Debt)</i>
           </td>
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;">{DEBT}</td>
           <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right; font-weight: 600;"></td>
-        </tr>
+        </tr> -->
         <tr>
           <td colspan="5" style="border-width: 1px; border-style: solid; padding: 6px; font-size: 16px; font-weight: 600;">
             <span>Tổng tiền cần thanh toán</span> <i>(Total amount)</i>

@@ -64,6 +64,10 @@ namespace YOOTEK.EntityDb
         Cod = 1,
         Momo = 2,
         Onepay = 3,
+
+        OnePay1 = 31,
+        OnePay2 = 32,
+        OnePay3 = 33,
     }
 
     public enum EPaymentType
