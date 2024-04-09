@@ -6,11 +6,8 @@ namespace Yootek.Authentication.External
     public class ExternalLoginProviderInfo
     {
         public string Name { get; set; }
-
         public string ClientId { get; set; }
-
         public string ClientSecret { get; set; }
-
         public Type ProviderApiType { get; set; }
         public Dictionary<string, string> AdditionalParams { get; set; }
 

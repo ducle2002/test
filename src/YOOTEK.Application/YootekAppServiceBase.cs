@@ -110,10 +110,10 @@ namespace Yootek
         #endregion
 
         #region user bill
-        protected static string FormatCost(double? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "";
-        protected static string FormatCost(long? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "";
-        protected static string FormatCost(int? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "";
-        protected static string FormatCost(decimal? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "";
+        protected static string FormatCost(double? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "0";
+        protected static string FormatCost(long? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "0";
+        protected static string FormatCost(int? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "0";
+        protected static string FormatCost(decimal? value) => value.HasValue && value > 0 ? string.Format("{0:#,#.##}", value.Value) : "0";
         protected static string GetStringValue(object value) => value?.ToString() ?? "";
         protected static string FormatNumberToTwoDigits(int number)
         {

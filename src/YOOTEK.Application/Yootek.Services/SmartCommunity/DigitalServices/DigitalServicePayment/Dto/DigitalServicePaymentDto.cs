@@ -10,7 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Yootek.Organizations.Interface;
 using Yootek.Services;
+using YOOTEK.EntityDb;
+using Yootek.Yootek.Services.Yootek.SmartCommunity.CitizenFee.Dto;
 using YOOTEK.EntityDb.IMAX.DichVu.DigitalServices;
+using Yootek.EntityDb;
 
 namespace YOOTEK.Yootek.Services
 {
@@ -71,4 +74,34 @@ namespace YOOTEK.Yootek.Services
         public DigitalServicePaymentMethod Method { get; set; }
         public DigitalServicePaymentStatus Status { get; set; }
     }
+
+
+    public class ThirdPartyDigitalServicePaymentDto : EntityDto<int>
+    {
+        public int? TenantId { get; set; }
+        public string Code { get; set; }
+        public EPaymentStatus Status { get; set; }
+        public EPaymentMethod Method { get; set; }
+        public EPaymentType Type { get; set; }
+        public string TransactionId { get; set; }
+        public string TransactionProperties { get; set; }
+        public PayMonthlyUserBillsInput TransactionJson { get; set; }
+        public double Amount { get; set; }
+        public int? MerchantId { get; set; }
+        public string Currency { get; set; }
+        public string Description { get; set; }
+        public string Properties { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public long? CreatedById { get; set; }
+        public string TenantName { get; set; }
+        public string FullName { get; set; }
+        public string MerchantName { get; set; }
+        public EInternalStateChangeStatus? InternalState { get; set; }
+        public bool IsAutoVerified { get; set; }
+        public bool IsManuallyVerified { get; set; }
+        public object ObjectProperties { get; set; }
+        public DigitalServiceOrder Order { get; set; }
+        public string ServiceName { get; set; }
+    }
+
 }
