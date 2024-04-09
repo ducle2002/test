@@ -3642,16 +3642,14 @@ namespace Yootek.Services
                     citizenTemp = _citizenTempRepository.GetAll().Where(x => x.ApartmentCode == apartmentCode && x.RelationShip == RELATIONSHIP.Contractor).OrderByDescending(x => x.OwnerGeneration).FirstOrDefault();
 
                 }
-                var billDebt = new List<BillDebt>();
-                billDebt = citizenTemp != null ? _billDebtRepos.GetAllList(x => x.ApartmentCode == apartmentCode && x.CitizenTempId == citizenTemp.Id) : null;
+               
                 taxCode = citizenTemp != null ? citizenTemp.TaxCode + "" : "";
 
-                var debt = 0.0;
-                if (billDebt != null && billDebt.Count > 0)
-                {
-                    foreach (var bill in billDebt) debt += bill.DebtTotal.Value;
-                }
-
+                List<UserBill> userBillDetbs = _userBillRepository.GetAll()
+                  .Where(x => x.ApartmentCode == apartmentCode)
+                  .Where(x => x.Status == UserBillStatus.Debt)
+                  .ToList();
+                var debt = CalculateDebt(userBillDetbs);
                 var paymentBill = _billPaymentRepos.GetAll().Where(x => x.ApartmentCode == apartmentCode && x.Status == UserBillPaymentStatus.Success).OrderBy(x => x.CreationTime).Select(x => x.CreationTime).FirstOrDefault();
 
                 var emailTemplate = new StringBuilder(_emailTemplateProvider.GetUserBillTemplate(tenantId));
@@ -6100,6 +6098,15 @@ namespace Yootek.Services
                 .Where(bill =>
                     bill.LastCost.HasValue &&
                     bill.BillType == billType)
+                .Where(bill =>
+                    bill.Status == UserBillStatus.Debt)
+                .Sum(bill => (bill.DebtTotal > 0 ? (double)bill.DebtTotal.Value : bill.LastCost.Value)) ?? 0;
+        }
+        private double CalculateDebt(IEnumerable<UserBill> userBills)
+        {
+            return userBills?
+                .Where(bill =>
+                    bill.LastCost.HasValue)
                 .Where(bill =>
                     bill.Status == UserBillStatus.Debt)
                 .Sum(bill => (bill.DebtTotal > 0 ? (double)bill.DebtTotal.Value : bill.LastCost.Value)) ?? 0;
