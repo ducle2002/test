@@ -404,10 +404,6 @@ namespace Yootek.Services
                     // Nếu đã tồn tại, xóa thư mục đó
                     Directory.Delete(outputDirectory, true);
                 }
-                string logoPath = "logo.png";
-                string fullPath = "";
-                if (File.Exists(logoPath))
-                    fullPath = Path.GetFullPath(logoPath);
 
                 Directory.CreateDirectory(outputDirectory);
                 if (result.Count > 0)

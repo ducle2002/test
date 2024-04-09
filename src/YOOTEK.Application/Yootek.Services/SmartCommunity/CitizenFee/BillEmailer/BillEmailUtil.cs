@@ -4024,7 +4024,7 @@ namespace Yootek.Services
                 emailTemplate.Replace("{DAY}", currentDay);
                 emailTemplate.Replace("{TOTAL_1}", string.Format("{0:#,#.##}", totalMoney));
 
-                emailTemplate.Replace("{DEBT_MONEY}", debt + "");
+                emailTemplate.Replace("{DEBT_MONEY}", FormatCost(debt));
                 emailTemplate.Replace("{CUSTOMER_NAME}", citizenName + "");
                 emailTemplate.Replace("{PRE_PAYMENT}", string.Format("{0:#,#.##}", prePaied));
                 var total2 = Convert.ToInt32(totalMoney - prePaied);
