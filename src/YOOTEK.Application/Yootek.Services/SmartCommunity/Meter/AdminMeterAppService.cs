@@ -13,8 +13,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using QRCoder;
+using SixLabors.Fonts;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Drawing.Processing;
 using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using Yootek.App.ServiceHttpClient;
 using Yootek.App.ServiceHttpClient.Dto.Yootek.SmartCommunity;
 using Yootek.Application;
@@ -404,6 +408,11 @@ namespace Yootek.Services
                     // Nếu đã tồn tại, xóa thư mục đó
                     Directory.Delete(outputDirectory, true);
                 }
+                FontFamily fontFamily;
+                if (!SystemFonts.TryGet("Arial", out fontFamily))
+                    throw new Exception($"Couldn't find font {"Arial"}");
+
+                var font = fontFamily.CreateFont(32f, FontStyle.Regular);
 
                 Directory.CreateDirectory(outputDirectory);
                 if (result.Count > 0)
@@ -412,14 +421,20 @@ namespace Yootek.Services
                     foreach (var item in result)
                     {
                         item.QRAction = $"yooioc://app/meter?id={item.Id}&tenantId={AbpSession.TenantId}";
-
+                        PointF location = new PointF(10f, 10f);
                         QRCodeGenerator qr = new QRCodeGenerator();
                         QRCodeData data = qr.CreateQrCode(item.QRAction, QRCodeGenerator.ECCLevel.Q);
                         QRCode code = new QRCode(data);
+
                         using (MemoryStream ms = new MemoryStream())
                         {
                             // Lưu hình ảnh QR Code vào MemoryStream
-                            code.GetGraphic(20, Color.Black, Color.White, true).Save(ms, new PngEncoder());
+                            var graph = code.GetGraphic(20, Color.Black, Color.White, true);
+                            graph.Mutate(x =>
+                            {
+                                x.DrawText(item.Code ?? item.QrCode, font, new Color(Rgba32.ParseHex("#000000")), location );
+                            });
+                            graph.Save(ms, new PngEncoder());
 
                             // Ghi dữ liệu từ MemoryStream vào mảng byte
                             byte[] qrBytes = ms.ToArray();
