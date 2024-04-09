@@ -18,6 +18,8 @@ namespace Yootek.EntityDb
 
         [StringLength(256)]
         public string ApartmentCode { get; set; }
+        [StringLength(256)]
+        public string Code { get; set; }
         /// <summary>
         /// Địa chỉ nhận
         /// </summary>

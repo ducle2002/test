@@ -138,8 +138,6 @@ namespace YOOTEK.Yootek.Services.SmartCommunity.CitizenFee.ApartmentBalanceBill
                     .WhereIf(input.IsWhereByType, x => x.BillType == input.BillType)
                     .SumAsync(x => x.Amount);
 
-
-
                 var data = DataResult.ResultSuccess(totalAdd - totalSub, "Get success");
                 return data;
 

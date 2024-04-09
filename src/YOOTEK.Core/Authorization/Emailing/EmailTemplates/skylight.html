@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<body style="margin: 0; background-color: #fff">
+    <div role="article" aria-roledescription="email" aria-label="THÔNG BÁO THU PHÍ" lang="vi"
+        style="margin-left: auto; margin-right: auto; box-sizing: border-box; width: 900px; background-color: #fff; padding: 24px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif; font-size: 14px">
+        <table style="margin-bottom: 24px; width: 100%; table-layout: auto" cellpadding="0" cellspacing="0" role="presentation">
+            <tbody>
+                <tr>
+                    <td>
+                        <h2 style="margin: 0 0 6px; text-align: center; font-size: 15px; font-weight: 600">
+                            BAN QUẢN LÝ TÒA NHÀ
+                        </h2>
+                        <h2 style="margin: 0 0 6px; text-align: center; font-size: 15px; font-weight: 600">
+                            CHUNG CƯ KHU NHÀ Ở SKYLIGHT
+                        </h2>
+                    </td>
+                    <td>
+                        <h2 style="margin: 0 0 6px; text-align: center; font-size: 15px; font-weight: 600">
+                            THÔNG BÁO THU PHÍ  DV KỲ THÁNG {HEAD_PERIOD}
+                        </h2>
+                        <div style="text-align: center; font-weight: 600; padding-bottom: 10px;">TB lần 01 - Ngày 01/{HEAD_PERIOD}</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table style="margin-bottom: 12px; width: 100%; table-layout: auto; font-size: 14px;" cellpadding="0"
+            cellspacing="0" role="none">
+            <tr>
+                <td colspan="2" style="padding-bottom: 6px">
+                    <span>
+                        <span style="font-weight: 600;">Kính gửi Ông/Bà:</span>
+                    </span>
+                    <span style="font-size: 15px; font-weight: 600">{CUSTOMER_NAME}</span>
+                </td>
+                <td colspan="2" style="padding-bottom: 6px">
+                    <span style="font-weight: 600;">
+                      Mã căn hộ: {APARTMENT_CODE}
+                    </span>
+                </td>
+                <td colspan="2" style="padding-bottom: 6px">
+                    <span style="font-weight: 600;">
+                      Toà: {BUILDING_CODE}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="12" style="font-size: 15px;">
+                    BQL Trân trọng Thông báo tới Quý khách hàng nội dung các khoản Phí dịch vụ kỳ này như sau:
+                </td>
+            </tr>
+        </table>
+        <br>
+
+        <table style="margin-bottom: 16px; width: 100%; table-layout: auto; border-collapse: collapse; font-size: 14px"
+            cellpadding="0" cellspacing="0" role="none">
+
+            <thead>
+                <tr>
+                    <th
+                        style="width: 35px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px">
+                        <div>TT</div>
+                    </th>
+                    <th colspan="4"
+                        style="border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center;">
+                        <div>Hạng mục</div>
+                    </th>
+                    <th
+                        style="width: 20px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center;">
+                        <div>Số lượng</div>
+                    </th>
+                    <th
+                        style="width: 20px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center;">
+                        <div>Đơn giá</div>
+                    </th>
+                    <th
+                        style="width: 40px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center">
+                        <div>Thành tiền</div>
+                    <th
+                    style="width: 180px; border-width: 1px; border-style: solid; padding-top: 6px; padding-bottom: 6px; text-align: center">
+                    <div>Ghi chú</div>
+                </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        A</td>
+                    <td colspan="6" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Phí QLVH chung nhà chung cư: Tháng {HEAD_PERIOD}</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {TOTAL_M}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">1</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Theo diện tích sở hữu, sử dụng</span>
+                        </span>
+                    </td>
+
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {ACREAGE_APARTMENT}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {UNIT_PRICE_MANAGEMENT}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {COST_MANAGEMENT_UNPAID}
+                    </td>
+                    <td rowspan="3" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left; font-style: italic;">
+                        (Đã bao gồm chi phí hoạt động BQT)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">2</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Phụ thu theo mục đích sử dụng mặt bằng</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {ACREAGE_APARTMENT}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {UNIT_PRICE_MANAGEMENT_2}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {COST_MANAGEMENT_UNPAID_2}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">3</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span>Nợ chưa thanh toán theo lũy kế kỳ trước</span>
+                        </span>
+                    </td>
+
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {M_DEBT}	
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        B</td>
+                    <td colspan="6" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Phí sử dụng DV (BQL thu, nộp hộ về ĐV cung cấp DV theo UQ)</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_E_P_MONEY}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>            
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        I</td>
+                    <td colspan="5" style="border-width: 1px; border-style: solid; padding: 6px;">
+                        <span>
+                            <span style="font-weight: 700;">Phí sử dụng Nước từ {W_HEAD_PERIOD} - {W_END_PERIOD}</span>
+                        </span>
+                    </td>
+                    <td style="font-weight: 700;border-width: 1px; border-style: solid; padding: 6px; text-align: center;">SH</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_MONEY}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">1</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                       Cuối kỳ: {END_INDEX_W} - Đầu kỳ: {HEAD_INDEX_W}	
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{TOTAL_INDEX_W}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td rowspan="6" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                        (Đơn giá theo Quy định của UBND Thành phố Hà Nội và đã bao gồm thuế, phí Bảo vệ môi trường theo quy định)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                       Mức SH1
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_AMOUNT1}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Mức SH2
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_AMOUNT2}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Mức SH3
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX3}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE3}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_AMOUNT3}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Mức SH4 
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX4}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE4}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_AMOUNT4}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;"></td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">
+                        Mức KD
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_INDEX_KD}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{W_PRICE_KD}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_AMOUNT_KD}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">2</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Chi phí hao hụt vận hành, vệ sinh HT(=2% tổng hóa đơn nước)</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">1</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">0</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_TAX_HH}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                        thu ở căn liền kề và thương mại
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">3</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Nợ chưa thanh toán lũy kế từ kỳ trước</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_DEBT}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td
+                        style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        II</td>
+                    <td colspan="5" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                        <span>
+                            <span>Phí sử dụng Điện từ {E_HEAD_PERIOD} - {E_END_PERIOD}</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INTO_MONEY}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">1</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px;">
+                       Cuối kỳ: {END_INDEX_E} - Đầu kỳ: {HEAD_INDEX_E}
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_TOTAL_AMOUNT}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_PRICE1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{E_INTO_MONEY}
+                    </td>
+                    <td rowspan="2" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                        (Theo thỏa thuận)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">2</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Nợ chưa thanh toán lũy kế từ kỳ trước</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {W_DEBT}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        III
+                    </td>
+                    <td colspan="6" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                        <span>
+                            <span>Phí Gửi - Giữ phương tiện theo tháng: Tháng {HEAD_PERIOD}</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{P_MONEY}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">1</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Xe ô tô BKS: {LIST_CAR_NAME}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{CAR_NUMBER}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                    <td rowspan="11" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                        (Đơn giá Dịch vụ theo Thông báo chưa bao gồm thuế VAT)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">-</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                       Vị trí cố định, có mái che: 125D; 133A</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{CAR_NUMBER_1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{PRICE_CAR_1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MONEY_CAR_1}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">-</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                       Vị trí không cố định, không mái che</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{CAR_NUMBER_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{PRICE_CAR_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MONEY_CAR_2}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">2</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Xe máy, xe điện BKS: {LIST_MOTOR_NAME}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MOTOR_NUMBER}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">-</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                       Xe ưu tiên theo định mức</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MOTOR_NUMBER_1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{PRICE_MOTOR_1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MONEY_MOTOR_1}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">-</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                       Từ xe thứ 3 trở đi</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MOTOR_NUMBER_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{PRICE_MOTOR_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MONEY_MOTOR_2}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">3</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Xe đạp với các đặc điểm: {LIST_BIKE_NAME}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{BIKE_NUMBER}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">-</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                       Xe ưu tiên theo định mức</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{BIKE_NUMBER_1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{PRICE_BIKE_1}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MONEY_BIKE_1}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">-</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;font-style: italic;">
+                       Từ xe thứ 2 trở đi</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{BIKE_NUMBER_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{PRICE_BIKE_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{MONEY_BIKE_2}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">4</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Các khoản phụ thu khác: </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{OTHER_NUM}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{OTHER_PRICE}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">{OTHER_MONEY}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center;">5</td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; text-align: left;">
+                        Nợ chưa thanh toán lũy kế từ kỳ trước </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"></td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                        {P_DEBT}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                        IV
+                    </td>
+                    <td colspan="6" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                        <span>
+                            <span>Chi phí sử dụng dịch vụ, khoản thu khác phát sinh trong kỳ</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">0</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                    </td>
+                    <td colspan="4" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">0</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">0</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">0</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: center; font-weight: 700;">
+                       C
+                    </td>
+                    <td colspan="6" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 700;">
+                        <span>
+                            <span>Tổng cộng số tiền Khách hàng phải thanh toán kỳ này là (A + B)</span>
+                        </span>
+                    </td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;"> {TOTAL_2}</td>
+                    <td style="border-width: 1px; border-style: solid; padding: 6px; text-align: right;">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9" style="border-width: 1px; border-style: solid; padding: 6px; font-weight: 600;">
+                        <span style="font-style: italic;">Bằng chữ: </span>
+                        <span style="font-style: italic;">{TOTAL_MONEY_TEXT}</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-bottom: 3px;font-weight: 700;font-style: italic;">Ghi chú: </div>
+        <div style="margin-left: 40px;">- Trường hợp thông tin chưa chính xác: Xin mời Khách hàng trực tiếp liên hệ với BQL để hiệu chỉnh</div>
+        <div style="margin-left: 40px;">
+            - Thời gian nộp phí đến hết ngày 07/04/2024 bằng tiền mặt tại BQL hoặc CK theo mã QR CODE phía dưới
+        </div>
+        <div style="margin-left: 40px;">- Trường hợp khách hàng chưa thanh toán đầy đủ  các khoản nêu trên: Sau ngày 15/{HEAD_PERIOD} sẽ thực hiện, 
+            áp dụng các biện pháp chế tài theo Quy định để thu hồi công nợ và không chịu trách nhiệm về những thiệt hại, bất tiện... về tài sản hoặc sinh 
+            hoạt của Khách hàng (nếu có)
+        </div>
+        <div style="margin-left: 40px;">- Đề nghị Khách hàng chủ động kiểm tra, liên hệ với bên cung cấp DV để hoàn thiện HS đăng ký sử dụng nước, gửi giữ xe... theo quy định.
+        </div>
+        <table style="margin-bottom: 80px; width: 100%; table-layout: auto; margin-top: 10px;" cellpadding="0"
+            cellspacing="0" role="presentation">
+            <tr>
+                <td>
+                   <div style="width: 100%; vertical-align: top; font-weight: 700;font-style: italic;"> BQL tòa nhà: Trân trọng Thông báo!</div>
+                   <div style="margin-top: 40px;">- Trưởng BQL tòa nhà: Kiều Anh Tuấn</div>
+                   <div>- Giao dịch viên: Vũ Huy Long - Nguyễn Thị Mai</div>
+                   <div style="white-space: nowrap; text-align: left; ">- Ngân hàng: VietinBank
+                </div>
+                <div style="white-space: nowrap; text-align: left; ">- Số tài khoản: 104881501056
+                </div>
+                <div>- ĐT: 0963 692 933
+                </div>
+                </td>
+                <td style="text-align: center;">
+                    <div>
+                        <img width="180" src="data:image/png;base64,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"/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

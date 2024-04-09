@@ -1,7 +1,9 @@
 ﻿using Abp.Application.Services;
 using Abp.Domain.Repositories;
+using Abp.Extensions;
 using Abp.Linq.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +35,7 @@ namespace Yootek.Services
         private readonly IRepository<OnepayMerchant, int> _onepayMerchantRepository;
         private readonly IRepository<DigitalServiceOrder, long> _digitalServiceOrderRepository;
         private readonly IRepository<DigitalServices, long> _digitalServiceRepository;
-        
+        private readonly IRepository<Citizen, long> _citizenRepository;
 
         public AdminSocialDigitalServicePaymentAppService(
             IRepository<DigitalServicePayment, long> digitalServicePaymentRepo,
@@ -43,7 +45,8 @@ namespace Yootek.Services
             IRepository<EPaymentBalanceTenant, long> epaymentBanlanceRepository,
             IRepository<OnepayMerchant, int> onepayMerchantRepository,
             IRepository<DigitalServiceOrder, long> digitalServiceOrderRepository,
-            IRepository<DigitalServices, long> digitalServiceRepository
+            IRepository<DigitalServices, long> digitalServiceRepository,
+            IRepository<Citizen, long> citizenRepository
             )
 
         {
@@ -55,6 +58,7 @@ namespace Yootek.Services
             _onepayMerchantRepository = onepayMerchantRepository;
             _digitalServiceOrderRepository = digitalServiceOrderRepository;
             _digitalServiceRepository = digitalServiceRepository;
+            _citizenRepository = citizenRepository;
         }
 
         public async Task<object> GetTenantPayment(GetAlltenantPaymentInput input)
@@ -136,7 +140,7 @@ namespace Yootek.Services
             }
         }
 
-        protected IQueryable<ThirdPartyPaymentDto> QueryThirdPartyPayment(GetAllPaymentInput input)
+        protected IQueryable<ThirdPartyDigitalServicePaymentDto> QueryThirdPartyPayment(GetAllPaymentInput input)
         {
             DateTime fromDay = new DateTime(), toDay = new DateTime();
             if (input.FromDay.HasValue)
@@ -154,7 +158,7 @@ namespace Yootek.Services
             var query = (from pm in _thirdPartyPaymentRepository.GetAll()
                          join mc in _onepayMerchantRepository.GetAll() on pm.MerchantId equals mc.Id into tb_mc
                          from mc in tb_mc.DefaultIfEmpty()
-                         select new ThirdPartyPaymentDto()
+                         select new ThirdPartyDigitalServicePaymentDto()
                          {
                              Id = pm.Id,
                              Amount = pm.Amount,
@@ -194,7 +198,7 @@ namespace Yootek.Services
         {
             try
             {
-                using (CurrentUnitOfWork.SetTenantId(null))
+                using (CurrentUnitOfWork.SetTenantId(input.TenantId))
                 {
 
                     var tenants = _tenantRepository.GetAllList();
@@ -204,6 +208,12 @@ namespace Yootek.Services
                     {
                         item.TenantName = tenants.Where(x => x.Id == item.TenantId).Select(x => x.Name).FirstOrDefault();
                         item.FullName = await GetUserFullName(item.CreatedById ?? 0, item.TenantId);
+                        if(!item.TransactionId.IsNullOrEmpty())
+                        {
+                            long orderId = Int64.Parse(item.TransactionId);
+                            item.Order = await _digitalServiceOrderRepository.FirstOrDefaultAsync(x => x.Id == orderId);
+                            if (item.Order != null) item.ServiceName = await _digitalServiceRepository.GetAll().Where(x => x.Id == item.Order.ServiceId).Select(x => x.Title).FirstOrDefaultAsync();
+                        }
                     }
 
                     return DataResult.ResultSuccess(result, "", query.Count());
@@ -224,7 +234,6 @@ namespace Yootek.Services
                 return (await _userRepos.FirstOrDefaultAsync(id))?.FullName;
             }
         }
-
 
         public async Task<object> GetCountThirdPartyPayments(GetAllPaymentInput input)
         {
@@ -272,7 +281,8 @@ namespace Yootek.Services
                         ApartmentCode = pm.ApartmentCode,
                         Address = od.Address,
                         ServicesText = sv.Title,
-                        ServiceDetails = od.ServiceDetails
+                        ServiceDetails = od.ServiceDetails,
+                        CustomerName = _citizenRepository.GetAll().Where(x => x.AccountId == od.CreatorUserId).Select(x => x.FullName).FirstOrDefault(),
                     }).AsQueryable();
         }
 
@@ -280,20 +290,44 @@ namespace Yootek.Services
         {
             try
             {
-                IQueryable<DigitalServicePaymentDto> query = QueryDigitalServicePayment()
-                                                        .WhereIf(!string.IsNullOrEmpty(input.Keyword),
-                                                        x => x.ApartmentCode.ToLower().Contains(input.Keyword.ToLower())
-                                                        || x.Code.ToLower().Contains(input.Keyword.ToLower())
-                                                        || x.Note.ToLower().Contains(input.Keyword.ToLower()))
-                                                        .WhereIf(input.UrbanId > 0, x => x.UrbanId == input.UrbanId)
-                                                        .WhereIf(input.BuildingId > 0, x => x.BuildingId == input.BuildingId);
+                using(CurrentUnitOfWork.SetTenantId(input.TenantId))
+                {
+                    IQueryable<DigitalServicePaymentDto> query = QueryDigitalServicePayment()
+                                                       .WhereIf(!string.IsNullOrEmpty(input.Keyword),
+                                                       x => x.ApartmentCode.ToLower().Contains(input.Keyword.ToLower())
+                                                       || x.Code.ToLower().Contains(input.Keyword.ToLower())
+                                                       || x.Note.ToLower().Contains(input.Keyword.ToLower()))
+                                                       .WhereIf(input.UrbanId > 0, x => x.UrbanId == input.UrbanId)
+                                                       .WhereIf(input.BuildingId > 0, x => x.BuildingId == input.BuildingId);
 
-                var data = await query.PageBy(input).ToListAsync();
-                return DataResult.ResultSuccess(data, "", query.Count());
+                    var data = await query.PageBy(input).ToListAsync();
+                    return DataResult.ResultSuccess(data, "", query.Count());
+                }
             }
             catch (Exception ex)
             {
                 Logger.Fatal(ex.Message, ex);
+                throw;
+            }
+        }
+
+        public async Task<DataResult> GetOrderById(long id, int tenantId)
+        {
+            try
+            {
+                using(CurrentUnitOfWork.SetTenantId(tenantId))
+                {
+                    var item = await _digitalServiceOrderRepository.GetAsync(id);
+                    var data = ObjectMapper.Map<DigitalServiceOrderViewDto>(item);
+                    data.CreatorCitizen = await _citizenRepository.FirstOrDefaultAsync(x => x.AccountId == item.CreatorUserId);
+                    data.ArrServiceDetails = !string.IsNullOrEmpty(item.ServiceDetails) ? JsonConvert.DeserializeObject<List<DigitalServiceDetailsGridDto>>(item.ServiceDetails) : new List<DigitalServiceDetailsGridDto>();
+
+                    return DataResult.ResultSuccess(data, Common.Resource.QuanLyChung.Success);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Fatal(e.Message);
                 throw;
             }
         }
