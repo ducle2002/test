@@ -91,53 +91,53 @@ namespace Yootek.Services
             {
                 IQueryable<CitizenDto> query =
                     (from citizen in _citizenRepos.GetAll()
-                        join a in _apartmentRepository.GetAll() on citizen.ApartmentCode equals a.ApartmentCode into
-                            tb_a
-                        from apartment in tb_a.DefaultIfEmpty()
-                        select new CitizenDto()
-                        {
-                            Id = citizen.Id,
-                            TenantId = citizen.TenantId,
-                            FullName = citizen.FullName,
-                            AccountId = citizen.AccountId,
-                            Address = citizen.Address,
-                            ApartmentCode = citizen.ApartmentCode,
-                            BirthYear = citizen.BirthYear,
-                            Career = citizen.Career,
-                            CitizenCode = citizen.CitizenCode,
-                            CitizenTempId = citizen.CitizenTempId,
-                            DateOfBirth = citizen.DateOfBirth,
-                            Email = citizen.Email,
-                            Gender = citizen.Gender,
-                            IdentityNumber = citizen.IdentityNumber,
-                            ImageUrl = citizen.ImageUrl,
-                            IsStayed = citizen.IsStayed,
-                            IsVoter = citizen.IsVoter,
-                            MemberNum = citizen.MemberNum,
-                            Nationality = citizen.Nationality,
-                            OrganizationUnitId = citizen.OrganizationUnitId,
-                            OtherPhones = citizen.OtherPhones,
-                            PhoneNumber = citizen.PhoneNumber,
-                            RelationShip = citizen.RelationShip,
-                            State = citizen.State,
-                            Type = citizen.Type,
-                            ApartmentId = apartment.Id,
-                            ApartmentName = apartment.Name,
-                            UrbanCode = citizen.UrbanCode,
-                            UrbanId = citizen.UrbanId,
-                            UrbanName = _organizationUnitRepository.GetAll().Where(i => i.Id == citizen.UrbanId)
-                                .Select(x => x.DisplayName).FirstOrDefault(),
-                            BuildingCode = citizen.BuildingCode,
-                            BuildingId = citizen.BuildingId,
-                            BuildingName = _organizationUnitRepository.GetAll()
-                                .Where(i => i.Code == citizen.BuildingCode)
-                                .Select(x => x.DisplayName).FirstOrDefault(),
-                            HomeAddress = citizen.HomeAddress,
-                        }
+                     join a in _apartmentRepository.GetAll() on citizen.ApartmentCode equals a.ApartmentCode into
+                         tb_a
+                     from apartment in tb_a.DefaultIfEmpty()
+                     select new CitizenDto()
+                     {
+                         Id = citizen.Id,
+                         TenantId = citizen.TenantId,
+                         FullName = citizen.FullName,
+                         AccountId = citizen.AccountId,
+                         Address = citizen.Address,
+                         ApartmentCode = citizen.ApartmentCode,
+                         BirthYear = citizen.BirthYear,
+                         Career = citizen.Career,
+                         CitizenCode = citizen.CitizenCode,
+                         CitizenTempId = citizen.CitizenTempId,
+                         DateOfBirth = citizen.DateOfBirth,
+                         Email = citizen.Email,
+                         Gender = citizen.Gender,
+                         IdentityNumber = citizen.IdentityNumber,
+                         ImageUrl = citizen.ImageUrl,
+                         IsStayed = citizen.IsStayed,
+                         IsVoter = citizen.IsVoter,
+                         MemberNum = citizen.MemberNum,
+                         Nationality = citizen.Nationality,
+                         OrganizationUnitId = citizen.OrganizationUnitId,
+                         OtherPhones = citizen.OtherPhones,
+                         PhoneNumber = citizen.PhoneNumber,
+                         RelationShip = citizen.RelationShip,
+                         State = citizen.State,
+                         Type = citizen.Type,
+                         ApartmentId = apartment.Id,
+                         ApartmentName = apartment.Name,
+                         UrbanCode = citizen.UrbanCode,
+                         UrbanId = citizen.UrbanId,
+                         UrbanName = _organizationUnitRepository.GetAll().Where(i => i.Id == citizen.UrbanId)
+                             .Select(x => x.DisplayName).FirstOrDefault(),
+                         BuildingCode = citizen.BuildingCode,
+                         BuildingId = citizen.BuildingId,
+                         BuildingName = _organizationUnitRepository.GetAll()
+                             .Where(i => i.Code == citizen.BuildingCode)
+                             .Select(x => x.DisplayName).FirstOrDefault(),
+                         HomeAddress = citizen.HomeAddress,
+                     }
                     )
                     .Where(x => x.AccountId == AbpSession.UserId)
-                    .WhereIf(input.State.HasValue , x => (int)x.State == input.State).AsQueryable();
-                    var listCitizenApartment = query.ToList();
+                    .WhereIf(input.State.HasValue, x => (int)x.State == input.State).AsQueryable();
+                var listCitizenApartment = query.ToList();
                 return DataResult.ResultSuccess(listCitizenApartment, "Get success!", listCitizenApartment.Count);
             }
             catch (Exception ex)
@@ -264,7 +264,7 @@ namespace Yootek.Services
                     {
                         await NotifierVerifyCitizen(insertInput, insertInput.FullName, admins.ToArray());
                     }
-                 
+
                     mb.statisticMetris(t1, 0, "is_citizen");
                     var data = DataResult.ResultSuccess(insertInput, "Insert success !");
                     return data;
@@ -300,7 +300,7 @@ namespace Yootek.Services
                     await NotifierVerifyCitizen(citizenInsert, citizenInsert.FullName, admins.ToArray());
                 }
 
-             
+
                 return DataResult.ResultSuccess(true, "Insert success !");
             }
             catch (Exception e)
@@ -770,7 +770,8 @@ namespace Yootek.Services
             try
             {
                 var query = (from citizen in _citizenTempRepos.GetAll()
-                             where citizen.ApartmentCode.Trim().ToUpper().Contains(input.ApartmentCode.Trim().ToUpper())
+                                 //where citizen.ApartmentCode.Trim().ToUpper().Contains(input.ApartmentCode.Trim().ToUpper())
+                             where citizen.ApartmentCode.Trim().ToUpper() == input.ApartmentCode.Trim().ToUpper()
                              select new CitizenRole
                              {
                                  Name = citizen.FullName,
