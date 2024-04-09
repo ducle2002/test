@@ -204,6 +204,8 @@ namespace Yootek.Services
                 item.TenantId = AbpSession.TenantId;
                 await _repository.InsertAndGetIdAsync(item);
 
+                item.Code = GetUniqueKey(6) + item.Id;
+                await CurrentUnitOfWork.SaveChangesAsync();
                 var admins = await UserManager.GetUserOrganizationUnitByUrbanOrNull(item.UrbanId);
                 if(admins != null)
                 {

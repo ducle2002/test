@@ -13,6 +13,7 @@ namespace YOOTEK.Yootek.Services
 {
     public class GetAllDigitalServicePaymentInput: CommonInputDto
     {
+        public int TenantId { get; set; }
         public long? UrbanId { get; set; }  
         public long? BuildingId {  get; set; }
         public long? ServiceId { get; set; }
