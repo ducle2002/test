@@ -3613,6 +3613,7 @@ namespace Yootek.Services
         {
             using (CurrentUnitOfWork.SetTenantId(tenantId))
             {
+                var month = new DateTime(time.Year, time.Month, 1);
                 var carTableTemplate =
                     "<tr>\r\n          <td style=\"padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\"></td>\r\n          <td style=\"white-space: nowrap; border-width: 1px; border-style: solid;\">\r\n            <span style=\"display: inline-block; width: 50%; padding: 6px 6px 6px 8px\">- {CAR_PNAME}</span><span style=\"display: inline-block; width: 50%; border-width: 0px 0px 0px 1px; border-style: solid; padding: 6px 6px 6px 8px\">BKS: {CAR_CODE}</span>\r\n          </td>\r\n          <td style=\"padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">1</td>\r\n          <td style=\"padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{PRICE_PCAR}</td>\r\n          <td style=\"padding: 6px; text-align: center; white-space: nowrap; border-width: 1px; border-style: solid;\">{PRICE_PCAR}</td>\r\n        </tr>";
 
@@ -3647,7 +3648,7 @@ namespace Yootek.Services
 
                 List<UserBill> userBillDetbs = _userBillRepository.GetAll()
                   .Where(x => x.ApartmentCode == apartmentCode)
-                  .Where(x => x.Status == UserBillStatus.Debt)
+                  .Where(x => x.Status == UserBillStatus.Debt && x.Period.Value < month)
                   .ToList();
                 var debt = CalculateDebt(userBillDetbs);
                 var paymentBill = _billPaymentRepos.GetAll().Where(x => x.ApartmentCode == apartmentCode && x.Status == UserBillPaymentStatus.Success).OrderBy(x => x.CreationTime).Select(x => x.CreationTime).FirstOrDefault();
@@ -5466,7 +5467,6 @@ namespace Yootek.Services
         }
 
         // skylight
-        // General
         [RemoteService(false)]
         public async Task<StringBuilder> CreateTemplateSkylight(string apartmentCode, DateTime period, int? tenantId)
         {
@@ -5766,21 +5766,21 @@ namespace Yootek.Services
 
                 }
 
-                emailTemplate.Replace("{W_PRICE_KD}", "33.350")
+                emailTemplate.Replace("{W_PRICE_KD}", "33,350")
                             .Replace("{W_INDEX_KD}", "0")
                             .Replace("{W_AMOUNT_KD}", "0");
 
                 emailTemplate.Replace("{W_INDEX1}", "0")
-                             .Replace("{W_PRICE1}", "9.775")
+                             .Replace("{W_PRICE1}", "9,775")
                              .Replace("{W_AMOUNT1}", "0")
                              .Replace("{W_INDEX2}", "0")
-                             .Replace("{W_PRICE2}", "11.385")
+                             .Replace("{W_PRICE2}", "11,385")
                              .Replace("{W_AMOUNT2}", "0")
                              .Replace("{W_INDEX3}", "0")
-                             .Replace("{W_PRICE3}", "18.400")
+                             .Replace("{W_PRICE3}", "18,400")
                              .Replace("{W_AMOUNT3}", "0")
                              .Replace("{W_INDEX4}", "0")
-                             .Replace("{W_PRICE4}", "31.050")
+                             .Replace("{W_PRICE4}", "31,050")
                              .Replace("{W_AMOUNT4}", "0");
 
 
@@ -6030,7 +6030,7 @@ namespace Yootek.Services
                     .Replace("{DEBT}", FormatCost(costDebt))
                     .Replace("{TOTAL_2}", FormatCost(totalFeePayable))
                     .Replace("{DAY_NOW_FULL}", string.Format("{0:dd/MM/yyyy}", currentDate))
-                    .Replace("{HEAD_PERIOD}", string.Format("{0:dd/MM/yyyy}", head_period))
+                    .Replace("{HEAD_PERIOD}", periodString)
                     .Replace("{END_PERIOD}", string.Format("{0:dd/MM/yyyy}", end_period))
                     .Replace("{W_HEAD_PERIOD}", string.Format("{0:dd/MM/yyyy}", w_head_period))
                     .Replace("{W_END_PERIOD}", string.Format("{0:dd/MM/yyyy}", w_end_period))
