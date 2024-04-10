@@ -3651,8 +3651,7 @@ namespace Yootek.Services
                   .Where(x => x.Status == UserBillStatus.Debt && x.Period.Value < month)
                   .ToList();
                 var debt = CalculateDebt(userBillDetbs);
-                var paymentBill = _billPaymentRepos.GetAll().Where(x => x.ApartmentCode == apartmentCode && x.Status == UserBillPaymentStatus.Success).OrderBy(x => x.CreationTime).Select(x => x.CreationTime).FirstOrDefault();
-
+               
                 var emailTemplate = new StringBuilder(_emailTemplateProvider.GetUserBillTemplate(tenantId));
                 var currentPeriod = string.Format("{0:MM/yyyy}", time);
                 var period_month = string.Format("{0:MM}", time);
@@ -3661,7 +3660,7 @@ namespace Yootek.Services
                 var end_period = new DateTime(time.Year, time.Month, period_day_end);
                 var period_year = string.Format("{0:yyyy}", time);
                 var today = string.Format("{0:dd/MM/yyyy}", DateTime.Now);
-                var paymentDay = paymentBill.ToString("dd/MM/yyyy");
+       
                 emailTemplate.Replace("{PERIOD_MONTH}", period_month + "");
                 emailTemplate.Replace("{PERIOD_DAY}", period_day_end + "");
                 emailTemplate.Replace("{PERIOD_YEAR}", period_year + "");
@@ -3671,8 +3670,7 @@ namespace Yootek.Services
                 emailTemplate.Replace("{HEAD_PERIOD}", string.Format("{0:dd/MM/yyyy}", head_period));
                 emailTemplate.Replace("{END_PERIOD}", string.Format("{0:dd/MM/yyyy}", end_period));
                 emailTemplate.Replace("{MONTH_PERIOD}", string.Format("{0:MM/yyyy}", time));
-                emailTemplate.Replace("{PAYMENT_DAY}", paymentDay + "");
-
+               
                 var p_money = 0;
 
 
